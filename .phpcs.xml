@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<ruleset name="team51-plugin-scaffold" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+	<description>Custom ruleset for the Team51 plugin.</description>
+
+	<!-- Extend the A8CTeam51 ruleset. -->
+	<rule ref="./vendor/a8cteam51/team51-configs/quality-tools/phpcs.xml.dist"/>
+
+	<!-- Check that the proper text domain(s) is used everywhere. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="wpcomsp-scaffold"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Check that the proper prefix is used everywhere. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="wpcomsp_"/>
+				<element value="wpcomsp_scaffold_"/>
+				<element value="WPCOMSpecialProjects\Scaffold"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

@@ -1,0 +1,18 @@
+name: Feature request
+description: Create a feature request for this project.
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Add a concise description of the feature being requested.
+      placeholder: What will this feature accomplish?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request here.
+      placeholder: Add links to previous work or other sites that do something similar.

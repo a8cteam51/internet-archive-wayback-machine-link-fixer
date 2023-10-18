@@ -1,0 +1,100 @@
+{
+  "name": "a8cteam51/team51-plugin-scaffold",
+  "type": "wordpress-plugin",
+
+  "description": "A scaffold for WP.com Special Projects plugins.",
+  "homepage": "https://github.com/a8cteam51/team51-plugin-scaffold",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "WordPress.com Special Projects Team",
+      "homepage": "https://wpspecialprojects.wordpress.com/"
+    },
+    {
+      "name": "Contributors",
+      "homepage": "https://github.com/a8cteam51/team51-plugin-scaffold/graphs/contributors"
+    }
+  ],
+
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/a8cteam51/team51-configs"
+    },
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    }
+  ],
+  "require": {
+    "php": ">=8.0",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "a8cteam51/team51-configs": "dev-trunk",
+
+    "johnpbloch/wordpress-core": "6.2.*",
+    "wpackagist-plugin/woocommerce": "7.4.*",
+
+    "wp-cli/i18n-command": "^2.4",
+
+    "squizlabs/php_codesniffer": "3.*",
+    "dealerdirect/phpcodesniffer-composer-installer": "*",
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "wp-coding-standards/wpcs": "dev-develop",
+
+    "roave/security-advisories": "dev-latest"
+  },
+
+  "autoload": {
+    "psr-4": {
+      "WPCOMSpecialProjects\\Scaffold\\": "src/"
+    },
+    "classmap": [
+      "models/"
+    ]
+  },
+  "autoload-dev": {
+
+  },
+
+  "scripts": {
+    "generate-autoloader": "@composer dump-autoload -o",
+
+    "format:php": "phpcbf --standard=./.phpcs.xml --basepath=. . -v",
+    "lint:php": "phpcs --standard=./.phpcs.xml --basepath=. . -v",
+
+    "internationalize": [
+      "@makepot",
+      "@updatepo",
+      "@makejson"
+    ],
+    "makepot": "wp i18n make-pot .",
+    "updatepo": "wp i18n update-po ./languages/wpcomsp-scaffold.pot",
+    "makejson": "wp i18n make-json ./languages --pretty-print --no-purge",
+    "makemo": "wp i18n make-mo ./languages",
+
+    "packages-install": "@composer install --ignore-platform-reqs --no-interaction",
+    "packages-update": [
+      "@composer clear-cache",
+      "@composer update --prefer-stable --no-interaction"
+    ]
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/*": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+
+  "extra": {
+    "installer-paths": {
+      "vendor/wpackagist-plugin/{$name}/": [
+        "type:wordpress-plugin"
+      ],
+      "vendor/wpackagist-theme/{$name}/": [
+        "type:wordpress-theme"
+      ]
+    }
+  }
+}

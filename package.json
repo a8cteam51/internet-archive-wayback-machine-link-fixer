@@ -1,0 +1,64 @@
+{
+  "name": "team51-plugin-scaffold",
+  "version": "1.0.0",
+  "description": "A scaffold for WP.com Special Projects plugins",
+  "author": {
+    "name": "WordPress.com Special Projects Team",
+    "url": "https://wpspecialprojects.wordpress.com"
+  },
+  "license": "GPL-2.0-or-later",
+  "keywords": [
+    "wordpress"
+  ],
+  "homepage": "https://wordpress.org/plugins/team51-plugin-scaffold",
+  "repository": "https://github.com/a8cteam51/team51-plugin-scaffold",
+  "bugs": "https://github.com/a8cteam51/team51-plugin-scaffold/issues",
+  "engines": {
+    "node": ">=18.15",
+    "npm": ">=9.5"
+  },
+  "devDependencies": {
+    "@csstools/postcss-sass": "^5.0.1",
+    "@wordpress/browserslist-config": "^5.9.1",
+    "@wordpress/postcss-plugins-preset": "^4.10.2",
+    "@wordpress/scripts": "^25.3.4",
+    "npm-run-all": "^4.1.5",
+    "postcss-cli": "^10.1.0",
+    "rtlcss": "^4.0.0"
+  },
+  "rtlcssConfig": {
+    "options": {
+      "autoRename": false,
+      "autoRenameStrict": false,
+      "blacklist": {},
+      "clean": true,
+      "greedy": false,
+      "processUrls": false,
+      "stringMap": []
+    },
+    "plugins": [],
+    "map": false
+  },
+  "browserslist": [
+    "extends @wordpress/browserslist-config"
+  ],
+  "scripts": {
+    "build": "npm-run-all --sequential build:**",
+    "build:blocks": "wp-scripts build --webpack-src-dir=blocks/src --output-path=blocks/build",
+    "build:assets:scripts": "wp-scripts build assets/js/src/*.js --output-path=assets/js/build",
+    "format": "npm-run-all --sequential format:**",
+    "format:scripts": "wp-scripts format blocks assets/js --no-error-on-unmatched-pattern",
+    "format:styles": "npm run lint:styles -- --fix",
+    "lint": "npm-run-all --sequential lint:**",
+    "lint:scripts": "wp-scripts lint-js blocks assets/js --no-error-on-unmatched-pattern",
+    "lint:styles": "wp-scripts lint-style blocks/**/*.{css,sass,scss} assets/css/**/*.{css,sass,scss} --allow-empty-input --report-descriptionless-disables --report-invalid-scope-disables --report-needless-disables",
+    "lint:pkg-json": "wp-scripts lint-pkg-json",
+    "lint:readme-md": "wp-scripts lint-md-docs README.md",
+    "packages-update": "wp-scripts packages-update --dist-tag=wp-6.2",
+    "check-engines": "wp-scripts check-engines",
+    "check-licenses": "wp-scripts check-licenses",
+    "start": "npm-run-all --parallel start:**",
+    "start:blocks": "wp-scripts start --webpack-src-dir=blocks/src --output-path=blocks/build",
+    "start:assets:scripts": "wp-scripts start assets/js/src/*.js --output-path=assets/js/build"
+  }
+}

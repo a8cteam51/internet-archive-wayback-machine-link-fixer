@@ -1,0 +1,31 @@
+name: PHP Syntax Errors
+
+on:
+  push:
+    branches: [ trunk, develop ]
+  pull_request:
+    branches: [ trunk, develop ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        php: [ 5.6, 7.0, 7.1, 7.2, 7.3, 7.4, 8.0, 8.1, 8.2, 8.3 ] # Include all PHP versions between the absolute minimum that shouldn't throw an error and the latest release version.
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup proper PHP version
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - name: Check all files for syntax errors
+        if: ${{ matrix.php >= 8.0 }} # At least the minimum PHP version required by the plugin.
+        run: find -L $GITHUB_WORKSPACE -path $GITHUB_WORKSPACE/vendor -prune -o -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
+
+      - name: Check bootstrap files for syntax errors
+        if: ${{ matrix.php <= 7.4 }}
+        run: find $GITHUB_WORKSPACE -maxdepth 1 -name 'team51-plugin-scaffold.php' -print0 | xargs -0 -n 1 -P 4 php -l

@@ -1,0 +1,35 @@
+name: Bug report
+description: Create a bug report to help us improve.
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Start at `site-domain.com/blog`.
+        2. Click on any blog post.
+        3. Click on the 'Like' button.
+        4. ...
+
+        Attach any media by drag and dropping or selecting upload.
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected to happen
+      placeholder: |
+        e.g. The post should be liked.
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened
+      placeholder: |
+        e.g. Clicking the button does nothing visibly.

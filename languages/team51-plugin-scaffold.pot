@@ -1,0 +1,68 @@
+# Copyright (C) 2023 WordPress.com Special Projects
+# This file is distributed under the GPL v3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Team51 Plugin Scaffold 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/team51-plugin-scaffold\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2023-04-16T13:53:26+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.7.1\n"
+"X-Domain: wpcomsp-scaffold\n"
+
+#. Plugin Name of the plugin
+msgid "Team51 Plugin Scaffold"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+msgid "https://wpspecialprojects.wordpress.com"
+msgstr ""
+
+#. Description of the plugin
+msgid "A scaffold for WP.com Special Projects plugins."
+msgstr ""
+
+#. Author of the plugin
+msgid "WordPress.com Special Projects"
+msgstr ""
+
+#. translators: 1. Plugin name, 2. Plugin version.
+#: src/Plugin.php:169
+msgid "<strong>%1$s (v%2$s)</strong> requires WooCommerce. Please install and/or activate WooCommerce!"
+msgstr ""
+
+#. translators: 1. Plugin name, 2. Plugin version, 3. Minimum WC version.
+#: src/Plugin.php:176
+msgid "<strong>%1$s (v%2$s)</strong> requires WooCommerce %3$s or newer. Please install, update, and/or activate WooCommerce!"
+msgstr ""
+
+#: team51-plugin-scaffold.php:57
+msgid "It seems like <strong>Team51 Plugin Scaffold</strong> is corrupted. Please reinstall!"
+msgstr ""
+
+#: blocks/build/foobar/index.js:1
+#: blocks/src/foobar/edit.js:35
+msgid "Todo List – hello from the editor!"
+msgstr ""
+
+#: blocks/build/foobar/index.js:1
+#: blocks/src/foobar/save.js:28
+msgid "Todo List – hello from the saved content from foobar!"
+msgstr ""
+
+#: blocks/build/foobar/block.json
+#: blocks/src/foobar/block.json
+msgctxt "block title"
+msgid "FooBar Block"
+msgstr ""
+
+#: blocks/build/foobar/block.json
+#: blocks/src/foobar/block.json
+msgctxt "block description"
+msgid "Example block scaffolded with Create Block tool."
+msgstr ""
