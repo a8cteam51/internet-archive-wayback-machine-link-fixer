@@ -1,6 +1,6 @@
 <?php
 
-namespace WPCOMSpecialProjects\Scaffold\Integrations;
+namespace WPCOMSpecialProjects\wayback - link - fixer\Integrations;
 
 defined( 'ABSPATH' ) || exit;
 

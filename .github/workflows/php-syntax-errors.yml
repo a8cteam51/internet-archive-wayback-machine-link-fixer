@@ -28,4 +28,4 @@ jobs:
 
       - name: Check bootstrap files for syntax errors
         if: ${{ matrix.php <= 7.4 }}
-        run: find $GITHUB_WORKSPACE -maxdepth 1 -name 'team51-plugin-scaffold.php' -print0 | xargs -0 -n 1 -P 4 php -l
+        run: find $GITHUB_WORKSPACE -maxdepth 1 -name 'wayback-link-fixer.php' -print0 | xargs -0 -n 1 -P 4 php -l

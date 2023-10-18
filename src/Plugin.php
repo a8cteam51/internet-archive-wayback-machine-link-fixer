@@ -1,6 +1,6 @@
 <?php
 
-namespace WPCOMSpecialProjects\Scaffold;
+namespace WPCOMSpecialProjects\wayback - link - fixer;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -112,7 +112,7 @@ class Plugin {
 
 		// Get the minimum WooCommerce version required from the plugin's header, if needed.
 		if ( null === $minimum_wc_version ) {
-			$updated_plugin_metadata = \get_plugin_data( \trailingslashit( WP_PLUGIN_DIR ) . WPCOMSP_SCAFFOLD_BASENAME, false, false );
+			$updated_plugin_metadata = \get_plugin_data( \trailingslashit( WP_PLUGIN_DIR ) . WPCOMSP_WAYBACK - LINK - FIXER_BASENAME, false, false );
 			if ( ! \array_key_exists( \WC_Plugin_Updates::VERSION_REQUIRED_HEADER, $updated_plugin_metadata ) ) {
 				return false;
 			}
@@ -127,7 +127,7 @@ class Plugin {
 		}
 
 		// Custom requirements check out, just ensure basic requirements are met.
-		return true === WPCOMSP_SCAFFOLD_REQUIREMENTS;
+		return true === WPCOMSP_WAYBACK - LINK - FIXER_REQUIREMENTS;
 	}
 
 	/**
@@ -162,25 +162,25 @@ class Plugin {
 		if ( ! $this->is_active( $minimum_wc_version ) ) {
 			add_action(
 				'admin_notices',
-				static function() use ( $minimum_wc_version ) {
+				static function () use ( $minimum_wc_version ) {
 					if ( \is_null( $minimum_wc_version ) ) {
 						$message = \wp_sprintf(
 							/* translators: 1. Plugin name, 2. Plugin version. */
-							__( '<strong>%1$s (v%2$s)</strong> requires WooCommerce. Please install and/or activate WooCommerce!', 'wpcomsp-scaffold' ),
-							WPCOMSP_SCAFFOLD_METADATA['Name'],
-							WPCOMSP_SCAFFOLD_METADATA['Version']
+							__( '<strong>%1$s (v%2$s)</strong> requires WooCommerce. Please install and/or activate WooCommerce!', 'wpcomsp-wayback-link-fixer' ),
+							WPCOMSP_WAYBACK - LINK - FIXER_METADATA['Name'],
+							WPCOMSP_WAYBACK - LINK - FIXER_METADATA['Version']
 						);
 					} else {
 						$message = \wp_sprintf(
 							/* translators: 1. Plugin name, 2. Plugin version, 3. Minimum WC version. */
-							__( '<strong>%1$s (v%2$s)</strong> requires WooCommerce %3$s or newer. Please install, update, and/or activate WooCommerce!', 'wpcomsp-scaffold' ),
-							WPCOMSP_SCAFFOLD_METADATA['Name'],
-							WPCOMSP_SCAFFOLD_METADATA['Version'],
+							__( '<strong>%1$s (v%2$s)</strong> requires WooCommerce %3$s or newer. Please install, update, and/or activate WooCommerce!', 'wpcomsp-wayback-link-fixer' ),
+							WPCOMSP_WAYBACK - LINK - FIXER_METADATA['Name'],
+							WPCOMSP_WAYBACK - LINK - FIXER_METADATA['Version'],
 							$minimum_wc_version
 						);
 					}
 
-					$html_message = \wp_sprintf( '<div class="error notice wpcomsp-scaffold-error">%s</div>', wpautop( $message ) );
+					$html_message = \wp_sprintf( '<div class="error notice wpcomsp-wayback-link-fixer-error">%s</div>', wpautop( $message ) );
 					echo \wp_kses_post( $html_message );
 				}
 			);

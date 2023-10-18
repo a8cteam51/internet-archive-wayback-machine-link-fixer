@@ -14,7 +14,7 @@ use WPcomSpecialProjects\Scaffold\Plugin;
  *
  * @return  Plugin
  */
-function wpcomsp_scaffold_get_plugin_instance(): Plugin {
+function wpcomsp_wayback - link - fixer_get_plugin_instance(): Plugin {
 	return Plugin::get_instance();
 }
 
@@ -26,15 +26,15 @@ function wpcomsp_scaffold_get_plugin_instance(): Plugin {
  *
  * @return  string
  */
-function wpcomsp_scaffold_get_plugin_slug(): string {
-	return sanitize_key( WPCOMSP_SCAFFOLD_METADATA['TextDomain'] );
+function wpcomsp_wayback - link - fixer_get_plugin_slug(): string {
+	return sanitize_key( WPCOMSP_WAYBACK - LINK - FIXER_METADATA['TextDomain'] );
 }
 
 // endregion
 
 //region OTHERS
 
-require WPCOMSP_SCAFFOLD_PATH . 'includes/assets.php';
-require WPCOMSP_SCAFFOLD_PATH . 'includes/settings.php';
+require WPCOMSP_WAYBACK - LINK - FIXER_PATH . 'includes/assets.php';
+require WPCOMSP_WAYBACK - LINK - FIXER_PATH . 'includes/settings.php';
 
 // endregion

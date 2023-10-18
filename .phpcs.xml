@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="team51-plugin-scaffold" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+<ruleset name="wayback-link-fixer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
 	<description>Custom ruleset for the Team51 plugin.</description>
 
 	<!-- Extend the A8CTeam51 ruleset. -->
@@ -9,7 +9,7 @@
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="wpcomsp-scaffold"/>
+				<element value="wpcomsp-wayback-link-fixer"/>
 			</property>
 		</properties>
 	</rule>
@@ -19,8 +19,8 @@
 		<properties>
 			<property name="prefixes" type="array">
 				<element value="wpcomsp_"/>
-				<element value="wpcomsp_scaffold_"/>
-				<element value="WPCOMSpecialProjects\Scaffold"/>
+				<element value="wpcomsp_wayback-link-fixer_"/>
+				<element value="WPCOMSpecialProjects\wayback-link-fixer"/>
 			</property>
 		</properties>
 	</rule>

@@ -1,5 +1,5 @@
 {
-  "name": "team51-plugin-scaffold",
+  "name": "wayback-link-fixer",
   "version": "1.0.0",
   "description": "A scaffold for WP.com Special Projects plugins",
   "author": {
@@ -10,9 +10,9 @@
   "keywords": [
     "wordpress"
   ],
-  "homepage": "https://wordpress.org/plugins/team51-plugin-scaffold",
-  "repository": "https://github.com/a8cteam51/team51-plugin-scaffold",
-  "bugs": "https://github.com/a8cteam51/team51-plugin-scaffold/issues",
+  "homepage": "https://wordpress.org/plugins/wayback-link-fixer",
+  "repository": "https://github.com/a8cteam51/wayback-link-fixer",
+  "bugs": "https://github.com/a8cteam51/wayback-link-fixer/issues",
   "engines": {
     "node": ">=18.15",
     "npm": ">=9.5"

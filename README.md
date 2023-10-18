@@ -1,69 +1,58 @@
-# Team 51 Plugin Scaffold
+# wayback-link-fixer
 
-Welcome to the Team 51 Plugin Scaffold, a standardized starting point for creating new WordPress plugins for Team 51. This repository contains the necessary files and structure to ensure a consistent approach when developing new plugins.
+**Contributors:** wpcomspecialprojects \
+**Tags:** \
+**Requires at least:** 6.2 \
+**Tested up to:** 6.2 \
+**Requires PHP:** 8.0 \
+**Stable tag:** 1.0.0   \
+**License:** GPLv3 or later \
+**License URI:** http://www.gnu.org/licenses/gpl-3.0.html
 
-## Getting Started
 
-To begin, run the command `team51 create-repository --repo-type=plugin`
 
-If you don't want to create a repository for your plugin, another option is to clone or download this repository. Rename the folder and the main PHP file with your desired plugin name. Be sure to follow the naming convention: plugin-name for the folder and plugin-name.php for the main PHP file.
+## Description
 
-## Configuration
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed leo ligula, aliquam et sem luctus, placerat facilisis orci. Cras faucibus, odio ac aliquet scelerisque, nisi ligula dignissim nisi, sed tincidunt magna libero vitae dui. Sed varius lectus turpis, fringilla maximus libero posuere nec. Aenean volutpat pharetra sem, et cursus leo sodales quis.
 
-You'll need to update the following fields in the main PHP file's header:
+## Installation
 
-- Plugin Name: The name of your plugin
-- Plugin URI: The URL of the plugin's repository
-- Description: A brief description of the plugin's functionality.
+This plugin requires WooCommerce 7.4+ to run. If you're running a lower version, please update first. After you made sure that you're running a supported version of WooCommerce, you may install `wayback-link-fixer` either manually or through your site's plugins page.
 
-## Folder Structure
+### INSTALL FROM WITHIN WORDPRESS
 
-This scaffold has the following folder structure:
+1. Visit the plugins page withing your dashboard and select `Add New`.
+1. Search for `wayback-link-fixer` and click the `Install Now` button.
+1. Activate the plugin from within your `Plugins` page.
 
-```
-plugin-name/
-├── assets/
-│   ├── css/
-│   │   ├── build/
-│   │   └── src/
-│   ├── js/
-│   │   ├── build/
-│   │   └── src/
-│   └── images/
-├── blocks/
-│   ├── build/
-│   └── src/
-├── includes/
-├── languages/
-├── models/
-├── src/
-│   ├ ...
-│   └── Integrations/
-├── templates/
-│   ├ ...
-│   └── admin/
-└── plugin-name.php
-```
+### INSTALL MANUALLY
 
-- assets: A folder to store all static assets such as styles, scripts, and images.
-- blocks: A folder for storing Gutenberg block files, if the plugin uses custom blocks.
-- includes: Contains any PHP files with additional functionality for the plugin. Mostly useful for helper functions.
-- languages: Contains the translation files for your plugin.
-- models: Contains PHP classes or data models that represent the plugin's data structures. As an example, think of WooCommerce's `WC_Order` class.
-- src: A folder for organizing the plugin's main PHP classes or code components, such as integrations with other plugins or services. These classes should be organized into subfolders following the [PSR-4](https://www.php-fig.org/psr/psr-4/) convention. `Composer` will handle the autoloading for these classes.
-- templates: Contains any PHP template files used for rendering HTML output. Admin templates should generally be in their own folder separated from front-end templates.
-- plugin-name.php: The main PHP file containing the plugin header and bootstraping functionality.
+1. Download the plugin from https://wordpress.org/plugins/ and unzip the archive.
+1. Upload the `wayback-link-fixer` folder to the `/wp-content/plugins/` directory.
+1. Activate the plugin through the `Plugins` menu in WordPress.
 
-## Development
+### AFTER ACTIVATION
 
-Develop your plugin by adding the necessary functionality by creating new files within the includes folder. Remember to enqueue your styles and scripts within the assets folder.
+If the minimum required version of WooCommerce is present, you will find a section present in the `Advanced` tab of the WooCommerce `Settings` page. Aliquam dolor sem, convallis malesuada neque sit amet, dictum mattis velit. Vestibulum at pharetra metus. Suspendisse rhoncus libero nisi, sed rhoncus tortor aliquam pretium.
 
-Follow the WordPress Coding Standards for PHP, CSS, and JavaScript when writing your code. You can read more about linting and formatting your code in the [Team51 Project Scaffold](https://github.com/a8cteam51/team51-project-scaffold#code-style--quality).
+## Frequently Asked Questions
 
-## Documentation
+### How can I get help if I'm stuck?
 
-As you develop your plugin, update the README.md file with detailed information about your plugin's features, usage, installation, and any other pertinent information.
+Quisque volutpat tortor id varius pulvinar. Vivamus porttitor, mi non auctor pellentesque, leo purus interdum libero, at aliquam justo lectus sed ligula.
 
-## Testing
+### I have a question that is not listed here
 
-If your plugin is WooCommerce specific, it should be tested with the Storefront theme and latest default theme. If it's a general plugin, it should be tested with the latest default theme as well as Twenty Twenty-One (a non-FSE theme).
+Duis efficitur, sapien ac scelerisque placerat, elit justo tempor nisl, ut feugiat magna orci quis odio.
+
+## Screenshots
+
+### 1. Example screenshot
+
+[missing image]
+
+## Changelog
+
+### 1.0.0 (FIRST RELEASE DATE)
+
+* First official release.

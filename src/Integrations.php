@@ -1,8 +1,8 @@
 <?php
 
-namespace WPCOMSpecialProjects\Scaffold;
+namespace WPCOMSpecialProjects\wayback - link - fixer;
 
-use WPCOMSpecialProjects\Scaffold\Integrations\WC_Subscriptions;
+use WPCOMSpecialProjects\wayback - link - fixer\Integrations\WC_Subscriptions;
 
 defined( 'ABSPATH' ) || exit;
 

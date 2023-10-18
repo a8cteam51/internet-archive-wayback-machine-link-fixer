@@ -1,9 +1,9 @@
 {
-  "name": "a8cteam51/team51-plugin-scaffold",
+  "name": "a8cteam51/wayback-link-fixer",
   "type": "wordpress-plugin",
 
-  "description": "A scaffold for WP.com Special Projects plugins.",
-  "homepage": "https://github.com/a8cteam51/team51-plugin-scaffold",
+  "description": "",
+  "homepage": "https://github.com/a8cteam51/wayback-link-fixer",
   "license": "GPL-2.0-or-later",
   "authors": [
     {
@@ -12,7 +12,7 @@
     },
     {
       "name": "Contributors",
-      "homepage": "https://github.com/a8cteam51/team51-plugin-scaffold/graphs/contributors"
+      "homepage": "https://github.com/a8cteam51/wayback-link-fixer/graphs/contributors"
     }
   ],
 
@@ -48,7 +48,7 @@
 
   "autoload": {
     "psr-4": {
-      "WPCOMSpecialProjects\\Scaffold\\": "src/"
+      "WPCOMSpecialProjects\\wayback-link-fixer\\": "src/"
     },
     "classmap": [
       "models/"
@@ -70,7 +70,7 @@
       "@makejson"
     ],
     "makepot": "wp i18n make-pot .",
-    "updatepo": "wp i18n update-po ./languages/wpcomsp-scaffold.pot",
+    "updatepo": "wp i18n update-po ./languages/wpcomsp-wayback-link-fixer.pot",
     "makejson": "wp i18n make-json ./languages --pretty-print --no-purge",
     "makemo": "wp i18n make-mo ./languages",
 

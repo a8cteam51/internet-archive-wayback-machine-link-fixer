@@ -15,8 +15,8 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return  array|null
  */
-function wpcomsp_scaffold_get_asset_meta( string $asset_path, ?array $extra_dependencies = null ): ?array {
-	if ( ! file_exists( $asset_path ) || ! str_starts_with( $asset_path, WPCOMSP_SCAFFOLD_PATH ) ) {
+function wpcomsp_wayback - link - fixer_get_asset_meta( string $asset_path, ?array $extra_dependencies = null ): ?array {
+	if ( ! file_exists( $asset_path ) || ! str_starts_with( $asset_path, WPCOMSP_WAYBACK - LINK - FIXER_PATH ) ) {
 		return null;
 	}
 
@@ -30,7 +30,7 @@ function wpcomsp_scaffold_get_asset_meta( string $asset_path, ?array $extra_depe
 			'version'      => filemtime( $asset_path ),
 		);
 		if ( false === $asset_meta['version'] ) { // Safeguard against filemtime() returning false.
-			$asset_meta['version'] = WPCOMSP_SCAFFOLD_METADATA['Version'];
+			$asset_meta['version'] = WPCOMSP_WAYBACK - LINK - FIXER_METADATA['Version'];
 		}
 	}
 
