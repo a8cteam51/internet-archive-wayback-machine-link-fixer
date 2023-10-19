@@ -46,6 +46,9 @@ add_action(
 			false,
 			dirname( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME ) . WPCOMSP_WAYBACK_LINK_FIXER_METADATA['DomainPath']
 		);
+
+				// Inlcude the action scheduler integration.
+		require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'lib/action-scheduler/action-scheduler.php';
 	}
 );
 

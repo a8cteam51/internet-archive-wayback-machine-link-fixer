@@ -93,7 +93,6 @@ class Plugin {
 	 * @return  boolean
 	 */
 	public function is_active(): bool {
-
 		// Custom requirements check out, just ensure basic requirements are met.
 		return true === WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS;
 	}

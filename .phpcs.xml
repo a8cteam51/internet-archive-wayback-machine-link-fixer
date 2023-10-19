@@ -2,6 +2,9 @@
 <ruleset name="wayback_link_fixer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
 	<description>Custom ruleset for the Team51 plugin.</description>
 
+    <exclude-pattern>/lib/*</exclude-pattern>
+	<exclude-pattern>/vendor/*</exclude-pattern>
+
 	<!-- Extend the A8CTeam51 ruleset. -->
 	<rule ref="./vendor/a8cteam51/team51-configs/quality-tools/phpcs.xml.dist"/>
 
