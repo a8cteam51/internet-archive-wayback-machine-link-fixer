@@ -1,8 +1,8 @@
 <?php
 
-namespace WPCOMSpecialProjects\wayback - link - fixer;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
 
-use WPCOMSpecialProjects\wayback - link - fixer\Integrations\WC_Subscriptions;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Integrations\WC_Subscriptions;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,16 +14,6 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Integrations {
 	// region FIELDS AND CONSTANTS
-
-	/**
-	 * The WooCommerce Subscriptions integration instance.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @var     WC_Subscriptions|null
-	 */
-	public ?WC_Subscriptions $wc_subscriptions = null;
 
 	// endregion
 
@@ -38,8 +28,6 @@ final class Integrations {
 	 * @return  void
 	 */
 	public function initialize(): void {
-		$this->wc_subscriptions = new WC_Subscriptions();
-		$this->wc_subscriptions->maybe_initialize();
 	}
 
 	// endregion
