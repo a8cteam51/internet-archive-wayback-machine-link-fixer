@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use WPcomSpecialProjects\Scaffold\Plugin;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Plugin;
 
 // region
 
@@ -14,7 +14,7 @@ use WPcomSpecialProjects\Scaffold\Plugin;
  *
  * @return  Plugin
  */
-function wpcomsp_wayback - link - fixer_get_plugin_instance(): Plugin {
+function wpcomsp_wayback_link_fixer_get_plugin_instance(): Plugin {
 	return Plugin::get_instance();
 }
 
@@ -26,15 +26,15 @@ function wpcomsp_wayback - link - fixer_get_plugin_instance(): Plugin {
  *
  * @return  string
  */
-function wpcomsp_wayback - link - fixer_get_plugin_slug(): string {
-	return sanitize_key( WPCOMSP_WAYBACK - LINK - FIXER_METADATA['TextDomain'] );
+function wpcomsp_wayback_link_fixer_get_plugin_slug(): string {
+	return sanitize_key( WPCOMSP_WAYBACK_LINK_FIXER_METADATA['TextDomain'] );
 }
 
 // endregion
 
 //region OTHERS
 
-require WPCOMSP_WAYBACK - LINK - FIXER_PATH . 'includes/assets.php';
-require WPCOMSP_WAYBACK - LINK - FIXER_PATH . 'includes/settings.php';
+require WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'includes/assets.php';
+require WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'includes/settings.php';
 
 // endregion
