@@ -3,6 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Plugin;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
 
 // region
 
@@ -17,6 +18,31 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Plugin;
 function wpcomsp_wayback_link_fixer_get_plugin_instance(): Plugin {
 	return Plugin::get_instance();
 }
+
+/**
+ * Activation hook.
+ *
+ * @since   1.0.0
+ * @version 1.0.0
+ *
+ * @return  void
+ */
+function wpcomsp_wayback_link_fixer_activate(): void {
+	Migrations::up();
+}
+
+/**
+ * Uninstall hook.
+ *
+ * @since   1.0.0
+ * @version 1.0.0
+ *
+ * @return  void
+ */
+function wpcomsp_wayback_link_fixer_deactivate(): void {
+	Migrations::down();
+}
+
 
 /**
  * Returns the plugin's slug.

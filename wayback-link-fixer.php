@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The wayback-link-fixer bootstrap file.
  *
@@ -80,6 +81,15 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 		}
 	);
 } else {
+	// Add all migrations.
+	\WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations::$migrations = array( //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1::class,
+	);
+
+
 	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'functions.php';
 	add_action( 'plugins_loaded', array( wpcomsp_wayback_link_fixer_get_plugin_instance(), 'maybe_initialize' ) );
+
+	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
+	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
