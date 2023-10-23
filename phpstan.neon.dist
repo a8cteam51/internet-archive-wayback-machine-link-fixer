@@ -12,3 +12,5 @@ parameters:
     bootstrapFiles:
         - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
         - %currentWorkingDirectory%/wayback-link-fixer.php
+    ignoreErrors:
+        - '/is never read, only written/'

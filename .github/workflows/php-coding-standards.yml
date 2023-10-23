@@ -1,7 +1,7 @@
 name: PHP Coding Standards
 
 on:
-  push:
+  pull_request:
     branches: [ trunk, develop ]
 
 jobs:
