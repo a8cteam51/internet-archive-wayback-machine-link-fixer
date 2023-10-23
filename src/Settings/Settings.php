@@ -9,6 +9,8 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Abstract_Migration;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -16,7 +18,18 @@ defined( 'ABSPATH' ) || exit;
  */
 class Settings {
 
-	public const POST_TYPES_OPTION_KEY = 'wpcomsp_wayback_link_fixer_post_types';
+	// Prefix.
+	private const SETTINGS_PREFIX = 't51_wlf_';
+
+	// Option keys
+	public const POST_TYPES_OPTION_KEY        = self::SETTINGS_PREFIX . 'post_types';
+	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
+	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
+
+	## Table names.
+	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
+	public const SCAN_REPORT_TABLE_NAME = self::SETTINGS_PREFIX . 'scan_report';
+
 
 	/**
 	 * Get all post types which should be scanned.
@@ -28,5 +41,40 @@ class Settings {
 	 */
 	public static function get_post_types(): array {
 		return array_map( 'esc_html', (array) get_option( self::POST_TYPES_OPTION_KEY, array( 'page', 'post' ) ) );
+	}
+
+	/**
+	 * Should the tables be dropped when the plugin is deactivated?
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return boolean
+	 */
+	public static function drop_tables_on_uninstall(): bool {
+		return (bool) get_option( self::DROP_TABLES_ON_UNINSTALL_KEY, false );
+	}
+
+	/**
+	 * Get the processed migrations.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return class-string<Abstract_Migration>[]
+	 */
+	public static function migrations(): array {
+		return get_option( self::MIGRATIONS_KEY, array() );
+	}
+
+	/**
+	 * Update the migrations
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param class-string<Abstract_Migration>[] $migrations The migrations to update.
+	 *
+	 * @return void
+	 */
+	public static function update_migrations( array $migrations ): void {
+		update_option( self::MIGRATIONS_KEY, $migrations );
 	}
 }
