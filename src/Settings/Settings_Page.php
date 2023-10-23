@@ -116,6 +116,22 @@ class Settings_Page {
 				),
 			)
 		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::DROP_TABLES_ON_UNINSTALL_KEY,
+			array(
+				'type'              => 'boolean',
+				'sanitize_callback' => 'wp_validate_boolean',
+				'default'           => false,
+				'show_in_rest'      => array(
+					'name'   => Settings::DROP_TABLES_ON_UNINSTALL_KEY,
+					'schema' => array(
+						'type' => 'boolean',
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -140,6 +156,14 @@ class Settings_Page {
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
+
+		\add_settings_field(
+			Settings::DROP_TABLES_ON_UNINSTALL_KEY,
+			__( 'Drop Tables on Uninstall', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_drop_tables_on_uninstall_field' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
 	}
 
 	/**
@@ -152,11 +176,11 @@ class Settings_Page {
 	public function render_post_types_field(): void {
 		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type ) {
 			?>
-			<label for="wpcomsp_wayback_link_fixer_post_types_<?php echo esc_attr( $post_type->name ); ?>">
+			<label for="<?php echo esc_attr( Settings::POST_TYPES_OPTION_KEY ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
 				<input
 					type="checkbox"
-					id="wpcomsp_wayback_link_fixer_post_types_<?php echo esc_attr( $post_type->name ); ?>"
-					name="wpcomsp_wayback_link_fixer_post_types[]"
+					id="<?php echo esc_attr( Settings::POST_TYPES_OPTION_KEY ); ?>_<?php echo esc_attr( $post_type->name ); ?>"
+					name="<?php echo esc_attr( Settings::POST_TYPES_OPTION_KEY ); ?>[]"
 					value="<?php echo esc_attr( $post_type->name ); ?>"
 					<?php checked( in_array( $post_type->name, Settings::get_post_types(), true ) ); ?>
 				/>
@@ -165,5 +189,27 @@ class Settings_Page {
 			<br />
 			<?php
 		}
+	}
+
+	/**
+	 * Render the drop tables on uninstall field.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return  void
+	 */
+	public function render_drop_tables_on_uninstall_field(): void {
+		?>
+		<label for="<?php echo esc_attr( Settings::DROP_TABLES_ON_UNINSTALL_KEY ); ?>">
+			<input
+				type="checkbox"
+				id="<?php echo esc_attr( Settings::DROP_TABLES_ON_UNINSTALL_KEY ); ?>"
+				name="<?php echo esc_attr( Settings::DROP_TABLES_ON_UNINSTALL_KEY ); ?>"
+				value="1"
+				<?php checked( Settings::drop_tables_on_uninstall() ); ?>
+			/>
+			<?php esc_html_e( 'Drop tables on uninstall', 'wpcomsp_wayback_link_fixer' ); ?>
+		</label>
+		<?php
 	}
 }
