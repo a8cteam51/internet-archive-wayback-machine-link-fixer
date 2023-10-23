@@ -1,1 +1,7 @@
-{}
+{
+    "settings": {
+        "files.associations": {
+            "*.yaml": "home-assistant"
+        }
+    }
+}
