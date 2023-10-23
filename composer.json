@@ -1,7 +1,6 @@
 {
     "name": "a8cteam51/wayback-link-fixer",
     "type": "wordpress-plugin",
-
     "description": "",
     "homepage": "https://github.com/a8cteam51/wayback-link-fixer",
     "license": "GPL-2.0-or-later",
@@ -14,7 +13,6 @@
             "homepage": "https://github.com/a8cteam51/wayback-link-fixer/graphs/contributors"
         }
     ],
-
     "repositories": [{
             "type": "vcs",
             "url": "https://github.com/a8cteam51/team51-configs"
@@ -35,9 +33,11 @@
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "phpcompatibility/phpcompatibility-wp": "*",
         "wp-coding-standards/wpcs": "dev-develop",
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "phpstan/phpstan": "1.*",
+        "szepeviktor/phpstan-wordpress": "<=1.3.1",
+        "php-stubs/wordpress-stubs": "6.3.*"
     },
-
     "autoload": {
         "psr-4": {
             "WPCOMSpecialProjects\\Wayback_Link_Fixer\\": "src/"
@@ -46,16 +46,11 @@
             "models/"
         ]
     },
-    "autoload-dev": {
-
-    },
-
+    "autoload-dev": {},
     "scripts": {
         "generate-autoloader": "@composer dump-autoload -o",
-
         "format:php": "phpcbf --standard=./.phpcs.xml --basepath=. . -v",
         "lint:php": "phpcs --standard=./.phpcs.xml --basepath=. . -v",
-
         "internationalize": [
             "@makepot",
             "@updatepo",
@@ -65,12 +60,12 @@
         "updatepo": "wp i18n update-po ./languages/wayback-link-fixer.pot",
         "makejson": "wp i18n make-json ./languages --pretty-print --no-purge",
         "makemo": "wp i18n make-mo ./languages",
-
         "packages-install": "@composer install --ignore-platform-reqs --no-interaction",
         "packages-update": [
             "@composer clear-cache",
             "@composer update --prefer-stable --no-interaction"
-        ]
+        ],
+        "analyze:php": "./vendor/bin/phpstan analyse -l8"
     },
     "config": {
         "allow-plugins": {
@@ -78,7 +73,6 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
-
     "extra": {
         "installer-paths": {
             "vendor/wpackagist-plugin/{$name}/": [

@@ -94,7 +94,8 @@ class Plugin {
 	 */
 	public function is_active(): bool {
 		// Custom requirements check out, just ensure basic requirements are met.
-		return true === WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS;
+		return is_bool( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) // @phpstan-ignore-line
+		&& true === WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS;
 	}
 
 	/**
@@ -125,30 +126,7 @@ class Plugin {
 	 */
 	public function maybe_initialize(): void {
 		if ( ! $this->is_active() ) {
-			add_action(
-				'admin_notices',
-				static function () use ( $minimum_wc_version ) {
-					if ( \is_null( $minimum_wc_version ) ) {
-						$message = \wp_sprintf(
-							/* translators: 1. Plugin name, 2. Plugin version. */
-							__( '<strong>%1$s (v%2$s)</strong> requires WooCommerce. Please install and/or activate WooCommerce!', 'wpcomsp_wayback_link_fixer' ),
-							WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Name'],
-							WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
-						);
-					} else {
-						$message = \wp_sprintf(
-							/* translators: 1. Plugin name, 2. Plugin version, 3. Minimum WC version. */
-							__( '<strong>%1$s (v%2$s)</strong> requires WooCommerce %3$s or newer. Please install, update, and/or activate WooCommerce!', 'wpcomsp_wayback_link_fixer' ),
-							WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Name'],
-							WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
-							$minimum_wc_version
-						);
-					}
 
-					$html_message = \wp_sprintf( '<div class="error notice wpcomsp-wayback-link-fixer-error">%s</div>', wpautop( $message ) );
-					echo \wp_kses_post( $html_message );
-				}
-			);
 			return;
 		}
 
