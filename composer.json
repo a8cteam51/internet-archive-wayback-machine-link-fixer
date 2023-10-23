@@ -24,7 +24,9 @@
     ],
     "require": {
         "php": ">=8.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "symfony/dom-crawler": "^6.0",
+        "symfony/css-selector": "^6.0"
     },
     "require-dev": {
         "a8cteam51/team51-configs": "dev-trunk",

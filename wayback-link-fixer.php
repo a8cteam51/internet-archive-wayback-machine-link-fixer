@@ -28,6 +28,8 @@
  * WC tested up to:         7.4
  **/
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyser\Content_Analyser;
+
 defined( 'ABSPATH' ) || exit;
 
 // Define plugin constants.
@@ -93,3 +95,4 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
+
