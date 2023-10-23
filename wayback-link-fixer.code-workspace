@@ -1,16 +1,1 @@
-{
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"files.associations": {
-			"*.yaml": "home-assistant"
-		},
-		"phpcs.executablePath": "vendor/bin/phpcs",
-		"phpcs.standard": ".phpcs.xml",
-		"phpcbf.executablePath": "vendor/bin/phpcbf",
-		"phpcbf.standard": ".phpcs.xml"
-	}
-}
+{}
