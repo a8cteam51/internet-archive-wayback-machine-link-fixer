@@ -28,6 +28,8 @@
  * WC tested up to:         7.4
  **/
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyser\Content_Analyser;
+
 defined( 'ABSPATH' ) || exit;
 
 // Define plugin constants.
