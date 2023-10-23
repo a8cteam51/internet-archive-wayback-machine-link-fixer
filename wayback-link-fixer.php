@@ -36,8 +36,9 @@ define( 'WPCOMSP_WAYBACK_LINK_FIXER_METADATA', get_plugin_data( __FILE__, false,
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_BASENAME', plugin_basename( __FILE__ ) );
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_URL', plugin_dir_url( __FILE__ ) );
-// @var bool|\WP_Error
-define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', validate_plugin_requirements( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME ) );
+
+$wpcomsp_wayback_link_fixer_requirements = validate_plugin_requirements( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME );
+define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', $wpcomsp_wayback_link_fixer_requirements );
 
 // Load plugin translations so they are available even for the error admin notices.
 add_action(
@@ -70,11 +71,11 @@ require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/vendor/autoload.php';
 
 
 
-if (WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS instanceof WP_Error ) {
+if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	add_action(
 		'admin_notices',
-		static function (): void {
-			$html_message = wp_sprintf( '<div class="error notice wpcomsp-wayback-link-fixer-error">%s</div>', WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS->get_error_message() );
+		static function () use ( $wpcomsp_wayback_link_fixer_requirements ): void {
+			$html_message = wp_sprintf( '<div class="error notice wpcomsp-wayback-link-fixer-error">%s</div>', $wpcomsp_wayback_link_fixer_requirements->get_error_message() );
 			echo wp_kses_post( $html_message );
 		}
 	);

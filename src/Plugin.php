@@ -126,7 +126,6 @@ class Plugin {
 	 */
 	public function maybe_initialize(): void {
 		if ( ! $this->is_active() ) {
-
 			return;
 		}
 
