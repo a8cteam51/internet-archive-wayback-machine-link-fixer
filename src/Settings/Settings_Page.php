@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Settings_Page {
 
-	public const PAGE_SLUG = 'wpcomsp-wayback-link-fixer';
+	public const PAGE_SLUG        = 'wpcomsp-wayback-link-fixer';
 	public const SETTINGS_SECTION = 'wpcomsp-wayback-link-fixer-settings';
 
 	/**
@@ -37,7 +37,7 @@ class Settings_Page {
 	 */
 	public function initialize(): void {
 		add_action( 'admin_init', array( $this, 'register_fields' ) );
-		add_action('admin_menu',[$this, 'register_page']);
+		add_action( 'admin_menu', array( $this, 'register_page' ) );
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Settings_Page {
 				'show_in_rest'      => array(
 					'name'   => Settings::POST_TYPES_OPTION_KEY,
 					'schema' => array(
-						'type' => 'array',
+						'type'  => 'array',
 						'items' => array(
 							'type' => 'string',
 						),
