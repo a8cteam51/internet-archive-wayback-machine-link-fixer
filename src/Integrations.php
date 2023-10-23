@@ -2,7 +2,7 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Integrations\WC_Subscriptions;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,6 +14,15 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Integrations {
 	// region FIELDS AND CONSTANTS
+	private Settings_Page $settings_page;
+
+	/**
+	 * Creates a new instance of the integrations component.
+	 */
+	public function __construct() {
+		$this->settings_page = new Settings_Page();
+	}
+
 
 	// endregion
 
@@ -28,6 +37,7 @@ final class Integrations {
 	 * @return  void
 	 */
 	public function initialize(): void {
+		$this->settings_page->initialize();
 	}
 
 	// endregion
