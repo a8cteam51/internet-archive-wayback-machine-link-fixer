@@ -38,13 +38,14 @@ class Migration_1 extends Abstract_Migration {
 		$report_table_name = $wpdb->prefix . Settings::SCAN_REPORT_TABLE_NAME;
 		$report_sql        = "CREATE TABLE $report_table_name (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
-			report_id varchar(20) NOT NULL,
-			user bigint(20) NOT NULL,
+			report_id varchar(36) NOT NULL,
+			user_id bigint(20) NOT NULL,
 			blog_id bigint(20) NOT NULL,
 			fixed int(1) NOT NULL DEFAULT 0,
 			process varchar(20) NOT NULL,
+			description text NULL,
 			create_date datetime NOT NULL,
-			completed_date datetime NOT NULL,
+			completed_date datetime NULL,
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
@@ -53,7 +54,7 @@ class Migration_1 extends Abstract_Migration {
 
 		$log_sql = "CREATE TABLE $log_table_name (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
-			report_id varchar(20) NOT NULL,
+			report_id varchar(36) NOT NULL,
 			post_id bigint(20) NOT NULL,
 			broken_links longtext NOT NULL,
 			replacements longtext NOT NULL,
