@@ -16,6 +16,13 @@ defined( 'ABSPATH' ) || exit;
  */
 class Client {
 
+	/**
+	 * The api url.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	private string $api_url = 'https://archive.org/wayback/available';
 
 	/**
