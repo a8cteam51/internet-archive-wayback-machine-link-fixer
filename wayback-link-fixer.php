@@ -28,7 +28,9 @@
  * WC tested up to:         7.4
  **/
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Way_Back_Machine\Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyser\Content_Analyser;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Way_Back_Machine\Way_Back_Machine;
 
 defined( 'ABSPATH' ) || exit;
 

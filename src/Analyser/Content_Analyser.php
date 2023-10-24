@@ -12,8 +12,6 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Analyser;
 use Symfony\Component\DomCrawler\Crawler;
 use DOMNode;
 
-
-
 defined( 'ABSPATH' ) || exit;
 
 /**
