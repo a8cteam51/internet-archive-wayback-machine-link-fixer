@@ -198,6 +198,32 @@ class Report_Repository {
 	}
 
 	/**
+	 * Find a Report based on its Report ID.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $report_id The report id.
+	 *
+	 * @return Report|null
+	 */
+	public function find_by_report_id( string $report_id ): ?Report {
+		global $wpdb;
+
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM {$this->report_table_name()} WHERE report_id = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, Table name cant be prepared.
+				$report_id
+			)
+		);
+
+		if ( ! $row ) {
+			return null;
+		}
+
+		return $this->map_row_to_report( $row );
+	}
+
+	/**
 	 * Create log for report.
 	 *
 	 * @since 1.0.0
@@ -238,7 +264,6 @@ class Report_Repository {
 	 * @return Report
 	 */
 	private function map_row_to_report( \stdClass $row ): Report {  //phpcs:ignore Squiz.Commenting.FunctionComment.IncorrectTypeHint, Using <T> Template
-
 		// Treat 0000-00-00 00:00:00 as null.
 		$completed = null !== $row->completed_date && '0000-00-00 00:00:00' !== $row->completed_date
 			? $row->completed_date
@@ -310,6 +335,42 @@ class Report_Repository {
 	}
 
 	/**
+	 * Get the logs for a report.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Report $report The report to get the logs for.
+	 *
+	 * @return array<int, Log>
+	 */
+	public function get_logs( Report $report ): array {
+		global $wpdb;
+
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$this->log_table_name()} WHERE report_id = %d", //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant prepare table names.
+				$report->get_id()
+			)
+		);
+
+		if ( ! $rows ) {
+			return array();
+		}
+
+		return array_map(
+			function ( \stdClass $row ): Log {
+				return new Log(
+					$row->id,
+					$row->report_id,
+					$row->post_id,
+					$row->links
+				);
+			},
+			$rows
+		);
+	}
+
+	/**
 	 * Upsert a log.
 	 *
 	 * @since 1.0.0
@@ -339,15 +400,13 @@ class Report_Repository {
 		$wpdb->insert(
 			$this->log_table_name(),
 			array(
-				'report_id'    => $log->get_report_id(),
-				'post_id'      => $log->get_post_id(),
-				'broken_links' => $log->get_broken_links_json(),
-				'replacements' => $log->get_replacements_json(),
+				'report_id' => $log->get_report_id(),
+				'post_id'   => $log->get_post_id(),
+				'links'     => $log->get_serialized_links(),
 			),
 			array(
 				'%s',
 				'%d',
-				'%s',
 				'%s',
 			)
 		);
@@ -356,8 +415,7 @@ class Report_Repository {
 			$wpdb->insert_id,
 			$log->get_report_id(),
 			$log->get_post_id(),
-			$log->get_broken_links_json(),
-			$log->get_replacements_json(),
+			$log->get_serialized_links()
 		);
 	}
 
@@ -376,25 +434,182 @@ class Report_Repository {
 		$wpdb->update(
 			$this->log_table_name(),
 			array(
-				'report_id'    => $log->get_report_id(),
-				'post_id'      => $log->get_post_id(),
-				'broken_links' => $log->get_broken_links_json(),
-				'replacements' => $log->get_replacements_json(),
+				'report_id' => $log->get_report_id(),
+				'post_id'   => $log->get_post_id(),
+				'links'     => $log->get_serialized_links(),
 			),
-			array(
-				'id' => $log->get_id(),
-			),
+			array( 'id' => $log->get_id() ),
 			array(
 				'%s',
 				'%d',
 				'%s',
-				'%s',
 			),
-			array(
-				'%d',
-			)
+			array( '%d' )
 		);
 
 		return $log;
+	}
+
+	/**
+	 * Query reports.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param integer      $limit     The number of reports per call.
+	 * @param integer      $offset    The offset to start at.
+	 * @param integer|null $user_id   The user id to filter by.
+	 * @param integer|null $blog_id   The blog id to filter by.
+	 * @param string[]     $statuses  The statuses to filter by.
+	 * @param string|null  $date_from The date to filter from.
+	 * @param string|null  $date_to   The date to filter to.
+	 *
+	 * @return array<int, array{report: Report, logs: int}> Returns the Report and count of number of logs.
+	 */
+	public function query_reports(
+		int $limit = 10,
+		int $offset = 0,
+		?int $user_id = null,
+		?int $blog_id = null,
+		array $statuses = array(),
+		?string $date_from = null,
+		?string $date_to = null
+	): array {
+
+		global $wpdb;
+
+		// Build the query.
+		$query = "SELECT Reports.*, Reports.report_id as report_ids, Logs.* FROM {$this->report_table_name()} as Reports";
+
+		// Join the count of logs.
+		$query .= " LEFT JOIN (SELECT report_id, COUNT(*) as logs FROM {$this->log_table_name()} GROUP BY report_id) as Logs ON Reports.id = Logs.report_id";
+
+		// If we have a where clause, add it to the query.
+		$where = $this->compile_where_clause( $user_id, $blog_id, $statuses, $date_from, $date_to );
+		if ( ! empty( $where ) ) {
+			$query .= ' WHERE ' . implode( ' AND ', $where );
+		}
+
+		// Add the limit and offset.
+		$query .= " LIMIT {$limit} OFFSET {$offset}";
+
+		// Get the reports.
+		$reports = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, cant prepare table names.
+
+		// Map the reports.
+		return array_map(
+			function ( \stdClass $row ): array {
+				// Replace report_id with report_ids.
+				$row->report_id = $row->report_ids;
+				unset( $row->report_ids );
+
+				return array(
+					'report' => $this->map_row_to_report( $row ),
+					'logs'   => null !== $row->logs ? (int) $row->logs : 0,
+				);},
+			$reports
+		);
+	}
+
+	/**
+	 * Get the total count of reports.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param integer|null $user_id   The user id to filter by.
+	 * @param integer|null $blog_id   The blog id to filter by.
+	 * @param string[]     $statuses  The statuses to filter by.
+	 * @param string|null  $date_from The date to filter from.
+	 * @param string|null  $date_to   The date to filter to.
+	 *
+	 * @return integer
+	 */
+	public function get_total_count(
+		?int $user_id = null,
+		?int $blog_id = null,
+		array $statuses = array(),
+		?string $date_from = null,
+		?string $date_to = null
+	): int {
+		global $wpdb;
+
+		// Build the query.
+		$query = "SELECT COUNT(*) FROM {$this->report_table_name()}";
+
+		// If we have a where clause, add it to the query.
+		$where = $this->compile_where_clause( $user_id, $blog_id, $statuses, $date_from, $date_to );
+		if ( ! empty( $where ) ) {
+			$query .= ' WHERE ' . implode( ' AND ', $where );
+		}
+
+		// Get the count.
+		return (int) $wpdb->get_var( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, cant prepare table names.
+	}
+
+
+	/**
+	 * Compiles the Where clause for the query.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param integer|null $user_id   The user id to filter by.
+	 * @param integer|null $blog_id   The blog id to filter by.
+	 * @param string[]     $statuses  The statuses to filter by.
+	 * @param string|null  $date_from The date to filter from.
+	 * @param string|null  $date_to   The date to filter to.
+	 *
+	 * @return string[]
+	 */
+	private function compile_where_clause(
+		?int $user_id = null,
+		?int $blog_id = null,
+		array $statuses = array(),
+		?string $date_from = null,
+		?string $date_to = null
+	): array {
+			global $wpdb;
+
+			// Build the where clause.
+			$where = array();
+
+			// If we have a user id, add it to the where clause.
+		if ( null !== $user_id && 0 !== $user_id ) {
+			$where[] = $wpdb->prepare( 'user_id = %d', $user_id );
+		}
+
+			// If we have a blog id, add it to the where clause.
+		if ( null !== $blog_id ) {
+			$where[] = $wpdb->prepare( 'blog_id = %d', $blog_id );
+		}
+
+			// If we have a status, add it to the where clause.
+		if ( ! empty( $statuses ) ) {
+			$status  = array_map(
+				fn ( string $status ): string => $wpdb->prepare( '%s', $status ),
+				$statuses
+			);
+			$where[] = 'process IN (' . implode( ',', $status ) . ')';
+		}
+
+			// If we have a date from, add it to the where clause.
+		if ( null !== $date_from && '' !== $date_from ) {
+			// Cast date from from yyyy-mm-dd to DateTimeImmutable.
+			$date_from = \DateTimeImmutable::createFromFormat( 'Y-m-d', $date_from );
+
+			// If we have a valid date, add it to the where clause.
+			if ( $date_from instanceof \DateTimeImmutable ) {
+				$where[] = $wpdb->prepare( 'create_date >= %s', $date_from->format( 'Y-m-d H:i:s' ) );
+			}
+		}
+
+			// If we have a date to, add it to the where clause.
+		if ( null !== $date_to && '' !== $date_to ) {
+			// Cast date to from dd-mm-yyyy to DateTimeImmutable.
+			$date_to = \DateTimeImmutable::createFromFormat( 'Y-m-d', $date_to );
+
+			if ( $date_to instanceof \DateTimeImmutable ) {
+				$where[] = $wpdb->prepare( 'create_date <= %s', $date_to->format( 'Y-m-d H:i:s' ) );
+			}
+		}
+		return $where;
 	}
 }
