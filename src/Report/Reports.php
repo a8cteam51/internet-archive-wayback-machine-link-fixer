@@ -12,6 +12,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
 defined( 'ABSPATH' ) || exit;
 
 use DateTimeImmutable;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 
 /**
@@ -149,21 +150,19 @@ class Reports {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Report                                                                                    $report       The report to log the post for.
-	 * @param integer                                                                                   $post_id      The post ID.
-	 * @param array<int, array{link: string, href:string, index:integer, message:string, fixed:string}> $broken_links The broken links.
-	 * @param array<int, array{index:integer, options:string[]}>                                        $replacements The replacements.
+	 * @param Report           $report  The report to log the post for.
+	 * @param integer          $post_id The post ID.
+	 * @param array<int, Link> $links   The broken links.
 	 *
 	 * @return Log
 	 */
-	public function log_post_for_report( Report $report, int $post_id, array $broken_links, array $replacements ): Log {
+	public function log_post_for_report( Report $report, int $post_id, array $links ): Log {
 
 		$log = new Log(
 			0,
 			$report->get_id(),
 			$post_id,
-			wp_json_encode( $broken_links ) ?: '[]', //phpcs:ignore Universal.Operators.DisallowShortTernary.Found
-			wp_json_encode( $replacements ) ?: '[]', //phpcs:ignore Universal.Operators.DisallowShortTernary.Found
+			\serialize( $links ) // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 		);
 
 		return $this->report_repository->upsert_log( $log );

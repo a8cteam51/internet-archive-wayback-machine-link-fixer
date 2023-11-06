@@ -1,0 +1,7 @@
+@import "list_table_pagination.scss";
+#wlf-report-filters {
+    /* Ensure all filter select2's are full width. */
+    .select2-container {
+        width: auto !important;
+    }
+}

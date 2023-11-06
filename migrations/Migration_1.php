@@ -56,8 +56,7 @@ class Migration_1 extends Abstract_Migration {
 			id bigint(20) NOT NULL AUTO_INCREMENT,
 			report_id varchar(36) NOT NULL,
 			post_id bigint(20) NOT NULL,
-			broken_links longtext NOT NULL,
-			replacements longtext NOT NULL,
+			links longtext NOT NULL,
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 

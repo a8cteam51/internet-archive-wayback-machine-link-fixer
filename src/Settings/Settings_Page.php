@@ -9,6 +9,8 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer\Report_Viewer_Page;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -37,7 +39,7 @@ class Settings_Page {
 	 */
 	public function initialize(): void {
 		add_action( 'admin_init', array( $this, 'register_fields' ) );
-		add_action( 'admin_menu', array( $this, 'register_page' ) );
+		add_action( 'admin_menu', array( $this, 'register_page' ), 20, 0 );
 	}
 
 	/**
@@ -63,9 +65,10 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function register_page(): void {
-		$this->menu_hook = add_options_page(
+		$this->menu_hook = \add_submenu_page(
+			Report_Viewer_Page::PAGE_SLUG,
 			__( 'Wayback Link Fixer', 'wpcomsp_wayback_link_fixer' ),
-			__( 'Wayback Link Fixer', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Settings', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )

@@ -1,0 +1,36 @@
+div.wlf-report-list-pagination {
+    ul {
+        align-items: center;
+        display: flex;
+        min-width: 300px;
+        justify-content: center;
+        li {
+            span,
+            a {
+                display: inline-block;
+                padding: 0 5px;
+                text-align: center;
+                width: 15px;
+                height: 15px;
+                &:hover {
+                    cursor: pointer;
+                    color: #636363;
+                }
+                text-decoration: none;
+                font-size: 15px;
+                color: black;
+                span {
+                    padding: 0;
+                    width: auto;
+                }
+            }
+            .dashicons {
+                padding-top: 2px;
+            }
+            &.active {
+                background-color: #d9d9d9;
+                border-radius: 10px;
+            }
+        }
+    }
+}
