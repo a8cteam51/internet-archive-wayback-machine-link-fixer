@@ -135,6 +135,22 @@ class Settings_Page {
 				),
 			)
 		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::LINK_CHECKER_TIMEOUT,
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => 'absint',
+				'default'           => 1000,
+				'show_in_rest'      => array(
+					'name'   => Settings::LINK_CHECKER_TIMEOUT,
+					'schema' => array(
+						'type' => 'integer',
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -164,6 +180,14 @@ class Settings_Page {
 			Settings::DROP_TABLES_ON_UNINSTALL_KEY,
 			__( 'Drop Tables on Uninstall', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_drop_tables_on_uninstall_field' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::LINK_CHECKER_TIMEOUT,
+			__( 'Link Checker Timeout in MS', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_link_checker_timeout_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
@@ -213,6 +237,26 @@ class Settings_Page {
 			/>
 			<?php esc_html_e( 'Drop tables on uninstall', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
+		<?php
+	}
+
+	/**
+	 * Render the link checker timeout field.
+	 *
+	 * @since   1.0.0
+	 *-+
+	 * @return  void
+	 */
+	public function render_link_checker_timeout_field(): void {
+		?>
+		<input
+			type="number"
+			id="<?php echo esc_attr( Settings::LINK_CHECKER_TIMEOUT ); ?>"
+			name="<?php echo esc_attr( Settings::LINK_CHECKER_TIMEOUT ); ?>"
+			value="<?php echo absint( Settings::get_link_checker_timeout() ); ?>"
+			min="0"
+			max="5000"
+		/>
 		<?php
 	}
 }

@@ -25,6 +25,7 @@ class Settings {
 	public const POST_TYPES_OPTION_KEY        = self::SETTINGS_PREFIX . 'post_types';
 	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
 	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
+	public const LINK_CHECKER_TIMEOUT         = self::SETTINGS_PREFIX . 'link_checker_timeout';
 
 	## Table names.
 	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
@@ -76,5 +77,16 @@ class Settings {
 	 */
 	public static function update_migrations( array $migrations ): void {
 		update_option( self::MIGRATIONS_KEY, $migrations );
+	}
+
+	/**
+	 * Get the link checker timeout in MS
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return integer
+	 */
+	public static function get_link_checker_timeout(): int {
+		return absint( get_option( self::LINK_CHECKER_TIMEOUT, 1000 ) );
 	}
 }
