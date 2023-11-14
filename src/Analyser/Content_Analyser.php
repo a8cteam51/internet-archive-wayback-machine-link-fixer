@@ -11,10 +11,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Analyser;
 
 use Symfony\Component\DomCrawler\Crawler;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Link;
-
-use DOMNode;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -53,23 +50,23 @@ class Content_Analyser {
 	 *
 	 * @since
 	 *
-	 * @param integer     $index    The index of the link.
-	 * @param string|null $href     The href of the link.
-	 * @param string|null $contents The contents of the link.
-	 * @param string      $message  The error message.
+	 * @param integer      $index     The index of the link.
+	 * @param string|null  $href      The href of the link.
+	 * @param string|null  $contents  The contents of the link.
+	 * @param string       $message   The error message.
+	 * @param integer|null $http_code The status code of the link.
 	 *
 	 * @return void
 	 */
-	public function add_broken_link( int $index, ?string $href, ?string $contents, string $message ) {
+	public function add_broken_link( int $index, ?string $href, ?string $contents, string $message, ?int $http_code = null ) {
 		$this->links[] = new Link(
 			$index,
 			$href,
 			$contents,
 			true,
 			null,
-			null,
+			$http_code,
 			array(),
-			false,
 			array( $message )
 		);
 	}
@@ -91,6 +88,7 @@ class Content_Analyser {
 	 */
 	public function add_redirection_link( int $index, ?string $href, ?string $contents, array $redirects, int $redirect_type, int $final_status_code, ?string $details = null ) {
 		$chain = array_merge( array( $href ), $redirects );
+		$chain = array_filter( $chain );
 
 		// Get final url and trim it
 		$final_url = $redirects[ array_key_last( $redirects ) ] ?? null;
@@ -102,11 +100,11 @@ class Content_Analyser {
 			$index,
 			$href,
 			$contents,
-			200 <= $final_status_code && 300 > $final_status_code,
+			// If $final_status_code status less than 200 and more than 300
+			( 200 > $final_status_code || 300 <= $final_status_code ),
 			$final_url,
 			$redirect_type,
 			array(),
-			false,
 			array_filter(
 				array(
 					$details,
@@ -123,9 +121,16 @@ class Content_Analyser {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param string  $find_http_codes   HTTP codes to look for.
+	 * @param boolean $ignore_link_cache Attempt to fix broken links.
+	 *
 	 * @return void
 	 */
-	public function analyze() {
+	public function analyze( string $find_http_codes, bool $ignore_link_cache = false ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+		$http_codes = array_map( 'trim', explode( ',', $find_http_codes ) );
+		// Cast all to integers.
+		$http_codes = array_map( 'intval', $http_codes );
 
 		// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
@@ -166,6 +171,13 @@ class Content_Analyser {
 			try {
 				$link_details = $this->get_link_details( $src );
 
+				// @todo CACHING!!!!! phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+
+				// If the links HTTP code is not in the list of HTTP codes, skip.
+				if ( ! in_array( (int) $link_details['http_code'], $http_codes, true ) ) {
+					continue;
+				}
+
 				// If we have any 30* status code, treat as a redirect
 				if ( 300 <= $link_details['http_code'] && 400 > $link_details['http_code'] ) {
 					$redirect_details = $this->get_link_details( $src, true );
@@ -188,9 +200,8 @@ class Content_Analyser {
 						$link_node->nodeValue,
 						false,
 						null,
-						null,
+						$link_details['http_code'],
 						array(),
-						false,
 						array( 'valid_link', "status_code: {$link_details['http_code']}" )
 					);
 					continue;
@@ -201,8 +212,10 @@ class Content_Analyser {
 					$index,
 					$src,
 					$link_node->nodeValue,
-					"status_code: {$link_details['http_code']}"
+					"status_code: {$link_details['http_code']}",
+					$link_details['http_code']
 				);
+
 				continue;
 			} catch ( \Throwable $th ) {
 				$this->add_broken_link(

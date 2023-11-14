@@ -26,6 +26,7 @@ class Settings {
 	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
 	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
 	public const LINK_CHECKER_TIMEOUT         = self::SETTINGS_PREFIX . 'link_checker_timeout';
+	public const HTTP_STATUS_CODES            = self::SETTINGS_PREFIX . 'http_status_codes';
 
 	## Table names.
 	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
@@ -88,5 +89,17 @@ class Settings {
 	 */
 	public static function get_link_checker_timeout(): int {
 		return absint( get_option( self::LINK_CHECKER_TIMEOUT, 1000 ) );
+	}
+
+	/**
+	 * Gets the list of all HTTP status to look for.
+	 * As comma separated string.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public static function get_http_status_codes(): string {
+		return sanitize_text_field( (string) get_option( self::HTTP_STATUS_CODES, '404,410,500,502,300,301,303' ) );
 	}
 }
