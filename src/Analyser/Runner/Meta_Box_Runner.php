@@ -37,6 +37,13 @@ class Meta_Box_Runner {
 	private Report_Repository $report_repository;
 
 	/**
+	 * Access to the reports factory.
+	 *
+	 * @var \WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Reports
+	 */
+	private Reports $reports;
+
+	/**
 	 * Initialise the settings page.
 	 *
 	 * @since   1.0.0
@@ -52,6 +59,7 @@ class Meta_Box_Runner {
 
 		// Create instance of Report Repository.
 		$this->report_repository = new Report_Repository();
+		$this->reports           = new Reports();
 
 		\add_action( 'add_meta_boxes', array( $this, 'register_meta_box' ) );
 		\add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -177,13 +185,31 @@ class Meta_Box_Runner {
 			return;
 		}
 
+		// If post is not set in url, bail.
+		if ( ! isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+
 		$ignore_cache = isset( $_GET['ignore_cache'] ) && '1' === $_GET['ignore_cache']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$http_codes   = isset( $_GET['http_codes'] ) ? \sanitize_text_field( $_GET['http_codes'] ) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		$report_message = esc_html(
+			\sprintf(
+				// Translators: %1$s is the post id, %2$s is the ignore cache value, %3$s is the http codes.
+				'Running report for post %d with ignore_cache: %s and http_codes: %s',
+				absint( $_GET['post'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$ignore_cache ? 'true' : 'false',
+				$http_codes
+			)
+		);
 
 		try {
 			$runner = Runner::from_post_id( (int) $_GET['post'], $ignore_cache, $http_codes ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$report = $runner->run();
-			$report = ( new Reports() )->mark_report_as_completed( $report );
+
+			$report = $this->reports
+				->add_description_to_report( $report, $report_message )
+				->mark_report_as_completed( $report );
 		} catch ( \Throwable $th ) {
 			$this->admin_notice( "Failed to process post {$th->getMessage()}", 'error' );
 			return;

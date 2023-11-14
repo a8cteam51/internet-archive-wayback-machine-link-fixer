@@ -27,10 +27,12 @@ class Settings {
 	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
 	public const LINK_CHECKER_TIMEOUT         = self::SETTINGS_PREFIX . 'link_checker_timeout';
 	public const HTTP_STATUS_CODES            = self::SETTINGS_PREFIX . 'http_status_codes';
+	public const LINK_CACHE_EXPIRATION        = self::SETTINGS_PREFIX . 'link_cache_expiration';
 
 	## Table names.
 	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
 	public const SCAN_REPORT_TABLE_NAME = self::SETTINGS_PREFIX . 'scan_report';
+	public const SCAN_LINK_CACHE_TABLE  = self::SETTINGS_PREFIX . 'scan_link_cache';
 
 
 	/**
@@ -101,5 +103,16 @@ class Settings {
 	 */
 	public static function get_http_status_codes(): string {
 		return sanitize_text_field( (string) get_option( self::HTTP_STATUS_CODES, '404,410,500,502,300,301,303' ) );
+	}
+
+	/**
+	 * Get the link cache expiry (in seconds.)
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return integer
+	 */
+	public static function get_link_cache_expiration(): int {
+		return absint( get_option( self::LINK_CACHE_EXPIRATION, DAY_IN_SECONDS ) );
 	}
 }

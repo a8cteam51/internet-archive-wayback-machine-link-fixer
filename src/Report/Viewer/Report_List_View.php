@@ -203,7 +203,5 @@ class Report_List_View {
 				'reports_per_page' => $this->reports_per_page,
 			)
 		);
-
-		dump( $this->reports );
 	}
 }

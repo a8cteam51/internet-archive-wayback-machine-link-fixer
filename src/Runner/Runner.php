@@ -148,8 +148,8 @@ class Runner {
 	 * @return Content_Analyser
 	 */
 	private function analyse_content(): Content_Analyser {
-		$analyser = new Content_Analyser( $this->get_content() );
-		$analyser->analyze( $this->find_http_codes, $this->ignore_link_cache );
+		$analyser = new Content_Analyser( $this->get_content(), ! $this->ignore_link_cache );
+		$analyser->analyze( $this->find_http_codes );
 		return $analyser;
 	}
 

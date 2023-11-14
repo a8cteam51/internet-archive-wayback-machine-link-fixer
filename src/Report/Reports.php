@@ -53,7 +53,6 @@ class Reports {
 			md5( rand() . time() ), //phpcs:ignore WordPress.WP.AlternativeFunctions.rand_rand
 			get_current_user_id(),
 			get_current_blog_id(),
-			false,
 			self::PENDING_STATUS,
 			'',
 			\current_time( 'mysql', true ),
@@ -82,7 +81,6 @@ class Reports {
 			$report->get_report_id(),
 			$report->get_user_id(),
 			$report->get_blog_id(),
-			$report->get_fixed(),
 			self::IN_PROGRESS_STATUS,
 			$report->get_description(),
 			$report->get_created_at()->format( 'Y-m-d H:i:s' ),
@@ -111,7 +109,6 @@ class Reports {
 			$report->get_report_id(),
 			$report->get_user_id(),
 			$report->get_blog_id(),
-			$report->get_fixed(),
 			self::COMPLETED_STATUS,
 			$report->get_description(),
 			$report->get_created_at()->format( 'Y-m-d H:i:s' ),
@@ -166,5 +163,30 @@ class Reports {
 		);
 
 		return $this->report_repository->upsert_log( $log );
+	}
+
+	/**
+	 * Add a description to a report.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Report $report      The report to add the description to.
+	 * @param string $description The description to add.
+	 *
+	 * @return Report
+	 */
+	public function add_description_to_report( Report $report, string $description ): Report {
+		$new = new Report(
+			$report->get_id(),
+			$report->get_report_id(),
+			$report->get_user_id(),
+			$report->get_blog_id(),
+			$report->get_process(),
+			$description,
+			$report->get_created_at()->format( 'Y-m-d H:i:s' ),
+			$report->get_completed_at() ? $report->get_completed_at()->format( 'Y-m-d H:i:s' ) : null,
+		);
+
+		return $this->report_repository->upsert( $new );
 	}
 }

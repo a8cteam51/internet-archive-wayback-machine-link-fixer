@@ -167,6 +167,22 @@ class Settings_Page {
 				),
 			)
 		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::LINK_CACHE_EXPIRATION,
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => 'absint',
+				'default'           => DAY_IN_SECONDS,
+				'show_in_rest'      => array(
+					'name'   => Settings::LINK_CACHE_EXPIRATION,
+					'schema' => array(
+						'type' => 'integer',
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -212,6 +228,14 @@ class Settings_Page {
 			Settings::HTTP_STATUS_CODES,
 			__( 'HTTP Status Codes', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_http_status_codes_field' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::LINK_CACHE_EXPIRATION,
+			__( 'Link Cache Expiration in Seconds', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_link_cache_expiration_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
@@ -298,6 +322,25 @@ class Settings_Page {
 			id="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>"
 			name="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>"
 			value="<?php echo esc_attr( Settings::get_http_status_codes() ); ?>"
+		/>
+		<?php
+	}
+
+	/**
+	 * Render the link cache expiration field.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return  void
+	 */
+	public function render_link_cache_expiration_field(): void {
+		?>
+		<input
+			type="number"
+			id="<?php echo esc_attr( Settings::LINK_CACHE_EXPIRATION ); ?>"
+			name="<?php echo esc_attr( Settings::LINK_CACHE_EXPIRATION ); ?>"
+			value="<?php echo absint( Settings::get_link_cache_expiration() ); ?>"
+			min="0"
 		/>
 		<?php
 	}

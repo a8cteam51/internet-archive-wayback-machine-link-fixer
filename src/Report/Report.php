@@ -54,16 +54,6 @@ class Report {
 	 */
 	private int $blog_id;
 
-
-	/**
-	 * Links auto fixed?
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var boolean
-	 */
-	private bool $fixed;
-
 	/**
 	 * The current process.
 	 *
@@ -109,7 +99,6 @@ class Report {
 	 * @param string      $report_id    The report hash/id.
 	 * @param integer     $user_id      The user ID.
 	 * @param integer     $blog_id      The blog ID.
-	 * @param boolean     $fixed        Links auto fixed.
 	 * @param string      $process      The current process.
 	 * @param string      $description  The description.
 	 * @param string      $created_at   Date the report was created.
@@ -120,7 +109,6 @@ class Report {
 		string $report_id,
 		int $user_id,
 		int $blog_id,
-		bool $fixed,
 		string $process,
 		string $description,
 		string $created_at,
@@ -130,7 +118,6 @@ class Report {
 		$this->report_id   = $report_id;
 		$this->user_id     = $user_id;
 		$this->blog_id     = $blog_id;
-		$this->fixed       = $fixed;
 		$this->process     = $process;
 		$this->description = $description;
 		$this->created_at  = \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $created_at ) ?: new DateTimeImmutable(); //phpcs:ignore Universal.Operators.DisallowShortTernary.Found
@@ -181,17 +168,6 @@ class Report {
 	 */
 	public function get_blog_id(): int {
 		return $this->blog_id;
-	}
-
-	/**
-	 * Get the fixed status.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return boolean
-	 */
-	public function get_fixed(): bool {
-		return $this->fixed;
 	}
 
 	/**
