@@ -7,7 +7,7 @@
  * @version    1.0.0
  */
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Analyser;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer;
 
 use Symfony\Component\DomCrawler\Crawler;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
@@ -17,9 +17,9 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Link_Cache\Link_Cache;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Content_Analyser
+ * Content_Analyzer
  */
-class Content_Analyser {
+class Content_Analyzer {
 
 	/**
 	 * The raw content to analyse.
@@ -50,7 +50,7 @@ class Content_Analyser {
 	private Link_Cache $link_cache;
 
 	/**
-	 * Create instance of Content_Analyser.
+	 * Create instance of Content_Analyzer.
 	 *
 	 * @since 1.0.0
 	 *

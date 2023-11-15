@@ -9,7 +9,7 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Runner;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyser\Content_Analyser;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Content_Analyzer;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Reports;
@@ -117,8 +117,8 @@ class Runner {
 	 * @return Report
 	 */
 	public function run( ?Report $report = null ): Report {
-		$wlf_analyser = $this->analyse_content();
-		$wlf_links    = $wlf_analyser->get_links();
+		$wlf_analyzer = $this->analyse_content();
+		$wlf_links    = $wlf_analyzer->get_links();
 
 		$report = $report ?? $this->generate_report();
 
@@ -145,12 +145,12 @@ class Runner {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return Content_Analyser
+	 * @return Content_Analyzer
 	 */
-	private function analyse_content(): Content_Analyser {
-		$analyser = new Content_Analyser( $this->get_content(), ! $this->ignore_link_cache );
-		$analyser->analyze( $this->find_http_codes );
-		return $analyser;
+	private function analyse_content(): Content_Analyzer {
+		$analyzer = new Content_Analyzer( $this->get_content(), ! $this->ignore_link_cache );
+		$analyzer->analyze( $this->find_http_codes );
+		return $analyzer;
 	}
 
 

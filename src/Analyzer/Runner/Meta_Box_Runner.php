@@ -7,8 +7,9 @@
  * @version    1.0.0
  */
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Analyser\Runner;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Runner\Runner;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Reports;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
@@ -21,6 +22,9 @@ defined( 'ABSPATH' ) || exit;
  * Meta Box Runner
  */
 class Meta_Box_Runner {
+
+	public const NONCE_ACTION = 'wpcomsp_wayback_link_fixer_meta_box_runner';
+	public const AJAX_HANDLE  = 'wlf_meta_box_runner';
 
 	/**
 	 * Notices which should be rendered as either PHP or Editor notices
@@ -52,10 +56,26 @@ class Meta_Box_Runner {
 	 * @return  void
 	 */
 	public function initialize(): void {
+		// dump( \DOING_AJAX );
 		// If not on edit.php in the admin, return.
-		if ( ! \is_admin() || 'post.php' !== \basename( $_SERVER['PHP_SELF'] ) ) {
-			return;
+		if ( \is_admin() && 'post.php' === \basename( $_SERVER['PHP_SELF'] ) ) {
+			$this->register_hooks();
 		}
+
+		// If doing ajax
+		if ( wp_doing_ajax() ) {
+			$this->register_hooks();
+		}
+	}
+
+	/**
+	 * Register all hooks.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	private function register_hooks(): void {
 
 		// Create instance of Report Repository.
 		$this->report_repository = new Report_Repository();
@@ -63,27 +83,8 @@ class Meta_Box_Runner {
 
 		\add_action( 'add_meta_boxes', array( $this, 'register_meta_box' ) );
 		\add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		\add_action( 'init', array( $this, 'runner_handler' ), 1 );
-		add_action(
-			'enqueue_block_editor_assets',
-			function () {
-				wp_register_script(
-					'meta-box-notices',
-					WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/test.js',
-					array( 'jquery' ),
-					WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
-					true
-				);
-				\wp_localize_script(
-					'meta-box-notices',
-					'reportRunner',
-					array(
-						'notices' => $this->notices,
-					)
-				);
-				wp_enqueue_script( 'meta-box-notices' );
-			}
-		);
+		\add_action( 'wp_ajax_' . self::AJAX_HANDLE, array( $this, 'ajax_callback' ) );
+		\add_action( 'wp_ajax_nopriv_' . self::AJAX_HANDLE, array( $this, 'ajax_callback' ) );
 	}
 
 	/**
@@ -158,107 +159,109 @@ class Meta_Box_Runner {
 			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
 		);
 		// Enqueue the scripts.
-		wp_enqueue_script(
+		wp_register_script(
 			'meta-box-runner',
 			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/admin-meta-box.js',
 			array( 'jquery' ),
 			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
 			true
 		);
+		\wp_localize_script(
+			'meta-box-runner',
+			'reportRunner',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'action'  => self::AJAX_HANDLE,
+				'nonce'   => wp_create_nonce( self::NONCE_ACTION ),
+				'postId'  => get_the_ID(),
+			)
+		);
+
+		wp_enqueue_script( 'meta-box-runner' );
 	}
 
 	/**
-	 * The handler for the runner
+	 * The Ajax callback handler.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
-	public function runner_handler(): void {
-		// If wlf_runner_action is not set in url, bail.
-		if ( ! isset( $_GET['wlf_runner_action'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return;
+	public function ajax_callback(): void {
+		// Verify nonce.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], self::NONCE_ACTION ) ) {
+			wp_send_json_error( array( 'message' => 'Invalid nonce.' ), 403 );
 		}
 
-		// if wlf_runner_action is not set as "run" bail.
-		if ( 'run' !== $_GET['wlf_runner_action'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return;
+		// Get the post id from the request.
+		if ( ! isset( $_POST['postId'] ) ) {
+			wp_send_json_error( array( 'message' => 'No post id provided.' ), 400 );
 		}
+		$post_id = (int) $_POST['postId'];
 
-		// If post is not set in url, bail.
-		if ( ! isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return;
+		// Get the list of http codes from the request.
+		if ( ! isset( $_POST['httpCodes'] ) ) {
+			wp_send_json_error( array( 'message' => 'No http codes provided.' ), 400 );
 		}
+		$codes = \sanitize_text_field( $_POST['httpCodes'] );
 
-		$ignore_cache = isset( $_GET['ignore_cache'] ) && '1' === $_GET['ignore_cache']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$http_codes   = isset( $_GET['http_codes'] ) ? \sanitize_text_field( $_GET['http_codes'] ) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		// Get the ignore cache value from the request.
+		$ignore_cache = isset( $_POST['ignoreCache'] ) && '1' === $_POST['ignoreCache'];
 
+		$report = $this->run_report( $post_id, $ignore_cache, $codes );
+		wp_send_json_success(
+			array(
+				'details'     => array(
+					'postId'      => $post_id,
+					'ignoreCache' => $ignore_cache,
+					'httpCodes'   => $codes,
+					'reportLink'  => Report_Helper::get_single_report_link( $report ),
+				),
+				'reportsHTML' => wpcomsp_wayback_link_fixer_render_template(
+					'admin/meta-box/meta-box-report-list.php',
+					array( 'reports' => $this->report_repository->find_by_post_id( $post_id ) ),
+					false
+				),
+				'message'     => __( 'Your report is ready', 'wpcomsp_wayback_link_fixer' ),
+			),
+			200
+		);
+	}
+
+	/**
+	 * Run the report.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param integer $post_id      The post id.
+	 * @param boolean $ignore_cache Whether to ignore the cache.
+	 * @param string  $http_codes   The http codes to check.
+	 *
+	 * @return Report|null
+	 */
+	private function run_report( int $post_id, bool $ignore_cache, string $http_codes ): ?Report {
+
+		// Compile the report message.
 		$report_message = esc_html(
 			\sprintf(
 				// Translators: %1$s is the post id, %2$s is the ignore cache value, %3$s is the http codes.
 				'Running report for post %d with ignore_cache: %s and http_codes: %s',
-				absint( $_GET['post'] ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$post_id,
 				$ignore_cache ? 'true' : 'false',
 				$http_codes
 			)
 		);
 
 		try {
-			$runner = Runner::from_post_id( (int) $_GET['post'], $ignore_cache, $http_codes ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			$report = $runner->run();
+			$report = Runner::from_post_id( $post_id, $ignore_cache, $http_codes )->run(); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-			$report = $this->reports
-				->add_description_to_report( $report, $report_message )
-				->mark_report_as_completed( $report );
+			$report = $this->reports->add_description_to_report( $report, $report_message );
+			$report = $this->reports->mark_report_as_completed( $report );
 		} catch ( \Throwable $th ) {
-			$this->admin_notice( "Failed to process post {$th->getMessage()}", 'error' );
-			return;
+			wp_send_json_error( array( 'message' => $th->getMessage() ), 400 );
+			return null;
 		}
 
-		// Render notice to say updated with link to access report.
-		$this->admin_notice(
-			__( 'Created Report.', 'wpcomsp_wayback_link_fixer' ),
-			'success',
-			Report_Helper::get_single_report_link( $report ),
-			__( 'View', 'wpcomsp_wayback_link_fixer' )
-		);
-	}
-
-	/**
-	 * Render a Admin Notice.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string      $message The message to show.
-	 * @param string      $type    The type of notice to show.
-	 * @param string|null $link    The link to show.
-	 * @param string|null $label   The label to show.
-	 *
-	 * @return void
-	 */
-	public function admin_notice( string $message, string $type = 'success', ?string $link = null, ?string $label = null ): void {
-		add_action(
-			'admin_notices',
-			function () use ( $message, $link, $label, $type ) {
-				// If we have a label and link, render a link.
-				$url = $link && $label
-					? sprintf( ' <a href="%s">%s</a>', esc_url( $link ), esc_html( $label ) )
-					: '';
-
-				?>
-			<div class="notice notice-<?php echo esc_attr( $type ); ?> is-dismissible">
-				<p><?php echo esc_html( $message ) . esc_url( $url ); ?></p>
-			</div>
-				<?php
-			}
-		);
-
-		// Add to notices array.
-		$this->notices[] = array(
-			'message' => $message,
-			'type'    => $type,
-			'url'     => $link,
-			'label'   => $label,
-		);
+		return $report;
 	}
 }

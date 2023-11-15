@@ -3,7 +3,7 @@
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyser\Runner\Meta_Box_Runner;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner\Meta_Box_Runner;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer\Report_Viewer_Page;
 
 defined( 'ABSPATH' ) || exit;

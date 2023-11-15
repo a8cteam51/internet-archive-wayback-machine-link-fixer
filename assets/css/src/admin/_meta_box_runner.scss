@@ -1,3 +1,15 @@
+@keyframes pulse {
+    0% {
+        background-color: #ebffff;
+    }
+    50% {
+        background-color: #f8ebff;
+    }
+    50% {
+        background-color: #ffffff00;
+    }
+}
+
 #wlf-meta-box-results {
     h2 {
         padding: 0;
@@ -16,4 +28,38 @@
             display: block;
         }
     }
+    div {
+        margin-bottom: 5px;
+    }
+    &.updated-results {
+        animation: pulse 5s;
+    }
+}
+
+#wlf-meta-box-runner {
+    div {
+        margin-bottom: 5px;
+    }
+    .checkbox_container {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+    }
+    .text_container label {
+        line-height: 25px;
+    }
+    .button_container {
+        text-align: center;
+        padding-top: 5px;
+    }
+}
+
+#wlf-meta-box-results__progress {
+    padding: 5px;
+    text-align: center;
+    background-color: #00891d;
+    color: white;
+    font-weight: 500;
+    margin-top: 10px;
+    border-radius: 10px;
 }
