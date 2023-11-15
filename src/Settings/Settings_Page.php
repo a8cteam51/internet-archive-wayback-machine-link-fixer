@@ -151,6 +151,38 @@ class Settings_Page {
 				),
 			)
 		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::HTTP_STATUS_CODES,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '404,410,500,502,300,301,303',
+				'show_in_rest'      => array(
+					'name'   => Settings::HTTP_STATUS_CODES,
+					'schema' => array(
+						'type' => 'string',
+					),
+				),
+			)
+		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::LINK_CACHE_EXPIRATION,
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => 'absint',
+				'default'           => DAY_IN_SECONDS,
+				'show_in_rest'      => array(
+					'name'   => Settings::LINK_CACHE_EXPIRATION,
+					'schema' => array(
+						'type' => 'integer',
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -188,6 +220,22 @@ class Settings_Page {
 			Settings::LINK_CHECKER_TIMEOUT,
 			__( 'Link Checker Timeout in MS', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_link_checker_timeout_field' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::HTTP_STATUS_CODES,
+			__( 'HTTP Status Codes', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_http_status_codes_field' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::LINK_CACHE_EXPIRATION,
+			__( 'Link Cache Expiration in Seconds', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_link_cache_expiration_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
@@ -256,6 +304,43 @@ class Settings_Page {
 			value="<?php echo absint( Settings::get_link_checker_timeout() ); ?>"
 			min="0"
 			max="5000"
+		/>
+		<?php
+	}
+
+	/**
+	 * Render the http status codes field.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return  void
+	 */
+	public function render_http_status_codes_field(): void {
+		?>
+		<input
+			type="text"
+			id="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>"
+			name="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>"
+			value="<?php echo esc_attr( Settings::get_http_status_codes() ); ?>"
+		/>
+		<?php
+	}
+
+	/**
+	 * Render the link cache expiration field.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return  void
+	 */
+	public function render_link_cache_expiration_field(): void {
+		?>
+		<input
+			type="number"
+			id="<?php echo esc_attr( Settings::LINK_CACHE_EXPIRATION ); ?>"
+			name="<?php echo esc_attr( Settings::LINK_CACHE_EXPIRATION ); ?>"
+			value="<?php echo absint( Settings::get_link_cache_expiration() ); ?>"
+			min="0"
 		/>
 		<?php
 	}

@@ -60,13 +60,13 @@ class Link {
 	private ?string $redirect_target = null;
 
 	/**
-	 * Redirection type.
+	 * HTTP Code.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @var integer|null
 	 */
-	private ?int $redirect_type = null;
+	private ?int $http_code = null;
 
 	/**
 	 * Link replacement options.
@@ -76,15 +76,6 @@ class Link {
 	 * @var array<int, string>
 	 */
 	private array $replacement_options = array();
-
-	/**
-	 * Was the link fixed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var boolean
-	 */
-	private bool $fixed = false;
 
 	/**
 	 * Comments on the link
@@ -105,9 +96,8 @@ class Link {
 	 * @param string|null        $contents            The link contents.
 	 * @param boolean            $broken              Is the link broken.
 	 * @param string|null        $redirect_target     The link redirection target.
-	 * @param integer|null       $redirect_type       The link redirection type.
+	 * @param integer|null       $http_code           The HTTP Code of the link.
 	 * @param array<int, string> $replacement_options The link replacement options.
-	 * @param boolean            $fixed               Was the link fixed.
 	 * @param string[]           $comments            Comments on the link.
 	 */
 	public function __construct(
@@ -116,9 +106,8 @@ class Link {
 		?string $contents,
 		bool $broken = false,
 		?string $redirect_target = null,
-		?int $redirect_type = null,
+		?int $http_code = null,
 		array $replacement_options = array(),
-		bool $fixed = false,
 		array $comments = array()
 	) {
 		$this->index               = $index;
@@ -126,9 +115,8 @@ class Link {
 		$this->contents            = $contents;
 		$this->broken              = $broken;
 		$this->redirect_target     = $redirect_target;
-		$this->redirect_type       = $redirect_type;
+		$this->http_code           = $http_code;
 		$this->replacement_options = $replacement_options;
-		$this->fixed               = $fixed;
 		$this->comments            = $comments;
 	}
 
@@ -188,14 +176,14 @@ class Link {
 	}
 
 	/**
-	 * Get the link redirection type.
+	 * Get The HTTP Code of the link.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return integer|null
 	 */
-	public function get_redirect_type(): ?int {
-		return $this->redirect_type;
+	public function get_http_code(): ?int {
+		return $this->http_code;
 	}
 
 	/**
@@ -210,17 +198,6 @@ class Link {
 	}
 
 	/**
-	 * Was the link fixed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return boolean
-	 */
-	public function is_fixed(): bool {
-		return $this->fixed;
-	}
-
-	/**
 	 * Get the comments on the link.
 	 *
 	 * @since 1.0.0
@@ -229,5 +206,51 @@ class Link {
 	 */
 	public function get_comments(): array {
 		return $this->comments;
+	}
+
+	/**
+	 * Add a comment.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $comment The comment.
+	 *
+	 * @return Link
+	 */
+	public function add_comment( string $comment ): Link {
+		$comments   = $this->comments;
+		$comments[] = $comment;
+		return new Link(
+			$this->index,
+			$this->href,
+			$this->contents,
+			$this->broken,
+			$this->redirect_target,
+			$this->http_code,
+			$this->replacement_options,
+			$comments
+		);
+	}
+
+	/**
+	 * Add replacement options.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<int, string> $replacement_options The replacement options.
+	 *
+	 * @return Link
+	 */
+	public function add_replacement_options( array $replacement_options ): Link {
+		return new Link(
+			$this->index,
+			$this->href,
+			$this->contents,
+			$this->broken,
+			$this->redirect_target,
+			$this->http_code,
+			$replacement_options,
+			$this->comments
+		);
 	}
 }

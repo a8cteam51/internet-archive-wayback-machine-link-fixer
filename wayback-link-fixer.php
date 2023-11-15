@@ -31,7 +31,7 @@
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Reports;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Way_Back_Machine\Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyser\Content_Analyser;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Content_Analyzer;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Way_Back_Machine\Way_Back_Machine;
 
 defined( 'ABSPATH' ) || exit;

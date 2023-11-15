@@ -121,7 +121,7 @@ class Log {
 	 * @return string
 	 */
 	public function get_serialized_links(): string {
-		$serialized = \serialize( $this->broken_links ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+		$serialized = \serialize( $this->links ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 
 		// If we dont have json, throw an error.
 		if ( ! is_string( $serialized ) ) {

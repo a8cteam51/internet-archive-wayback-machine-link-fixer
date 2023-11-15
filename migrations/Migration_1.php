@@ -41,7 +41,6 @@ class Migration_1 extends Abstract_Migration {
 			report_id varchar(36) NOT NULL,
 			user_id bigint(20) NOT NULL,
 			blog_id bigint(20) NOT NULL,
-			fixed int(1) NOT NULL DEFAULT 0,
 			process varchar(20) NOT NULL,
 			description text NULL,
 			create_date datetime NOT NULL,
@@ -60,10 +59,22 @@ class Migration_1 extends Abstract_Migration {
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
+		// Create the link cache table.
+		$link_cache_table_name = $wpdb->prefix . Settings::SCAN_LINK_CACHE_TABLE;
+
+		$link_cache_sql = "CREATE TABLE $link_cache_table_name (
+			id bigint(20) NOT NULL AUTO_INCREMENT,
+			url longtext NOT NULL,
+			link longtext NOT NULL,
+			create_date datetime NOT NULL,
+			PRIMARY KEY  (id)
+		) $charset_collate;";
+
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		dbDelta( $report_sql );
 		dbDelta( $log_sql );
+		dbDelta( $link_cache_sql );
 	}
 
 	/**

@@ -7,21 +7,19 @@
  * @version    1.0.0
  */
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Analyser;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer;
 
 use Symfony\Component\DomCrawler\Crawler;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Link;
-
-use DOMNode;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Link_Cache\Link_Cache;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Content_Analyser
+ * Content_Analyzer
  */
-class Content_Analyser {
+class Content_Analyzer {
 
 	/**
 	 * The raw content to analyse.
@@ -31,6 +29,13 @@ class Content_Analyser {
 	private string $content_raw;
 
 	/**
+	 * Should the link cache be used.
+	 *
+	 * @var boolean
+	 */
+	private bool $use_link_cache;
+
+	/**
 	 * All links
 	 *
 	 * @var array<int, Link> $links
@@ -38,14 +43,43 @@ class Content_Analyser {
 	private array $links = array();
 
 	/**
-	 * Create instance of Content_Analyser.
+	 * Access to the link cache.
+	 *
+	 * @var Link_Cache
+	 */
+	private Link_Cache $link_cache;
+
+	/**
+	 * Create instance of Content_Analyzer.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $content_raw The raw content to analyse.
+	 * @param string  $content_raw    The raw content to analyse.
+	 * @param boolean $use_link_cache Whether to use the link cache or not.
 	 */
-	public function __construct( string $content_raw ) {
-		$this->content_raw = $content_raw;
+	public function __construct( string $content_raw, bool $use_link_cache ) {
+		$this->content_raw    = $content_raw;
+		$this->use_link_cache = $use_link_cache;
+		$this->link_cache     = Link_Cache::get_default();
+	}
+
+		/**
+	 * Adds a link to the link collection.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $url  The href of the link.
+	 * @param Link   $link The link to add.
+	 *
+	 * @return void
+	 */
+	public function add_link( string $url, Link $link ): void {
+		// If we are not skipping the link cache, check if we have a cached version.
+		if ( $this->use_link_cache ) {
+			$this->link_cache->add_link( $url, $link );
+		}
+
+		$this->links[] = $link;
 	}
 
 	/**
@@ -53,25 +87,32 @@ class Content_Analyser {
 	 *
 	 * @since
 	 *
-	 * @param integer     $index    The index of the link.
-	 * @param string|null $href     The href of the link.
-	 * @param string|null $contents The contents of the link.
-	 * @param string      $message  The error message.
+	 * @param integer      $index     The index of the link.
+	 * @param string|null  $href      The href of the link.
+	 * @param string|null  $contents  The contents of the link.
+	 * @param string       $message   The error message.
+	 * @param integer|null $http_code The status code of the link.
 	 *
 	 * @return void
 	 */
-	public function add_broken_link( int $index, ?string $href, ?string $contents, string $message ) {
-		$this->links[] = new Link(
+	public function add_broken_link( int $index, ?string $href, ?string $contents, string $message, ?int $http_code = null ) {
+		$link = new Link(
 			$index,
 			$href,
 			$contents,
 			true,
 			null,
-			null,
+			$http_code,
 			array(),
-			false,
 			array( $message )
 		);
+
+		// If we have a href, use the add_link, else manual.
+		if ( $href ) {
+			$this->add_link( $href, $link );
+		} else {
+			$this->links[] = $link;
+		}
 	}
 
 	/**
@@ -91,6 +132,7 @@ class Content_Analyser {
 	 */
 	public function add_redirection_link( int $index, ?string $href, ?string $contents, array $redirects, int $redirect_type, int $final_status_code, ?string $details = null ) {
 		$chain = array_merge( array( $href ), $redirects );
+		$chain = array_filter( $chain );
 
 		// Get final url and trim it
 		$final_url = $redirects[ array_key_last( $redirects ) ] ?? null;
@@ -98,15 +140,15 @@ class Content_Analyser {
 			$final_url = trim( $final_url );
 		}
 
-		$this->links[] = new Link(
+		$link = new Link(
 			$index,
 			$href,
 			$contents,
-			200 <= $final_status_code && 300 > $final_status_code,
+			// If $final_status_code status less than 200 and more than 300
+			( 200 > $final_status_code || 300 <= $final_status_code ),
 			$final_url,
 			$redirect_type,
 			array(),
-			false,
 			array_filter(
 				array(
 					$details,
@@ -116,6 +158,9 @@ class Content_Analyser {
 				)
 			)
 		);
+
+		// Add link.
+		$this->add_link( $href, $link );
 	}
 
 	/**
@@ -123,9 +168,15 @@ class Content_Analyser {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param string $find_http_codes HTTP codes to look for.
+	 *
 	 * @return void
 	 */
-	public function analyze() {
+	public function analyze( string $find_http_codes ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+		$http_codes = array_map( 'trim', explode( ',', $find_http_codes ) );
+		// Cast all to integers.
+		$http_codes = array_map( 'intval', $http_codes );
 
 		// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
@@ -164,7 +215,22 @@ class Content_Analyser {
 
 			// Try to get the link details.
 			try {
+
+				// If we are not skipping the link cache, check if we have a cached version.
+				if ( $this->use_link_cache ) {
+					$cached_link = $this->get_cached_link( $src );
+					if ( $cached_link ) {
+						$this->links[] = $cached_link;
+						continue;
+					}
+				}
+
 				$link_details = $this->get_link_details( $src );
+
+				// If the links HTTP code is not in the list of HTTP codes, skip.
+				if ( ! in_array( (int) $link_details['http_code'], $http_codes, true ) ) {
+					continue;
+				}
 
 				// If we have any 30* status code, treat as a redirect
 				if ( 300 <= $link_details['http_code'] && 400 > $link_details['http_code'] ) {
@@ -182,16 +248,18 @@ class Content_Analyser {
 
 				// If we have a valid link 20* status code, add as a link.
 				if ( 200 <= $link_details['http_code'] && 300 > $link_details['http_code'] ) {
-					$this->links[] = new Link(
-						$index,
-						$src,
-						$link_node->nodeValue,
-						false,
-						null,
-						null,
-						array(),
-						false,
-						array( 'valid_link', "status_code: {$link_details['http_code']}" )
+					$this->add_link(
+						new Link(
+							$index,
+							$src,
+							$link_node->nodeValue,
+							false,
+							null,
+							$link_details['http_code'],
+							array(),
+							array( 'valid_link', "status_code: {$link_details['http_code']}" )
+						),
+						! $ignore_link_cache
 					);
 					continue;
 				}
@@ -201,8 +269,10 @@ class Content_Analyser {
 					$index,
 					$src,
 					$link_node->nodeValue,
-					"status_code: {$link_details['http_code']}"
+					"status_code: {$link_details['http_code']}",
+					$link_details['http_code']
 				);
+
 				continue;
 			} catch ( \Throwable $th ) {
 				$this->add_broken_link(
@@ -215,6 +285,28 @@ class Content_Analyser {
 		}
 		// phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
+
+
+
+
+	/**
+	 * Attempt to get a link from the cache.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $url The url to get the cached link for.
+	 *
+	 * @return Link|null
+	 */
+	private function get_cached_link( string $url ): ?Link {
+		return $this->link_cache->find_link( $url );
+	}
+
+	/**
+	 * Gets an
+	 */
+
+
 
 	/**
 	 * Get link details.

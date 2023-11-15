@@ -84,14 +84,12 @@ class Report_Repository {
 				'report_id'   => $report->get_report_id(),
 				'user_id'     => $report->get_user_id(),
 				'blog_id'     => $report->get_blog_id(),
-				'fixed'       => $report->get_fixed() ? '1' : '0',
 				'process'     => $report->get_process(),
 				'description' => $report->get_description(),
 				'create_date' => $report->get_created_at()->format( 'Y-m-d H:i:s' ),
 			),
 			array(
 				'%s',
-				'%d',
 				'%d',
 				'%d',
 				'%s',
@@ -110,7 +108,6 @@ class Report_Repository {
 			$report->get_report_id(),
 			$report->get_user_id(),
 			$report->get_blog_id(),
-			$report->get_fixed(),
 			$report->get_process(),
 			$report->get_description(),
 			$report->get_created_at()->format( 'Y-m-d H:i:s' ),
@@ -137,7 +134,6 @@ class Report_Repository {
 				'report_id'      => $report->get_report_id(),
 				'user_id'        => $report->get_user_id(),
 				'blog_id'        => $report->get_blog_id(),
-				'fixed'          => $report->get_fixed() ? '1' : '0',
 				'process'        => $report->get_process(),
 				'description'    => $report->get_description(),
 				'create_date'    => $report->get_created_at()->format( 'Y-m-d H:i:s' ),
@@ -150,7 +146,6 @@ class Report_Repository {
 			),
 			array(
 				'%s',
-				'%d',
 				'%d',
 				'%d',
 				'%s',
@@ -274,7 +269,6 @@ class Report_Repository {
 			$row->report_id,
 			$row->user_id,
 			$row->blog_id,
-			(bool) $row->fixed,
 			$row->process,
 			$row->description,
 			$row->create_date,
@@ -611,5 +605,85 @@ class Report_Repository {
 			}
 		}
 		return $where;
+	}
+
+	/**
+	 * Find all reports based on a post id.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param integer $post_id The post id to find reports for.
+	 *
+	 * @return array{report: Report, logs: Log[]}
+	 */
+	public function find_by_post_id( int $post_id ): array {
+
+		// Find all logs which cover this post.
+		$logs = $this->find_logs_by_post_id( $post_id );
+
+		return array_reduce(
+			$logs,
+			/**
+			 * Compiles the reports and logs.
+			 *
+			 * @param array{report: Report, logs: Log[]} $carry The carry.
+			 * @param Log                                $log   The log.
+			 *
+			 * @return array{report: Report, logs: Log[]}
+			 */
+			function ( array $carry, Log $log ): array {
+
+				if ( ! \array_key_exists( $log->get_report_id(), $carry ) ) {
+					$report = $this->find( $log->get_report_id() );
+					if ( null !== $report ) {
+						$carry[ $log->get_report_id() ] = array(
+							'report' => $report,
+							'logs'   => array(),
+						);
+					} else {
+						// If the report doesnt exist, skip.
+						return $carry;
+					}
+				}
+
+				// Add the log to the report.
+				$carry[ $log->get_report_id() ]['logs'][] = $log;
+
+				return $carry;
+			},
+			array()
+		);
+	}
+
+	/**
+	 * Get all logs based on a post id.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param integer $post_id The post id to find logs for.
+	 *
+	 * @return array<int, Log>
+	 */
+	public function find_logs_by_post_id( int $post_id ): array {
+		global $wpdb;
+
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$this->log_table_name()} WHERE post_id = %d", //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant prepare table names.
+				$post_id
+			)
+		);
+
+		return array_map(
+			function ( \stdClass $row ): Log {
+				return new Log(
+					$row->id,
+					$row->report_id,
+					$row->post_id,
+					$row->links
+				);
+			},
+			$rows
+		);
 	}
 }
