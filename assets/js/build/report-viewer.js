@@ -1,0 +1,1 @@
+!function(){"use strict";jQuery(document).ready((function(){jQuery(".wlf-report-log__header .accordion-toggle").on("click",(function(){const o=jQuery(this).data("action"),e=jQuery(this).parents(".wlf-report-log");"show"===o?e.removeClass("closed"):e.addClass("closed")}))}))}();

@@ -18,8 +18,10 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Repository;
  */
 class Report_Viewer_Page {
 
-	public const PAGE_SLUG     = 'wayback-link-fixer-reports';
-	public const MENU_POSITION = 91;
+	public const PAGE_SLUG                 = 'wayback-link-fixer-reports';
+	public const MENU_POSITION             = 91;
+	public const DELETE_REPORT_AJAX_HANDLE = 'wlf_delete_report';
+	public const EXPORT_REPORT_AJAX_HANDLE = 'wlf_export_report';
 
 	/**
 	 * The page hook.
@@ -140,6 +142,28 @@ class Report_Viewer_Page {
 			array(),
 			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
 		);
+
+		// Register the scripts.
+		wp_register_script(
+			$this->page_hook,
+			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/report-viewer.js',
+			array( 'jquery' ),
+			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
+			true
+		);
+
+		// Localize the script.
+		wp_localize_script(
+			$this->page_hook,
+			'wlf_report_viewer',
+			array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'nonce'    => wp_create_nonce( 'wlf_report_viewer' ),
+			)
+		);
+
+		// Enqueue the script.
+		wp_enqueue_script( $this->page_hook );
 
 		// Include select2
 		wp_enqueue_style( 'select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', array(), '4.1.0-rc.0' );
