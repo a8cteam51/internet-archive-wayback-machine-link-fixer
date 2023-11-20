@@ -12,15 +12,68 @@
  * @var string       $%site_title The site title (not used if not a multi site)
  */
 
-
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Log;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
-
 ?>
 <div id="wlf-report" class="wrap">
 
 	<h1><?php esc_html_e( 'Report Details', 'wpcomsp_wayback_link_fixer' ); ?></h1>
+	<p class="wlf-report__back">
+		<a href="<?php echo esc_url( $back_url ); ?>"><?php esc_html_e( '<< Back to Reports', 'wpcomsp_wayback_link_fixer' ); ?></a>
+	</p>
 	<div class="wlf-report-details">
+		<p class="wlf-report-details__description">
+			<?php
+			printf(
+				// translators: %1$s is the title and %2$s is the description.
+				'<strong>%s</strong> : %s',
+				esc_html__( 'Description', 'wpcomsp_wayback_link_fixer' ),
+				esc_html( $report->get_description() )
+			);
+			?>
+		</p>
+		<?php if ( is_multisite() ) : ?>
+			<p class="wlf-report-details__site">
+			<?php
+			printf(
+				// translators: %1$s is the title and %2$s is the description.
+				'<strong>%s</strong> : %s',
+				esc_html__( 'Site', 'wpcomsp_wayback_link_fixer' ),
+				esc_html( get_blog_option( $report->get_blog_id(), 'blogname' ) )
+			);
+			?>
+		</p>
+		<?php endif; ?>
+		<p class="wlf-report-details__author">
+			<?php
+			printf(
+				// translators: %1$s is the title and %2$s is the description.
+				'<strong>%s</strong> : %s',
+				esc_html__( 'Author', 'wpcomsp_wayback_link_fixer' ),
+				esc_html( $author->display_name )
+			);
+			?>
+		</p>
+		<p class="wlf-report-details__date">
+			<?php
+			printf(
+				// translators: %1$s is the title and %2$s is the description.
+				'<strong>%s</strong> : %s',
+				esc_html__( 'Date Created', 'wpcomsp_wayback_link_fixer' ),
+				esc_html( $report->get_created_at()->format( get_option( 'date_format' ) . ' : ' . get_option( 'time_format' ) ) )
+			);
+			?>
+
+			<?php if ( $report->get_completed_at() ) : ?>
+				<?php
+				printf(
+					// translators: %1$s is the title and %2$s is the description.
+					'<br> <strong>%s</strong> : %s',
+					esc_html__( 'Date Completed', 'wpcomsp_wayback_link_fixer' ),
+					esc_html( $report->get_completed_at()->format( get_option( 'date_format' ) . ' : ' . get_option( 'time_format' ) ) )
+				);
+				?>
+			<?php endif; ?>
 
 	</div>
 	<!-- The Logs -->
@@ -29,29 +82,8 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 			<p><?php esc_html_e( 'No logs found.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 		<?php else : ?>
 			<?php foreach ( $logs as $wlf_log ) : ?>
-				<?php
-				$wlf_log_post_title = get_the_title( $wlf_log->get_post_id() );
-				$wlf_log_post_title = '' === $wlf_log_post_title
-					? esc_html__( 'Post Not Found', 'wpcomsp_wayback_link_fixer' )
-					: '<a href="' . esc_url( get_edit_post_link( $wlf_log->get_post_id() ) ) . '">' . esc_html( $wlf_log_post_title ) . '</a>';
-
-				?>
-				<div id="wlf-report-log__<?php echo absint( $wlf_log->get_id() ); ?>" class="wlf-report-log closed">
-					<p class="wlf-report-log__title">
-						<?php echo $wlf_log_post_title; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-					</p>
-					<p>
-						<?php
-						printf(
-							// translators: %1$d is the number of links found, %2$s is the post title.
-							'Found %1$d links on %2$s',
-							count( $wlf_log->get_links() ),
-							get_post_type( $wlf_log->get_post_id() ) ?: esc_html__( 'Unknown type', 'wpcomsp_wayback_link_fixer' ) //phpcs:ignore Universal.Operators.DisallowShortTernary.Found, WordPress.Security.EscapeOutput.OutputNotEscaped
-						);
-						?>
-					</p>
-				</div>
+				<?php wpcomsp_wayback_link_fixer_render_template( 'admin/reports/log-details.php', array( 'log' => $wlf_log ) ); ?>
 			<?php endforeach; ?>
-			<?php endif; ?>
+		<?php endif; ?>
 	</div>
 </div>

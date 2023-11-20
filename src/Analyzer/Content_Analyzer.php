@@ -249,6 +249,7 @@ class Content_Analyzer {
 				// If we have a valid link 20* status code, add as a link.
 				if ( 200 <= $link_details['http_code'] && 300 > $link_details['http_code'] ) {
 					$this->add_link(
+						$src,
 						new Link(
 							$index,
 							$src,
@@ -257,9 +258,8 @@ class Content_Analyzer {
 							null,
 							$link_details['http_code'],
 							array(),
-							array( 'valid_link', "status_code: {$link_details['http_code']}" )
-						),
-						! $ignore_link_cache
+							array( \wpcomsp_wayback_link_fixer_get_status_code_name( absint( $link_details['http_code'] ) ) )
+						)
 					);
 					continue;
 				}
@@ -269,7 +269,7 @@ class Content_Analyzer {
 					$index,
 					$src,
 					$link_node->nodeValue,
-					"status_code: {$link_details['http_code']}",
+					\wpcomsp_wayback_link_fixer_get_status_code_name( absint( $link_details['http_code'] ) ),
 					$link_details['http_code']
 				);
 

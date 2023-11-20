@@ -1,3 +1,87 @@
+// Create css colours for each http code.
+.http_100,
+.http_101,
+.http_102,
+.http_103 {
+    background-color: #e6f7ff;
+}
+
+.http_200,
+.http_201,
+.http_202,
+.http_203,
+.http_204,
+.http_205,
+.http_206,
+.http_207,
+.http_208,
+.http_226 {
+    background-color: #e6ffe6;
+}
+
+.http_300,
+.http_301,
+.http_302,
+.http_303,
+.http_304,
+.http_305,
+.http_306,
+.http_307,
+.http_308 {
+    background-color: #fff2e6;
+}
+
+.http_400,
+.http_401,
+.http_402,
+.http_403,
+.http_404,
+.http_405,
+.http_406,
+.http_407,
+.http_408,
+.http_409,
+.http_410,
+.http_411,
+.http_412,
+.http_413,
+.http_414,
+.http_415,
+.http_416,
+.http_417,
+.http_418,
+.http_421,
+.http_422,
+.http_423,
+.http_424,
+.http_425,
+.http_426,
+.http_428,
+.http_429,
+.http_431,
+.http_451 {
+    background-color: #ffe6e6;
+}
+
+.http_500,
+.http_501,
+.http_502,
+.http_503,
+.http_504,
+.http_505,
+.http_506,
+.http_507,
+.http_508,
+.http_510,
+.http_511 {
+    background-color: #ffe6ff;
+}
+
+.http_none {
+    background-color: #e6e6e6;
+}
+
+// Create css colours for each http code.
 @import "list_table_pagination.scss";
 @import "meta_box_runner.scss";
 #wlf-report-filters {
