@@ -28,6 +28,7 @@ class Settings {
 	public const LINK_CHECKER_TIMEOUT         = self::SETTINGS_PREFIX . 'link_checker_timeout';
 	public const HTTP_STATUS_CODES            = self::SETTINGS_PREFIX . 'http_status_codes';
 	public const LINK_CACHE_EXPIRATION        = self::SETTINGS_PREFIX . 'link_cache_expiration';
+	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
 
 	## Table names.
 	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
@@ -114,5 +115,16 @@ class Settings {
 	 */
 	public static function get_link_cache_expiration(): int {
 		return absint( get_option( self::LINK_CACHE_EXPIRATION, DAY_IN_SECONDS ) );
+	}
+
+	/**
+	 * Get the array of link exclusions.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string[]
+	 */
+	public static function get_link_exclusions(): array {
+		return array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
 	}
 }
