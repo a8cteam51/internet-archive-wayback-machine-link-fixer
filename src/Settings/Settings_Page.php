@@ -40,6 +40,7 @@ class Settings_Page {
 	public function initialize(): void {
 		add_action( 'admin_init', array( $this, 'register_fields' ) );
 		add_action( 'admin_menu', array( $this, 'register_page' ), 20, 0 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
 	/**
@@ -72,6 +73,48 @@ class Settings_Page {
 			'manage_options',
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )
+		);
+	}
+
+	/**
+	 * Enqueue the settings page scripts.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @param   string $page_hook The page hook.
+	 *
+	 * @return  void
+	 */
+	public function enqueue_scripts( string $page_hook ): void {
+		// Only enqueue the scripts on the settings page.
+		if ( $this->menu_hook !== $page_hook ) {
+			return;
+		}
+
+		\wp_register_script(
+			self::PAGE_SLUG,
+			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/admin_settings.js',
+			array( 'jquery' ),
+			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
+			true
+		);
+
+		\wp_localize_script(
+			self::PAGE_SLUG,
+			'WlfSettings',
+			array(
+				'newExcludedTemplate' => $this->render_excluded_url( '{newUrl}', '{newIndex}' ),
+			)
+		);
+
+		\wp_enqueue_script( self::PAGE_SLUG );
+
+		//  Register the styles.
+		wp_enqueue_style(
+			self::PAGE_SLUG,
+			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
+			array(),
+			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
 		);
 	}
 
@@ -183,6 +226,25 @@ class Settings_Page {
 				),
 			)
 		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::LINK_EXCLUSIONS,
+			array(
+				'type'              => 'array',
+				'sanitize_callback' => fn( $value ): array => array_map( 'sanitize_text_field', (array) $value ),
+				'default'           => array(),
+				'show_in_rest'      => array(
+					'name'   => Settings::LINK_EXCLUSIONS,
+					'schema' => array(
+						'type'  => 'array',
+						'items' => array(
+							'type' => 'string',
+						),
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -236,6 +298,14 @@ class Settings_Page {
 			Settings::LINK_CACHE_EXPIRATION,
 			__( 'Link Cache Expiration in Seconds', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_link_cache_expiration_field' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::LINK_EXCLUSIONS,
+			__( 'Link Exclusions', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_link_exclusions_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
@@ -343,5 +413,109 @@ class Settings_Page {
 			min="0"
 		/>
 		<?php
+	}
+
+	/**
+	 * Render the link exclusions field.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return  void
+	 */
+	public function render_link_exclusions_field(): void {
+		$urls = Settings::get_link_exclusions();
+
+		echo \wp_kses(
+			sprintf(
+				'<div><p>%s</p></div>',
+				__( 'Enter a list of URLs to exclude from the link checker. These can be added using <code>*</code> wildcards such as <code>*.twitter.com*</code> to exclude any twitter link', 'wpcomsp_wayback_link_fixer' )
+			),
+			array(
+				'code' => array(),
+				'p'    => array(),
+				'div'  => array(),
+			)
+		);
+
+		?>
+		<div id="wlf_excluded_links">
+			<div class="new-link">
+				<input
+					type="text"
+					id="wlf_excluded_links_new"
+					placeholder="<?php esc_html_e( 'Add a new exclusion (*.twitter.*)', 'wpcomsp_wayback_link_fixer' ); ?>"
+				/>
+				<button id="wlf_excluded_links_new_action" type="button" class="button button-secondary add-exclusion"><?php esc_html_e( 'Add', 'wpcomsp_wayback_link_fixer' ); ?></button>
+			</div>
+			<?php
+			// Show the no link message if there are no links.
+			if ( empty( $urls ) ) {
+				?>
+			<div id="wlf_excluded_empty">
+				<p>
+					<?php esc_html_e( 'No exclusions found.', 'wpcomsp_wayback_link_fixer' ); ?>
+				</p>
+			</div>
+				<?php
+			}
+			foreach ( $urls as $index => $url ) {
+				echo wp_kses(
+					$this->render_excluded_url( $url, $index ),
+					array(
+						'input'  => array(
+							'type'       => array(),
+							'id'         => array(),
+							'name'       => array(),
+							'value'      => array(),
+							'data-link'  => array(),
+							'data-index' => array(),
+						),
+						'button' => array(
+							'type'  => array(),
+							'class' => array(),
+						),
+						'div'    => array(
+							'class' => array(),
+						),
+					)
+				);
+			}
+			?>
+		</div>
+
+		<?php
+	}
+
+	/**
+	 * Renders a row for excluded urls.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $url   The URL to render.
+	 * @param string $index The index of the URL.
+	 *
+	 * @return string
+	 */
+	private function render_excluded_url( string $url, string $index ): string {
+		return sprintf(
+			'<div class="link">
+				<input
+					type="text"
+					id="%s_%s"
+					name="%s[]"
+					value="%s"
+					data-link="%s"
+					data-index="%s"
+				/>
+				<button type="button" class="button button-secondary remove-exclusion">%s</button>
+			</div>',
+			esc_attr( Settings::LINK_EXCLUSIONS ),
+			esc_attr( $index ),
+			esc_attr( Settings::LINK_EXCLUSIONS ),
+			esc_attr( $url ),
+			esc_attr( $url ),
+			esc_attr( $index ),
+			esc_html__( 'Remove', 'wpcomsp_wayback_link_fixer' )
+		);
 	}
 }

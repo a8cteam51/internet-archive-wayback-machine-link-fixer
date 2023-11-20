@@ -213,6 +213,11 @@ class Content_Analyzer {
 				continue;
 			}
 
+			// If the link is in the excluded list, skip.
+			if ( $this->is_excluded( $src ) ) {
+				continue;
+			}
+
 			// Try to get the link details.
 			try {
 
@@ -380,5 +385,24 @@ class Content_Analyzer {
 	 */
 	public function as_dom_crawler(): Crawler {
 		return new Crawler( $this->content_raw );
+	}
+
+	/**
+	 * Checks if a link is excluded.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $url The url to check.
+	 *
+	 * @return boolean
+	 */
+	public function is_excluded( string $url ): bool {
+		foreach ( Settings::get_link_exclusions() as $excluded_url ) {
+			// Using fnmatch to allow for wildcards.
+			if ( fnmatch( $excluded_url, $url ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -1,0 +1,22 @@
+#wlf_excluded_links {
+    padding: 5px;
+    border: 1px solid #cfcfcf;
+    margin: 5px 0;
+    #wlf_excluded_empty {
+        text-align: center;
+        color: #cfcfcf;
+    }
+    .link,
+    .new-link {
+        display: flex;
+        input {
+            max-width: 100%;
+            width: -webkit-fill-available;
+        }
+    }
+    .new-link {
+        margin-bottom: 10px;
+        background-color: #cfcfcf;
+        padding: 10px;
+    }
+}
