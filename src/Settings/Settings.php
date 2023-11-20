@@ -125,6 +125,8 @@ class Settings {
 	 * @return string[]
 	 */
 	public static function get_link_exclusions(): array {
-		return array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
+		$links = array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
+
+		return apply_filter( 't51_wlf_link_exclusions', $links );
 	}
 }
