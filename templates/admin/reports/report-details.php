@@ -14,6 +14,7 @@
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Log;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
+
 ?>
 <div id="wlf-report" class="wrap">
 
@@ -50,7 +51,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 				// translators: %1$s is the title and %2$s is the description.
 				'<strong>%s</strong> : %s',
 				esc_html__( 'Author', 'wpcomsp_wayback_link_fixer' ),
-				esc_html( $author->display_name )
+				$author ? esc_html( $author->display_name ) : esc_html__( 'Unknown', 'wpcomsp_wayback_link_fixer' )
 			);
 			?>
 		</p>

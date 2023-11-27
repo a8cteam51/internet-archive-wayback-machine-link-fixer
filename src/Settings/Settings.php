@@ -29,11 +29,15 @@ class Settings {
 	public const HTTP_STATUS_CODES            = self::SETTINGS_PREFIX . 'http_status_codes';
 	public const LINK_CACHE_EXPIRATION        = self::SETTINGS_PREFIX . 'link_cache_expiration';
 	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
+	public const EVENT_POSTS_PER_BATCH        = self::SETTINGS_PREFIX . 'async_posts_per_batch';
 
 	## Table names.
 	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
 	public const SCAN_REPORT_TABLE_NAME = self::SETTINGS_PREFIX . 'scan_report';
 	public const SCAN_LINK_CACHE_TABLE  = self::SETTINGS_PREFIX . 'scan_link_cache';
+
+	## Events
+	public const RUNNER_EVENT = self::SETTINGS_PREFIX . 'event_runner';
 
 
 	/**
@@ -126,7 +130,17 @@ class Settings {
 	 */
 	public static function get_link_exclusions(): array {
 		$links = array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
+		return apply_filters( 'wlf_link_exclusions', $links );
+	}
 
-		return apply_filter( 't51_wlf_link_exclusions', $links );
+	/**
+	 * Get the number of posts to process per batch.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return integer
+	 */
+	public static function get_posts_per_batch(): int {
+		return absint( get_option( self::EVENT_POSTS_PER_BATCH, 10 ) );
 	}
 }

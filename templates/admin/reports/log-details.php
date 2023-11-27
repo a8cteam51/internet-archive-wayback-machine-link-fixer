@@ -5,20 +5,8 @@
  * @since      1.0.0
  *
  * Defined vars.
- * @var Log $log The Log
+ * @var \WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Log $log The Log
  */
-
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Log;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Link;
-
-// Get the total number of broken links.
-$wlf_broken_links = count( array_filter( $log->get_links(), fn( Link $link ): bool =>  $link->is_broken() ) );
-
-// Get the post title.
-$wlf_log_post_title = get_the_title( $log->get_post_id() );
-$wlf_log_post_title = '' === $wlf_log_post_title
-	? esc_html__( 'Post Not Found', 'wpcomsp_wayback_link_fixer' )
-	: '<a href="' . esc_url( get_edit_post_link( $log->get_post_id() ) ) . '">' . esc_html( $wlf_log_post_title ) . '</a>';
 
 ?>
 <div id="wlf-report-log__<?php echo absint( $log->get_id() ); ?>" class="wlf-report-log closed ">
@@ -26,7 +14,7 @@ $wlf_log_post_title = '' === $wlf_log_post_title
 		<p class="wlf-report-log__header-post-title">
 			<span class="accordion-toggle dashicons dashicons-visibility show-log" data-action="show"></span>
 			<span class="accordion-toggle dashicons dashicons-hidden hide-log" data-action="hide"></span>
-			<?php echo $wlf_log_post_title; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo wpcomsp_wayback_link_fixer_get_log_post_title( $log->get_post_id() ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</p>
 		<p class="wlf-report-log__header-link-details" ><strong>
 			<?php
@@ -34,7 +22,7 @@ $wlf_log_post_title = '' === $wlf_log_post_title
 				// translators: %1$d is the number of links found, %2$s is the post title.
 				esc_html__( 'Found %1$d links | %2$d broken', 'wpcomsp_wayback_link_fixer' ),
 				count( $log->get_links() ),
-				absint( $wlf_broken_links )
+				absint( $log->count_broken_links() )
 			);
 			?>
 		</strong></p>

@@ -161,7 +161,7 @@ class Meta_Box_Runner {
 		// Enqueue the scripts.
 		wp_register_script(
 			'meta-box-runner',
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/admin-meta-box.js',
+			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/admin_meta_box.js',
 			array( 'jquery' ),
 			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
 			true

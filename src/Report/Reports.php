@@ -45,14 +45,17 @@ class Reports {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param integer|null $user_id The user ID.
+	 * @param integer|null $blog_id The blog ID.
+	 *
 	 * @return Report
 	 */
-	public function create_report(): Report {
+	public function create_report( ?int $user_id = null, ?int $blog_id = null ): Report {
 		$report = new Report(
 			0,
 			md5( rand() . time() ), //phpcs:ignore WordPress.WP.AlternativeFunctions.rand_rand
-			get_current_user_id(),
-			get_current_blog_id(),
+			$user_id ?? get_current_user_id(),
+			$blog_id ?? get_current_blog_id(),
 			self::PENDING_STATUS,
 			'',
 			\current_time( 'mysql', true ),
@@ -123,17 +126,18 @@ class Reports {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param integer $post_id The post ID.
+	 * @param integer      $post_id The post ID.
+	 * @param integer|null $user_id The user ID.
+	 * @param integer|null $blog_id The blog ID.
 	 *
 	 * @return Report
 	 */
-	public function create_report_for_post( int $post_id ): Report {
+	public function create_report_for_post( int $post_id, ?int $user_id = null, ?int $blog_id = null ): Report {
 		$report = new Report(
 			0,
 			md5( rand() . time() ), //phpcs:ignore WordPress.WP.AlternativeFunctions.rand_rand
-			get_current_user_id(),
-			get_current_blog_id(),
-			false,
+			$user_id ?? get_current_user_id(),
+			$blog_id ?? get_current_blog_id(),
 			self::PENDING_STATUS,
 			__( 'Report for post: ', 'wpcomsp_wayback_link_fixer' ) . $post_id,
 			\current_time( 'mysql', true )

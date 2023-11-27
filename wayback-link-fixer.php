@@ -28,6 +28,7 @@
  * WC tested up to:         7.4
  **/
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Events;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Reports;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Way_Back_Machine\Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Repository;

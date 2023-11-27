@@ -1,0 +1,43 @@
+#wlf-events-trigger {
+    padding: 5px;
+    border: 1px solid black;
+    background: #d9d9d9;
+    h2 {
+        margin-top: 0;
+    }
+    .wlf-event-trigger-row {
+        padding: 2px;
+        margin-bottom: 5px;
+        p {
+            margin: 0;
+            margin-top: 3px;
+            span.description {
+                color: #646970;
+            }
+        }
+        input[type="text"] {
+            width: 100%;
+        }
+        p.with-checkbox {
+            input[type="checkbox"] {
+                margin-left: 5px;
+            }
+        }
+        .checkbox-grid {
+            display: flex;
+            label {
+                display: block;
+                padding: 5px;
+            }
+        }
+        #wlf-event-select2-errors {
+            font-size: medium;
+            text-align: center;
+            color: red;
+            font-weight: 700;
+        }
+    }
+    .select2-container--default .select2-selection--multiple {
+        padding-bottom: 0px;
+    }
+}
