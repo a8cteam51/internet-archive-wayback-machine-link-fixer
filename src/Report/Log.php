@@ -130,4 +130,15 @@ class Log {
 
 		return $serialized;
 	}
+
+	/**
+	 * Count how many broken links.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return integer
+	 */
+	public function count_broken_links(): int {
+		return count( array_filter( $this->get_links(), fn( Link $link ): bool =>  $link->is_broken() ) );
+	}
 }

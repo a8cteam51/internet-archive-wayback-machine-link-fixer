@@ -245,6 +245,22 @@ class Settings_Page {
 				),
 			)
 		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::EVENT_POSTS_PER_BATCH,
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => 'absint',
+				'default'           => 10,
+				'show_in_rest'      => array(
+					'name'   => Settings::EVENT_POSTS_PER_BATCH,
+					'schema' => array(
+						'type' => 'integer',
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -306,6 +322,14 @@ class Settings_Page {
 			Settings::LINK_EXCLUSIONS,
 			__( 'Link Exclusions', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_link_exclusions_field' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::EVENT_POSTS_PER_BATCH,
+			__( 'Posts per Batch', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_event_posts_per_batch_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
@@ -517,5 +541,24 @@ class Settings_Page {
 			esc_attr( $index ),
 			esc_html__( 'Remove', 'wpcomsp_wayback_link_fixer' )
 		);
+	}
+
+	/**
+	 * Render the event posts per batch field.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return  void
+	 */
+	public function render_event_posts_per_batch_field(): void {
+		?>
+		<input
+			type="number"
+			id="<?php echo esc_attr( Settings::EVENT_POSTS_PER_BATCH ); ?>"
+			name="<?php echo esc_attr( Settings::EVENT_POSTS_PER_BATCH ); ?>"
+			value="<?php echo absint( Settings::get_posts_per_batch() ); ?>"
+			min="0"
+		/>
+		<?php
 	}
 }
