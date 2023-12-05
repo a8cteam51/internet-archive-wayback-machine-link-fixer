@@ -60,4 +60,3 @@ $wlf_report = $wlf_event->get_report();
 		?>
 	</th>
 </tr>
-

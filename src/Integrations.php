@@ -2,6 +2,7 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\CLI\Commands;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Events;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
@@ -23,6 +24,7 @@ final class Integrations {
 	private Meta_Box_Runner $meta_box_runner;
 	private Event_Page $event_page;
 	private Events $events;
+	private Commands $commands;
 
 	/**
 	 * Creates a new instance of the integrations component.
@@ -33,6 +35,7 @@ final class Integrations {
 		$this->meta_box_runner    = new Meta_Box_Runner();
 		$this->event_page         = new Event_Page();
 		$this->events             = new Events();
+		$this->commands           = new Commands();
 	}
 
 
@@ -54,6 +57,7 @@ final class Integrations {
 		$this->meta_box_runner->initialize();
 		$this->event_page->initialize();
 		$this->events->initialize();
+		$this->commands->initialize();
 	}
 
 	// endregion
