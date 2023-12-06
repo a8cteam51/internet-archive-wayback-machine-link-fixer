@@ -51,4 +51,34 @@ class Report_Helper {
 	public static function get_report_list_link(): string {
 		return \admin_url( 'admin.php?page=' . Report_Viewer_Page::PAGE_SLUG );
 	}
+
+	/**
+	 * Generate a file name for a report CSV.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Report $report The report to generate the file name for.
+	 *
+	 * @return string
+	 */
+	public static function get_report_csv_filename( Report $report ): string {
+		return 'wlf-report-' . $report->get_report_id() . '.csv';
+	}
+
+	/**
+	 * Gets the assumed URL fot a report csv.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Report $report The report to generate the URL for.
+	 *
+	 * @return string
+	 */
+	public static function get_report_csv_url( Report $report ): string {
+		return \sprintf(
+			'%s/%s',
+			\wp_upload_dir()['url'],
+			self::get_report_csv_filename( $report )
+		);
+	}
 }
