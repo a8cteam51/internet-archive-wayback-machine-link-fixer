@@ -65,7 +65,7 @@
 							<p class="wlf-report-link__replacements-row"><em><?php esc_html_e( 'No replacements found.', 'wpcomsp_wayback_link_fixer' ); ?></em></p>
 						<?php else : ?>
 							<?php foreach ( $wlf_link->get_replacement_options() as $wlf_link_replacement ) : ?>
-								<p class="wlf-report-link__replacements-row"<?php echo esc_url( $wlf_link_replacement ); ?></p>
+								<p class="wlf-report-link__replacements-row">* <?php echo esc_url( $wlf_link_replacement ); ?></p>
 							<?php endforeach; ?>
 						<?php endif; ?>
 					</div>
