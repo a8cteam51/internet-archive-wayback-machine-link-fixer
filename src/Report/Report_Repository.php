@@ -528,7 +528,6 @@ class Report_Repository {
 
 		// Build the query.
 		$query = "SELECT COUNT(*) FROM {$this->report_table_name()}";
-
 		// If we have a where clause, add it to the query.
 		$where = $this->compile_where_clause( $user_id, $blog_id, $statuses, $date_from, $date_to );
 		if ( ! empty( $where ) ) {
@@ -566,7 +565,7 @@ class Report_Repository {
 			$where = array();
 
 			// If we have a user id, add it to the where clause.
-		if ( null !== $user_id && 0 !== $user_id ) {
+		if ( null !== $user_id ) {
 			$where[] = $wpdb->prepare( 'user_id = %d', $user_id );
 		}
 

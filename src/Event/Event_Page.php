@@ -76,8 +76,8 @@ class Event_Page {
 		// Register sub page
 		$this->menu_hook = add_submenu_page(
 			Report_Viewer_Page::PAGE_SLUG,
-			__( 'Events', 'wpcomsp_wayback_link_fixer' ),
-			__( 'Events', 'wpcomsp_wayback_link_fixer' ),
+			__( 'New Report', 'wpcomsp_wayback_link_fixer' ),
+			__( 'New Report', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )

@@ -299,6 +299,32 @@ function wpcomsp_wayback_link_fixer_render_admin_notice( string $message, string
 	);
 }
 
+/**
+ * Get the name of a user for the select2 field.
+ *
+ * @since 1.0.0
+ *
+ * @param \WP_User $user The user.
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_get_user_name( WP_User $user ): string {
+	// Get the name.
+	$name = $user->display_name;
+
+	// If we have no name, show the username.
+	if ( ! $name ) {
+		$name = $user->user_login;
+	}
+
+	// If we have no username, show the email.
+	if ( ! $name ) {
+		$name = $user->user_email;
+	}
+
+	return $name;
+}
+
 // endregion
 
 //region OTHERS
