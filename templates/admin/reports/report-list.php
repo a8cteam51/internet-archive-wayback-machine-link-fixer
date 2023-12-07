@@ -32,6 +32,7 @@ $wlf_reports_shown = ( function () use ( $current_page, $reports_per_page, $tota
 
 <div id="wlf-report-list" class="wrap">
 	<h2><?php esc_html_e( 'Reports', 'wpcomsp_wayback_link_fixer' ); ?></h2>
+	<div id="wlf-report-notifications"></div>
 	<!-- Filters -->
 	<div id="wlf-report-count">
 		<p>
@@ -92,7 +93,10 @@ $wlf_reports_shown = ( function () use ( $current_page, $reports_per_page, $tota
 								<a href="<?php echo esc_url( Report_Helper::get_single_report_link( $wlf_report['report'] ) ); ?>">
 									<span class="dashicons dashicons-visibility"></span>
 								</a>
-								<span class="dashicons dashicons-trash"></span>
+								<a href="<?php echo esc_url( Report_Helper::get_delete_report_link( $wlf_report['report'] ) ); ?>">
+									<span class="dashicons dashicons-trash"></span>
+								</a>
+								<span class="dashicons dashicons-media-spreadsheet wlf-download-report-csv" data-report="<?php echo esc_attr( $wlf_report['report']->get_report_id() ); ?>"></span>
 							</td>
 						</tr>
 					<?php endforeach; ?>

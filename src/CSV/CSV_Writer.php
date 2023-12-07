@@ -65,7 +65,7 @@ class CSV_Writer {
 	 *
 	 * @var \WP_Filesystem_Base
 	 */
-	private \WP_Filesystem_Base $filesystem;
+	private ?\WP_Filesystem_Base $filesystem = null;
 
 	/**
 	 * Create an instance of the CSV Generator.
@@ -84,13 +84,25 @@ class CSV_Writer {
 		}
 
 		// Initialize the file system.
+		$this->filesystem = $this->get_filesystem();
+	}
+
+	/**
+	 * Set the file system , if it was not set in the constructor.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return \WP_Filesystem_Base
+	 */
+	public function get_filesystem(): \WP_Filesystem_Base {
 		global $wp_filesystem;
 		if ( empty( $wp_filesystem ) ) {
 			require_once ABSPATH . '/wp-admin/includes/file.php';
 			WP_Filesystem();
-			$this->filesystem = $wp_filesystem;
 		}
+		return $wp_filesystem;
 	}
+
 
 	/**
 	 * Set the headers for the CSV file.
@@ -133,6 +145,8 @@ class CSV_Writer {
 	 * @return string The path to the CSV file.
 	 */
 	public function generate( array $data ): string {
+		// Reset the filesystem if its not already (Bug with CLI)
+		$this->filesystem = $this->get_filesystem();
 
 		// Get the headers from the data, if not set.
 		$headers = $this->headers ?? $this->get_headers_from_data( $data );
@@ -222,6 +236,12 @@ class CSV_Writer {
 	 * @throws \Exception If the data is not an array.
 	 */
 	private function normalize_data( array $data ): array {
+
+		// If we have an empty array, return it.
+		if ( empty( $data ) ) {
+			return $data;
+		}
+
 		// Cast all rows to array if not already an array.
 		$data = array_map( fn( $row ): array => is_array( $row ) ? $row : array( $row ), $data );
 

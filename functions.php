@@ -276,6 +276,29 @@ function wpcomsp_wayback_link_fixer_get_log_post_title( int $post_id ): string {
 	);
 }
 
+/**
+ * Renders an admin notice.
+ *
+ * @since 1.0.0
+ *
+ * @param string $message The message to display.
+ * @param string $type    The type of notice. Can be error, warning, success or info.
+ *
+ * @return void
+ */
+function wpcomsp_wayback_link_fixer_render_admin_notice( string $message, string $type = 'error' ): void {
+	add_action(
+		'admin_notices',
+		function () use ( $message, $type ) {
+			printf(
+				'<div class="notice notice-%s is-dismissible"><p>%s</p></div>',
+				esc_attr( $type ),
+				esc_html( $message )
+			);
+		}
+	);
+}
+
 // endregion
 
 //region OTHERS

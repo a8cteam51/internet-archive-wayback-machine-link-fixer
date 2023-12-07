@@ -53,6 +53,28 @@ class Report_Helper {
 	}
 
 	/**
+	 * Get the link for deleting a report.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Report $report The report to generate the link for.
+	 *
+	 * @return string
+	 */
+	public static function get_delete_report_link( Report $report ): string {
+		$url = self::get_report_list_link();
+
+		return \add_query_arg(
+			array(
+				'action' => 'delete-report',
+				'report' => $report->get_report_id(),
+				'nonce'  => \wp_create_nonce( 'delete-report-' . $report->get_report_id() ),
+			),
+			$url
+		);
+	}
+
+	/**
 	 * Generate a file name for a report CSV.
 	 *
 	 * @since 1.0.0

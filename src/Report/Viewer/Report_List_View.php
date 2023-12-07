@@ -179,6 +179,8 @@ class Report_List_View {
 	}
 
 
+
+
 	/**
 	 * Renders the template.
 	 *

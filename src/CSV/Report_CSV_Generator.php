@@ -70,7 +70,6 @@ class Report_CSV_Generator {
 	public function generate( Report $report ): string {
 		// Get all the logs.
 		$logs = $this->get_logs( $report );
-
 		// Set the filename.
 		$this->csv_writer->set_filename( Report_Helper::get_report_csv_filename( $report ) );
 

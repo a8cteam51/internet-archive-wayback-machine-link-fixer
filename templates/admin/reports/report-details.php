@@ -22,6 +22,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 	<p class="wlf-report__back">
 		<a href="<?php echo esc_url( $back_url ); ?>"><?php esc_html_e( '<< Back to Reports', 'wpcomsp_wayback_link_fixer' ); ?></a>
 	</p>
+	<div id="wlf-report-notifications"></div>
 	<div class="wlf-report-details">
 		<p class="wlf-report-details__description">
 			<?php
@@ -75,6 +76,30 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 				);
 				?>
 			<?php endif; ?>
+		</p>
+		<p class="wlf-report-details__status">
+			<?php
+			printf(
+				// translators: %1$s is the title and %2$s is the description.
+				'<strong>%s</strong> : %s',
+				esc_html__( 'Status', 'wpcomsp_wayback_link_fixer' ),
+				esc_html( ucfirst( $report->get_process() ) )
+			);
+			?>
+		</p>
+		<?php if ( 'completed' === $report->get_process() ) : ?>
+			<p class="wlf-report-details__download">
+				<?php
+				printf(
+					// translators: %1$s is the report id, %2$s is teh download label.
+					'<span class="button wlf-download-report-csv" data-report="%s">%s</span>',
+					esc_attr( $report->get_report_id() ),
+					esc_html__( 'Download CSV', 'wpcomsp_wayback_link_fixer' )
+				);
+				?>
+			</p>
+		<?php endif; ?>
+
 
 	</div>
 	<!-- The Logs -->

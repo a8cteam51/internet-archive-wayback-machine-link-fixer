@@ -686,4 +686,70 @@ class Report_Repository {
 			$rows
 		);
 	}
+
+	/**
+	 * Delete a report and its logs.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $report_id The report id to delete.
+	 *
+	 * @return boolean
+	 *
+	 * @throws \Exception If there is an error deleting the report.
+	 */
+	public function delete_report( string $report_id ): bool {
+		// Get the report.
+		$report = $this->find_by_report_id( $report_id );
+
+		// If we have no report, throw an exception.
+		if ( null === $report ) {
+			throw new \Exception( esc_html__( 'Report not found.', 'wpcomsp_wayback_link_fixer' ) );
+		}
+
+		global $wpdb;
+
+		// Get all logs for report.
+		$logs = $this->get_logs( $report );
+
+		// Delete all logs.
+		foreach ( $logs as $log ) {
+			$this->delete_log( $log );
+		}
+
+		return $wpdb->delete(
+			$this->report_table_name(),
+			array(
+				'report_id' => $report_id,
+			),
+			array(
+				'%s',
+			)
+		);
+	}
+
+	/**
+	 * Delete a log.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Log $log The log to delete.
+	 *
+	 * @return boolean
+	 *
+	 * @throws \Exception If there is an error deleting the log.
+	 */
+	public function delete_log( Log $log ): bool {
+		global $wpdb;
+
+		return $wpdb->delete(
+			$this->log_table_name(),
+			array(
+				'id' => $log->get_id(),
+			),
+			array(
+				'%d',
+			)
+		);
+	}
 }
