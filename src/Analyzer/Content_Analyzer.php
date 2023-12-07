@@ -13,6 +13,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Link_Cache\Link_Cache;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Way_Back_Machine\Way_Back_Machine;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -27,6 +28,13 @@ class Content_Analyzer {
 	 * @var string
 	 */
 	private string $content_raw;
+
+	/**
+	 * The post ID.
+	 *
+	 * @var integer
+	 */
+	private int $post_id;
 
 	/**
 	 * Should the link cache be used.
@@ -50,17 +58,34 @@ class Content_Analyzer {
 	private Link_Cache $link_cache;
 
 	/**
+	 * Access to the way back machine content.
+	 *
+	 * @var Way_Back_Machine
+	 */
+	private Way_Back_Machine $way_back_machine;
+
+	/**
+	 * Cache of the content from way back machine.
+	 *
+	 * @var string|null
+	 */
+	private ?string $way_back_machine_content = null;
+
+	/**
 	 * Create instance of Content_Analyzer.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param string  $content_raw    The raw content to analyse.
+	 * @param integer $post_id        The post ID.
 	 * @param boolean $use_link_cache Whether to use the link cache or not.
 	 */
-	public function __construct( string $content_raw, bool $use_link_cache ) {
-		$this->content_raw    = $content_raw;
-		$this->use_link_cache = $use_link_cache;
-		$this->link_cache     = Link_Cache::get_default();
+	public function __construct( string $content_raw, int $post_id, bool $use_link_cache ) {
+		$this->content_raw      = $content_raw;
+		$this->post_id          = $post_id;
+		$this->use_link_cache   = $use_link_cache;
+		$this->link_cache       = Link_Cache::get_default();
+		$this->way_back_machine = new Way_Back_Machine();
 	}
 
 		/**
@@ -103,7 +128,7 @@ class Content_Analyzer {
 			true,
 			null,
 			$http_code,
-			array(),
+			$this->find_link_in_way_back_machine_content( $contents ),
 			array( $message )
 		);
 
@@ -113,6 +138,46 @@ class Content_Analyzer {
 		} else {
 			$this->links[] = $link;
 		}
+	}
+
+	/**
+	 * Attempt to find a link in the way back machine content.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $content The content to search.
+	 *
+	 * @return string[]
+	 */
+	private function find_link_in_way_back_machine_content( string $content ): array {
+
+		// If the way back machine content is not set, get it.
+		if ( ! $this->way_back_machine_content ) {
+			$page_url = get_permalink( $this->post_id );
+			$page_url = apply_filters( 'wlf_permalink_for_check', $page_url, $this->post_id );
+
+			$this->way_back_machine_content = $this->way_back_machine->get_content( $page_url );
+		}
+
+		// Get all links from the content using teh DOM walker.
+		$crawler = new Crawler( $this->way_back_machine_content );
+		$links   = $crawler->filter( 'a' );
+
+		// Iterate through all links and look for any which as the same content.
+		$options = array();
+		foreach ( $links as $link_node ) {
+			if ( $content === $link_node->nodeValue ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				$attributes = $link_node->attributes;
+				$href_node  = $attributes->getNamedItem( 'href' ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				if ( $href_node ) {
+					// Remove and add trailing slash.(avoid dupes)
+					$options[] = \trailingslashit( \untrailingslashit( $href_node->nodeValue ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				}
+			}
+		}
+
+		// Return only unique options.
+		return array_unique( $options );
 	}
 
 	/**

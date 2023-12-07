@@ -42,13 +42,19 @@ class Way_Back_Machine {
 	 * @return string|null
 	 */
 	public function get_content( string $url ): ?string {
+		// Ensure the url has a trailing slash.
+		$url = trailingslashit( untrailingslashit( $url ) );
+
 		$latest_snapshot = $this->client->get_latest_snapshot( $url );
 
 		if ( ! $latest_snapshot ) {
 			return null;
 		}
 
-		$archive_url = $latest_snapshot['url'];
+		$archive_url = esc_url( $latest_snapshot['url'] );
+
+		// Get the link prefix
+		$prefix = sprintf( 'http://web.archive.org/web/%s/', $latest_snapshot['timestamp'] );
 
 		$response = wp_remote_get( $archive_url );
 
@@ -61,6 +67,9 @@ class Way_Back_Machine {
 		if ( ! $response_body ) {
 			return null;
 		}
+
+		// Remove all instances of the prefix from the response body.
+		$response_body = str_replace( $prefix, '', $response_body );
 
 		return $response_body;
 	}
