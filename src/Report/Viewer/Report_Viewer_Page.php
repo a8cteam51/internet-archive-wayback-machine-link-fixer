@@ -12,6 +12,9 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer;
 defined( 'ABSPATH' ) || exit;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Repository;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Ajax\Generate_CSV_Ajax;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer\Report_List_View;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer\Report_Single_View;
 
 /**
  * Report View Page
@@ -58,10 +61,14 @@ class Report_Viewer_Page {
 	 * @return void
 	 */
 	public function initialize(): void {
+		add_action( 'admin_init', array( $this, 'maybe_remove_report' ) );
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 		add_action( 'admin_menu', array( $this, 'change_wp_menu_title' ), 50 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_notices', array( $this, 'render_notices' ) );
+
+		// Generate CSV Ajax, only for logged in
+		add_action( 'wp_ajax_' . Generate_CSV_Ajax::ACTION, new Generate_CSV_Ajax() );
 	}
 
 	/**
@@ -83,6 +90,40 @@ class Report_Viewer_Page {
 			'dashicons-admin-tools',
 			self::MENU_POSITION,
 		);
+	}
+
+	/**
+ * Will remove a report if passed in the URL.
+ *
+ * @since 1.0.0
+ *
+ * @return void
+ */
+	public function maybe_remove_report(): void {
+		// If action=delete-report in url.
+		if ( isset( $_GET['action'] )
+		&& 'delete-report' === $_GET['action']
+		&& isset( $_GET['report'] )
+		&& isset( $_GET['nonce'] )
+		&& wp_verify_nonce( $_GET['nonce'], 'delete-report-' . $_GET['report'] )
+		) {
+			// Delete the report.
+			try {
+				$result = $this->report_repository->delete_report( \sanitize_text_field( $_GET['report'] ) );
+			} catch ( \Throwable $th ) {
+				// Render error if we have one.
+				wpcomsp_wayback_link_fixer_render_admin_notice( $th->getMessage() );
+				return;
+			}
+
+			$notice = true === $result
+				? __( 'Report deleted successfully.', 'wpcomsp_wayback_link_fixer' )
+				: __( 'Report could not be deleted.', 'wpcomsp_wayback_link_fixer' );
+
+			$type = true === $result ? 'success' : 'error';
+
+			wpcomsp_wayback_link_fixer_render_admin_notice( $notice, $type );
+		}
 	}
 
 	/**
@@ -157,8 +198,10 @@ class Report_Viewer_Page {
 			$this->page_hook,
 			'wlf_report_viewer',
 			array(
-				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'nonce'    => wp_create_nonce( 'wlf_report_viewer' ),
+				'ajax_url'   => admin_url( 'admin-ajax.php' ),
+				'nonce'      => wp_create_nonce( 'wlf_report_viewer' ),
+				'csv_action' => Generate_CSV_Ajax::ACTION,
+				'csv_nonce'  => wp_create_nonce( Generate_CSV_Ajax::NONCE_KEY ),
 			)
 		);
 

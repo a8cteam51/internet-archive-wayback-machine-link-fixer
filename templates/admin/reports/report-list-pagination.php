@@ -30,6 +30,11 @@ $wpcomsp_get_url = function ( int $page ): string {
 	// Apply params to the admin url.
 	return add_query_arg( $params, admin_url() );
 };
+
+// If total pages is 0, bail.
+if ( 0 === $total_pages ) {
+	return;
+}
 ?>
 
 <div class="wlf-report-list-pagination">

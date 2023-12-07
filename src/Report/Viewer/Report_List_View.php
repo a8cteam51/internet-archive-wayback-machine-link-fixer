@@ -121,8 +121,8 @@ class Report_List_View {
 		$this->reports_per_page = isset( $_GET[ self::PARAM_REPORTS_PER_PAGE ] ) ? absint( $_GET[ self::PARAM_REPORTS_PER_PAGE ] ) : 10;
 		$this->current_page     = isset( $_GET[ self::PARAM_CURRENT_PAGE ] ) ? absint( $_GET[ self::PARAM_CURRENT_PAGE ] ) : 1;
 		// Set the filters.
-		$this->filters['blog_id']   = isset( $_GET[ self::PARAM_BLOG_ID ] ) ? absint( $_GET[ self::PARAM_BLOG_ID ] ) : null;
-		$this->filters['user_id']   = isset( $_GET[ self::PARAM_USER_ID ] ) ? absint( $_GET[ self::PARAM_USER_ID ] ) : null;
+		$this->filters['blog_id']   = isset( $_GET[ self::PARAM_BLOG_ID ] ) ? intval( $_GET[ self::PARAM_BLOG_ID ] ) : null;
+		$this->filters['user_id']   = isset( $_GET[ self::PARAM_USER_ID ] ) && '' !== $_GET[ self::PARAM_USER_ID ] ? intval( $_GET[ self::PARAM_USER_ID ] ) : null;
 		$this->filters['status']    = isset( $_GET[ self::PARAM_STATUS ] ) ? (array) $_GET[ self::PARAM_STATUS ] : array();
 		$this->filters['date_from'] = isset( $_GET[ self::PARAM_DATE_FROM ] ) ? sanitize_text_field( $_GET[ self::PARAM_DATE_FROM ] ) : null;
 		$this->filters['date_to']   = isset( $_GET[ self::PARAM_DATE_TO ] ) ? sanitize_text_field( $_GET[ self::PARAM_DATE_TO ] ) : null;
@@ -177,6 +177,8 @@ class Report_List_View {
 			$this->total_pages = (int) ceil( $this->total_reports / $this->reports_per_page );
 		}
 	}
+
+
 
 
 	/**

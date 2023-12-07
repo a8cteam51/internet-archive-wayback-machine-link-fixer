@@ -276,6 +276,55 @@ function wpcomsp_wayback_link_fixer_get_log_post_title( int $post_id ): string {
 	);
 }
 
+/**
+ * Renders an admin notice.
+ *
+ * @since 1.0.0
+ *
+ * @param string $message The message to display.
+ * @param string $type    The type of notice. Can be error, warning, success or info.
+ *
+ * @return void
+ */
+function wpcomsp_wayback_link_fixer_render_admin_notice( string $message, string $type = 'error' ): void {
+	add_action(
+		'admin_notices',
+		function () use ( $message, $type ) {
+			printf(
+				'<div class="notice notice-%s is-dismissible"><p>%s</p></div>',
+				esc_attr( $type ),
+				esc_html( $message )
+			);
+		}
+	);
+}
+
+/**
+ * Get the name of a user for the select2 field.
+ *
+ * @since 1.0.0
+ *
+ * @param \WP_User $user The user.
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_get_user_name( WP_User $user ): string {
+	// Get the name.
+	$name = $user->display_name;
+
+	// If we have no name, show the username.
+	if ( ! $name ) {
+		$name = $user->user_login;
+	}
+
+	// If we have no username, show the email.
+	if ( ! $name ) {
+		$name = $user->user_email;
+	}
+
+	return $name;
+}
+
 // endregion
 
 //region OTHERS

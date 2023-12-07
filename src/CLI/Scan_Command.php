@@ -11,6 +11,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\CLI;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Helper;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\CSV\Report_CSV_Generator;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Content_Analyzer;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner\CLI_Runner;
 
@@ -279,15 +280,31 @@ class Scan_Command {
 		// If we are generating a csv.
 		if ( $this->args['create-csv'] ) {
 			// Get the csv.
-			\WP_CLI::line( '------' );
-			\WP_CLI::line( 'CSV Generated' );
+			\WP_CLI::line( 'Generating CSV' );
+			try {
+				$csv_generator = new Report_CSV_Generator();
+				$csv_path      = $csv_generator->generate( $wlf_report );
+			} catch ( \Throwable $th ) {
+				// Show the error.
+				\WP_CLI::line( 'Error generating CSV' . $th->getMessage() );
+				$csv_path = false;
+			}
+
+			// If we have valid path, get the assumed url.
+			$csv_url = $csv_path && file_exists( $csv_path )
+				? Report_Helper::get_report_csv_url( $wlf_report )
+				: false;
+
+			\WP_CLI::line(
+				true === is_string( $csv_url ) ? 'CSV URL: ' . $csv_url : 'CSV could not be generated.'
+			);
+
 			// // phpcs:ignore,  \WP_CLI::line( 'CSV URL: ' . $wlf_csv );
 			\WP_CLI::line( '------' );
 		}
 
 		// revert to the current blog, if multisite.
 		if ( is_multisite() ) {
-			\WP_CLI::line( '------' );
 			\WP_CLI::line( 'Switching back to blog id: ' . $current_blog );
 			\WP_CLI::line( '------' );
 

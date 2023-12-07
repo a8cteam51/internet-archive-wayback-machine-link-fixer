@@ -56,7 +56,6 @@ class Meta_Box_Runner {
 	 * @return  void
 	 */
 	public function initialize(): void {
-		// dump( \DOING_AJAX );
 		// If not on edit.php in the admin, return.
 		if ( \is_admin() && 'post.php' === \basename( $_SERVER['PHP_SELF'] ) ) {
 			$this->register_hooks();
