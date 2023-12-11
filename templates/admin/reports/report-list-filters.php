@@ -98,13 +98,15 @@ $wlf_page_arg = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : 
 		$( '.filter-multiple' ).select2({
 			multiple: true,
 			placeholder: 'Any',
-			width: 'resolve'
+			width: 'resolve',
+			allowClear: true
 		});
 
 		$( '.filter-single' ).select2({
 			multiple: false,
 			placeholder: 'Any',
-			width: 'resolve'
+			width: 'resolve',
+			allowClear: true
 		});
 	} );
 </script>
