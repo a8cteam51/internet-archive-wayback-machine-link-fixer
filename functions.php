@@ -341,6 +341,24 @@ function wpcomsp_wayback_link_fixer_get_user_name( WP_User $user ): string {
 	return $name;
 }
 
+/**
+ * Get the name of a blog based on its id.
+ *
+ * @since 1.0.0
+ *
+ * @param integer $blog_id The blog id.
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_get_blog_name( int $blog_id ): string {
+	// If we are on the main site, return the site name.
+	if ( 1 === $blog_id ) {
+		return get_bloginfo( 'name' );
+	}
+
+	return get_blog_option( $blog_id, 'blogname' );
+}
+
 // endregion
 
 //region OTHERS

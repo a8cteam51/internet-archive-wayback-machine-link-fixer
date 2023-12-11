@@ -70,7 +70,7 @@ class Log {
 	 * @param integer $report_id The report id.
 	 * @param integer $post_id   The post id.
 	 * @param string  $links     The broken links as serialised array of Link models.
-	 * @param intger  $blog_id   The blog id.
+	 * @param integer $blog_id   The blog id.
 	 */
 	public function __construct( int $id, int $report_id, int $post_id, string $links, ?int $blog_id = null ) {
 		$this->id        = $id;
@@ -160,7 +160,6 @@ class Log {
 	 *
 	 * @return integer
 	 */
-
 	public function get_blog_id(): int {
 		return $this->blog_id;
 	}

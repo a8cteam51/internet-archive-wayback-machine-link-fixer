@@ -9,10 +9,11 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\CLI;
 
-use function WP_CLI\Utils\make_progress_bar;
+use WP_CLI\Utils;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Helper;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\CSV\Report_CSV_Generator;
+
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner\CLI_Runner;
 
 /**
@@ -277,7 +278,7 @@ class Scan_Command {
 		\WP_CLI::line( 'Total posts to process: ' . $wlf_runner->get_total_count() );
 
 		// Show the progress bar.
-		$wlf_progress = make_progress_bar( 'Processing posts.', $wlf_runner->get_total_count(), 100 );
+		$wlf_progress = Utils\make_progress_bar( 'Processing posts.', $wlf_runner->get_total_count(), 100 );
 
 		// Process the batch based on size of
 		while ( $wlf_runner->has_more_posts_to_process() ) {

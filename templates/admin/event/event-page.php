@@ -17,10 +17,13 @@
 		<table id="events" style="width:100%">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Status</th>
-					<th>Posts Processed</th>
-					<th>Ignore Link Cache</th>
+					<th><?php esc_html_e( 'ID', 'wpcomsp_wayback_link_fixer' ); ?></th>
+					<?php if ( is_multisite() ) : ?>
+						<th><?php esc_html_e( 'Site', 'wpcomsp_wayback_link_fixer' ); ?></th>
+					<?php endif; ?>
+					<th><?php esc_html_e( 'Status', 'wpcomsp_wayback_link_fixer' ); ?></th>
+					<th><?php esc_html_e( 'Posts Processed', 'wpcomsp_wayback_link_fixer' ); ?></th>
+					<th><?php esc_html_e( 'Ignore Link Cache', 'wpcomsp_wayback_link_fixer' ); ?></th>
 					<th></th>
 				</tr>
 			</thead>

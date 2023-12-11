@@ -15,6 +15,7 @@
 		const eventLocalized = adminEvents;
 		const eventIgnorePosts = jQuery('#wlf_event_ignore_posts');
 		const eventIgnorePostErrors = jQuery('#wlf-event-select2-errors');
+		const eventBlogIds = jQuery('#wlf_event_blog_ids');
 
 		/**
 		 * Get the selected post types.
@@ -36,7 +37,7 @@
 				'event_ignore_cache': eventIgnoreCache.is(':checked'),
 				'event_post_types': getSelectedPostTypes(),
 				'user': eventLocalized.userId,
-				'blog': eventLocalized.blogId,
+				'blog': eventBlogIds.val(),
 				'event_exclude_posts': eventIgnorePosts.val(),
 			};
 			// Make the ajax call.
@@ -57,6 +58,18 @@
 					console.log(error.responseJSON.data.message, 'error');
 				}
 			});
+		});
+
+		/**
+		 * Populates the select2 for selecting blogs
+		 *
+		 * @since 1.0.0
+		 */
+		eventBlogIds.select2({
+			multiple: true,
+			placeholder: 'Any',
+			width: 'resolve',
+			allowClear: true
 		});
 
 		/**
@@ -92,7 +105,9 @@
 						results: data.data.items
 					};
 				}
-			}
+			},
+			placeholder: 'None',
+			allowClear: true
 		});
 
 	});

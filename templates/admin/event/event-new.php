@@ -18,11 +18,32 @@ $wlf_cpt_label = function ( string $cpt ): string {
 
 ?>
 <div id="wlf-events-trigger">
+
 	<h2><?php esc_html_e( 'Run a new report', 'wpcomsp_wayback_link_fixer' ); ?></h2>
 	<div class="wlf-event-trigger-row">
 		<p><strong><?php esc_html_e( 'HTTP Status Codes to check', 'wpcomsp_wayback_link_fixer' ); ?></strong></p>
 		<input type="text" id="event_http" value="<?php echo esc_attr( Settings::get_http_status_codes() ); ?>">
 		<p class="description"><?php esc_html_e( 'Comma separated list of HTTP status codes to check.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+	</div>
+	<div class="wlf-event-trigger-row">
+		<?php if ( ! is_multisite() ) : ?>
+			<input type="hidden" id="wlf_event_blog_ids[1]" name="wlf_event_blog_ids[]" value="1">
+		<?php else : ?>
+			<?php if ( is_network_admin() ) : ?>
+				<p><strong><?php esc_html_e( 'Sites to check', 'wpcomsp_wayback_link_fixer' ); ?></strong></p>
+				<select id="wlf_event_blog_ids" class="select2" multiple style="width: 100%">
+					<?php foreach ( get_sites() as $wlf_site ) : ?>
+						<option value="<?php echo esc_attr( $wlf_site->blog_id ); ?>" SELECTED>
+							<?php echo esc_html( $wlf_site->blogname ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+				<p class="description"><?php esc_html_e( 'A separate report will be generated per site selected.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+			<?php else : ?>
+				<input type="hidden" id="wlf_event_blog_ids" name="wlf_event_blog_ids[]" value="<?php echo esc_attr( get_current_blog_id() ); ?>">
+			<?php endif; ?>
+		<?php endif; ?>
+
 	</div>
 	<div class="wlf-event-trigger-row">
 		<p class="with-checkbox"><strong>

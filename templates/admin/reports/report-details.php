@@ -34,7 +34,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 			);
 			?>
 		</p>
-		<?php if ( is_multisite()  ) : ?>
+		<?php if ( is_multisite() ) : ?>
 			<p class="wlf-report-details__site">
 			<?php
 			printf(

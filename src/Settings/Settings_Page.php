@@ -186,7 +186,15 @@ class Settings_Page {
 				echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings updated.', 'wpcomsp_wayback_link_fixer' ) . '</p></div>';
 			}
 
-			echo '<form action="edit.php?action=' . self::PAGE_SLUG . '" method="post">';
+			echo wp_kses(
+				'<form action="edit.php?action=' . self::PAGE_SLUG . '" method="post">',
+				array(
+					'form' => array(
+						'action' => array(),
+						'method' => array(),
+					),
+				)
+			);
 			wp_nonce_field( self::PAGE_SLUG, '_multisite_settings_nonce', false, true );
 		} else {
 			echo '<form action="options.php" method="post">';
