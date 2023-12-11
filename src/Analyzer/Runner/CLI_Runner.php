@@ -263,9 +263,9 @@ class CLI_Runner {
 			}
 
 			$wlf_content = get_post_field( 'post_content', $wlf_post_id );
-
+			\WP_CLI::line( $this->ignore_cache ? 'ignore' : 'not ignore' );
 			// Create analyzer.
-			$wlf_analyzer = new Content_Analyzer( $wlf_content, $wlf_post_id, $this->ignore_cache );
+			$wlf_analyzer = new Content_Analyzer( $wlf_content, $wlf_post_id, ! $this->ignore_cache );
 			$wlf_analyzer->analyze( $this->http_status );
 
 			// Add links to a log for report.
