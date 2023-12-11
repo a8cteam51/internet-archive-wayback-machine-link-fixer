@@ -9,11 +9,11 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\CLI;
 
+use function WP_CLI\Utils\make_progress_bar;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Helper;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\CSV\Report_CSV_Generator;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner\CLI_Runner;
-use function WP_CLI\Utils\make_progress_bar;
 
 /**
  * Scan Command
@@ -163,6 +163,14 @@ class Scan_Command {
 		// If create csv is set, cast to a bool.
 		if ( isset( $assoc_args['create-csv'] ) ) {
 			$assoc_args['create-csv'] = filter_var( $assoc_args['create-csv'], FILTER_VALIDATE_BOOLEAN );
+		}
+
+		// Handle running on multisite.
+		if ( \is_multisite() ) {
+			// If blog id is not set, set to 'All'.
+			if ( ! isset( $assoc_args['blog-id'] ) ) {
+				$assoc_args['blog-id'] = 0;
+			}
 		}
 
 		$wlf_defaults = array(
