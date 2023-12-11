@@ -49,7 +49,9 @@ class Settings {
 	 * @return  string[]
 	 */
 	public static function get_post_types(): array {
-		return array_map( 'esc_html', (array) get_option( self::POST_TYPES_OPTION_KEY, array( 'page', 'post' ) ) );
+		return \is_multisite()
+			? array_map( 'esc_html', (array) \get_site_option( self::POST_TYPES_OPTION_KEY, array( 'page', 'post' ) ) )
+			: array_map( 'esc_html', (array) get_option( self::POST_TYPES_OPTION_KEY, array( 'page', 'post' ) ) );
 	}
 
 	/**
@@ -60,7 +62,9 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function drop_tables_on_uninstall(): bool {
-		return (bool) get_option( self::DROP_TABLES_ON_UNINSTALL_KEY, false );
+		return \is_multisite()
+			? (bool) get_site_option( self::DROP_TABLES_ON_UNINSTALL_KEY, false )
+			: (bool) get_option( self::DROP_TABLES_ON_UNINSTALL_KEY, false );
 	}
 
 	/**
@@ -71,7 +75,9 @@ class Settings {
 	 * @return class-string<Abstract_Migration>[]
 	 */
 	public static function migrations(): array {
-		return get_option( self::MIGRATIONS_KEY, array() );
+		return \is_multisite()
+			? (array) get_site_option( self::MIGRATIONS_KEY, array() )
+			: (array) get_option( self::MIGRATIONS_KEY, array() );
 	}
 
 	/**
@@ -84,7 +90,11 @@ class Settings {
 	 * @return void
 	 */
 	public static function update_migrations( array $migrations ): void {
-		update_option( self::MIGRATIONS_KEY, $migrations );
+		if ( \is_multisite() ) {
+			update_site_option( self::MIGRATIONS_KEY, $migrations );
+		} else {
+			update_option( self::MIGRATIONS_KEY, $migrations, false );
+		}
 	}
 
 	/**
@@ -95,7 +105,9 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_checker_timeout(): int {
-		return absint( get_option( self::LINK_CHECKER_TIMEOUT, 1000 ) );
+		return \is_multisite()
+			? absint( get_site_option( self::LINK_CHECKER_TIMEOUT, 1000 ) )
+			: absint( get_option( self::LINK_CHECKER_TIMEOUT, 1000 ) );
 	}
 
 	/**
@@ -107,7 +119,9 @@ class Settings {
 	 * @return string
 	 */
 	public static function get_http_status_codes(): string {
-		return sanitize_text_field( (string) get_option( self::HTTP_STATUS_CODES, '404,410,500,502,300,301,303' ) );
+		return \is_multisite()
+			? sanitize_text_field( (string) get_site_option( self::HTTP_STATUS_CODES, '404,410,500,502,300,301,303' ) )
+			: sanitize_text_field( (string) get_option( self::HTTP_STATUS_CODES, '404,410,500,502,300,301,303' ) );
 	}
 
 	/**
@@ -118,7 +132,9 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_cache_expiration(): int {
-		return absint( get_option( self::LINK_CACHE_EXPIRATION, DAY_IN_SECONDS ) );
+		return \is_multisite()
+			? absint( get_site_option( self::LINK_CACHE_EXPIRATION, DAY_IN_SECONDS ) )
+			: absint( get_option( self::LINK_CACHE_EXPIRATION, DAY_IN_SECONDS ) );
 	}
 
 	/**
@@ -129,7 +145,9 @@ class Settings {
 	 * @return string[]
 	 */
 	public static function get_link_exclusions(): array {
-		$links = array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
+		$links = \is_multisite()
+			? array_map( 'esc_html', (array) get_site_option( self::LINK_EXCLUSIONS, array() ) )
+			: array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
 		return apply_filters( 'wlf_link_exclusions', $links );
 	}
 
@@ -141,6 +159,8 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_posts_per_batch(): int {
-		return absint( get_option( self::EVENT_POSTS_PER_BATCH, 10 ) );
+		return \is_multisite()
+			? absint( get_site_option( self::EVENT_POSTS_PER_BATCH, 10 ) )
+			: absint( get_option( self::EVENT_POSTS_PER_BATCH, 10 ) );
 	}
 }

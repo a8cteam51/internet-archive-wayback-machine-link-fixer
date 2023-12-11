@@ -27,8 +27,7 @@ class Report_Repository {
 	 * @return string
 	 */
 	private function report_table_name(): string {
-		global $wpdb;
-		return $wpdb->prefix . Settings::SCAN_REPORT_TABLE_NAME;
+		return Settings::SCAN_REPORT_TABLE_NAME;
 	}
 
 	/**
@@ -39,8 +38,7 @@ class Report_Repository {
 	 * @return string
 	 */
 	private function log_table_name(): string {
-		global $wpdb;
-		return $wpdb->prefix . Settings::SCAN_LOG_TABLE_NAME;
+		return Settings::SCAN_LOG_TABLE_NAME;
 	}
 
 
@@ -352,12 +350,13 @@ class Report_Repository {
 		}
 
 		return array_map(
-			function ( \stdClass $row ): Log {
+			function ( \stdClass $row ) use( $report ): Log {
 				return new Log(
 					$row->id,
 					$row->report_id,
 					$row->post_id,
-					$row->links
+					$row->links,
+					$report->get_blog_id(),
 				);
 			},
 			$rows

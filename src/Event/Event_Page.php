@@ -62,6 +62,11 @@ class Event_Page {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'wp_ajax_' . self::CREATE_EVENT_AJAX_ACTION, array( $this, 'create_event_ajax_handler' ) );
 		add_action( 'wp_ajax_' . self::SELECT2_EXCLUDE_POSTS_AJAX_ACTION, array( $this, 'get_posts_by_post_type_ajax_handler' ) );
+
+				// Enable network support for pages.
+		if ( \is_multisite() ) {
+			add_action( 'network_admin_menu', array( $this, 'register_page' ) );
+		}
 	}
 
 	/**

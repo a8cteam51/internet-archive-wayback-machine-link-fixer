@@ -65,10 +65,14 @@ class Report_Viewer_Page {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 		add_action( 'admin_menu', array( $this, 'change_wp_menu_title' ), 50 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		add_action( 'admin_notices', array( $this, 'render_notices' ) );
 
 		// Generate CSV Ajax, only for logged in
 		add_action( 'wp_ajax_' . Generate_CSV_Ajax::ACTION, new Generate_CSV_Ajax() );
+
+		// Enable network support for pages.
+		if ( \is_multisite() ) {
+			add_action( 'network_admin_menu', array( $this, 'register_page' ), 9 );
+		}
 	}
 
 	/**
@@ -213,13 +217,5 @@ class Report_Viewer_Page {
 		wp_enqueue_script( 'select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', 'jquery', '4.1.0-rc.0', true );
 	}
 
-	/**
-	 * Render the notices.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return void
-	 */
-	public function render_notices(): void {
-	}
+
 }

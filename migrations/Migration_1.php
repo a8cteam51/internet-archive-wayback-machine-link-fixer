@@ -35,7 +35,7 @@ class Migration_1 extends Abstract_Migration {
 		$charset_collate = $wpdb->get_charset_collate();
 
 		// Create the report table.
-		$report_table_name = $wpdb->prefix . Settings::SCAN_REPORT_TABLE_NAME;
+		$report_table_name = Settings::SCAN_REPORT_TABLE_NAME;
 		$report_sql        = "CREATE TABLE $report_table_name (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
 			report_id varchar(36) NOT NULL,
@@ -49,7 +49,7 @@ class Migration_1 extends Abstract_Migration {
 		) $charset_collate;";
 
 		// Create the log table.
-		$log_table_name = $wpdb->prefix . Settings::SCAN_LOG_TABLE_NAME;
+		$log_table_name = Settings::SCAN_LOG_TABLE_NAME;
 
 		$log_sql = "CREATE TABLE $log_table_name (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -60,7 +60,7 @@ class Migration_1 extends Abstract_Migration {
 		) $charset_collate;";
 
 		// Create the link cache table.
-		$link_cache_table_name = $wpdb->prefix . Settings::SCAN_LINK_CACHE_TABLE;
+		$link_cache_table_name = Settings::SCAN_LINK_CACHE_TABLE;
 
 		$link_cache_sql = "CREATE TABLE $link_cache_table_name (
 			id bigint(20) NOT NULL AUTO_INCREMENT,

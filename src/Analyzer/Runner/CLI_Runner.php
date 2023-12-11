@@ -179,17 +179,22 @@ class CLI_Runner {
 	 * @return void
 	 */
 	public function set_post_ids_to_process(): void {
-		// Get all post ids.
-		$this->post_ids_to_process = get_posts(
-			array(
-				'post_type'      => $this->post_types,
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-				'cache_results'  => false,
-				'post__not_in'   => $this->ignore_posts,
-			)
+		$args = array(
+			'post_type'      => $this->post_types,
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'cache_results'  => false,
+			'post__not_in'   => $this->ignore_posts,
 		);
+
+		// If multisite, set the blog id.
+		if ( \is_multisite() ) {
+			$args['blog_id'] = $this->blog;
+		}
+
+		// Get all post ids.
+		$this->post_ids_to_process = get_posts( $args );
 	}
 
 	/**
