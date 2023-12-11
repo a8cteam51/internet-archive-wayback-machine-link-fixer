@@ -121,10 +121,31 @@ class Report_List_View {
 		$this->reports_per_page = isset( $_GET[ self::PARAM_REPORTS_PER_PAGE ] ) ? absint( $_GET[ self::PARAM_REPORTS_PER_PAGE ] ) : 10;
 		$this->current_page     = isset( $_GET[ self::PARAM_CURRENT_PAGE ] ) ? absint( $_GET[ self::PARAM_CURRENT_PAGE ] ) : 1;
 		// Set the filters.
-		$this->filters['blog_id']   = isset( $_GET[ self::PARAM_BLOG_ID ] ) ? intval( $_GET[ self::PARAM_BLOG_ID ] ) : null;
 		$this->filters['status']    = isset( $_GET[ self::PARAM_STATUS ] ) ? (array) $_GET[ self::PARAM_STATUS ] : array();
 		$this->filters['date_from'] = isset( $_GET[ self::PARAM_DATE_FROM ] ) ? sanitize_text_field( $_GET[ self::PARAM_DATE_FROM ] ) : null;
 		$this->filters['date_to']   = isset( $_GET[ self::PARAM_DATE_TO ] ) ? sanitize_text_field( $_GET[ self::PARAM_DATE_TO ] ) : null;
+
+		// Set the blog ID based on if multisite and if access via network admin.
+		$this->filters['blog_id'] = ( function () {
+			// If the blog id is set in params, set.
+			if ( isset( $_GET[ self::PARAM_BLOG_ID ] ) ) {
+				return intval( $_GET[ self::PARAM_BLOG_ID ] );
+			}
+
+			// If not a multisite, set as null.
+			if ( ! is_multisite() ) {
+				return null;
+			}
+
+			// If viewing from the network admin, set as null.
+			if ( is_network_admin() ) {
+				return null;
+			}
+
+			// If viewing from a single site, set only that site.
+			return get_current_blog_id();
+		}
+		)();
 
 		// Set the user id. DO not treat empty as 0
 		$this->filters['user_id'] = ( function () {

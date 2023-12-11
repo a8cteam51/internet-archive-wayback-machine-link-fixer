@@ -72,6 +72,7 @@ class Report_Viewer_Page {
 		// Enable network support for pages.
 		if ( \is_multisite() ) {
 			add_action( 'network_admin_menu', array( $this, 'register_page' ), 9 );
+			add_action( 'network_admin_menu', array( $this, 'change_wp_menu_title' ), 50 );
 		}
 	}
 
@@ -216,6 +217,4 @@ class Report_Viewer_Page {
 		wp_enqueue_style( 'select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', array(), '4.1.0-rc.0' );
 		wp_enqueue_script( 'select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', 'jquery', '4.1.0-rc.0', true );
 	}
-
-
 }
