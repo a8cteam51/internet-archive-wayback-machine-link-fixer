@@ -27,7 +27,7 @@ $wlf_page_arg = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : 
 			<label><?php esc_html_e( 'Created by: ', 'wpcomsp_wayback_link_fixer' ); ?>
 				<select class="filter-single" id="user-filter" name="<?php echo esc_attr( Report_List_View::PARAM_USER_ID ); ?>">
 					<option value="" <?php selected( $filters['user_id'], null ); ?>><?php esc_html_e( 'Any', 'wpcomsp_wayback_link_fixer' ); ?>></option>
-					<option value="0" <?php selected( (int) $filters['user_id'], 0 ); ?>><?php esc_html_e( 'Unknown', 'wpcomsp_wayback_link_fixer' ); ?></option>
+					<option value="0" <?php selected( $filters['user_id'], 0 ); ?>><?php esc_html_e( 'Unknown', 'wpcomsp_wayback_link_fixer' ); ?></option>
 					<?php foreach ( get_users( array( 'role__in' => array( 'administrator', 'editor', 'author' ) ) ) as $wlf_user ) : ?>
 						<option value="<?php echo esc_attr( $wlf_user->ID ); ?>" <?php selected( (int) $filters['user_id'], $wlf_user->ID ); ?>>
 							<?php echo esc_html( wpcomsp_wayback_link_fixer_get_user_name( $wlf_user ) ); ?>

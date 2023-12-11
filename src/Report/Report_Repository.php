@@ -483,6 +483,9 @@ class Report_Repository {
 			$query .= ' WHERE ' . implode( ' AND ', $where );
 		}
 
+		// Order by the create date.
+		$query .= ' ORDER BY Reports.create_date DESC';
+
 		// Add the limit and offset.
 		$query .= " LIMIT {$limit} OFFSET {$offset}";
 
