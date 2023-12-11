@@ -122,10 +122,18 @@ class Report_List_View {
 		$this->current_page     = isset( $_GET[ self::PARAM_CURRENT_PAGE ] ) ? absint( $_GET[ self::PARAM_CURRENT_PAGE ] ) : 1;
 		// Set the filters.
 		$this->filters['blog_id']   = isset( $_GET[ self::PARAM_BLOG_ID ] ) ? intval( $_GET[ self::PARAM_BLOG_ID ] ) : null;
-		$this->filters['user_id']   = isset( $_GET[ self::PARAM_USER_ID ] ) && '' !== $_GET[ self::PARAM_USER_ID ] ? intval( $_GET[ self::PARAM_USER_ID ] ) : null;
 		$this->filters['status']    = isset( $_GET[ self::PARAM_STATUS ] ) ? (array) $_GET[ self::PARAM_STATUS ] : array();
 		$this->filters['date_from'] = isset( $_GET[ self::PARAM_DATE_FROM ] ) ? sanitize_text_field( $_GET[ self::PARAM_DATE_FROM ] ) : null;
 		$this->filters['date_to']   = isset( $_GET[ self::PARAM_DATE_TO ] ) ? sanitize_text_field( $_GET[ self::PARAM_DATE_TO ] ) : null;
+
+		// Set the user id. DO not treat empty as 0
+		$this->filters['user_id'] = ( function () {
+			// If the user id is set, return null.
+			if ( ! isset( $_GET[ self::PARAM_USER_ID ] ) || '' === $_GET[ self::PARAM_USER_ID ] ) {
+				return null;
+			}
+			return absint( $_GET[ self::PARAM_USER_ID ] );
+		} )();
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 	}
 
