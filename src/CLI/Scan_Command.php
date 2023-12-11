@@ -153,6 +153,11 @@ class Scan_Command {
 			$assoc_args['ignore-posts'] = array_map( 'intval', $assoc_args['ignore-posts'] );
 		}
 
+		// If ignore cache is set, turn into a bool.
+		if ( isset( $assoc_args['ignore-cache'] ) ) {
+			$assoc_args['ignore-cache'] = filter_var( $assoc_args['ignore-cache'], FILTER_VALIDATE_BOOLEAN );
+		}
+
 		$wlf_defaults = array(
 			'dry-run'      => false,
 			'post-types'   => Settings::get_post_types(),
