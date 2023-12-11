@@ -12,20 +12,21 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\CLI;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Helper;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\CSV\Report_CSV_Generator;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Content_Analyzer;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner\CLI_Runner;
+use function WP_CLI\Utils\make_progress_bar;
 
 /**
  * Scan Command
  *
  * @template Args as array{
- *  dry-run: bool,
+ *  dry-run: boolean,
  *  post-types: string[],
  *  http-status: string,
- *  ignore-cache: bool,
- *  ignore-posts: int[],
- *  create-csv: bool,
+ *  ignore-cache: boolean,
+ *  ignore-posts: integer[],
+ *  create-csv: boolean,
  *  blog: int,
+ *  batch-size: integer
  *  }
  */
 class Scan_Command {
@@ -128,6 +129,7 @@ class Scan_Command {
 		\WP_CLI::log( 'Ignore posts: ' . implode( ',', $this->args['ignore-posts'] ) );
 		\WP_CLI::log( 'Create CSV: ' . ( $this->args['create-csv'] ? 'true' : 'false' ) );
 		\WP_CLI::log( 'Blog ID: ' . ( 0 === $this->args['blog-id'] ? 'All' : $this->args['blog-id'] ) );
+		\WP_CLI::log( 'Batch size: ' . $this->args['batch-size'] );
 	}
 
 	/**
@@ -158,6 +160,11 @@ class Scan_Command {
 			$assoc_args['ignore-cache'] = filter_var( $assoc_args['ignore-cache'], FILTER_VALIDATE_BOOLEAN );
 		}
 
+		// If create csv is set, cast to a bool.
+		if ( isset( $assoc_args['create-csv'] ) ) {
+			$assoc_args['create-csv'] = filter_var( $assoc_args['create-csv'], FILTER_VALIDATE_BOOLEAN );
+		}
+
 		$wlf_defaults = array(
 			'dry-run'      => false,
 			'post-types'   => Settings::get_post_types(),
@@ -166,6 +173,7 @@ class Scan_Command {
 			'ignore-posts' => array(),
 			'create-csv'   => false,
 			'blog-id'      => 1,
+			'batch-size'   => Settings::get_posts_per_batch(),
 		);
 
 		// If a blog id is set, but its not a multisite, set as 1 and show notice.
@@ -213,7 +221,6 @@ class Scan_Command {
 		$end_time = microtime( true );
 
 		\WP_CLI::line( 'Scan completed in ' . round( ( $end_time - $start_time ), 3 ) . ' seconds' );
-		\WP_CLI::line( '------' );
 
 		return $results;
 	}
@@ -262,12 +269,12 @@ class Scan_Command {
 		\WP_CLI::line( 'Total posts to process: ' . $wlf_runner->get_total_count() );
 
 		// Show the progress bar.
-		$wlf_progress = \WP_CLI\Utils\make_progress_bar( 'Processing posts.', $wlf_runner->get_total_count() );
+		$wlf_progress = make_progress_bar( 'Processing posts.', $wlf_runner->get_total_count(), 100 );
 
 		// Process the batch based on size of
 		while ( $wlf_runner->has_more_posts_to_process() ) {
-			$wlf_runner->process_batch( 1 );
-			$wlf_progress->tick( 1 );
+			$wlf_progress->tick( absint( $this->args['batch-size'] ) );
+			$wlf_runner->process_batch( absint( $this->args['batch-size'] ) );
 		}
 
 		$wlf_progress->finish();
@@ -304,7 +311,6 @@ class Scan_Command {
 				true === is_string( $csv_url ) ? 'CSV URL: ' . $csv_url : 'CSV could not be generated.'
 			);
 
-			// // phpcs:ignore,  \WP_CLI::line( 'CSV URL: ' . $wlf_csv );
 			\WP_CLI::line( '------' );
 		}
 
