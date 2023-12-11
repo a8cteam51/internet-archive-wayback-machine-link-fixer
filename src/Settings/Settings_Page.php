@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Settings_Page {
 
-	public const PAGE_SLUG        = 'wpcomsp-wayback-link-fixer';
+	public const PAGE_SLUG        = 'wpcomsp_wayback_link_fixer_settings';
 	public const SETTINGS_SECTION = 'wpcomsp-wayback-link-fixer-settings';
 
 	/**
@@ -39,8 +39,15 @@ class Settings_Page {
 	 */
 	public function initialize(): void {
 		add_action( 'admin_init', array( $this, 'register_fields' ) );
-		add_action( 'admin_menu', array( $this, 'register_page' ), 20, 0 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+		// Enable network support for pages.
+		if ( \is_multisite() ) {
+			add_action( 'network_admin_menu', array( $this, 'register_page' ) );
+			add_action( 'network_admin_edit_' . self::PAGE_SLUG, array( $this, 'update_multisite_settings' ) );
+		} else {
+			add_action( 'admin_menu', array( $this, 'register_page' ), 20, 0 );
+		}
 	}
 
 	/**
@@ -55,6 +62,50 @@ class Settings_Page {
 		// Register the settings fields.
 		$this->register_settings_fields();
 		$this->add_settings_fields();
+	}
+
+		/**
+	 * Handle saving settings for multisite.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function update_multisite_settings(): void {
+		// If the multiste settings nonce is not set, show an error.
+		if ( ! isset( $_POST['_multisite_settings_nonce'] ) ) {
+			wp_die( esc_html__( 'Invalid request.', 'wpcomsp_wayback_link_fixer' ) );
+		}
+
+		// Verify the nonce.
+		if ( ! wp_verify_nonce( $_POST['_multisite_settings_nonce'], self::PAGE_SLUG ) ) {
+			wp_die( esc_html__( 'Invalid request.', 'wpcomsp_wayback_link_fixer' ) );
+		}
+
+		// Options
+		$options = array_filter( $GLOBALS['wp_registered_settings'], fn( $setting ) => 0 === strpos( $setting, 't51_wlf_' ), ARRAY_FILTER_USE_KEY );
+
+		// Iterate over the options and update them.
+		foreach ( $options as $name => $option ) {
+			$value = isset( $_POST[ $name ] ) ? $_POST[ $name ] : $option['default'];
+
+			// Sanitize the option.
+			$value = $option['sanitize_callback']( $value );
+			// Update the option.
+			update_site_option( $name, $value );
+		}
+
+		// Redirect back to the network settings page.
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'    => self::PAGE_SLUG,
+					'updated' => 'true',
+				),
+				network_admin_url( 'admin.php' )
+			)
+		);
+		exit;
 	}
 
 	/**
@@ -75,6 +126,9 @@ class Settings_Page {
 			array( $this, 'render_page' )
 		);
 	}
+
+
+
 
 	/**
 	 * Enqueue the settings page scripts.
@@ -126,11 +180,29 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_page(): void {
+		if ( \is_multisite() ) {
+			// If updated, show notice.
+			if ( isset( $_GET['updated'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings updated.', 'wpcomsp_wayback_link_fixer' ) . '</p></div>';
+			}
 
-		echo '<form action="options.php" method="post">';
+			echo wp_kses(
+				'<form action="edit.php?action=' . self::PAGE_SLUG . '" method="post">',
+				array(
+					'form' => array(
+						'action' => array(),
+						'method' => array(),
+					),
+				)
+			);
+			wp_nonce_field( self::PAGE_SLUG, '_multisite_settings_nonce', false, true );
+		} else {
+			echo '<form action="options.php" method="post">';
+		}
 
 		\do_settings_sections( self::PAGE_SLUG );
 		\settings_fields( self::PAGE_SLUG );
+
 		\submit_button( __( 'Save Changes', 'wpcomsp_wayback_link_fixer' ) );
 
 		echo '</form>';

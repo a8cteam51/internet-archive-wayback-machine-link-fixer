@@ -257,23 +257,39 @@ function wpcomsp_wayback_link_fixer_get_status_code_name( int $code ): string {
  * Generates the title with link for a post as part pf a log.
  *
  * @param integer $post_id The post id.
+ * @param integer $blog_id The blog id.
  *
  * @return string The title with link.
  */
-function wpcomsp_wayback_link_fixer_get_log_post_title( int $post_id ): string {
+function wpcomsp_wayback_link_fixer_get_log_post_title( int $post_id, int $blog_id ): string {
+
+	// Cache the current blog id.
+	$current_blog_id = get_current_blog_id();
+
+	// If a multisite, swtich to the blog.
+	if ( is_multisite() && $blog_id !== $current_blog_id ) {
+		switch_to_blog( $blog_id );
+	}
 	// If the post doesnt exist
 	if ( ! get_post_status( $post_id ) ) {
 		return esc_html__( 'Post Not Found', 'wpcomsp_wayback_link_fixer' );
 	}
 
 	$wlf_log_post_title = get_the_title( $post_id );
-	return sprintf(
+	$link               = sprintf(
 		// translators: %1$s is the post url, %2$s is the post title, %3$d is the post id.
 		"<a href='%s'>%s (#%d)</a>",
 		esc_url( get_edit_post_link( $post_id ) ?? '#' ),
 		'' === $wlf_log_post_title ? esc_html__( 'No title', 'wpcomsp_wayback_link_fixer' ) : esc_html( $wlf_log_post_title ),
 		$post_id
 	);
+
+	// If a multisite, swtich back to the current blog.
+	if ( is_multisite() && $blog_id !== $current_blog_id ) {
+		switch_to_blog( $current_blog_id );
+	}
+
+	return $link;
 }
 
 /**
@@ -323,6 +339,24 @@ function wpcomsp_wayback_link_fixer_get_user_name( WP_User $user ): string {
 	}
 
 	return $name;
+}
+
+/**
+ * Get the name of a blog based on its id.
+ *
+ * @since 1.0.0
+ *
+ * @param integer $blog_id The blog id.
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_get_blog_name( int $blog_id ): string {
+	// If we are on the main site, return the site name.
+	if ( 1 === $blog_id ) {
+		return get_bloginfo( 'name' );
+	}
+
+	return get_blog_option( $blog_id, 'blogname' );
 }
 
 // endregion

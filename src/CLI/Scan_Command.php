@@ -9,11 +9,12 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\CLI;
 
+use WP_CLI\Utils;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Helper;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\CSV\Report_CSV_Generator;
+
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner\CLI_Runner;
-use function WP_CLI\Utils\make_progress_bar;
 
 /**
  * Scan Command
@@ -165,6 +166,14 @@ class Scan_Command {
 			$assoc_args['create-csv'] = filter_var( $assoc_args['create-csv'], FILTER_VALIDATE_BOOLEAN );
 		}
 
+		// Handle running on multisite.
+		if ( \is_multisite() ) {
+			// If blog id is not set, set to 'All'.
+			if ( ! isset( $assoc_args['blog-id'] ) ) {
+				$assoc_args['blog-id'] = 0;
+			}
+		}
+
 		$wlf_defaults = array(
 			'dry-run'      => false,
 			'post-types'   => Settings::get_post_types(),
@@ -269,7 +278,7 @@ class Scan_Command {
 		\WP_CLI::line( 'Total posts to process: ' . $wlf_runner->get_total_count() );
 
 		// Show the progress bar.
-		$wlf_progress = make_progress_bar( 'Processing posts.', $wlf_runner->get_total_count(), 100 );
+		$wlf_progress = Utils\make_progress_bar( 'Processing posts.', $wlf_runner->get_total_count(), 100 );
 
 		// Process the batch based on size of
 		while ( $wlf_runner->has_more_posts_to_process() ) {

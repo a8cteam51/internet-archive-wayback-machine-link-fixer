@@ -64,8 +64,8 @@ $wlf_reports_shown = ( function () use ( $current_page, $reports_per_page, $tota
 				<tr>
 					<th scope="col"></th>
 					<th scope="col"><?php esc_html_e( 'Created By', 'wpcomsp_wayback_link_fixer' ); ?></th>
-					<?php if ( is_multisite() ) : ?>
-						<th scope="col"><?php esc_html_e( 'Blog', 'wpcomsp_wayback_link_fixer' ); ?></th>
+					<?php if ( is_multisite() && is_network_admin() ) : ?>
+						<th scope="col"><?php esc_html_e( 'Site Name', 'wpcomsp_wayback_link_fixer' ); ?></th>
 					<?php endif; ?>
 					<th scope="col"><?php esc_html_e( 'Status', 'wpcomsp_wayback_link_fixer' ); ?></th>
 					<th scope="col"><?php esc_html_e( 'Pages Checked', 'wpcomsp_wayback_link_fixer' ); ?></th>
@@ -86,8 +86,8 @@ $wlf_reports_shown = ( function () use ( $current_page, $reports_per_page, $tota
 						</td>
 
 						<td><?php echo esc_html( wpcomsp_wayback_link_fixer_get_report_author( $wlf_report['report'] ) ); ?></td>
-						<?php if ( is_multisite() ) : ?>
-							<td><?php echo esc_html( get_blog_details( $wlf_report['report']->get_blog_id() )->blogname ); ?></td>
+						<?php if ( is_multisite() && is_network_admin() ) : ?>
+							<td><?php echo esc_html( wpcomsp_wayback_link_fixer_get_blog_name( $wlf_report['report']->get_blog_id() ) ); ?></td>
 						<?php endif; ?>
 						<td><?php echo esc_html( $wlf_report['report']->get_process() ); ?></td>
 						<td><?php echo esc_html( $wlf_report['logs'] ); ?></td>

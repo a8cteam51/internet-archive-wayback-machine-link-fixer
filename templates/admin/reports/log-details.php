@@ -14,7 +14,7 @@
 		<p class="wlf-report-log__header-post-title">
 			<span class="accordion-toggle dashicons dashicons-visibility show-log" data-action="show"></span>
 			<span class="accordion-toggle dashicons dashicons-hidden hide-log" data-action="hide"></span>
-			<?php echo wpcomsp_wayback_link_fixer_get_log_post_title( $log->get_post_id() ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo wpcomsp_wayback_link_fixer_get_log_post_title( $log->get_post_id(), $log->get_blog_id() ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</p>
 		<p class="wlf-report-log__header-link-details" ><strong>
 			<?php

@@ -62,6 +62,11 @@ class Event_Page {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'wp_ajax_' . self::CREATE_EVENT_AJAX_ACTION, array( $this, 'create_event_ajax_handler' ) );
 		add_action( 'wp_ajax_' . self::SELECT2_EXCLUDE_POSTS_AJAX_ACTION, array( $this, 'get_posts_by_post_type_ajax_handler' ) );
+
+				// Enable network support for pages.
+		if ( \is_multisite() ) {
+			add_action( 'network_admin_menu', array( $this, 'register_page' ) );
+		}
 	}
 
 	/**
@@ -190,8 +195,11 @@ class Event_Page {
 			: array();
 
 		$user_id = array_key_exists( 'user', $_POST ) ? (int) $_POST['user'] : 0;
-		$blog_id = array_key_exists( 'blog', $_POST ) ? (int) $_POST['blog'] : 1;
-		$row_id  = array_key_exists( 'row_id', $_POST ) ? (int) $_POST['row_id'] : 0;
+
+		// Get the array of blogs
+		$blogs = array_key_exists( 'blog', $_POST )
+			? array_map( 'absint', (array) $_POST['blog'] )
+			: array( \get_current_blog_id() );
 
 		// Create the event.
 		try {
@@ -205,8 +213,13 @@ class Event_Page {
 				throw new \Exception( __( 'You must select at least one HTTP code.', 'wpcomsp_wayback_link_fixer' ) );
 			}
 
-			// Create the event.
-			$event_id = $this->events->create_event( $post_types, $http_codes, $exclude_posts, $ignore_link_cache, $user_id, $blog_id );
+			// Iterate over all the blogs
+			$events = array();
+			foreach ( $blogs as $blog_id ) {
+				// Create the event.
+				$event_id = $this->events->create_event( $post_types, $http_codes, $exclude_posts, $ignore_link_cache, $user_id, $blog_id );
+				$events[] = $event_id;
+			}
 		} catch ( \Throwable $th ) {
 			wp_send_json_error(
 				array(
@@ -224,29 +237,41 @@ class Event_Page {
 				)
 			);
 		}
+
+		// Generate the HTML for the result.
+		$html = '';
+		foreach ( $events as $event_id ) {
+			$html .= ( function ( int $event_id ): string {
+				// Get the event.
+				$event = $this->events->get_event( $event_id );
+
+				// If we have no event, return empty.
+				if ( null === $event ) {
+					return '';
+				}
+				return wpcomsp_wayback_link_fixer_render_template(
+					'admin/event/event-row.php',
+					array(
+						'event' => $event,
+						'id'    => $event_id,
+					),
+					false
+				);
+			} )( (int) $event_id );
+		}
+
+		// If the html is empty, throw an error.
+		if ( '' === $html ) {
+			$html = '<td><tr colspan="5">No event found</tr></td>';
+		}
+
 		// Return the event hash.
 		wp_send_json_success(
 			array(
 				'message' => __( 'Event created successfully.', 'wpcomsp_wayback_link_fixer' ),
 				'data'    => array(
 					'eventId'      => $event_id,
-					'row'          => ( function ( int $event_id ): string {
-						// Get the event.
-						$event = $this->events->get_event( $event_id );
-
-						// If we have no event, return the error.
-						if ( null === $event ) {
-							return '<td><tr colspan="5">No event found</tr></td>';
-						}
-						return wpcomsp_wayback_link_fixer_render_template(
-							'admin/event/event-row.php',
-							array(
-								'event' => $event,
-								'id'    => $event_id,
-							),
-							false
-						);
-					} )( (int) $event_id ),
+					'row'          => $html,
 					'httpCodes'    => $http_codes,
 					'postTypes'    => $post_types,
 					'ignoreCache'  => $ignore_link_cache,

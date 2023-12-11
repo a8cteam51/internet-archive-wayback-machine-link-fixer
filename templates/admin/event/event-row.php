@@ -33,10 +33,13 @@ if ( ! $wlf_event instanceof Event ) {
 
 // Extract the report.
 $wlf_report = $wlf_event->get_report();
-
 ?>
 <tr id="event_<?php echo esc_attr( $id ); ?>" data-row="<?php echo esc_attr( $id ); ?>">
 	<th><?php echo esc_attr( $id ); ?></th>
+	<?php if ( is_multisite() ) : ?>
+		<th><?php echo esc_html( wpcomsp_wayback_link_fixer_get_blog_name( $wlf_report->get_blog_id() ) ); ?></th>
+	<?php endif; ?>
+
 	<th><?php echo esc_html( ucfirst( $wlf_report->get_process() ) ); ?></th>
 	<th>
 		<?php

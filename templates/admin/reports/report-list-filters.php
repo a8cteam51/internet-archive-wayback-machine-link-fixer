@@ -38,16 +38,22 @@ $wlf_page_arg = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : 
 
 			<!-- Blogs -->
 			<?php if ( is_multisite() ) : ?>
-				<label><?php esc_html_e( 'Blog: ', 'wpcomsp_wayback_link_fixer' ); ?>
-					<select class="filter-multiple" id="blog-filter"  name="<?php echo esc_attr( Report_List_View::PARAM_BLOG_ID ); ?>[]" multiple>
-						<option value=""><?php esc_html_e( 'Any', 'wpcomsp_wayback_link_fixer' ); ?></option>
-						<?php foreach ( get_sites() as $wlf_site ) : ?>
-							<option value="<?php echo esc_attr( $wlf_site->blog_id ); ?>" <?php selected( $filters['blog_id'], $wlf_site->blog_id ); ?>>
-								<?php echo esc_html( $wlf_site->blogname ); ?>
-							</option>
-						<?php endforeach; ?>
-					</select>
-				</label>
+				<?php // If viewing from the network admin, show all sites. ?>
+				<?php if ( is_network_admin() ) : ?>
+					<label><?php esc_html_e( 'Blog: ', 'wpcomsp_wayback_link_fixer' ); ?>
+						<select class="filter-multiple" id="blog-filter"  name="<?php echo esc_attr( Report_List_View::PARAM_BLOG_ID ); ?>[]" multiple>
+							<option value=""><?php esc_html_e( 'Any', 'wpcomsp_wayback_link_fixer' ); ?></option>
+							<?php foreach ( get_sites() as $wlf_site ) : ?>
+								<option value="<?php echo esc_attr( $wlf_site->blog_id ); ?>" <?php selected( $filters['blog_id'], $wlf_site->blog_id ); ?>>
+									<?php echo esc_html( $wlf_site->blogname ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</label>
+					<?php // If viewing from a single site, show only that site. ?>
+				<?php else : ?>
+					<input type="hidden" name="<?php echo esc_attr( Report_List_View::PARAM_BLOG_ID ); ?>[]" value="<?php echo esc_attr( get_current_blog_id() ); ?>" />
+				<?php endif; ?>
 			<?php endif; ?>
 
 			<!-- Status -->

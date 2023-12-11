@@ -53,6 +53,15 @@ class Log {
 	private array $links = array();
 
 	/**
+	 * The blog id
+	 *
+	 * @since 1.0.1
+	 *
+	 * @var integer
+	 */
+	private int $blog_id;
+
+	/**
 	 * Create instance of Report Log.
 	 *
 	 * @since 1.0.0
@@ -61,12 +70,14 @@ class Log {
 	 * @param integer $report_id The report id.
 	 * @param integer $post_id   The post id.
 	 * @param string  $links     The broken links as serialised array of Link models.
+	 * @param integer $blog_id   The blog id.
 	 */
-	public function __construct( int $id, int $report_id, int $post_id, string $links ) {
+	public function __construct( int $id, int $report_id, int $post_id, string $links, ?int $blog_id = null ) {
 		$this->id        = $id;
 		$this->report_id = $report_id;
 		$this->post_id   = $post_id;
 		$this->links     = (array) \maybe_unserialize( $links );
+		$this->blog_id   = $blog_id ?? get_current_blog_id();
 	}
 
 	/**
@@ -140,5 +151,16 @@ class Log {
 	 */
 	public function count_broken_links(): int {
 		return count( array_filter( $this->get_links(), fn( Link $link ): bool =>  $link->is_broken() ) );
+	}
+
+	/**
+	 * Get the blog id.
+	 *
+	 * @since 1.0.1
+	 *
+	 * @return integer
+	 */
+	public function get_blog_id(): int {
+		return $this->blog_id;
 	}
 }
