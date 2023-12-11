@@ -146,16 +146,15 @@ class Events {
 	 * @return integer[]
 	 */
 	private function get_post_ids( array $post_types, array $ignore_posts ): array {
-		$posts = get_posts(
+		return get_posts(
 			array(
 				'post_type'      => $post_types,
 				'posts_per_page' => -1,
 				'post_status'    => 'any',
 				'fields'         => 'ids',
+				'post__not_in'   => $ignore_posts,
 			)
 		);
-
-		return array_diff( $posts, $ignore_posts );
 	}
 
 	/**

@@ -182,12 +182,12 @@ class CLI_Runner {
 		// Get all post ids.
 		$this->post_ids_to_process = get_posts(
 			array(
-				'post_type'       => $this->post_types,
-				'posts_per_page'  => -1,
-				'fields'          => 'ids',
-				'no_found_rows'   => true,
-				'cache_results'   => false,
-				'post_id__not_in' => $this->ignore_posts,
+				'post_type'      => $this->post_types,
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'cache_results'  => false,
+				'post__not_in'   => $this->ignore_posts,
 			)
 		);
 	}

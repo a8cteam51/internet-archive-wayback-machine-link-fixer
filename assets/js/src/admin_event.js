@@ -36,7 +36,8 @@
 				'event_ignore_cache': eventIgnoreCache.is(':checked'),
 				'event_post_types': getSelectedPostTypes(),
 				'user': eventLocalized.userId,
-				'blog': eventLocalized.blogId
+				'blog': eventLocalized.blogId,
+				'event_exclude_posts': eventIgnorePosts.val(),
 			};
 			// Make the ajax call.
 			jQuery.ajax({
