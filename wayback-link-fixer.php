@@ -53,6 +53,17 @@ add_action(
 
 		// Include the action scheduler integration.
 		require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'lib/action-scheduler/action-scheduler.php';
+
+		// REMOVE THIS
+		add_filter(
+			'wlf_get_latest_snapshot_url',
+			function ( $url ) {
+				if ( 'https://wp-ms.gq/site2/2023/12/12/test-wbm/' === $url ) {
+					return 'https://glynns-singing-dancing-jetpack.mystagingwebsite.com/2023/10/23/wayback-link-fixer-a/';
+				}
+				return $url;
+			}
+		);
 	}
 );
 

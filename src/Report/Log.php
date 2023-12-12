@@ -163,4 +163,25 @@ class Log {
 	public function get_blog_id(): int {
 		return $this->blog_id;
 	}
+
+	/**
+	 * With links.
+	 *
+	 * Creates a clone with an array of links.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<int, Link> $links The links.
+	 *
+	 * @return Log
+	 */
+	public function with_links( array $links ): Log {
+		return new self(
+			$this->id,
+			$this->report_id,
+			$this->post_id,
+			\serialize( $links ),  //phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+			$this->blog_id
+		);
+	}
 }

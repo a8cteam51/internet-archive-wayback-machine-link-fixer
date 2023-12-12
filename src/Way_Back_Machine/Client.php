@@ -48,6 +48,10 @@ class Client {
 	 * @return array{status:int, available:boolean, url:string, timestamp:string}|null
 	 */
 	public function get_latest_snapshot( string $url ): ?array {
+
+		// Filter the url.
+		$url = \apply_filters( 'wlf_get_latest_snapshot_url', $url );
+
 		// add the url to the query string
 		$url = add_query_arg( 'url', \esc_url_raw( $url ), $this->api_url );
 

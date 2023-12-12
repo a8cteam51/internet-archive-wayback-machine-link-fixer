@@ -39,13 +39,19 @@
 						<?php
 						printf(
 							// translators: %1$s is the dashicon for link status, %2$s is he url
-							'<span class="dashicons %s"></span>%s',
+							'<span class="dashicons %s %s"></span>%s',
 							( true === $wlf_link->is_broken() ? 'dashicons-warning' : 'dashicons-yes-alt' ),
+							( true === $wlf_link->has_been_updated() ? 'updated' : '' ),
 							esc_html( $wlf_link->get_href() ?? __( 'No href on link', 'wpcomsp_wayback_link_fixer' ) )
 						);
 						?>
-						</p>
-					<p><?php echo esc_attr( $wlf_link->get_http_code() ); ?></p>
+					</p>
+					<p>
+						<?php echo esc_attr( $wlf_link->get_http_code() ); ?>
+						<?php if ( true === $wlf_link->has_been_updated() ) : ?>
+							<?php esc_html_e( ' FIXED', 'wpcomsp_wayback_link_fixer' ); ?>
+						<?php endif; ?>
+					</p>
 				</div>
 				<div class="wlf-report-link__body">
 					<div class="wlf-report-link__html">

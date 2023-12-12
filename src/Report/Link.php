@@ -87,6 +87,15 @@ class Link {
 	private array $comments = array();
 
 	/**
+	 * Denotes if the link has been updated.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var boolean
+	 */
+	private bool $updated = false;
+
+	/**
 	 * Create instance of Report_Logs_Link.
 	 *
 	 * @since 1.0.0
@@ -99,6 +108,7 @@ class Link {
 	 * @param integer|null       $http_code           The HTTP Code of the link.
 	 * @param array<int, string> $replacement_options The link replacement options.
 	 * @param string[]           $comments            Comments on the link.
+	 * @param boolean            $updated             Denotes if the link has been updated.
 	 */
 	public function __construct(
 		int $index,
@@ -108,7 +118,8 @@ class Link {
 		?string $redirect_target = null,
 		?int $http_code = null,
 		array $replacement_options = array(),
-		array $comments = array()
+		array $comments = array(),
+		bool $updated = false
 	) {
 		$this->index               = $index;
 		$this->href                = $href;
@@ -118,6 +129,7 @@ class Link {
 		$this->http_code           = $http_code;
 		$this->replacement_options = $replacement_options;
 		$this->comments            = $comments;
+		$this->updated             = $updated;
 	}
 
 	/**
@@ -209,6 +221,17 @@ class Link {
 	}
 
 	/**
+	 * Has been updated.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return boolean
+	 */
+	public function has_been_updated(): bool {
+		return $this->updated;
+	}
+
+	/**
 	 * Add a comment.
 	 *
 	 * @since 1.0.0
@@ -251,6 +274,27 @@ class Link {
 			$this->http_code,
 			$replacement_options,
 			$this->comments
+		);
+	}
+
+	/**
+	 * Mark as updated.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return Link
+	 */
+	public function as_updated(): Link {
+		return new Link(
+			$this->index,
+			$this->href,
+			$this->contents,
+			$this->broken,
+			$this->redirect_target,
+			$this->http_code,
+			$this->replacement_options,
+			$this->comments,
+			true
 		);
 	}
 }
