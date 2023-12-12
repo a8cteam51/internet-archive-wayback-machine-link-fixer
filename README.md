@@ -103,6 +103,44 @@ To trigger the creation of a new report, you can addess the `New Report` page un
 
 ![New Report](_docs/as-new-report-single-site.png "New Report")
 
+#### HTTP Status Codes
+
+This allows you to select which HTTP Status codes will be reported on.
+> **Please note** malformed links will be reported, such as (`<a>No href</a>`).
+
+#### Ignore Link Cache
+
+This allows you to ignore the link cache and check all links again.
+
+#### Auto Fix Broken Links
+
+This allows you to set that links should be replaced automatically. 
+> **Please note** this will only replace links that have been found on the WayBack Machine. See [Auto Fix Links](#auto-fix-links) for more information.
+
+
+#### Post Types
+
+You can select which post types you would like to check.
+> **Please note** this will only show post types that have been selected on the settings page.
+
+#### Posts to Ignore
+You can select which posts you would like to ignore. These can be searched via the title and will reflect the chosen post types.
+
+Once the report has been created, it will be added to the queue and will be processed as soon as possible. Once the process has been completed the report will be marked as completed.
+
+![Report](_docs/as-new-report-single-site-running.png "Report")
+
+> The report will processed in batches of posts, the amount of posts per batch will be controlled by the setting `Posts per Batch`.
+
+All Scheduled Actions are run under the `wpcomsp_wlf` group with the hook `t51_wlf_event_runner`.
+
+
+
+
+## Auto Fix Links
+
+There are a number of caveats to the auto fixer. These are listed below.
+
 ## Frequently Asked Questions
 
 ### How can I get help if I'm stuck?
