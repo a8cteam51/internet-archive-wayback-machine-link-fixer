@@ -364,6 +364,37 @@ class Report_Repository {
 	}
 
 	/**
+	 * Get a single log.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param integer $log_id The log id.
+	 *
+	 * @return Log|null
+	 */
+	public function get_log( int $log_id ): ?Log {
+		global $wpdb;
+
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM {$this->log_table_name()} WHERE id = %d", //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant prepare table names.
+				$log_id
+			)
+		);
+
+		if ( ! $row ) {
+			return null;
+		}
+
+		return new Log(
+			$row->id,
+			$row->report_id,
+			$row->post_id,
+			$row->links,
+		);
+	}
+
+	/**
 	 * Upsert a log.
 	 *
 	 * @since 1.0.0

@@ -150,6 +150,8 @@ class ComposerStaticInit477030608925faad98810f5c7f9903d3
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Runner\\Runner' => __DIR__ . '/../..' . '/src/Runner/Runner.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Settings\\Settings' => __DIR__ . '/../..' . '/src/Settings/Settings.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Settings\\Settings_Page' => __DIR__ . '/../..' . '/src/Settings/Settings_Page.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Updater\\Log_Processor' => __DIR__ . '/../..' . '/src/Updater/Log_Processor.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Updater\\Updater' => __DIR__ . '/../..' . '/src/Updater/Updater.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Way_Back_Machine\\Client' => __DIR__ . '/../..' . '/src/Way_Back_Machine/Client.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Way_Back_Machine\\Way_Back_Machine' => __DIR__ . '/../..' . '/src/Way_Back_Machine/Way_Back_Machine.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_1' => __DIR__ . '/../..' . '/migrations/Migration_1.php',

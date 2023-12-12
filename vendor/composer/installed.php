@@ -5,7 +5,7 @@
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '1cf03e7ec75ec39de0e49fa8f752841ce020b4cd',
+        'reference' => '6017789cd97b213333bca3ef409d95b4cfc58a2f',
         'name' => 'a8cteam51/wayback-link-fixer',
         'dev' => false,
     ),
@@ -16,7 +16,7 @@
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '1cf03e7ec75ec39de0e49fa8f752841ce020b4cd',
+            'reference' => '6017789cd97b213333bca3ef409d95b4cfc58a2f',
             'dev_requirement' => false,
         ),
         'symfony/css-selector' => array(

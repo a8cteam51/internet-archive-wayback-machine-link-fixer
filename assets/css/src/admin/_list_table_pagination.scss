@@ -47,6 +47,12 @@ div.wlf-report-list-pagination {
                 padding: 0 5px;
                 font-size: large;
                 font-weight: 700;
+                .dashicons.updated {
+                    color: #3c7f37;
+                }
+            }
+            &__header.updated {
+                background-color: #3c7f37;
             }
             &__body {
                 padding: 0 5px;

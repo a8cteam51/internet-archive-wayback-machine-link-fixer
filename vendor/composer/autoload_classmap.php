@@ -102,6 +102,8 @@ return array(
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Runner\\Runner' => $baseDir . '/src/Runner/Runner.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Settings\\Settings' => $baseDir . '/src/Settings/Settings.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Settings\\Settings_Page' => $baseDir . '/src/Settings/Settings_Page.php',
+    'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Updater\\Log_Processor' => $baseDir . '/src/Updater/Log_Processor.php',
+    'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Updater\\Updater' => $baseDir . '/src/Updater/Updater.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Way_Back_Machine\\Client' => $baseDir . '/src/Way_Back_Machine/Client.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Way_Back_Machine\\Way_Back_Machine' => $baseDir . '/src/Way_Back_Machine/Way_Back_Machine.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_1' => $baseDir . '/migrations/Migration_1.php',

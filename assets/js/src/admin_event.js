@@ -15,7 +15,7 @@
 		const eventLocalized = adminEvents;
 		const eventIgnorePosts = jQuery('#wlf_event_ignore_posts');
 		const eventIgnorePostErrors = jQuery('#wlf-event-select2-errors');
-		const eventBlogIds = jQuery('#wlf_event_blog_ids');
+		const eventBlogIds = jQuery('select#wlf_event_blog_ids');
 
 		/**
 		 * Get the selected post types.

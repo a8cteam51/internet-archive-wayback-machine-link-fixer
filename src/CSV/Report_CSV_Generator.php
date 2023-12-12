@@ -87,6 +87,7 @@ class Report_CSV_Generator {
 				__( 'http_code', 'wpcomsp_wayback_link_fixer' ),
 				__( 'replacement_options', 'wpcomsp_wayback_link_fixer' ),
 				__( 'comments', 'wpcomsp_wayback_link_fixer' ),
+				__( 'updated', 'wpcomsp_wayback_link_fixer' ),
 			)
 		);
 
@@ -110,7 +111,8 @@ class Report_CSV_Generator {
 	 *  redirection_target: string,
 	 *  http_code: string,
 	 *  replacement_options: string,
-	 *  comments: string
+	 *  comments: string,
+	 *  updated: string
 	 * }> The logs from the report.
 	 */
 	private function get_logs( Report $report ): array {
@@ -143,7 +145,8 @@ class Report_CSV_Generator {
 	 *  redirection_target: string,
 	 *  http_code: string,
 	 *  replacement_options: string,
-	 *  comments: string
+	 *  comments: string,
+	 *  updated: string
 	 * }>
 	 */
 	private function compile_log( Log $log, int $blog_id, int $user_id ): array {
@@ -193,6 +196,7 @@ class Report_CSV_Generator {
 				'http_code'           => $link->get_http_code(),
 				'replacement_options' => $link->get_replacement_options(),
 				'comments'            => $link->get_comments(),
+				'updated'             => $link->has_been_updated() ? 'Yes' : 'No',
 			);
 		}
 
