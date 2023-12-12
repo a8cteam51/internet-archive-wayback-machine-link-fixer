@@ -13,6 +13,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Events;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Runner\Runner;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Reports;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Updater\Updater;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -117,6 +118,12 @@ class Scheduled_Runner {
 			join( ',', $event->get_http_codes() )
 		);
 		$report = $runner->run( $event->get_report() );
+
+		// If the event is set to fix links.
+		if ( $event->is_auto_fix_links() ) {
+			$updater = new Updater( $report );
+			$updater->run();
+		}
 
 		// Update the events report.
 		$event->update_report( $report );

@@ -196,6 +196,8 @@ class Event_Page {
 
 		$user_id = array_key_exists( 'user', $_POST ) ? (int) $_POST['user'] : 0;
 
+		$fix_links = array_key_exists( 'event_fix_links', $_POST ) && 'true' === $_POST['event_fix_links'];
+
 		// Get the array of blogs
 		$blogs = array_key_exists( 'blog', $_POST )
 			? array_map( 'absint', (array) $_POST['blog'] )
@@ -217,7 +219,7 @@ class Event_Page {
 			$events = array();
 			foreach ( $blogs as $blog_id ) {
 				// Create the event.
-				$event_id = $this->events->create_event( $post_types, $http_codes, $exclude_posts, $ignore_link_cache, $user_id, $blog_id );
+				$event_id = $this->events->create_event( $post_types, $http_codes, $exclude_posts, $ignore_link_cache, $user_id, $blog_id, $fix_links );
 				$events[] = $event_id;
 			}
 		} catch ( \Throwable $th ) {

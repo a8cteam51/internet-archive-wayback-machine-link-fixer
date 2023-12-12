@@ -64,6 +64,7 @@ class Events {
 	 * @param boolean   $ignore_cache Should the cache be ignored?.
 	 * @param integer   $user_id      The user ID.
 	 * @param integer   $blog_id      The blog ID.
+	 * @param boolean   $fix_links    Should the links be fixed?.
 	 *
 	 * @return integer The event id.
 	 */
@@ -73,13 +74,15 @@ class Events {
 		array $ignore_posts,
 		bool $ignore_cache,
 		int $user_id,
-		int $blog_id
+		int $blog_id,
+		bool $fix_links = false
 	): int {
 		$args = array(
 			'posts'        => join( ', ', $this->get_post_ids( $post_types, $ignore_posts ) ),
 			'processed'    => '',
 			'ignore_cache' => $ignore_cache,
 			'http_codes'   => join( ', ', $http_codes ),
+			'fix_links'    => $fix_links,
 		);
 
 		// If we have no posts to scan, throw an error.
@@ -96,12 +99,13 @@ class Events {
 		$report = $this->reports->add_description_to_report(
 			$this->reports->create_report( $user_id, $blog_id ),
 			sprintf(
-				// translators: %1$s is the list of post types, %2$s is the list of http codes, %3$s is the list of ignored posts, %4$s is the ignore cache flag.
-				__( 'Event created for all posts from the %1$s post types, with %2$s http codes. ignoring posts [%3$s] and %4$s', 'wpcomsp_wayback_link_fixer' ),
+				// translators: %1$s is the list of post types, %2$s is the list of http codes, %3$s is the list of ignored posts, %4$s is the ignore cache flag, %5$s is the fix links flag.
+				__( 'Event created for all posts from the %1$s post types, with %2$s http codes, ignoring posts [%3$s], %4$s and %5$s', 'wpcomsp_wayback_link_fixer' ),
 				join( ',', $post_types ),
 				join( ',', $http_codes ),
 				join( ',', $ignore_posts ),
-				$ignore_cache ? __( 'ignoring the cache', 'wpcomsp_wayback_link_fixer' ) : __( 'not ignoring the cache', 'wpcomsp_wayback_link_fixer' )
+				$ignore_cache ? __( 'ignoring the cache', 'wpcomsp_wayback_link_fixer' ) : __( 'not ignoring the cache', 'wpcomsp_wayback_link_fixer' ),
+				$fix_links ? __( 'fixing links', 'wpcomsp_wayback_link_fixer' ) : __( 'not fixing links', 'wpcomsp_wayback_link_fixer' )
 			)
 		);
 
@@ -110,7 +114,8 @@ class Events {
 			$this->get_post_ids( $post_types, $ignore_posts ),
 			$http_codes,
 			$ignore_cache,
-			$report
+			$report,
+			$fix_links
 		);
 
 		// Schedule the event passing a serialized version of the event.
