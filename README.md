@@ -99,6 +99,10 @@ It is possible to run the report using the Action Scheduler. This will allow you
 
 > **Please note** The plugin includes the Action Scheduler, so you do not need to install WooCommerce or the Action Scheduler directly.
 
+To trigger the creation of a new report, you can addess the `New Report` page under the `Link Fixer` menu.
+
+![New Report](_docs/as-new-report-single-site.png "New Report")
+
 ## Frequently Asked Questions
 
 ### How can I get help if I'm stuck?
