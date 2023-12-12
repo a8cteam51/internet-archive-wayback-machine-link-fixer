@@ -81,8 +81,17 @@ You can add as many links patterns as you wish that should be ignored by the lin
 This allows you to set how many posts will be checked per batch. This used for both the Queue Runner and the CLI Runner.
 > **Please note** this is can be overridden by the CLI Runner.
 
+### Run from Single Post
+It is possible to run a report for a single post. This can be done from the editor screen for the post. 
+> **Please note** this will only run the report and WILL NOT fix any links.
 
+![Single Post](_docs/single-post-trigger.png "Single Post")
 
+It is possible to choose to ignore the link cache and specify which HTTP Codes to look for (these are pre populated with the settings from the settings page).
+
+![Single Post](_docs/single-post-result.png "Single Post Settings")
+
+Once it has been run, a link to the report will be added below the trigger, with some basic information about the report.
 
 ## Frequently Asked Questions
 
