@@ -93,6 +93,12 @@ It is possible to choose to ignore the link cache and specify which HTTP Codes t
 
 Once it has been run, a link to the report will be added below the trigger, with some basic information about the report.
 
+### Run using Action Scheduler
+
+It is possible to run the report using the Action Scheduler. This will allow you to run the report in the background for as many posts and posts types as you wish. 
+
+> **Please note** The plugin includes the Action Scheduler, so you do not need to install WooCommerce or the Action Scheduler directly.
+
 ## Frequently Asked Questions
 
 ### How can I get help if I'm stuck?
