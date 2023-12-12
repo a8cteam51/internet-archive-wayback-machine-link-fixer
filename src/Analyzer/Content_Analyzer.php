@@ -101,7 +101,7 @@ class Content_Analyzer {
 	public function add_link( string $url, Link $link ): void {
 		// If we are not skipping the link cache, check if we have a cached version.
 		if ( $this->use_link_cache ) {
-			$this->link_cache->add_link( $url, $link );
+			$this->link_cache->add_link( \untrailingslashit( $url ), $link );
 		}
 
 		$this->links[] = $link;
@@ -123,7 +123,7 @@ class Content_Analyzer {
 	public function add_broken_link( int $index, ?string $href, ?string $contents, string $message, ?int $http_code = null ) {
 		$link = new Link(
 			$index,
-			$href,
+			\untrailingslashit( $href ),
 			$contents,
 			true,
 			null,
@@ -134,7 +134,7 @@ class Content_Analyzer {
 
 		// If we have a href, use the add_link, else manual.
 		if ( $href ) {
-			$this->add_link( $href, $link );
+			$this->add_link( \untrailingslashit( $href ), $link );
 		} else {
 			$this->links[] = $link;
 		}
@@ -171,7 +171,7 @@ class Content_Analyzer {
 				$href_node  = $attributes->getNamedItem( 'href' ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				if ( $href_node ) {
 					// Remove and add trailing slash.(avoid dupes)
-					$options[] = \trailingslashit( \untrailingslashit( $href_node->nodeValue ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					$options[] = \untrailingslashit( $href_node->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				}
 			}
 		}
@@ -271,6 +271,7 @@ class Content_Analyzer {
 
 			// Get the node value.
 			$src = $href_node->nodeValue;
+			$src = \untrailingslashit( $src );
 
 			// If we dont have a valid URL, add as an error.
 			if ( ! is_string( $src ) || ! filter_var( $src, FILTER_VALIDATE_URL ) ) {

@@ -141,7 +141,7 @@ class Updater {
 
 		// If the post was not processed, add the error message.
 		if ( ! $result ) {
-			$this->add_result( $log->get_post_id(), __( 'Can not be processed', 'wpcomsp_wayback_link_fixer' ) );
+			$this->add_result( $log->get_post_id(), __( 'Post was not updated', 'wpcomsp_wayback_link_fixer' ) );
 			return $log;
 		}
 

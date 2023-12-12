@@ -83,14 +83,6 @@ class Log_Processor {
 			return false;
 		}
 
-		// Include the admin post.php file.
-		require_once ABSPATH . 'wp-admin/includes/post.php';
-
-		// If the post is locked, we can't update it.
-		if ( wp_check_post_lock( $this->post ) ) {
-			return false;
-		}
-
 		return true;
 	}
 

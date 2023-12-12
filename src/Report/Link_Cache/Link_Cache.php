@@ -58,7 +58,7 @@ class Link_Cache {
 	public function find_link( string $url ): ?Link {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . Settings::SCAN_LINK_CACHE_TABLE;
+		$table_name = Settings::SCAN_LINK_CACHE_TABLE;
 
 		$date = new \DateTime();
 		$date->modify( '-' . $this->expiry . ' seconds' );
@@ -95,7 +95,7 @@ class Link_Cache {
 	public function add_link( string $url, Link $link ): void {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . Settings::SCAN_LINK_CACHE_TABLE;
+		$table_name = Settings::SCAN_LINK_CACHE_TABLE;
 
 		$wpdb->insert(
 			$table_name,

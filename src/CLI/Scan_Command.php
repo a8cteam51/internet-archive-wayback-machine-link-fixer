@@ -10,10 +10,11 @@
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\CLI;
 
 use WP_CLI\Utils;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Updater\Updater;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Helper;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\CSV\Report_CSV_Generator;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\CSV\Report_CSV_Generator;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner\CLI_Runner;
 
 /**
@@ -131,6 +132,7 @@ class Scan_Command {
 		\WP_CLI::log( 'Create CSV: ' . ( $this->args['create-csv'] ? 'true' : 'false' ) );
 		\WP_CLI::log( 'Blog ID: ' . ( 0 === $this->args['blog-id'] ? 'All' : $this->args['blog-id'] ) );
 		\WP_CLI::log( 'Batch size: ' . $this->args['batch-size'] );
+		\WP_CLI::log( 'Fix links: ' . ( $this->args['fix-links'] ? 'true' : 'false' ) );
 	}
 
 	/**
@@ -166,6 +168,11 @@ class Scan_Command {
 			$assoc_args['create-csv'] = filter_var( $assoc_args['create-csv'], FILTER_VALIDATE_BOOLEAN );
 		}
 
+		// If fix links is set, cast to a bool.
+		if ( isset( $assoc_args['fix-links'] ) ) {
+			$assoc_args['fix-links'] = filter_var( $assoc_args['fix-links'], FILTER_VALIDATE_BOOLEAN );
+		}
+
 		// Handle running on multisite.
 		if ( \is_multisite() ) {
 			// If blog id is not set, set to 'All'.
@@ -183,6 +190,7 @@ class Scan_Command {
 			'create-csv'   => false,
 			'blog-id'      => 1,
 			'batch-size'   => Settings::get_posts_per_batch(),
+			'fix-links'    => false,
 		);
 
 		// If a blog id is set, but its not a multisite, set as 1 and show notice.
@@ -297,6 +305,24 @@ class Scan_Command {
 		\WP_CLI::line( 'Report Generated' );
 		\WP_CLI::line( 'Report URL: ' . Report_Helper::get_single_report_link( $wlf_report ) );
 		\WP_CLI::line( '------' );
+
+		// If we are fixing any links.
+		if ( $this->args['fix-links'] ) {
+			\WP_CLI::line( 'Fixing links' );
+			$wlf_updater = new Updater( $wlf_report );
+			$wlf_updater->run();
+			foreach ( $wlf_updater->get_results() as $wlf_post_id => $wlf_result ) {
+				\WP_CLI::line(
+					sprintf(
+						'Post ID: %d (%s) | %s',
+						$wlf_post_id,
+						get_the_title( $wlf_post_id ),
+						$wlf_result
+					)
+				);
+			}
+			\WP_CLI::line( '------' );
+		}
 
 		// If we are generating a csv.
 		if ( $this->args['create-csv'] ) {
