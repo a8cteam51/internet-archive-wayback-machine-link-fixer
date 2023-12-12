@@ -10,6 +10,7 @@
 		// Form fields.
 		const eventHttp = jQuery('#event_http');
 		const eventIgnoreCache = jQuery('#event_ignore_cache');
+		const fixLinks = jQuery('#event_fix_links');
 		const eventTrigger = jQuery('#event_trigger');
 		const eventPostTypes = jQuery('input[name="event_post_types[]"]');
 		const eventLocalized = adminEvents;
@@ -39,6 +40,7 @@
 				'user': eventLocalized.userId,
 				'blog': eventBlogIds.val(),
 				'event_exclude_posts': eventIgnorePosts.val(),
+				'event_fix_links': fixLinks.is(':checked'),
 			};
 			// Make the ajax call.
 			jQuery.ajax({

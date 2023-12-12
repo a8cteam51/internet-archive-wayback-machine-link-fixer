@@ -46,6 +46,15 @@ class Event implements Serializable {
 	private bool $ignore_cache;
 
 	/**
+	 * Auto fix links
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var boolean
+	 */
+	private bool $auto_fix_links;
+
+	/**
 	 * Holds the Report Object.
 	 *
 	 * @since 1.0.0
@@ -68,21 +77,24 @@ class Event implements Serializable {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param integer[] $post_ids     The post ids that need to be processed.
-	 * @param integer[] $http_codes   The HTTP codes to scan for.
-	 * @param boolean   $ignore_cache Should the cache be ignored?.
-	 * @param Report    $report       The report object.
+	 * @param integer[] $post_ids       The post ids that need to be processed.
+	 * @param integer[] $http_codes     The HTTP codes to scan for.
+	 * @param boolean   $ignore_cache   Should the cache be ignored?.
+	 * @param Report    $report         The report object.
+	 * @param boolean   $auto_fix_links Should the links be fixed?.
 	 */
 	public function __construct(
 		array $post_ids,
 		array $http_codes,
 		bool $ignore_cache,
-		Report $report
+		Report $report,
+		bool $auto_fix_links = false
 	) {
-		$this->post_ids     = array_map( 'absint', $post_ids );
-		$this->http_codes   = array_map( 'sanitize_text_field', $http_codes );
-		$this->ignore_cache = $ignore_cache;
-		$this->report       = $report;
+		$this->post_ids       = array_map( 'absint', $post_ids );
+		$this->http_codes     = array_map( 'sanitize_text_field', $http_codes );
+		$this->ignore_cache   = $ignore_cache;
+		$this->report         = $report;
+		$this->auto_fix_links = $auto_fix_links;
 	}
 
 	/**
@@ -95,11 +107,12 @@ class Event implements Serializable {
 	public function serialize(): string {
 		return serialize( //phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 			array(
-				'post_ids'     => $this->post_ids,
-				'http_codes'   => $this->http_codes,
-				'ignore_cache' => $this->ignore_cache,
-				'report'       => serialize( $this->report ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
-				'processed'    => $this->processed_post_ids,
+				'post_ids'       => $this->post_ids,
+				'http_codes'     => $this->http_codes,
+				'ignore_cache'   => $this->ignore_cache,
+				'report'         => serialize( $this->report ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+				'processed'      => $this->processed_post_ids,
+				'auto_fix_links' => $this->auto_fix_links,
 			)
 		);
 	}
@@ -121,6 +134,7 @@ class Event implements Serializable {
 		$this->ignore_cache       = (bool) $data['ignore_cache'];
 		$this->report             = \unserialize( $data['report'] ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
 		$this->processed_post_ids = array_map( 'absint', $data['processed'] );
+		$this->auto_fix_links     = (bool) $data['auto_fix_links'];
 	}
 
 	/**
@@ -231,5 +245,16 @@ class Event implements Serializable {
 	 */
 	public function has_more_events(): bool {
 		return count( $this->post_ids ) > count( $this->processed_post_ids );
+	}
+
+	/**
+	 * Should fix links.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return boolean
+	 */
+	public function is_auto_fix_links(): bool {
+		return $this->auto_fix_links;
 	}
 }

@@ -53,6 +53,13 @@ $wlf_cpt_label = function ( string $cpt ): string {
 		</p>
 	</div>
 	<div class="wlf-event-trigger-row">
+		<p class="with-checkbox"><strong>
+			<?php esc_html_e( 'Auto Fix Broken Links', 'wpcomsp_wayback_link_fixer' ); ?></strong>
+			<input type="checkbox" id="event_fix_links">
+			<span class="description"><?php esc_html_e( 'Any broken links with 1 option from WayBack Machine will be auto fixed', 'wpcomsp_wayback_link_fixer' ); ?></span>
+		</p>
+	</div>
+	<div class="wlf-event-trigger-row">
 		<p><strong><?php esc_html_e( 'Post Types to check', 'wpcomsp_wayback_link_fixer' ); ?></strong></p>
 		<div class="checkbox-grid">
 			<?php foreach ( Settings::get_post_types() as $wlf_cpt ) : ?>
