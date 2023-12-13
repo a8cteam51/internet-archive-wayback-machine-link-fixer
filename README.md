@@ -255,7 +255,21 @@ When accessed from a sub site, the process remains exactly the same as single si
 
 ![Report](_docs/as-running-report-single-site-running.png "Report")
 
+### Run using CLI
 
+When running the CLI command, you will be able to select which site you would like to run the report on. If the blog ID is not passed, it will run the report for all sub sites.
+
+![CLI](_docs/ms-cli-all-sites.png "CLI")
+
+#### Single Site
+
+```bash
+$ wp wlf_scan --blog-id=2
+```
+
+![CLI](_docs/ms-cli-valid-site.png "CLI")
+
+All other arguments remain the same as single site mode.
 
 ## Auto Fix Links
 
