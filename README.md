@@ -293,6 +293,54 @@ When installed on a multisite, the report page for each sub site will only show 
 | View | This will take you to the report page for the selected report. | ![View](_docs/view-report.png "View") |
 | Delete | This will delete the report and all data associated with it. | ![Delete](_docs/delete-report.png "Delete") |
 | Download CSV | This will download a CSV file with the results of the report. | ![Download CSV](_docs/download-csv.png "Download CSV") |
+> **Please note** The CSV can only be downloaded when the report is completed.
+
+### Report
+
+When you access a single report, you can see all the posts checked and the details of the scan configuration.
+
+![Report](_docs/report-view.png "Report")
+
+#### Description
+This lists all the configuration options that were used when the report was created.
+`Description : CLI Runner:: HTTP Status: 404,410,500,502,300,301,303,200, Post Types: post,page, Ignore Cache: No, Ignore Posts: , Create CSV: No, Blog ID: 2`
+This tells us 
+* It was run via the CLI Runner
+* `404,410,500,502,300,301,303,200` are the HTTP Status codes that were checked
+* `post`,`page` are the post types that were checked
+* The cache was not ignored `Ignore Cache: No`
+* No posts were ignored `Ignore Posts:`
+* No CSV was created `Create CSV: No`
+* It was run on blog ID 2 `Blog ID: 2`
+
+#### Author 
+This lists the user who created the report and the date it was created. (will often be unknown if run via CLI in single site mode)
+
+#### Date Created/Completed
+
+This lists the date and time that the report was started and when it completed. For small reports, these times will be the same, but when using the action scheduler, the report will be run in batches and the time will be different.
+
+#### Status
+This tells us the status of the report. This can be one of the following
+* `Pending` - The report has not yet been started (only used for action scheduler)
+* `In Progress` - The report is currently being processed
+* `Completed` - The report has been completed
+
+#### Download CSV
+If the report has been completed, there will be a button to download the CSV file.
+
+> When the CSV Download button is clicked, the CSV will be auto downloaded and will also show a link to the file in the browser.
+
+![Report](_docs/report-download-csv.png "Report")
+
+#### Posts
+The list of posts will show an icon to view post details, its title (clickable to edit the post), the number of links found and the number of broken links found.
+
+![Report](_docs/report-post-list.png "Report")
+
+Clicking the view icon will show the details of the post. This will show the post title, the number of links found and the number of broken links found.
+
+![Report](_docs/report-post-details.png "Report")
 
 ## Auto Fix Links
 
