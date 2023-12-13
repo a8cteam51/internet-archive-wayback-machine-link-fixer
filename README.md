@@ -228,6 +228,34 @@ This allows you to set how many posts will be checked per batch.
 
 > **Please note** This only really effects the progress bar.
 
+## Usage (Multi Site)
+
+This plugin can be used on multisites, there are a few changes to how the plugin works for both WP-Admin and the CLI.
+
+### WP-Admin
+
+Each sub site now has its own Report and New Report pages, these are configured so they are only relate to the current site.
+
+![Report](_docs/ms-sub-site-menu.png "Report Page")
+
+Settings can only be access on the Network Admin, these will be the same for all sites. 
+
+All Super Admins are able to run and access any reports for any site on the network.
+![Settings](_docs/ms-settings-menu.png "Settings Page")
+
+> **Please note** The single post functionality remains the same.
+
+### Run using Action Scheduler
+
+When accessed from a sub site, the process remains exactly the same as single site mode. However if access from the network admin, you will be able to select which sites you would like to run the report on.
+
+![New Report](_docs/ms-as-new-report.png "New Report")
+
+> **Please note** If multiple sites are chosen, it will create a separate report for each site.
+
+![Report](_docs/as-running-report-single-site-running.png "Report")
+
+
 
 ## Auto Fix Links
 
