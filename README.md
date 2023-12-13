@@ -217,6 +217,18 @@ Passing this parameter will allow you to select which HTTP Status codes will be 
 
 ![HTTP Status Codes](_docs/cli-http-codes.png "HTTP Status Codes")
 
+#### Batch Size
+
+```bash
+$ wp wlf_scan --batch-size=10
+```
+This allows you to set how many posts will be checked per batch.  
+
+![Batch Size](_docs/cli-batch-size.png "Batch Size")
+
+> **Please note** This only really effects the progress bar.
+
+
 ## Auto Fix Links
 
 There are a number of caveats to the auto fixer. These are listed below.
