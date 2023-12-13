@@ -342,6 +342,27 @@ Clicking the view icon will show the details of the post. This will show the pos
 
 ![Report](_docs/report-post-details.png "Report")
 
+The found url is listed as the links header, along with an icon to denote if the link is broken or not. The HTTP Status code is listed on the right hand side.
+
+![Report](_docs/report-link-ok.png "Report")
+
+The `Link Contents` is what is found between the opening and closing tags. This is used to help identify which link is which. `<a href="https://www.correct.com/the-link.html">Read more</a>` would have `Read more` as the link contents.
+
+If the link was broken and a link with the same contents was found on the WayBack Machine, these will be shown under the `Replacement Options`.
+
+Comments will be added to give some additional information. If the link has a `3**` error code, the redirection chain will be shown here
+`https://bitly.ws/ZDwh >> https://bitly.ws/?redirect=ZDwh >> https://www.amazon.co.uk/dp/B000R5I83O` along with the final HTTP Status code.
+
+![Report](_docs/report-link-redirect.png "Report")
+
+Any links which are malformed, such as no `<a>` attributes will be listed with a comment to denote this.
+! [Report](_docs/report-link-malformed.png  "Report")
+> Example `<a>Foo</a>` 
+
+If a link is fixed (only has 1 replacement option) it will be listed with a comment to denote this.
+
+![Report](_docs/report-link-fixed.png "Report")
+
 ## Auto Fix Links
 
 There are a number of caveats to the auto fixer. These are listed below.
