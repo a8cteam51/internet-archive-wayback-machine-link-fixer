@@ -138,6 +138,8 @@ All Scheduled Actions are run under the `wpcomsp_wlf` group with the hook `t51_w
 
 You can generate a report using the WP-CLI. This is run synchronously with output in the terminal.
 
+> **Please note** The CLI command will generate reports with a user ID of 0, this will give "Unknown" as the user on the report.
+
 ```bash
 $ wp wlf_scan
 ```
@@ -172,6 +174,8 @@ $ wp wlf_scan --ignore-cache
 
 ![Ignore Cache](_docs/cli-ignore-cache.png "Ignore Cache")
 
+> Took 1.3seconds with cache and 13 seconds ignoring cache
+
 #### Ignore Posts
 
 ```bash
@@ -182,6 +186,37 @@ You can pass a comma seperated list of post IDs to ignore. These will be ignored
 
 ![Ignore Posts](_docs/cli-ignore-posts.png "Ignore Posts")
 > There was 11 without and now 7 with (ignored 4 posts)
+
+#### Create CSV
+
+```bash
+$ wp wlf_scan --create-csv
+```
+
+Passing this argument will create a CSV file with the results of the report. This will be saved in the `wp-content/uploads` directory. The file will be named `wlf-report-{reportID}.csv`.
+
+![Create CSV](_docs/cli-create-csv.png "Create CSV")
+
+> **Please note** The URL of the CSV will be output to the terminal, this allows for quick download of the file.
+
+#### Auto Fix Links
+
+```bash
+$ wp wlf_scan --fix-links
+```
+
+Passing this parameter will attempt to auto fix any links that have been found on the WayBack Machine. See [Auto Fix Links](#auto-fix-links) for more information.
+
+#### HTTP Status Codes
+
+```bash
+$ wp wlf_scan --http-status=200,301,302
+```
+
+Passing this parameter will allow you to select which HTTP Status codes will be reported on. These can be passed as a comma separated list.
+
+![HTTP Status Codes](_docs/cli-http-codes.png "HTTP Status Codes")
+
 ## Auto Fix Links
 
 There are a number of caveats to the auto fixer. These are listed below.
