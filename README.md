@@ -157,9 +157,31 @@ $ wp wlf_scan --dry-run
 #### Post Types
 
 ```bash
-$ wp wlf_scan --post-types=post,page
+$ wp wlf_scan --post-types=post,product
 ```
 > These can be passed as a comma separated list.
+
+![Post Types](_docs/cli-post-types.png "Post Types")
+
+#### Ignore Link Cache
+
+```bash
+$ wp wlf_scan --ignore-cache
+```
+> Passing this param as either `--ignore-cache` or `--ignore-cache=true` will ignore the link cache
+
+![Ignore Cache](_docs/cli-ignore-cache.png "Ignore Cache")
+
+#### Ignore Posts
+
+```bash
+$ wp wlf_scan --ignore-posts=1,2,3
+```
+
+You can pass a comma seperated list of post IDs to ignore. These will be ignored regardless of the post type.
+
+![Ignore Posts](_docs/cli-ignore-posts.png "Ignore Posts")
+> There was 11 without and now 7 with (ignored 4 posts)
 ## Auto Fix Links
 
 There are a number of caveats to the auto fixer. These are listed below.
