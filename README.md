@@ -1,9 +1,9 @@
-# wayback-link-fixer
+# Team 51 WayBack Link Fixer Plugin
 
 **Contributors:** wpcomspecialprojects \
 **Tags:** \
-**Requires at least:** 6.2 \
-**Tested up to:** 6.2 \
+**Requires at least:** 6.4 \
+**Tested up to:** 6.5 \
 **Requires PHP:** 8.0 \
 **Stable tag:** 1.0.0   \
 **License:** GPLv3 or later \
@@ -382,11 +382,54 @@ When a reports CSV is generated it is created into the current WP Uploads direct
 | Comment | Any comments that have been added to the link |
 | Fixed | Denotes if the link has been fixed or not |
 
-The CSV file is created everytime that someone hits the download button. This will overwrite any existing file with the same name.
+The CSV file is created every time that someone hits the download button. This will overwrite any existing file with the same name.
 
 ## Auto Fix Links
 
 There are a number of caveats to the auto fixer. These are listed below.
+
+1. If the link has multiple replacement options, it will not be fixed automatically, but the options will be shown.
+2. If the link has a common `Contents` such as `Read More`, it will possibly not be fixed automatically, but the options will be shown.
+3. All links will have the trailing slash added, this avoids duplicates such as `https://www.correct.com/the-link.html` and `https://www.correct.com/the-link.html/`
+4. Malformed links will not be automatically fixed. 
+
+## Developer Notes.
+
+Here are a few notes to help any future developers working on the plugin. Please feel free to open a PR if you have any suggestions or need additional information.
+
+### Actions
+
+#### wlf_link_exclusions
+This FILTER allows you to define some hard exclusion links, which can not be removed in the settings.
+
+```php
+add_filter( 'wlf_link_exclusions', function( $exclusions ) {
+	$exclusions[] = '*.twitter.com*';
+	return $exclusions;
+} );
+```
+
+#### wlf_get_latest_snapshot_url
+This FILTER allows you to filter the URL used when a snapshot is requested from the WayBack Machine. This is mostly used while testing as it allow the plugin to be run a local site, where only the live version of the site is available on the WayBack Machine.
+
+```php
+add_filter( 'wlf_get_latest_snapshot_url', function( $url ) {
+	return str_replace( 'https://www.correct.com', 'http://localhost:8080', $url );
+} );
+```
+
+### Database
+
+This plugin makes use of 3 tables 
+1. 	t51_wlf_scan_link_cache
+2. 	t51_wlf_scan_log
+3. 	t51_wlf_scan_report
+
+> These tables ARE NOT prefixed to allow multistites to use a single table
+
+If you need to make changes, there is a built in migrations interface. To add a new migration, please see `/migrations/*`. Once you have created your new file, it can be added to the migration queue by adding the class name to `\WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations::$migrations[]` array on the main plugin file. These are then run in the order they are added, so changes can be made. 
+
+When the plugin is activated, it checks what migrations had already been run and any additional migrations will be added to the queue. These will be run when the plugin is activated.
 
 ## Frequently Asked Questions
 
@@ -398,12 +441,6 @@ Please reach out to [Glynn](https://github.com/gin0115)
 
 Please leave an [issue](https://github.com/a8cteam51/wayback-link-fixer/issues/new/choose) on the repo and someone will respond as soon as possible and add it this README.
 
-
-## Screenshots
-
-### 1. Example screenshot
-
-[missing image]
 
 ## Changelog
 
