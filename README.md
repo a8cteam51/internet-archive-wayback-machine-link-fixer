@@ -134,9 +134,21 @@ Once the report has been created, it will be added to the queue and will be proc
 
 All Scheduled Actions are run under the `wpcomsp_wlf` group with the hook `t51_wlf_event_runner`.
 
+### Run Via CLI
 
+You can generate a report using the WP-CLI. This is run synchronously with output in the terminal.
 
+```bash
+$ wp wlf_scan
+```
+When run with no additional arguments, this will run the report based on the settings from the settings page. You can override these settings by using the following arguments.
 
+#### Post Types
+
+```bash
+$ wp wlf_scan --post_types=post,page
+```
+> These can be passed as a comma separated list.
 ## Auto Fix Links
 
 There are a number of caveats to the auto fixer. These are listed below.
