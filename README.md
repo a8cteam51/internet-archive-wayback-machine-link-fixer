@@ -143,10 +143,20 @@ $ wp wlf_scan
 ```
 When run with no additional arguments, this will run the report based on the settings from the settings page. You can override these settings by using the following arguments.
 
+![CLI](_docs/cli-no-args.png "CLI")
+
+#### Dry Run
+
+```bash
+$ wp wlf_scan --dry-run
+```
+> This will output the settings based on the 
+![Dry Run](_docs/cli-dry-run.png "Dry Run")
+
 #### Post Types
 
 ```bash
-$ wp wlf_scan --post_types=post,page
+$ wp wlf_scan --post-types=post,page
 ```
 > These can be passed as a comma separated list.
 ## Auto Fix Links
