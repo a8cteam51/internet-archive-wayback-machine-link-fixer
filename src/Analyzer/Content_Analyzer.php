@@ -153,7 +153,7 @@ class Content_Analyzer {
 
 		// If the way back machine content is not set, get it.
 		if ( ! $this->way_back_machine_content ) {
-			$page_url = get_permalink( $this->post_id );
+			$page_url                       = get_permalink( $this->post_id );
 			$this->way_back_machine_content = $this->way_back_machine->get_content( $page_url );
 		}
 
