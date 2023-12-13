@@ -150,7 +150,8 @@ When run with no additional arguments, this will run the report based on the set
 ```bash
 $ wp wlf_scan --dry-run
 ```
-> This will output the settings based on the 
+> This will output the settings based on the settings page and exit.
+
 ![Dry Run](_docs/cli-dry-run.png "Dry Run")
 
 #### Post Types
