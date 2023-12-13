@@ -271,6 +271,29 @@ $ wp wlf_scan --blog-id=2
 
 All other arguments remain the same as single site mode.
 
+## Reports
+
+When a scan is run as report is generated. This holds information on all the posts scanned and all links which has been found (that match the HTTP codes or are malformed).
+
+### Report Page
+
+The report page will list all reports that have been generated. These can be filtered by the status of the report, who crated them and the date range.
+
+![Report](_docs/single-report-list.png "Report Page")
+
+#### Multisite
+
+When installed on a multisite, the report page for each sub site will only show reports for that site, whereas the network admin will show all reports for all sites. You can also filter based on sub site (network admin only).
+
+![Report](_docs/ms-report-list.png "Report Page")
+
+#### Actions
+| Action | Description | |
+| --- | --- | --- |
+| View | This will take you to the report page for the selected report. | ![View](_docs/view-report.png "View") |
+| Delete | This will delete the report and all data associated with it. | ![Delete](_docs/delete-report.png "Delete") |
+| Download CSV | This will download a CSV file with the results of the report. | ![Download CSV](_docs/download-csv.png "Download CSV") |
+
 ## Auto Fix Links
 
 There are a number of caveats to the auto fixer. These are listed below.
