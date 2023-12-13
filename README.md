@@ -356,12 +356,33 @@ Comments will be added to give some additional information. If the link has a `3
 ![Report](_docs/report-link-redirect.png "Report")
 
 Any links which are malformed, such as no `<a>` attributes will be listed with a comment to denote this.
-! [Report](_docs/report-link-malformed.png  "Report")
+![Report](_docs/report-link-malformed.png "Report")
 > Example `<a>Foo</a>` 
 
 If a link is fixed (only has 1 replacement option) it will be listed with a comment to denote this.
 
 ![Report](_docs/report-link-fixed.png "Report")
+
+## CSV
+
+When a reports CSV is generated it is created into the current WP Uploads directory. This will be named `wlf-report-{reportID}.csv`. The following columns will be included in the CSV.
+
+| Column | Description |
+| --- | --- |
+| Report ID | The ID of the report |
+| Blog ID | The ID of the blog/site |
+| User ID | The ID of the user who created the report |
+| Log ID | The ID of the log entry (post) |
+| Post ID | The ID of the post |
+| Href | The URL of the link |
+| Contents | The contents of the link |
+|Redirection Target| The final URL of the link (if redirected) |
+| HTTP Code | The HTTP Status Code of the link |
+| Replacement Options | The URLs of the links found on the WayBack Machine (comma separated list) |
+| Comment | Any comments that have been added to the link |
+| Fixed | Denotes if the link has been fixed or not |
+
+The CSV file is created everytime that someone hits the download button. This will overwrite any existing file with the same name.
 
 ## Auto Fix Links
 
