@@ -27,9 +27,6 @@ final class CrawlerSelectorTextContains extends Constraint
         $this->expectedText = $expectedText;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function toString(): string
     {
         if ($this->hasNode) {
@@ -41,8 +38,6 @@ final class CrawlerSelectorTextContains extends Constraint
 
     /**
      * @param Crawler $crawler
-     *
-     * {@inheritdoc}
      */
     protected function matches($crawler): bool
     {
@@ -56,13 +51,11 @@ final class CrawlerSelectorTextContains extends Constraint
         $this->hasNode = true;
         $this->nodeText = $crawler->text(null, true);
 
-        return false !== mb_strpos($this->nodeText, $this->expectedText);
+        return str_contains($this->nodeText, $this->expectedText);
     }
 
     /**
      * @param Crawler $crawler
-     *
-     * {@inheritdoc}
      */
     protected function failureDescription($crawler): string
     {

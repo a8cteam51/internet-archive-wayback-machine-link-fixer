@@ -351,12 +351,18 @@ function wpcomsp_wayback_link_fixer_get_user_name( WP_User $user ): string {
  * @return string
  */
 function wpcomsp_wayback_link_fixer_get_blog_name( int $blog_id ): string {
-	// If we are on the main site, return the site name.
-	if ( 1 === $blog_id ) {
-		return get_bloginfo( 'name' );
-	}
-
 	return get_blog_option( $blog_id, 'blogname' );
+}
+
+/**
+ * Get the sites date/time format.
+ *
+ * @since 1.1.0
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_get_date_time_format(): string {
+	return esc_attr( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) );
 }
 
 // endregion

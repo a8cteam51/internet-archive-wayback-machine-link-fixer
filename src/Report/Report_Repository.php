@@ -350,7 +350,7 @@ class Report_Repository {
 		}
 
 		return array_map(
-			function ( \stdClass $row ) use( $report ): Log {
+			function ( \stdClass $row ) use ( $report ): Log {
 				return new Log(
 					$row->id,
 					$row->report_id,
@@ -623,7 +623,10 @@ class Report_Repository {
 
 			// If we have a valid date, add it to the where clause.
 			if ( $date_from instanceof \DateTimeImmutable ) {
-				$where[] = $wpdb->prepare( 'create_date >= %s', $date_from->format( 'Y-m-d H:i:s' ) );
+				// Set time to 1 second past midnight.
+				$date_from = $date_from->setTime( 0, 0, 1 );
+
+				$where[] = $wpdb->prepare( 'create_date >= %s', $date_from->format( 'Y-m-d' ) );
 			}
 		}
 
@@ -633,9 +636,13 @@ class Report_Repository {
 			$date_to = \DateTimeImmutable::createFromFormat( 'Y-m-d', $date_to );
 
 			if ( $date_to instanceof \DateTimeImmutable ) {
+				// set time to 1 minute to midnight.
+				$date_to = $date_to->setTime( 23, 59, 59 );
+
 				$where[] = $wpdb->prepare( 'create_date <= %s', $date_to->format( 'Y-m-d H:i:s' ) );
 			}
 		}
+
 		return $where;
 	}
 
@@ -783,5 +790,31 @@ class Report_Repository {
 				'%d',
 			)
 		);
+	}
+
+	/**
+	 * Get all users who have reports based on blog.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param integer|null $site_id The site id to check or null for all.
+	 *
+	 * @return integer[]
+	 */
+	public function get_users_with_reports( ?int $site_id = null ): array {
+		// Compile the query.
+		$query = "SELECT DISTINCT user_id FROM {$this->report_table_name()}";
+
+		// If we have a site id, add it to the query.
+		if ( null !== $site_id ) {
+			$query .= " WHERE blog_id = {$site_id}";
+		}
+
+		global $wpdb;
+
+		// Get the users.
+		$users = $wpdb->get_results( $wpdb->prepare( $query ) ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, cant prepare table names.
+
+		return array_map( fn( \stdClass $user ) => absint( $user->user_id ), $users );
 	}
 }
