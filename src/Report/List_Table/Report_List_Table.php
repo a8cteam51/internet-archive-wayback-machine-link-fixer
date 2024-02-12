@@ -281,6 +281,8 @@ class Report_List_Table extends \WP_List_Table {
 		// Get the current page slug.
 		$page_arg = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$users    = array_map( fn( int $id ) => \get_user_by( 'id', $id ), $this->report_repository->get_users_with_reports( $this->get_blog_id() ) );
+		// Remove any non WP_User objects.
+		$users = array_filter( $users, 'is_object' );
 
 		// Get existing filters.
 		$filters = $this->get_filters();

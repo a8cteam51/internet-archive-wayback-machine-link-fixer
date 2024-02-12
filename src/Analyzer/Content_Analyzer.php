@@ -122,13 +122,14 @@ class Content_Analyzer {
 	 */
 	public function add_broken_link( int $index, ?string $href, ?string $contents, string $message, ?int $http_code = null ) {
 		$link = new Link(
+			$this->post_id,
 			$index,
 			\untrailingslashit( $href ),
 			$contents,
 			true,
 			null,
 			$http_code,
-			$this->find_link_in_way_back_machine_content( $contents ),
+			$this->find_archived_link( $contents, $href ),
 			array( $message )
 		);
 
@@ -145,37 +146,25 @@ class Content_Analyzer {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $content The content to search.
+	 * @param string      $content The content to search.
+	 * @param string|null $href    The href of the link.
 	 *
 	 * @return string[]
 	 */
-	private function find_link_in_way_back_machine_content( string $content ): array {
+	private function find_archived_link( string $content, ?string $href = null ): array {
 
-		// If the way back machine content is not set, get it.
-		if ( ! $this->way_back_machine_content ) {
-			$page_url                       = get_permalink( $this->post_id );
-			$this->way_back_machine_content = $this->way_back_machine->get_content( $page_url );
+		// If we have no href, return empty.
+		if ( ! $href ) {
+			return array();
 		}
 
-		// Get all links from the content using teh DOM walker.
-		$crawler = new Crawler( $this->way_back_machine_content );
-		$links   = $crawler->filter( 'a' );
+		// Attempt to find the link.
+		$options = $this->way_back_machine->find_archive( $href );
 
-		// Iterate through all links and look for any which as the same content.
-		$options = array();
-		foreach ( $links as $link_node ) {
-			if ( $content === $link_node->nodeValue ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				$attributes = $link_node->attributes;
-				$href_node  = $attributes->getNamedItem( 'href' ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				if ( $href_node ) {
-					// Remove and add trailing slash.(avoid dupes)
-					$options[] = \untrailingslashit( $href_node->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				}
-			}
-		}
-
-		// Return only unique options.
-		return array_unique( $options );
+		// If we have a link.
+		return $options
+			? array( $options )
+			: array();
 	}
 
 	/**
@@ -204,6 +193,7 @@ class Content_Analyzer {
 		}
 
 		$link = new Link(
+			$this->post_id,
 			$index,
 			$href,
 			$contents,
@@ -224,6 +214,18 @@ class Content_Analyzer {
 
 		// Add link.
 		$this->add_link( $href, $link );
+	}
+
+	/**
+	 * Get all classes from node.
+	 *
+	 * @param \DOMElement $node The node to get the classes from.
+	 *
+	 * @return array<string>
+	 */
+	private function get_classes( \DOMElement $node ): array {
+		$classes = $node->getAttribute( 'class' );
+		return explode( ' ', $classes ?? '' );
 	}
 
 	/**
@@ -249,6 +251,9 @@ class Content_Analyzer {
 		// Get all links.
 		$links = $crawler->filter( 'a' );
 
+		// Get the classes to skip.
+		$skipped_classes = Settings::get_ignored_classes();
+
 		// Iterate over all the links.
 		foreach ( $links as $index => $link_node ) {
 			$attributes = $link_node->attributes;
@@ -260,6 +265,15 @@ class Content_Analyzer {
 			}
 
 			$href_node = $attributes->getNamedItem( 'href' );
+
+			// Get any classes from the link.
+			$classes = $this->get_classes( $link_node );
+
+			// Skip if any items in the $classes array is in the skipped classes
+			if ( array_intersect( $classes, $skipped_classes ) ) {
+				// dump(['skipped' => $classes]);
+				continue;
+			}
 
 			// If we have no node, add as an error.
 			if ( ! $href_node ) {
@@ -279,6 +293,7 @@ class Content_Analyzer {
 
 			// If the link is in the excluded list, skip.
 			if ( $this->is_excluded( $src ) ) {
+				// dump(['is_excluded' => $src]);
 				continue;
 			}
 
@@ -295,7 +310,7 @@ class Content_Analyzer {
 				}
 
 				$link_details = $this->get_link_details( $src );
-
+// dump($link_details);
 				// If the links HTTP code is not in the list of HTTP codes, skip.
 				if ( ! in_array( (int) $link_details['http_code'], $http_codes, true ) ) {
 					continue;
@@ -320,6 +335,7 @@ class Content_Analyzer {
 					$this->add_link(
 						$src,
 						new Link(
+							$this->post_id,
 							$index,
 							$src,
 							$link_node->nodeValue,

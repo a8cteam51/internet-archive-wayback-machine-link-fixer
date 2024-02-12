@@ -163,4 +163,32 @@ class Settings {
 			? absint( get_site_option( self::EVENT_POSTS_PER_BATCH, 10 ) )
 			: absint( get_option( self::EVENT_POSTS_PER_BATCH, 10 ) );
 	}
+
+	/**
+	 * Get all classes which should be ignored.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string[]
+	 */
+	public static function get_ignored_classes(): array {
+		$skipped = (array) apply_filters(
+			'wlf_ignored_classes',
+			array(
+				'wp-element-button',
+			)
+		);
+
+		// Ensure all plugin classes are in the array.
+		return array_unique(
+			array_merge(
+				$skipped,
+				array(
+					'wlf-archived',
+					'wlf-archived__redirect',
+					'wlf-archived__skipped',
+				)
+			)
+		);
+	}
 }

@@ -75,6 +75,7 @@ class Meta_Box_Runner {
 	 * @return void
 	 */
 	private function register_hooks(): void {
+		return;
 
 		// Create instance of Report Repository.
 		$this->report_repository = new Report_Repository();

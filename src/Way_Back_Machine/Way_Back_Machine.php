@@ -73,4 +73,23 @@ class Way_Back_Machine {
 
 		return $response_body;
 	}
+
+	/**
+	 * Attempt to find an arcihved version of a given url.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $url The url to find the archived version of.
+	 *
+	 * @return string|null
+	 */
+	public function find_archive( string $url ): ?string {
+		$latest_snapshot = $this->client->get_latest_snapshot( $url );
+
+		if ( ! $latest_snapshot ) {
+			return null;
+		}
+
+		return esc_url( $latest_snapshot['url'] );
+	}
 }

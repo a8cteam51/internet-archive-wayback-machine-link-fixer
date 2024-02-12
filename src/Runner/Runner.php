@@ -121,7 +121,6 @@ class Runner {
 		$wlf_links    = $wlf_analyzer->get_links();
 
 		$report = $report ?? $this->generate_report();
-
 		// Generate the logs for the post and assign to the report.
 		$this->reports->log_post_for_report( $report, $this->post->ID, $wlf_links );
 

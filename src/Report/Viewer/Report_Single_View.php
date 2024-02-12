@@ -11,8 +11,10 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer;
 
 defined( 'ABSPATH' ) || exit;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Helper;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Repository;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\List_Table\Report_Table;
 
 /**
  * Single View
@@ -29,6 +31,15 @@ class Report_Single_View {
 	private Report_Repository $report_repository;
 
 	/**
+	 * The report to render.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var Report
+	 */
+	private Report $report;
+
+	/**
 	 * Create instance of Report_List_View.
 	 *
 	 * @since 1.0.0
@@ -40,6 +51,33 @@ class Report_Single_View {
 	}
 
 	/**
+	 * Validates the request.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 *
+	 * @throws \Exception If the request is invalid.
+	 */
+	private function validate_request(): void {
+		// If report id is not set, throw an exception.
+		if ( ! isset( $_GET['report_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			throw new \Exception( __( 'No report ID set.', 'wpcomsp_wayback_link_fixer' ) );
+		}
+
+		// Get the sanitized ID and check we have a report.
+		$report_id = \sanitize_text_field( $_GET['report_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		$this->report = $this->report_repository->find_by_report_id( $report_id );
+
+		if ( ! $this->report ) {
+			throw new \Exception( __( 'No report found.', 'wpcomsp_wayback_link_fixer' ) );
+		}
+	}
+
+
+
+	/**
 	 * Renders the template.
 	 *
 	 * @since 1.0.0
@@ -47,41 +85,67 @@ class Report_Single_View {
 	 * @return void
 	 */
 	public function __invoke(): void {
-		// Show an error if no report id is set in url.
-		if ( ! isset( $_GET['report_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			// translators: %s is the page title.
-			wp_die( esc_html( sprintf( __( 'No %s ID set.', 'wpcomsp_wayback_link_fixer' ), 'Report' ) ) );
+		try {
+			$this->validate_request();
+		} catch ( \Throwable $th ) {
+			wp_die( $th->getMessage() );
 		}
 
-		// Get the sanitized ID.
-		$report_id = \sanitize_text_field( $_GET['report_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$report    = $this->report_repository->find_by_report_id( $report_id );
-
-		// If we have no report, show an error.
-		if ( ! $report ) {
-			// translators: %s is the page title.
-			wp_die( esc_html( sprintf( __( 'No %s found.', 'wpcomsp_wayback_link_fixer' ), 'Report' ) ) );
-		}
-
-		$logs = $this->report_repository->get_logs( $report );
+		$logs = $this->report_repository->get_logs( $this->report );
 
 		// Render the single view.
+		$table = new Report_Table( $this->report, $logs );
 
-		$list_page = Report_Helper::get_report_list_link();
+		// dump( $r );
+		// $list_page = Report_Helper::get_report_list_link();
 
-		$report_author = \get_user_by( 'id', $report->get_user_id() ) ?: null; //phpcs:ignore Universal.Operators.DisallowShortTernary.Found
+		// $report_author = \get_user_by( 'id', $this->report->get_user_id() ) ?: null; //phpcs:ignore Universal.Operators.DisallowShortTernary.Found
 
-		$report_blog = get_bloginfo( $report->get_blog_id() );
+		// $report_blog = get_bloginfo( $this->report->get_blog_id() );
 
-		wpcomsp_wayback_link_fixer_render_template(
-			'admin/reports/report-details.php',
-			array(
-				'report'     => $report,
-				'logs'       => $logs,
-				'back_url'   => $list_page,
-				'author'     => $report_author,
-				'site_title' => $report_blog,
-			)
+		// wpcomsp_wayback_link_fixer_render_template(
+		//  'admin/reports/report-details.php',
+		//  array(
+		//      'report'     => $this->report,
+		//      'logs'       => $logs,
+		//      'back_url'   => $list_page,
+		//      'author'     => $report_author,
+		//      'site_title' => $report_blog,
+		//  )
+		// );
+		// Run the bulk actions.
+		$table->process_bulk_action();
+
+		// Render any notices.
+		$table->render_notices();
+
+		echo '<div class="wrap">';
+		printf(
+			'<h1 class="wp-heading-inline">%s <a id="wlf-report-csv-download" class="page-title-action wlf-download-report-csv" data-report="%s">%s</a></h1>',
+			esc_html__( 'Reports', 'wayback-link-fixer' ),
+			$this->report->get_report_id(),
+			esc_html__( 'Download CSV', 'wayback-link-fixer' )
 		);
+
+		echo '<hr class="wp-header-end">';
+
+		// Render the table.
+		$table->prepare_items();
+		echo '<form method="get">';
+		$table->display();
+		echo '</form>';
+
+		echo '<div id="wlf-modal" class="wlf-modal">';
+		echo '<div class="wlf-modal__inner">';
+		echo '<div id="wlf-modal__inner-header">';
+		echo '<p id="wlf-modal__inner-header-title">Modal</p>';
+		echo '<div id="wlf-modal__inner-header-close"><span class="dashicons dashicons-dismiss"></span></div>';
+		echo '</div>';
+		echo '<div id="wlf-modal__inner-content">';
+		echo '<p></p>';
+		echo '</div>';
+		echo '</div>';
+
+		echo '</div>';
 	}
 }

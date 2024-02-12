@@ -387,10 +387,11 @@ class Report_Repository {
 		}
 
 		return new Log(
-			$row->id,
-			$row->report_id,
-			$row->post_id,
+			absint( $row->id ),
+			absint( $row->report_id ),
+			absint( $row->post_id ),
 			$row->links,
+			null
 		);
 	}
 
@@ -716,6 +717,7 @@ class Report_Repository {
 		return array_map(
 			function ( \stdClass $row ): Log {
 				return new Log(
+					$row->post_id,
 					$row->id,
 					$row->report_id,
 					$row->post_id,

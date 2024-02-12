@@ -15,6 +15,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Ajax\Generate_CSV_Ajax;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer\Report_List_View;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer\Report_Single_View;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Ajax\Late_Log_Processor_Ajax;
 
 /**
  * Report View Page
@@ -68,6 +69,9 @@ class Report_Viewer_Page {
 
 		// Generate CSV Ajax, only for logged in
 		add_action( 'wp_ajax_' . Generate_CSV_Ajax::ACTION, new Generate_CSV_Ajax() );
+
+		// Process Late Logs Ajax, only for logged in
+		add_action( 'wp_ajax_' . Late_Log_Processor_Ajax::ACTION, new Late_Log_Processor_Ajax() );
 
 		// Enable network support for pages.
 		if ( \is_multisite() ) {
@@ -207,6 +211,9 @@ class Report_Viewer_Page {
 				'nonce'      => wp_create_nonce( 'wlf_report_viewer' ),
 				'csv_action' => Generate_CSV_Ajax::ACTION,
 				'csv_nonce'  => wp_create_nonce( Generate_CSV_Ajax::NONCE_KEY ),
+				'fix_action' => Late_Log_Processor_Ajax::ACTION,
+				'fix_nonce'  => wp_create_nonce( Late_Log_Processor_Ajax::NONCE_KEY ),
+
 			)
 		);
 

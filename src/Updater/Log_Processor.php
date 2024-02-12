@@ -10,8 +10,10 @@
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Updater;
 
 use WP_Post;
+use Symfony\Component\DomCrawler\Crawler;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Log;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Link;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -131,6 +133,41 @@ class Log_Processor {
 	}
 
 	/**
+	 * Get all classes whos links should be skipped.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array<string>
+	 * @todo add filter to allow adding custom classes to skip.
+	 */
+	private function get_skip_classes(): array {
+		return array(
+			'wlf-archived',
+			'wp-element-button',
+			'wlf-archived__redirect',
+		);
+	}
+
+	/**
+	 * Checks if an array of classes contains any of the skipped classes.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array<string> $classes The classes to check.
+	 *
+	 * @return boolean
+	 */
+	private function has_skipped_classes( array $classes ): bool {
+		$skip_classes = Settings::get_ignored_classes();
+		foreach ( $classes as $class ) {
+			if ( in_array( $class, $skip_classes, true ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Updates a link within the content.
 	 *
 	 * @since 1.0.0
@@ -150,14 +187,117 @@ class Log_Processor {
 		$replacement = $link->get_replacement_options()[0];
 		$href        = $link->get_href();
 
-		// Update the content.
-		$this->content = str_replace( $href, $replacement, $this->content );
+		// HTML Processor.
+		$processor = new \WP_HTML_Tag_Processor( $this->content );
 
-		// Update the link with a description and mark as updated
-		$link = $link->add_comment( 'Updated with ' . $replacement )->as_updated();
+		// Iterate through all the links until we find the matching href.
+		while ( $processor->next_tag( 'a' ) ) {
+
+			// IF the link already has the class or its a button link, skip.
+			if ( $this->has_skipped_classes( iterator_to_array( $processor->class_list() ) ) ) {
+				// Add the skipped class to ensure it's not processed again.
+				$processor->add_class( 'wlf-archived__skipped' );
+
+				// Skip to the next A tag in while.
+				continue;
+			}
+
+			if ( \untrailingslashit( $processor->get_attribute( 'href' ) ) === \untrailingslashit( $href ) ) {
+
+				// Add the 'wlf-archived' class to the link.
+				$processor->add_class( 'wlf-archived' );
+
+				$processor->set_attribute( 'data-replacement-link', $replacement );
+
+				// Update the content.
+				$this->content = $processor->get_updated_html();
+
+				// Attempt to add the archived missing link afterward
+				$added_archived_link = $this->add_archived_link( $href, $replacement );
+
+				// Add the note to the link to say updated.
+				$link = $link->add_comment(
+					sprintf(
+						'Found broken link, updated with broken class and %s',
+						$added_archived_link
+						? 'added archived link ' . esc_html( $replacement )
+						: 'no archived link added'
+					)
+				);
+
+				// Mark the link as fixed
+				$link = $link->as_updated();
+			}
+		}
 
 		// Add the link to the processed links.
 		$this->processed_links[] = $link;
+		dump(['processed' => $this->processed_links]);
+	}
+
+	/**
+	 * Add an archived link after the existing link.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $broken_link The broken link.
+	 * @param string $replacement The replacement link.
+	 *
+	 * @return boolean If the link was added.
+	 */
+	private function add_archived_link( string $broken_link, ?string $replacement = null ): bool {
+
+		// If we have no replacement, return false.
+		if ( ! $replacement ) {
+			return false;
+		}
+
+		// Create instance of DOMDocument.
+		$doc = new \DOMDocument();
+		// Load the content with a temp wrapper
+		$doc->loadHtml( '<div id="__WLF_TEMP__">' . $this->content . '</div>' );
+
+		// Create a crawler instance.
+		$crawler = new Crawler( $doc );
+		$links   = $crawler->filter( 'a' );
+
+		// Iterate through all links and look for a match.
+		$found = false;
+		foreach ( $links as $link_node ) {
+			if ( \untrailingslashit( $broken_link ) === \untrailingslashit( $link_node->attributes->getNamedItem( 'href' )->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				$attributes = $link_node->attributes;
+
+				// If the link already has the class, skip.
+				if ( $attributes->getNamedItem( 'class' ) && strpos( $attributes->getNamedItem( 'class' )->nodeValue, 'wlf-archived__skipped' ) !== false ) {
+					continue;
+				}
+
+				// Create the new link to add.
+				$new_link = $doc->createElement( 'a', $replacement );
+				$new_link->setAttribute( 'href', $replacement );
+				$new_link->setAttribute( 'data-old-link', $broken_link );
+
+				// Set link text.
+				$new_link->nodeValue = __( 'Archived Link', 'wpcomsp_wayback_link_fixer' );
+
+				// Add class
+				$new_link->setAttribute( 'class', 'wlf-archived__redirect' );
+
+				// Insert after the link.
+				$link_node->parentNode->insertBefore( $new_link, $link_node->nextSibling );
+
+				// Denote link found.
+				$found = true;
+			}
+		}
+
+		// If we found the link, update the content.
+		if ( $found ) {
+			// Extract the content between <body><div id="__WLF_TEMP__"> and </div></body>
+			$this->content = $crawler->filter( '#__WLF_TEMP__' )->html();
+		}
+
+		return $found;
 	}
 
 	/**
@@ -192,6 +332,18 @@ class Log_Processor {
 	 * @return Log
 	 */
 	public function get_log(): Log {
+		dump( array( 'get_log with processed links' => $this->processed_links ) );
 		return $this->log->with_links( $this->processed_links );
+	}
+
+	/**
+	 * Get all processed links.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return Link[]
+	 */
+	public function get_processed_links(): array {
+		return $this->processed_links;
 	}
 }

@@ -13,7 +13,6 @@ defined( 'ABSPATH' ) || exit;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer\Report_Viewer_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\List_Table\Report_List_Table;
 
 /**
@@ -65,7 +64,6 @@ class Report_List_View {
 			\menu_page_url( Event_Page::PAGE_SLUG, false ),
 			esc_html__( 'New Report', 'wayback-link-fixer' )
 		);
-		// echo '<h1 class="wp-heading-inline">' . esc_html__( 'Reports', 'wayback-link-fixer' ) . '<button class="button">D</button></h1>';
 		echo '<hr class="wp-header-end">';
 
 		// Render the table.

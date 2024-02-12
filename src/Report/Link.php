@@ -9,10 +9,19 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
 
+use JsonSerializable;
+
 /**
  * Report Logs Link
  */
-class Link {
+class Link implements JsonSerializable {
+
+	/**
+	 * The post id the link is in.
+	 *
+	 * @since 1.1.0
+	 */
+	private int $post_id;
 
 	/**
 	 * The index/position of the link in the content.
@@ -86,6 +95,7 @@ class Link {
 	 */
 	private array $comments = array();
 
+
 	/**
 	 * Denotes if the link has been updated.
 	 *
@@ -100,6 +110,7 @@ class Link {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param integer            $post_id             The post id the link is in.
 	 * @param integer            $index               The index/position of the link in the content.
 	 * @param string|null        $href                The link href.
 	 * @param string|null        $contents            The link contents.
@@ -111,6 +122,7 @@ class Link {
 	 * @param boolean            $updated             Denotes if the link has been updated.
 	 */
 	public function __construct(
+		int $post_id,
 		int $index,
 		?string $href,
 		?string $contents,
@@ -121,6 +133,7 @@ class Link {
 		array $comments = array(),
 		bool $updated = false
 	) {
+		$this->post_id             = $post_id;
 		$this->index               = $index;
 		$this->href                = $href;
 		$this->contents            = $contents;
@@ -130,6 +143,39 @@ class Link {
 		$this->replacement_options = $replacement_options;
 		$this->comments            = $comments;
 		$this->updated             = $updated;
+	}
+
+	/**
+	 * Allow JSON Serliasation.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return \stdClass
+	 */
+	public function jsonSerialize() {
+		return (object) array(
+			'post_id'             => $this->get_post_id(),
+			'index'               => $this->get_index(),
+			'href'                => $this->get_href(),
+			'contents'            => $this->get_contents(),
+			'broken'              => $this->is_broken(),
+			'redirect_target'     => $this->get_redirect_target(),
+			'http_code'           => $this->get_http_code(),
+			'replacement_options' => $this->get_replacement_options(),
+			'comments'            => $this->get_comments(),
+			'updated'             => $this->has_been_updated(),
+		);
+	}
+
+	/**
+	 * Get the post id the link is in.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return integer
+	 */
+	public function get_post_id(): int {
+		return $this->post_id;
 	}
 
 	/**
@@ -244,6 +290,7 @@ class Link {
 		$comments   = $this->comments;
 		$comments[] = $comment;
 		return new Link(
+			$this->post_id,
 			$this->index,
 			$this->href,
 			$this->contents,
@@ -266,6 +313,7 @@ class Link {
 	 */
 	public function add_replacement_options( array $replacement_options ): Link {
 		return new Link(
+			$this->post_id,
 			$this->index,
 			$this->href,
 			$this->contents,
@@ -286,6 +334,7 @@ class Link {
 	 */
 	public function as_updated(): Link {
 		return new Link(
+			$this->post_id,
 			$this->index,
 			$this->href,
 			$this->contents,
