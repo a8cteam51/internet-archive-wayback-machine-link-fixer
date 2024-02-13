@@ -1,0 +1,115 @@
+div.wlf-report-list-pagination {
+    ul {
+        align-items: center;
+        display: flex;
+        min-width: 300px;
+        justify-content: center;
+        li {
+            span,
+            a {
+                display: inline-block;
+                padding: 0 5px;
+                text-align: center;
+                width: 15px;
+                height: 15px;
+                &:hover {
+                    cursor: pointer;
+                    color: #636363;
+                }
+                text-decoration: none;
+                font-size: 15px;
+                color: black;
+                span {
+                    padding: 0;
+                    width: auto;
+                }
+            }
+            .dashicons {
+                padding-top: 2px;
+            }
+            &.active {
+                background-color: #d9d9d9;
+                border-radius: 10px;
+            }
+        }
+    }
+}
+
+#wlf-report {
+    #wlf-report-logs {
+        .wlf-report-link {
+            border: 1px solid #4b586399;
+            margin-bottom: 5px;
+            &__header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 5px;
+                font-size: large;
+                font-weight: 700;
+                .dashicons.updated {
+                    color: #3c7f37;
+                }
+            }
+            &__header.updated {
+                background-color: #3c7f37;
+            }
+            &__body {
+                padding: 0 5px;
+                .wlf-report-link__comments,
+                .wlf-report-link__replacements {
+                    &-header {
+                        margin: 5px 0;
+                    }
+                    &-row {
+                        margin: 0;
+                        margin-bottom: 2px;
+                        padding-left: 5px;
+                    }
+                }
+            }
+        }
+        .wlf-report-log {
+            border: 1px solid #4b586399;
+            &__header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 5px;
+                font-size: large;
+                font-weight: 700;
+                border-bottom: 1px solid #4b586399;
+                &-post-title {
+                    display: flex;
+                    .dashicons {
+                        padding-right: 5px;
+                        cursor: pointer;
+                    }
+                }
+            }
+            &__links {
+                padding: 5px;
+            }
+            .show-log {
+                display: none;
+            }
+            .hide-log {
+                display: block;
+            }
+            &.closed {
+                .wlf-report-log__links {
+                    display: none;
+                }
+                .wlf-report-log__header {
+                    border-bottom: 0px;
+                }
+                .show-log {
+                    display: block;
+                }
+                .hide-log {
+                    display: none;
+                }
+            }
+        }
+    }
+}

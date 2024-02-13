@@ -1,0 +1,127 @@
+#wlf-report-list {
+    #wlf-report-filters {
+        padding: 5px;
+        border: 1px solid #000;
+        background: #d9d9d9;
+        .select2-container {
+            width: auto !important;
+        }
+        .wlf-report-filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            margin-bottom: 5px;
+            label {
+                display: flex;
+                flex-direction: column;
+                padding: 0 5px;
+            }
+        }
+        .wlf-report-filter-button {
+            padding: 5px;
+            text-align: right;
+        }
+    }
+    #wlf-report-table {
+        margin-top: 20px;
+        table {
+            border: 1px solid #000;
+            border-spacing: 0;
+            thead {
+                tr {
+                    th {
+                        padding: 0;
+                        text-align: center;
+                        border: 1px solid #d9d9d9;
+                        border-bottom-color: #000;
+                        background: #d9d9d9;
+                        padding-bottom: 5px;
+                    }
+                }
+            }
+            tbody {
+                tr {
+                    td {
+                        padding: 5px 0;
+                        text-align: center;
+                        border-bottom: 1px solid #d9d9d9;
+                        a {
+                            color: #000;
+                            cursor: pointer;
+                            text-decoration: none;
+                        }
+                        .dashicons {
+                            cursor: pointer;
+                            font-size: 1.5em;
+                        }
+                        .dashicons.inactive {
+                            cursor: not-allowed;
+                            opacity: 0.5;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+/* The single report. */
+
+#wlf-modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    background-color: #9d9d9db6;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .wlf-modal__inner {
+        min-height: fit-content;
+        min-width: 50vw;
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 15px;
+        #wlf-modal__inner-header {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            &-title {
+                flex-grow: 1;
+                padding: 5px;
+                font-size: larger;
+                font-weight: bolder;
+                margin: 0;
+            }
+            &-close {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                padding: 5px;
+                font-size: 20px;
+                line-height: 20px;
+                .dashicons {
+                    cursor: pointer;
+                }
+            }
+        }
+        #wlf-modal__inner-content {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            /* The Replacement link form */
+            #wlf-report-fix-form {
+                flex-direction: column;
+                display: flex;
+                select,
+                input {
+                    width: 100%;
+                    min-width: -webkit-fill-available;
+                    margin-bottom: 5px;
+                }
+            }
+        }
+    }
+}

@@ -4,6 +4,7 @@ module.exports = ( ctx ) => {
 	const isDevelopment = ( 'development' === ctx.env );
 	const isSass = ( '.scss' === ctx.file.extname );
 
+
 	return {
 		map: {
 			inline: isDevelopment,
