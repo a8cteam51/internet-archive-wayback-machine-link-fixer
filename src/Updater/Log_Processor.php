@@ -331,7 +331,6 @@ class Log_Processor {
 	 * @return Log
 	 */
 	public function get_log(): Log {
-		dump( array( 'get_log with processed links' => $this->processed_links ) );
 		return $this->log->with_links( $this->processed_links );
 	}
 
