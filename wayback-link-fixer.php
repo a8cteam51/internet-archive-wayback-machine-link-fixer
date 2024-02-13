@@ -97,37 +97,3 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
-
-add_action(
-	'init',
-	function () {
-
-		// If access from wp-admin, then return
-		if ( is_admin() ) {
-			return;
-		}
-
-		// If accessed from AJAX, then return
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-			return;
-		}
-
-		//If foo=bar is not in url.
-		if ( ! isset( $_GET['foo'] ) || 'bar' !== $_GET['foo'] ) {
-			return;
-		}
-		$r = Runner::from_post_id( 15, true, '404' );
-		$r = $r->run();
-
-		$updater = new Updater( $r );
-		$updater->run();
-
-		$ana = new Content_Analyzer(
-			get_post(15)->post_content,
-			15,
-			false
-		);
-
-		dd( $updater, $ana->analyze('404,200'), $ana );
-	}
-);

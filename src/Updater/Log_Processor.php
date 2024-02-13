@@ -232,7 +232,6 @@ class Log_Processor {
 
 		// Add the link to the processed links.
 		$this->processed_links[] = $link;
-		dump(['processed' => $this->processed_links]);
 	}
 
 	/**
@@ -278,13 +277,13 @@ class Log_Processor {
 				$new_link->setAttribute( 'data-old-link', $broken_link );
 
 				// Set link text.
-				$new_link->nodeValue = __( 'Archived Link', 'wpcomsp_wayback_link_fixer' );
+				$new_link->nodeValue = esc_html__( 'Archived Link', 'wpcomsp_wayback_link_fixer' ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase, from PHP Core Lib
 
 				// Add class
 				$new_link->setAttribute( 'class', 'wlf-archived__redirect' );
 
 				// Insert after the link.
-				$link_node->parentNode->insertBefore( $new_link, $link_node->nextSibling );
+				$link_node->parentNode->insertBefore( $new_link, $link_node->nextSibling ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase, from PHP Core Lib
 
 				// Denote link found.
 				$found = true;

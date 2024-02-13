@@ -147,7 +147,6 @@ class Updater {
 
 		// Get the updated log and update the report.
 		$new_log = $processor->get_log();
-		dump(['new log' => $new_log]);
 		$this->report_repository->update_log( $new_log );
 
 		// Add the result.

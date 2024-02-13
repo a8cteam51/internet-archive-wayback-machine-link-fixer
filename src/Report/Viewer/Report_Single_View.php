@@ -62,7 +62,7 @@ class Report_Single_View {
 	private function validate_request(): void {
 		// If report id is not set, throw an exception.
 		if ( ! isset( $_GET['report_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			throw new \Exception( __( 'No report ID set.', 'wpcomsp_wayback_link_fixer' ) );
+			throw new \Exception( esc_html__( 'No report ID set.', 'wpcomsp_wayback_link_fixer' ) );
 		}
 
 		// Get the sanitized ID and check we have a report.
@@ -71,7 +71,7 @@ class Report_Single_View {
 		$this->report = $this->report_repository->find_by_report_id( $report_id );
 
 		if ( ! $this->report ) {
-			throw new \Exception( __( 'No report found.', 'wpcomsp_wayback_link_fixer' ) );
+			throw new \Exception( esc_html__( 'No report found.', 'wpcomsp_wayback_link_fixer' ) );
 		}
 	}
 
@@ -88,7 +88,7 @@ class Report_Single_View {
 		try {
 			$this->validate_request();
 		} catch ( \Throwable $th ) {
-			wp_die( $th->getMessage() );
+			wp_die( esc_html( $th->getMessage() ) );
 		}
 
 		$logs = $this->report_repository->get_logs( $this->report );
@@ -96,23 +96,6 @@ class Report_Single_View {
 		// Render the single view.
 		$table = new Report_Table( $this->report, $logs );
 
-		// dump( $r );
-		// $list_page = Report_Helper::get_report_list_link();
-
-		// $report_author = \get_user_by( 'id', $this->report->get_user_id() ) ?: null; //phpcs:ignore Universal.Operators.DisallowShortTernary.Found
-
-		// $report_blog = get_bloginfo( $this->report->get_blog_id() );
-
-		// wpcomsp_wayback_link_fixer_render_template(
-		//  'admin/reports/report-details.php',
-		//  array(
-		//      'report'     => $this->report,
-		//      'logs'       => $logs,
-		//      'back_url'   => $list_page,
-		//      'author'     => $report_author,
-		//      'site_title' => $report_blog,
-		//  )
-		// );
 		// Run the bulk actions.
 		$table->process_bulk_action();
 
@@ -122,9 +105,9 @@ class Report_Single_View {
 		echo '<div class="wrap">';
 		printf(
 			'<h1 class="wp-heading-inline">%s <a id="wlf-report-csv-download" class="page-title-action wlf-download-report-csv" data-report="%s">%s</a></h1>',
-			esc_html__( 'Reports', 'wayback-link-fixer' ),
-			$this->report->get_report_id(),
-			esc_html__( 'Download CSV', 'wayback-link-fixer' )
+			esc_html__( 'Reports', 'wpcomsp_wayback_link_fixer' ),
+			esc_attr( $this->report->get_report_id() ),
+			esc_html__( 'Download CSV', 'wpcomsp_wayback_link_fixer' )
 		);
 
 		echo '<hr class="wp-header-end">';

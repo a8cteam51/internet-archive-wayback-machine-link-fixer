@@ -53,7 +53,7 @@ class Report_List_Table extends \WP_List_Table {
 	private Report_Repository $report_repository;
 
 	/**
-	 * @inheritDoc
+	 * Holds the items in the table.
 	 *
 	 * @var array<int, array{report: Report, logs: integer}> $items
 	 */
@@ -121,7 +121,7 @@ class Report_List_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public function no_items() {
-		echo __( 'No reports found.', 'wpcomsp_wayback_link_fixer' );
+		echo esc_html__( 'No reports found.', 'wpcomsp_wayback_link_fixer' );
 	}
 
 	/**
@@ -149,9 +149,6 @@ class Report_List_Table extends \WP_List_Table {
 		$filters = $this->get_filters();
 
 		return $filters[ self::FILTER_BLOG_ID ] ?? get_current_blog_id();
-
-		// If viewing from a single site, return only that site.
-		return get_current_blog_id();
 	}
 
 	/**
@@ -187,7 +184,7 @@ class Report_List_Table extends \WP_List_Table {
 	 *
 	 * @param array{report: Report, logs:integer} $item The item.
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function column_cb( $item ) {
 		return sprintf(
@@ -244,10 +241,10 @@ class Report_List_Table extends \WP_List_Table {
 	private function get_filters(): array {
 		$filters = array(
 			self::FILTER_USER_ID   => \array_key_exists( self::FILTER_USER_ID, $_GET ) && '' !== $_GET[ self::FILTER_USER_ID ] // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				? absint( $_GET[ self::FILTER_USER_ID ] )
+				? absint( $_GET[ self::FILTER_USER_ID ] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				: null,
 			self::FILTER_BLOG_ID   => \array_key_exists( self::FILTER_BLOG_ID, $_GET ) && '' !== $_GET[ self::FILTER_BLOG_ID ] // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				? absint( $_GET[ self::FILTER_BLOG_ID ] )
+				? absint( $_GET[ self::FILTER_BLOG_ID ] )  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				: null,
 			self::FILTER_STATUS    => array(),
 			self::FILTER_DATE_FROM => \array_key_exists( self::FILTER_DATE_FROM, $_GET ) ? sanitize_text_field( $_GET[ self::FILTER_DATE_FROM ] ) : null, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -291,7 +288,7 @@ class Report_List_Table extends \WP_List_Table {
 				<input type="hidden" name="page" value="<?php echo esc_attr( $page_arg ); ?>" />
 				<label for="<?php echo esc_attr( self::FILTER_USER_ID ); ?>" class="screen-reader-text"><?php esc_html_e( 'Reported created by user', 'wpcomsp_wayback_link_fixer' ); ?></label>
 				<select class="wlf-multiselect" name="<?php echo esc_attr( self::FILTER_USER_ID ); ?>" id="<?php echo esc_attr( self::FILTER_USER_ID ); ?>">
-					<option value=""><?php echo esc_html( 'All users', 'wpcomsp_wayback_link_fixer' ); ?></option>
+					<option value=""><?php echo esc_html__( 'All users', 'wpcomsp_wayback_link_fixer' ); ?></option>
 					<?php foreach ( $users as $user ) : ?>
 						<option value="<?php echo esc_attr( $user->ID ); ?>" <?php selected( $filters[ self::FILTER_USER_ID ], $user->ID ); ?>><?php echo esc_html( wpcomsp_wayback_link_fixer_get_user_name( $user ) ); ?></option>
 					<?php endforeach; ?>
@@ -300,7 +297,7 @@ class Report_List_Table extends \WP_List_Table {
 				<?php if ( \is_multisite() && \is_network_admin() ) : ?>
 					<label for="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" class="screen-reader-text"><?php esc_html_e( 'Reported created by user', 'wpcomsp_wayback_link_fixer' ); ?></label>
 					<select class="wlf-multiselect" name="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" id="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" >
-						<option value=""><?php echo esc_html( 'All sites', 'wpcomsp_wayback_link_fixer' ); ?></option>
+						<option value=""><?php echo esc_html__( 'All sites', 'wpcomsp_wayback_link_fixer' ); ?></option>
 						<?php foreach ( \get_sites() as $site ) : ?>
 							<option value="<?php echo esc_attr( $site->blog_id ); ?>"><?php echo esc_html( $site->blogname ); ?></option>
 						<?php endforeach; ?>
@@ -474,8 +471,6 @@ class Report_List_Table extends \WP_List_Table {
 				'type'    => 'success',
 			);
 		}
-
-		return;
 	}
 
 	/**

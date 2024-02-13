@@ -155,12 +155,12 @@ class Report_Table extends \WP_List_Table {
 	public function get_columns() {
 		return array(
 			self::COLUMN_CHECKBOX      => '',
-			self::COLUMN_POST          => __( 'Post', 'wayback-link-fixer' ),
-			self::COLUMN_LINK_CODE     => __( 'Status Code', 'wayback-link-fixer' ),
-			self::COLUMN_LINK_URL      => __( 'URL', 'wayback-link-fixer' ),
-			self::COLUMN_LINK_CONTENTS => __( 'Contents', 'wayback-link-fixer' ),
-			self::COLUMN_FIXED         => __( 'Fixed', 'wayback-link-fixer' ),
-			self::COLUMN_DETAILS       => __( 'Details', 'wayback-link-fixer' ),
+			self::COLUMN_POST          => __( 'Post', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_CODE     => __( 'Status Code', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_URL      => __( 'URL', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_CONTENTS => __( 'Contents', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_FIXED         => __( 'Fixed', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_DETAILS       => __( 'Details', 'wpcomsp_wayback_link_fixer' ),
 		);
 	}
 
@@ -324,7 +324,7 @@ class Report_Table extends \WP_List_Table {
 	/**
 	 * Compile the details cell for link.
 	 *
-	 * @param array{log: Log, link: Link $link The link.
+	 * @param array{log: Log, link: Link} $item The link.
 	 *
 	 * @return string
 	 */
@@ -338,7 +338,7 @@ class Report_Table extends \WP_List_Table {
 				$item['link']->get_post_id(),
 				$item['link']->get_index(),
 				$item['log']->get_id(),
-				__( 'Attempt to fix' ),
+				\esc_html__( 'Attempt to fix', 'wpcomsp_wayback_link_fixer' ),
 				wp_json_encode( $item['link']->get_replacement_options() ),
 				$item['link']->get_href()
 			);
@@ -351,9 +351,9 @@ class Report_Table extends \WP_List_Table {
 				\str_replace(
 					'>>',
 					'→',
-					json_encode( $item['link']->get_comments() )
+					json_encode( $item['link']->get_comments() ) // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 				),
-				esc_html__( 'Comments', 'wayback-link-fixer' )
+				esc_html__( 'Comments', 'wpcomsp_wayback_link_fixer' )
 			);
 		}
 
@@ -368,6 +368,6 @@ class Report_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public function no_items() {
-		echo __( 'Report has no links', 'wpcomsp_wayback_link_fixer' );
+		echo esc_html__( 'Report has no links', 'wpcomsp_wayback_link_fixer' );
 	}
 }

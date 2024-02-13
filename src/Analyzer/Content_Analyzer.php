@@ -271,7 +271,6 @@ class Content_Analyzer {
 
 			// Skip if any items in the $classes array is in the skipped classes
 			if ( array_intersect( $classes, $skipped_classes ) ) {
-				// dump(['skipped' => $classes]);
 				continue;
 			}
 
@@ -293,7 +292,6 @@ class Content_Analyzer {
 
 			// If the link is in the excluded list, skip.
 			if ( $this->is_excluded( $src ) ) {
-				// dump(['is_excluded' => $src]);
 				continue;
 			}
 
@@ -310,7 +308,7 @@ class Content_Analyzer {
 				}
 
 				$link_details = $this->get_link_details( $src );
-// dump($link_details);
+
 				// If the links HTTP code is not in the list of HTTP codes, skip.
 				if ( ! in_array( (int) $link_details['http_code'], $http_codes, true ) ) {
 					continue;

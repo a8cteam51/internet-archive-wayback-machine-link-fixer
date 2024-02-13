@@ -60,36 +60,38 @@ class Late_Log_Processor_Ajax {
 	 * Validates the request.
 	 *
 	 * @since 1.1.0
+	 *
+	 * @return void|no-return
 	 */
 	private function validate_request(): void {
 		if ( ! isset( $_POST['post_id'] ) ) {
-			wp_send_json_error( __( 'Missing post_id parameter.', 'wayback-link-fixer' ) );
+			wp_send_json_error( __( 'Missing post_id parameter.', 'wpcomsp_wayback_link_fixer' ) );
 		}
 
 		if ( ! isset( $_POST['url'] ) ) {
-			wp_send_json_error( __( 'Missing url parameter.', 'wayback-link-fixer' ) );
+			wp_send_json_error( __( 'Missing url parameter.', 'wpcomsp_wayback_link_fixer' ) );
 		}
 
 		if ( ! isset( $_POST['new_url'] ) ) {
-			wp_send_json_error( __( 'Missing new_url parameter.', 'wayback-link-fixer' ) );
+			wp_send_json_error( __( 'Missing new_url parameter.', 'wpcomsp_wayback_link_fixer' ) );
 		}
 
 		// Check we have a log id.
 		if ( ! isset( $_POST['log_id'] ) ) {
-			wp_send_json_error( __( 'Missing log_id parameter.', 'wayback-link-fixer' ) );
+			wp_send_json_error( __( 'Missing log_id parameter.', 'wpcomsp_wayback_link_fixer' ) );
 		}
 
 		// If new url is empty or the same as the old url, we don't need to do anything.
 		if ( empty( $_POST['new_url'] ) || $_POST['url'] === $_POST['new_url'] ) {
-			wp_send_json_success( __( 'No changes made.', 'wayback-link-fixer' ) );
+			wp_send_json_success( __( 'No changes made.', 'wpcomsp_wayback_link_fixer' ) );
 		}
 
 		if ( ! isset( $_POST['nonce'] ) ) {
-			wp_send_json_error( __( 'Missing nonce parameter.', 'wayback-link-fixer' ) );
+			wp_send_json_error( __( 'Missing nonce parameter.', 'wpcomsp_wayback_link_fixer' ) );
 		}
 
 		if ( ! wp_verify_nonce( $_POST['nonce'], self::NONCE_KEY ) ) {
-			wp_send_json_error( __( 'Invalid nonce.', 'wayback-link-fixer' ) );
+			wp_send_json_error( __( 'Invalid nonce.', 'wpcomsp_wayback_link_fixer' ) );
 		}
 	}
 
@@ -106,14 +108,13 @@ class Late_Log_Processor_Ajax {
 		$old_url = \sanitize_text_field( $_POST['url'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, nonce checked above
 		$new_url = \sanitize_text_field( $_POST['new_url'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, nonce checked above
 		$log_id  = \sanitize_text_field( $_POST['log_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, nonce checked above
-		var_dump( $post_id, $old_url, $new_url, $log_id );
 
 		// Get the log.
 		$log = $this->report_repository->get_log( (int) $log_id );
 
 		// If we don't have a log, we can't do anything.
 		if ( ! $log ) {
-			wp_send_json_error( __( 'No log found.', 'wayback-link-fixer' ) );
+			wp_send_json_error( __( 'No log found.', 'wpcomsp_wayback_link_fixer' ) );
 		}
 
 		// Iterate through all links and replace options for all matching links.
@@ -121,7 +122,6 @@ class Late_Log_Processor_Ajax {
 		$links = $log->get_links();
 
 		foreach ( $links as $index => $link ) {
-			dump($link);
 			// If the link has been fixed, skip
 			if ( $link->has_been_updated() ) {
 				continue;
@@ -136,7 +136,7 @@ class Late_Log_Processor_Ajax {
 
 		// IF we have no found a link, return error.
 		if ( false === $found ) {
-			wp_send_json_error( __( 'Link not found or previously fixed?', 'wayback-link-fixer' ) );
+			wp_send_json_error( __( 'Link not found or previously fixed?', 'wpcomsp_wayback_link_fixer' ) );
 		}
 
 		// Set the links to the log.
@@ -147,7 +147,7 @@ class Late_Log_Processor_Ajax {
 
 		// Check if we can update the content (post might be removed)
 		if ( ! $processor->can_update() ) {
-			wp_send_json_error( __( 'Can not be fixed, was the post removed', 'wayback-link-fixer' ) );
+			wp_send_json_error( __( 'Can not be fixed, was the post removed', 'wpcomsp_wayback_link_fixer' ) );
 		}
 
 		// Fix content.
@@ -155,7 +155,7 @@ class Late_Log_Processor_Ajax {
 
 		// If we have not updated.
 		if ( ! $updated ) {
-			wp_send_json_error( __( 'Failed to update post.', 'wayback-link-fixer' ) );
+			wp_send_json_error( __( 'Failed to update post.', 'wpcomsp_wayback_link_fixer' ) );
 		}
 
 		$updated_log = $processor->get_log();

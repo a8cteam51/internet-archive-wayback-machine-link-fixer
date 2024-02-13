@@ -60,9 +60,9 @@ class Report_List_View {
 		echo '<div class="wrap">';
 		printf(
 			'<h1 class="wp-heading-inline">%s <a href="%s" class="page-title-action">%s</a></h1>',
-			esc_html__( 'Reports', 'wayback-link-fixer' ),
-			\menu_page_url( Event_Page::PAGE_SLUG, false ),
-			esc_html__( 'New Report', 'wayback-link-fixer' )
+			esc_html__( 'Reports', 'wpcomsp_wayback_link_fixer' ),
+			esc_url( menu_page_url( Event_Page::PAGE_SLUG, false ) ),
+			esc_html__( 'New Report', 'wpcomsp_wayback_link_fixer' )
 		);
 		echo '<hr class="wp-header-end">';
 
