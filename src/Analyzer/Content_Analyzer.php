@@ -341,7 +341,7 @@ class Content_Analyzer {
 							null,
 							$link_details['http_code'],
 							array(),
-							array( \wpcomsp_wayback_link_fixer_get_status_code_name( absint( $link_details['http_code'] ) ) )
+							array( sprintf( 'HTTP Code %s : %s', absint( $link_details['http_code'] ), \wpcomsp_wayback_link_fixer_get_status_code_name( absint( $link_details['http_code'] ) ) ) )
 						)
 					);
 					continue;
@@ -352,7 +352,7 @@ class Content_Analyzer {
 					$index,
 					$src,
 					$link_node->nodeValue,
-					\wpcomsp_wayback_link_fixer_get_status_code_name( absint( $link_details['http_code'] ) ),
+					sprintf( 'HTTP Code %s : %s', absint( $link_details['http_code'] ), \wpcomsp_wayback_link_fixer_get_status_code_name( absint( $link_details['http_code'] ) ) ),
 					$link_details['http_code']
 				);
 

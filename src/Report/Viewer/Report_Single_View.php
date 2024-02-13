@@ -111,7 +111,7 @@ class Report_Single_View {
 		);
 
 		echo '<hr class="wp-header-end">';
-
+		echo '<div id="wlf-report-notifications"></div>';
 		// Render the table.
 		$table->prepare_items();
 		echo '<form method="get">';

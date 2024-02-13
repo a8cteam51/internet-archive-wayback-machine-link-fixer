@@ -8,7 +8,7 @@
 		const reportToggle = jQuery('.wlf-report-log__header .accordion-toggle');
 		const generateCSVAjax = jQuery('.wlf-download-report-csv');
 		const notifications = jQuery('#wlf-report-notifications');
-		const linkTableRows = jQuery('table.reports tbody#the-list > tr');
+		const linkTableRows = jQuery('table.reports tbody#the-list');
 
 		// Modal.
 		const modal = jQuery('#wlf-modal');
@@ -60,14 +60,19 @@
 			const logId = jQuery(this).data('log');
 
 			// If we have no link or postId, show error in modal.
-			if (!link || !postId) {
+			if (!link) {
+				showInModal('Error', 'This link is not valid and can not be fixed');
+				return;
+			}
+
+			if (!postId) {
 				showInModal('Error', 'Something went wrong, please try again.');
 				return;
 			}
 
 			// Get any options from the link.
 			const options = jQuery(this).data('options');
-			console.log(options);
+
 
 			// Render the form.
 			const form = `
@@ -128,7 +133,7 @@
 			const log = jQuery('#fix-form__log').val();
 
 			// If select is empty or __custom_url, use the customUrl.
-			const useCustomUrl = select === '__custom_url' || select === ''
+			const useCustomUrl = !select || select === '__custom_url' || select === ''
 				? customUrl
 				: select;
 
@@ -158,7 +163,7 @@
 					const links = response.data.updatedLinks;
 
 					// if we have no links, show error.
-					if (links.length === 0) {
+					if (!links || links.length === 0) {
 						showNotification('Something went wrong, please try again.', 'error');
 						modal.hide();
 						return;
@@ -192,35 +197,40 @@
 			const index = updatedLink.index;
 
 			// Look for a row <tr> with the same postId and index.
-			linkTableRows.each((i, row) => {
+			linkTableRows.find('tr').each((i, row) => {
+
 				// Get the tr data.
 				let data = jQuery(row).data();
+
 				// If we have the correct post id and index, update the row.
 				if (data.postId === postId && data.index === index) {
+
+
 					// Update the comments.
-					jQuery(this).find('.report-link-actions span.wlf-report-link-actions__comments')
+					jQuery(row).find('.report-link-actions span.wlf-report-link-actions__comments')
 						.attr('data-comments', JSON.stringify(updatedLink.comments));
 
 					// Remove the current classes for updated or not.
-					jQuery(this).find('.report-link-fixed span.dashicons')
+					jQuery(row).find('.report-link-fixed span.dashicons')
 						.removeClass('dashicons-yes-alt')
 						.removeClass('dashicons-no');
 
 					// Add the correct class based on the updated value.
-					jQuery(this).find('.report-link-fixed span.dashicons')
+					jQuery(row).find('.report-link-fixed span.dashicons')
 						.addClass(updatedLink.updated ? 'dashicons-yes-alt' : 'dashicons-no');
 
 					// Remove the option to fix if updated.
 					if (updatedLink.updated) {
-						jQuery(this).find('.report-link-actions span.wlf-report-link-actions__fixes')
-							.hide();
+						jQuery(this).find('.report-link-actions span.wlf-report-link-actions__fixes[data-post_id="' + postId + '"][data-link_index="' + index + '"]')
+							.hide()
+
 					}
 				}
 
 			})
 
 		}
-
+// updateLinkInTable({post_id: 5113, index:1, comments: {1: 'test'}, updated: false});
 		/**
 		 * When show comments is clicked.
 		 */
@@ -278,7 +288,6 @@
 			const nonce = wlf_report_viewer.csv_nonce;
 			const action = wlf_report_viewer.csv_action;
 			const ajaxUrl = wlf_report_viewer.ajax_url;
-			console.log(report, nonce, action, ajaxUrl);
 
 			// Clear any notifications.
 			showNotification('Generating CSV...', 'info');
