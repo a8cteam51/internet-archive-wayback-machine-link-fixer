@@ -112,13 +112,25 @@ class Report_Single_View {
 
 		echo '<hr class="wp-header-end">';
 		echo '<div id="wlf-report-notifications"></div>';
+		// Render the report details.
+
+		wpcomsp_wayback_link_fixer_render_template(
+			'admin/reports/report-details.php',
+			array(
+				'report'     => $this->report,
+				'back_url'   => Report_Helper::get_report_list_link(),
+				'logs'       => $logs,
+				'author'     => null !== $this->report->get_user_id() ? \get_user_by( 'id', $this->report->get_user_id() ) : null,
+				'site_title' => get_bloginfo( $this->report->get_blog_id() ),
+			)
+		);
 		// Render the table.
 		$table->prepare_items();
 		echo '<form method="get">';
 		$table->display();
 		echo '</form>';
 
-		echo '<div id="wlf-modal" class="wlf-modal">';
+		echo '<div id="wlf-modal" class="wlf-modal" style="display:none">';
 		echo '<div class="wlf-modal__inner">';
 		echo '<div id="wlf-modal__inner-header">';
 		echo '<p id="wlf-modal__inner-header-title">Modal</p>';

@@ -173,13 +173,12 @@ class Event_Page {
 				)
 			);
 		}
-
 		// Get the args from the request.
 		$http_codes = array_key_exists( 'event_http', $_POST )
 			? array_filter(
 				array_map(
-					fn ( string $e ): ?string => '' !== $e ? trim( $e ) : null,
-					explode( ',', sanitize_text_field( (string) $_POST['event_http'] ) )
+					'sanitize_text_field',
+					$_POST['event_http']
 				)
 			)
 			: array();
