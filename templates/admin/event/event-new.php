@@ -16,16 +16,59 @@ $wlf_cpt_label = function ( string $cpt ): string {
 	return $data->label;
 };
 
-?>
-<div id="wlf-events-trigger">
+// Default HTTP codes.
+$wlf_default_http_codes = explode( ',', Settings::get_http_status_codes() );
 
-	<h2><?php esc_html_e( 'Run a new report', 'wpcomsp_wayback_link_fixer' ); ?></h2>
-	<div class="wlf-event-trigger-row">
-		<p><strong><?php esc_html_e( 'HTTP Status Codes to check', 'wpcomsp_wayback_link_fixer' ); ?></strong></p>
-		<input type="text" id="event_http" value="<?php echo esc_attr( Settings::get_http_status_codes() ); ?>">
-		<p class="description"><?php esc_html_e( 'Comma separated list of HTTP status codes to check.', 'wpcomsp_wayback_link_fixer' ); ?></p>
-	</div>
-	<div class="wlf-event-trigger-row">
+?>
+
+<table class="form-table" role="presentation">
+	<tbody>
+		<tr class="form-field">
+			<th scope="row"><label for="user_login">HTTP Codes</label></th>
+			<td>
+				<select id="event_http" class="select2" multiple style="width: 100%">
+					<?php foreach ( wpcomsp_wayback_link_fixer_get_http_codes() as $wlf_http_code ) : ?>
+						<option value="<?php echo esc_attr( $wlf_http_code ); ?>" <?php echo in_array( (string) $wlf_http_code, $wlf_default_http_codes, true ) ? 'SELECTED' : ''; ?>>
+							<?php echo esc_html( $wlf_http_code ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+				<label for="event_http">Which HTTP code(s) should be checked</label>
+			</td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row">Link Cache</th>
+			<td>
+				<input type="checkbox" name="event_ignore_cache" id="event_ignore_cache" value="1" checked="checked">
+				<label for="event_ignore_cache">Ignore cache and check every link?</label>
+			</td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row">Auto fix</th>
+			<td>
+				<input type="checkbox" name="event_fix_links" id="event_fix_links" value="1" checked="checked">
+				<label for="event_fix_links">If archived link found, auto fix?</label>
+			</td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row"><label for="user_login">Post Types</label></th>
+			<td>
+				<select id="event_post_types" class="select2" multiple style="width: 100%">
+					<?php foreach ( Settings::get_post_types() as $wlf_cpt ) : ?>
+						<option value="<?php echo esc_attr( $wlf_cpt ); ?>" SELECTED>
+							<?php echo esc_attr( ucfirst( $wlf_cpt ) ); ?>
+						</option>
+					<?php endforeach; ?>
+
+				</select>
+				<label for="event_post_types">Which post types should be checked.</label>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+		<input type="button" id="event_trigger" class="button" value="<?php esc_html_e( 'Create Report', 'wpcomsp_wayback_link_fixer' ); ?>">
+
 		<?php if ( ! is_multisite() ) : ?>
 			<input type="hidden" id="wlf_event_blog_ids[1]" name="wlf_event_blog_ids[]" value="1">
 		<?php else : ?>
@@ -43,41 +86,3 @@ $wlf_cpt_label = function ( string $cpt ): string {
 				<input type="hidden" id="wlf_event_blog_ids" name="wlf_event_blog_ids[]" value="<?php echo esc_attr( get_current_blog_id() ); ?>">
 			<?php endif; ?>
 		<?php endif; ?>
-
-	</div>
-	<div class="wlf-event-trigger-row">
-		<p class="with-checkbox"><strong>
-			<?php esc_html_e( 'Ignore Link Cache', 'wpcomsp_wayback_link_fixer' ); ?></strong>
-			<input type="checkbox" id="event_ignore_cache">
-			<span class="description"><?php esc_html_e( 'Ignore the link cache and check all links.', 'wpcomsp_wayback_link_fixer' ); ?></span>
-		</p>
-	</div>
-	<div class="wlf-event-trigger-row">
-		<p class="with-checkbox"><strong>
-			<?php esc_html_e( 'Auto Fix Broken Links', 'wpcomsp_wayback_link_fixer' ); ?></strong>
-			<input type="checkbox" id="event_fix_links">
-			<span class="description"><?php esc_html_e( 'Any broken links with 1 option from WayBack Machine will be auto fixed', 'wpcomsp_wayback_link_fixer' ); ?></span>
-		</p>
-	</div>
-	<div class="wlf-event-trigger-row">
-		<p><strong><?php esc_html_e( 'Post Types to check', 'wpcomsp_wayback_link_fixer' ); ?></strong></p>
-		<div class="checkbox-grid">
-			<?php foreach ( Settings::get_post_types() as $wlf_cpt ) : ?>
-				<label>
-					<?php echo esc_html( $wlf_cpt_label( $wlf_cpt ) ); ?>
-					<input type="checkbox" id="event_post_types_<?php echo esc_attr( $wlf_cpt ); ?>" name="event_post_types[]" checked value="<?php echo esc_attr( $wlf_cpt ); ?>">
-				</label>
-			<?php endforeach; ?>
-		</div>
-		<p class="description"><?php esc_html_e( 'Select the post types to check.', 'wpcomsp_wayback_link_fixer' ); ?></p>
-	</div>
-	<div class="wlf-event-trigger-row">
-		<p><strong><?php esc_html_e( 'Posts to ignore', 'wpcomsp_wayback_link_fixer' ); ?></strong></p>
-		<select id="wlf_event_ignore_posts" class="select2" multiple style="width: 100%"></select>
-		<p class="description"><?php esc_html_e( 'Select the posts to ignore.', 'wpcomsp_wayback_link_fixer' ); ?></p>
-		<p id="wlf-event-select2-errors"></p>
-	</div>
-	<div class="wlf-event-trigger-row">
-		<input type="button" id="event_trigger" class="button" value="<?php esc_html_e( 'Create Report', 'wpcomsp_wayback_link_fixer' ); ?>">
-	</div>
-</div>

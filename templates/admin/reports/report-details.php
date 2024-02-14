@@ -9,16 +9,14 @@
  * @var Log[]        $logs        The logs for the report.
  * @var string       $back_url    The url to go back to.
  * @var WP_User|null $author      The author of the report.
- * @var string       $%site_title The site title (not used if not a multi site)
+ * @var string       $site_title  The site title (not used if not a multi site)
  */
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Log;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 
 ?>
-<div id="wlf-report" class="wrap">
-
-	<h1><?php esc_html_e( 'Report Details', 'wpcomsp_wayback_link_fixer' ); ?></h1>
+<div id="wlf-report-details">
 	<p class="wlf-report__back">
 		<a href="<?php echo esc_url( $back_url ); ?>"><?php esc_html_e( '<< Back to Reports', 'wpcomsp_wayback_link_fixer' ); ?></a>
 	</p>
@@ -87,29 +85,5 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 			);
 			?>
 		</p>
-		<?php if ( 'completed' === $report->get_process() ) : ?>
-			<p class="wlf-report-details__download">
-				<?php
-				printf(
-					// translators: %1$s is the report id, %2$s is teh download label.
-					'<span class="button wlf-download-report-csv" data-report="%s">%s</span>',
-					esc_attr( $report->get_report_id() ),
-					esc_html__( 'Download CSV', 'wpcomsp_wayback_link_fixer' )
-				);
-				?>
-			</p>
-		<?php endif; ?>
-
-
-	</div>
-	<!-- The Logs -->
-	<div id="wlf-report-logs">
-		<?php if ( 0 === count( $logs ) ) : ?>
-			<p><?php esc_html_e( 'No logs found.', 'wpcomsp_wayback_link_fixer' ); ?></p>
-		<?php else : ?>
-			<?php foreach ( $logs as $wlf_log ) : ?>
-				<?php wpcomsp_wayback_link_fixer_render_template( 'admin/reports/log-details.php', array( 'log' => $wlf_log ) ); ?>
-			<?php endforeach; ?>
-		<?php endif; ?>
 	</div>
 </div>

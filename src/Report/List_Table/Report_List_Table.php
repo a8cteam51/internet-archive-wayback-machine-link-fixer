@@ -287,7 +287,7 @@ class Report_List_Table extends \WP_List_Table {
 		<div class="wlf-filters">
 				<input type="hidden" name="page" value="<?php echo esc_attr( $page_arg ); ?>" />
 				<label for="<?php echo esc_attr( self::FILTER_USER_ID ); ?>" class="screen-reader-text"><?php esc_html_e( 'Reported created by user', 'wpcomsp_wayback_link_fixer' ); ?></label>
-				<select class="wlf-multiselect" name="<?php echo esc_attr( self::FILTER_USER_ID ); ?>" id="<?php echo esc_attr( self::FILTER_USER_ID ); ?>">
+				<select class="wlf-select2" name="<?php echo esc_attr( self::FILTER_USER_ID ); ?>" id="<?php echo esc_attr( self::FILTER_USER_ID ); ?>">
 					<option value=""><?php echo esc_html__( 'All users', 'wpcomsp_wayback_link_fixer' ); ?></option>
 					<?php foreach ( $users as $user ) : ?>
 						<option value="<?php echo esc_attr( $user->ID ); ?>" <?php selected( $filters[ self::FILTER_USER_ID ], $user->ID ); ?>><?php echo esc_html( wpcomsp_wayback_link_fixer_get_user_name( $user ) ); ?></option>
@@ -296,7 +296,7 @@ class Report_List_Table extends \WP_List_Table {
 
 				<?php if ( \is_multisite() && \is_network_admin() ) : ?>
 					<label for="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" class="screen-reader-text"><?php esc_html_e( 'Reported created by user', 'wpcomsp_wayback_link_fixer' ); ?></label>
-					<select class="wlf-multiselect" name="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" id="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" >
+					<select class="wlf-select2" name="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" id="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" >
 						<option value=""><?php echo esc_html__( 'All sites', 'wpcomsp_wayback_link_fixer' ); ?></option>
 						<?php foreach ( \get_sites() as $site ) : ?>
 							<option value="<?php echo esc_attr( $site->blog_id ); ?>"><?php echo esc_html( $site->blogname ); ?></option>
@@ -305,7 +305,7 @@ class Report_List_Table extends \WP_List_Table {
 				<?php endif; ?>
 
 				<label for="<?php echo esc_attr( self::FILTER_STATUS ); ?>" class="screen-reader-text"><?php esc_html_e( 'Report status', 'wpcomsp_wayback_link_fixer' ); ?></label>
-				<select class="wlf-multiselect" name="<?php echo esc_attr( self::FILTER_STATUS ); ?>[]" id="<?php echo esc_attr( self::FILTER_STATUS ); ?>" MULTIPLE>
+				<select class="wlf-multiselect2" data-placeholder="<?php esc_html_e( 'Any Status', 'wpcomsp_wayback_link_fixer' ); ?>" name="<?php echo esc_attr( self::FILTER_STATUS ); ?>[]" id="<?php echo esc_attr( self::FILTER_STATUS ); ?>" MULTIPLE>
 					<option value=""><?php esc_html_e( 'Any Status', 'wpcomsp_wayback_link_fixer' ); ?></option>
 					<option value="<?php echo esc_attr( Reports::PENDING_STATUS ); ?>"<?php echo in_array( Reports::PENDING_STATUS, $filters[ self::FILTER_STATUS ], true ) ? ' selected' : ''; ?>><?php esc_html_e( 'Pending', 'wpcomsp_wayback_link_fixer' ); ?></option>
 					<option value="<?php echo esc_attr( Reports::IN_PROGRESS_STATUS ); ?>"<?php echo in_array( Reports::IN_PROGRESS_STATUS, $filters[ self::FILTER_STATUS ], true ) ? ' selected' : ''; ?>><?php esc_html_e( 'In Progress', 'wpcomsp_wayback_link_fixer' ); ?></option>

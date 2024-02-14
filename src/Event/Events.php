@@ -77,6 +77,10 @@ class Events {
 		int $blog_id,
 		bool $fix_links = false
 	): int {
+
+		// Allow for filters to add additional posts to ignore.
+		$ignore_posts = apply_filters( 'wpcomsp_wayback_link_fixer_ignore_posts', $ignore_posts );
+
 		$args = array(
 			'posts'        => join( ', ', $this->get_post_ids( $post_types, $ignore_posts ) ),
 			'processed'    => '',

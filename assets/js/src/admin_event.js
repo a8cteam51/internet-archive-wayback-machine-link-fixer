@@ -12,7 +12,7 @@
 		const eventIgnoreCache = jQuery('#event_ignore_cache');
 		const fixLinks = jQuery('#event_fix_links');
 		const eventTrigger = jQuery('#event_trigger');
-		const eventPostTypes = jQuery('input[name="event_post_types[]"]');
+		const eventPostTypes = jQuery('#event_post_types');
 		const eventLocalized = adminEvents;
 		const eventIgnorePosts = jQuery('#wlf_event_ignore_posts');
 		const eventIgnorePostErrors = jQuery('#wlf-event-select2-errors');
@@ -25,7 +25,16 @@
 		 *
 		 * @return array
 		 */
-		const getSelectedPostTypes = () => eventPostTypes.filter(':checked').map((key, value) => jQuery(value).val()).get();
+		const getSelectedPostTypes = () => {
+			const postTypes = [];
+			eventPostTypes.each(function () {
+				if (this.checked) {
+					postTypes.push(this.value);
+				}
+			});
+			return postTypes;
+
+		};
 
 
 		// On trigger click.
@@ -36,10 +45,10 @@
 				'nonce': eventLocalized.nonceCreateEvent,
 				'event_http': eventHttp.val(),
 				'event_ignore_cache': eventIgnoreCache.is(':checked'),
-				'event_post_types': getSelectedPostTypes(),
+				'event_post_types': eventPostTypes.val(),
 				'user': eventLocalized.userId,
 				'blog': eventBlogIds.val(),
-				'event_exclude_posts': eventIgnorePosts.val(),
+				// 'event_exclude_posts': eventIgnorePosts.val(),
 				'event_fix_links': fixLinks.is(':checked'),
 			};
 			// Make the ajax call.
@@ -72,6 +81,25 @@
 			placeholder: 'Any',
 			width: 'resolve',
 			allowClear: true
+		});
+
+		/**
+		 * Populates select2 for HTTP codes.
+		 *
+		 * @since 1.1.0
+		 */
+		eventHttp.select2({
+			multiple: true,
+			placeholder: 'You must select at least one HTTP code.',
+			width: 'resolve',
+			allowClear: false
+		});
+
+		eventPostTypes.select2({
+			multiple: true,
+			placeholder: 'You must select at least one post type.',
+			width: 'resolve',
+			allowClear: false
 		});
 
 		/**

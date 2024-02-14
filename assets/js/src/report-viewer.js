@@ -20,13 +20,29 @@
 		const linkComments = jQuery('.wlf-report-link-actions__comments');
 		const linkFixes = jQuery('.wlf-report-link-actions__fixes');
 
-		//
-
 		// Handles the fix modal submit.
 		const fixForm = jQuery('#wlf-report-fix-form');
 
 		// Ensure modal is hidden by default.
 		modal.hide();
+
+		/**
+		 * Enable select2 for all filters on either single or list view.
+		 *
+		 * @since 1.1.0
+		 */
+		jQuery('.wlf-multiselect2').select2({
+			placeholder: function () {
+				$(this).data('placeholder');
+			},
+			width: "100%",
+			allowClear: true,
+			height: '28px'
+		});
+		jQuery('.wlf-select2').select2({
+			width: '100%',
+			height: '33px',
+		});
 
 
 		// When a report toggle is clicked, toggle the report details.
@@ -152,6 +168,12 @@
 				new_url: useCustomUrl
 			};
 
+			// Disable all form fields to prevent double submission.
+			jQuery('#wlf-report-fix-form input').prop('disabled', true);
+			jQuery('#wlf-report-fix-form button').prop('disabled', true);
+			jQuery('#fix-form__select_url').prop('disabled', true);
+
+
 
 			// Make the ajax call.
 			jQuery.ajax({
@@ -230,7 +252,7 @@
 			})
 
 		}
-// updateLinkInTable({post_id: 5113, index:1, comments: {1: 'test'}, updated: false});
+
 		/**
 		 * When show comments is clicked.
 		 */

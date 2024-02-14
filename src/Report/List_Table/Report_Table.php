@@ -30,6 +30,12 @@ class Report_Table extends \WP_List_Table {
 	public const COLUMN_DETAILS       = 'report-link-actions';
 	public const COLUMN_FIXED         = 'report-link-fixed';
 
+	// Filters
+	public const FILTER_POST_ID = 'filter_post_id';
+	public const FILTER_STATUS  = 'filter_status';
+	public const FILTER_FIXED   = 'filter_fixed';
+
+
 
 	/**
 	 * Holds the report with is being rendered.
@@ -60,6 +66,15 @@ class Report_Table extends \WP_List_Table {
 	private array $links = array();
 
 	/**
+	 * All unfiltered links.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var array{log: Log, link: Link}[]
+	 */
+	private array $unfiltered_links = array();
+
+	/**
 	 * Custom notices.
 	 *
 	 * @since 1.1.0
@@ -80,8 +95,8 @@ class Report_Table extends \WP_List_Table {
 		$this->report = $report;
 		$this->logs   = $logs;
 
-		$this->links = array_reduce(
-			$logs,
+		$this->unfiltered_links = array_reduce(
+			$this->logs,
 			function ( array $links, Log $log ): array {
 				// Create sub array with log and link.
 				$log_links = array_map(
@@ -99,6 +114,8 @@ class Report_Table extends \WP_List_Table {
 			array()
 		);
 
+		$this->links = $this->get_filtered_links();
+
 		// Populate the parent class properties.
 		parent::__construct(
 			array(
@@ -107,7 +124,146 @@ class Report_Table extends \WP_List_Table {
 				'ajax'     => false,
 			)
 		);
+
+			$this->_actions = [];
 	}
+
+	/**
+	 * Render the filters.
+	 *
+	 * @param string $position The position being rendered.
+	 *
+	 * @return void
+	 */
+	protected function extra_tablenav( $position ) {
+		// if not top, bail.
+		if ( 'top' !== $position ) {
+			return;
+		}
+
+		// Get the current page slug.
+		$page_arg = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		// Get existing filters.
+		$filters = $this->get_filters();
+
+		?>
+		<div class="wlf-filters">
+			<input type="hidden" name="page" value="<?php echo esc_attr( $page_arg ); ?>" />
+			<input type="hidden" name="report_id" value="<?php echo esc_attr( $this->report->get_report_id() ); ?>" />
+
+			<label for="<?php echo esc_attr( self::FILTER_STATUS ); ?>" class="screen-reader-text"><?php esc_html_e( 'HTTP Code', 'wpcomsp_wayback_link_fixer' ); ?></label>
+			<select data-placeholder="Any HTTP Code" class="wlf-multiselect2" name="<?php echo esc_attr( self::FILTER_STATUS ); ?>[]" id="<?php echo esc_attr( self::FILTER_STATUS ); ?>" multiple>
+				<option value=""><?php echo esc_html__( 'Any HTTP Code', 'wpcomsp_wayback_link_fixer' ); ?></option>
+				<?php foreach ( $this->get_http_codes() as $http_code ) : ?>
+					<option value="<?php echo esc_attr( $http_code ); ?>" <?php echo in_array( (string) $http_code, $filters[ self::FILTER_STATUS ], true ) ? 'selected="selected"' : ''; ?>><?php echo esc_attr( $http_code ); ?></option>
+				<?php endforeach; ?>
+			</select>
+
+			<label for="<?php echo esc_attr( self::FILTER_POST_ID ); ?>" class="screen-reader-text"><?php esc_html_e( 'Post', 'wpcomsp_wayback_link_fixer' ); ?></label>
+			<select class="wlf-select2" name="<?php echo esc_attr( self::FILTER_POST_ID ); ?>" id="<?php echo esc_attr( self::FILTER_POST_ID ); ?>">
+				<option value=""><?php echo esc_html__( 'Any Post', 'wpcomsp_wayback_link_fixer' ); ?></option>
+				<?php foreach ( $this->get_posts_in_report() as $post_id => $post_title ) : ?>
+					<option value="<?php echo esc_attr( $post_id ); ?>" <?php selected( $post_id, $filters[ self::FILTER_POST_ID ] ); ?>><?php echo esc_attr( $post_title ); ?></option>
+				<?php endforeach; ?>
+			</select>
+
+			<label for="<?php echo esc_attr( self::FILTER_FIXED ); ?>" class="screen-reader-text"><?php esc_html_e( 'Fixed', 'wpcomsp_wayback_link_fixer' ); ?></label>
+			<select class="wlf-select2" name="<?php echo esc_attr( self::FILTER_FIXED ); ?>" id="<?php echo esc_attr( self::FILTER_FIXED ); ?>">
+				<option value="any"><?php echo esc_html__( 'Any Fixed', 'wpcomsp_wayback_link_fixer' ); ?></option>
+				<option value="fixed" <?php selected( 'fixed', $filters[ self::FILTER_FIXED ] ); ?>><?php echo esc_html__( 'Fixed Link', 'wpcomsp_wayback_link_fixer' ); ?></option>
+				<option value="unfixed" <?php selected( 'unfixed', $filters[ self::FILTER_FIXED ] ); ?>><?php echo esc_html__( 'Unfixed Link', 'wpcomsp_wayback_link_fixer' ); ?></option>
+			</select>
+			<?php submit_button( __( 'Filter Links', 'wpcomsp_wayback_link_fixer' ), '', 'filter_action', false, array( 'id' => 'wlf-table-filter' ) ); ?>
+
+		</div>
+
+		<?php
+	}
+	/**
+	 * Get the filters from URL.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_filters(): array {
+
+		$filters[ self::FILTER_POST_ID ] = \array_key_exists( self::FILTER_POST_ID, $_GET ) && '' !== $_GET[ self::FILTER_POST_ID ] // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			? \absint( $_GET[ self::FILTER_POST_ID ] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			: null;
+
+		$filters[ self::FILTER_STATUS ] = \array_key_exists( self::FILTER_STATUS, $_GET ) && '' !== $_GET[ self::FILTER_STATUS ] // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			? \array_map( 'sanitize_text_field', (array) $_GET[ self::FILTER_STATUS ] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			: array();
+
+		// Remove any empty statuses.
+		$filters[ self::FILTER_STATUS ] = \array_filter( $filters[ self::FILTER_STATUS ] );
+
+		$filters[ self::FILTER_FIXED ] = ( function () {
+			// If not set in url, return as 'any'.
+			if ( ! \array_key_exists( self::FILTER_FIXED, $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				return 'any';
+			}
+
+			if ( 'fixed' !== $_GET[ self::FILTER_FIXED ] && 'unfixed' !== $_GET[ self::FILTER_FIXED ] ) {  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				return 'any';
+			}
+
+			// Return as fixed or unfixed.
+			return \sanitize_text_field( $_GET[ self::FILTER_FIXED ] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		} )();
+
+		return $filters;
+	}
+
+	/**
+	 * Get all HTTP codes from reports.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array<string>
+	 */
+	private function get_http_codes(): array {
+		$codes = array_map(
+			function ( array $link ): string {
+				return $link['link']->get_http_code() ?? esc_html__( 'Unknown', 'wpcomsp_wayback_link_fixer' );
+			},
+			$this->unfiltered_links
+		);
+
+		$codes = array_unique( $codes );
+
+		// Sort the codes.
+		sort( $codes );
+
+		return $codes;
+	}
+
+	/**
+	 * Get all posts in the report.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array<int, string>
+	 */
+	private function get_posts_in_report(): array {
+		$posts = array();
+
+		foreach ( $this->unfiltered_links as $link ) {
+			$post_id           = $link['link']->get_post_id();
+			$title             = get_the_title( $post_id );
+			$posts[ $post_id ] = sprintf(
+				'%s (#%d)',
+				'' !== $title ? $title : esc_html__( 'Unknown Post', 'wpcomsp_wayback_link_fixer' ),
+				$post_id
+			);
+		}
+
+		return $posts;
+	}
+
+
 
 	/**
 	 * Add link specific data to the rows <tr>
@@ -164,6 +320,15 @@ class Report_Table extends \WP_List_Table {
 		);
 	}
 
+	/**
+	 * Add the actions under the main column (User)
+	 *
+	 * @param array{report: Report, logs:integer} $item The item.
+	 *
+	 * @return string
+	 */
+	public function column_post( $item ) {
+	}
 	/**
 	 * Get all the posts form the links.
 	 *
@@ -229,35 +394,49 @@ class Report_Table extends \WP_List_Table {
 	/**
 	 * Get the links.
 	 *
-	 * @since 1.1.0
-	 *
-	 * @param integer      $limit   The limit of links to return.
-	 * @param integer      $page    The page of links to return.
-	 * @param array        $status  The status of the links to return.
-	 * @param integer|null $post_id The post id to filter by.
+	 * @since 1.1.0.
 	 *
 	 * @return array<Link>
 	 */
-	private function get_links( int $limit = 10, int $page = 1, array $status = array(), ?int $post_id = null ): array {
-		$links = $this->links;
+	private function get_filtered_links(): array {
+		$links = $this->unfiltered_links;
 
-		if ( ! empty( $status ) ) {
+		// Get the current state of the filters.
+		$filters = $this->get_filters();
+
+		// If we have any statuses.
+		if ( ! empty( $filters[ self::FILTER_STATUS ] ) ) {
 			$links = array_filter(
 				$links,
-				function ( Link $link ) use ( $status, $post_id ): bool {
-					// If we have a post id, filter by that and status.
-					return $post_id
-						? in_array( $link->get_http_code(), $status, true ) && ( $link->get_post_id() === $post_id )
-						: in_array( $link->get_http_code(), $status, true );
+				function ( array $link ) use ( $filters ): bool {
+					return in_array( (string) $link['link']->get_http_code(), $filters[ self::FILTER_STATUS ], true );
 				}
 			);
 		}
 
-		$links = array_slice( $links, ( $page - 1 ) * $limit, $limit );
+		// If we have any post ids.
+		if ( ! empty( $filters[ self::FILTER_POST_ID ] ) ) {
+			$links = array_filter(
+				$links,
+				function ( array $link ) use ( $filters ): bool {
+					return $link['link']->get_post_id() === $filters[ self::FILTER_POST_ID ];
+				}
+			);
+		}
+
+		// If we have a fixed filter.
+		if ( 'any' !== $filters[ self::FILTER_FIXED ] ) {
+			$links = array_filter(
+				$links,
+				function ( array $link ) use ( $filters ): bool {
+					$fixed = 'fixed' === $filters[ self::FILTER_FIXED ];
+					return $fixed === $link['link']->has_been_updated();
+				}
+			);
+		}
+
 		return $links;
 	}
-
-
 
 	/**
 	 * Prepare the items for the table to process
@@ -278,8 +457,102 @@ class Report_Table extends \WP_List_Table {
 		$primary               = 'name';
 		$this->_column_headers = array( $columns, $hidden, $sortable, $primary );
 
+		// Set items based on paginations.
+		$this->items = $this->extract_links();
+	}
+
+	/**
+	 * Extract links based on pagination.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array{log: Log, link: Link}[]
+	 */
+	private function extract_links(): array {
+		$page  = $this->get_pagenum();
+		$limit = $this->get_links_per_page();
+
+		// If we have no links, return empty array.
+		if ( empty( $this->links ) ) {
+			return array();
+		}
+
+		return array_slice( $this->links, ( $page - 1 ) * $limit, $limit );
+	}
+
+	/**
+	 * Get the links per page.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return integer
+	 */
+	public function get_links_per_page() {
+		return 2;
+	}
+
+	/**
+	 * Sets the pagination args.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 */
+	private function define_pagination_args() {
 		// Get the reports.
-		$this->items = $this->get_links();
+		$per_page    = $this->get_links_per_page();
+		$total_links = absint( count( $this->links ) );
+
+		// Set the pagination args.
+		$this->set_pagination_args(
+			array(
+				'total_items' => $total_links,
+				'per_page'    => $per_page,
+				'total_pages' => ceil( $total_links / $per_page ),
+			)
+		);
+	}
+
+	/**
+	 * Get the current page.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return integer
+	 */
+	public function get_pagenum() {
+		return isset( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	}
+
+	/**
+	 * Post title column with links.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param integer $post_id The post id.
+	 *
+	 * @return string
+	 */
+	public function get_log_post_title( int $post_id ): string {
+		// Compile actions.
+		$actions = array(
+			'view' => sprintf(
+				'<a href="%s">%s</a>',
+				esc_url( \get_the_permalink( $post_id ) ),
+				esc_html__( 'View', 'wpcomsp_wayback_link_fixer' )
+			),
+			'edit' => sprintf(
+				'<a href="%s">%s</a>',
+				esc_url( get_edit_post_link( $post_id ) ),
+				esc_html__( 'Edit', 'wpcomsp_wayback_link_fixer' )
+			),
+		);
+
+		return sprintf(
+			'%1$s %2$s',
+			esc_html( get_the_title( $post_id ) ),
+			$this->row_actions( $actions )
+		);
 	}
 
 	/**
@@ -293,11 +566,7 @@ class Report_Table extends \WP_List_Table {
 	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
 			case self::COLUMN_POST:
-				return sprintf(
-					'<a href="%s">%s</a>',
-					esc_url( get_edit_post_link( $item['link']->get_post_id() ) ),
-					esc_html( get_the_title( $item['link']->get_post_id() ) )
-				);
+				return $this->get_log_post_title( $item['link']->get_post_id() );
 			case self::COLUMN_LINK_CODE:
 				return esc_html( $item['link']->get_http_code() );
 			case self::COLUMN_LINK_URL:
