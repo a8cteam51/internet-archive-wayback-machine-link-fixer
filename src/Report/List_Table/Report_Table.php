@@ -125,7 +125,7 @@ class Report_Table extends \WP_List_Table {
 			)
 		);
 
-			$this->_actions = [];
+			$this->_actions = array();
 	}
 
 	/**
@@ -320,15 +320,6 @@ class Report_Table extends \WP_List_Table {
 		);
 	}
 
-	/**
-	 * Add the actions under the main column (User)
-	 *
-	 * @param array{report: Report, logs:integer} $item The item.
-	 *
-	 * @return string
-	 */
-	public function column_post( $item ) {
-	}
 	/**
 	 * Get all the posts form the links.
 	 *
