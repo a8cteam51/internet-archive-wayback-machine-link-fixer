@@ -256,7 +256,7 @@ class Report_List_Table extends \WP_List_Table {
 		);
 
 		// If date is set in the url.
-		if ( \array_key_exists( self::FILTER_DATE, $_GET ) && '' !== $_GET[ self::FILTER_DATE ] ) {
+		if ( \array_key_exists( self::FILTER_DATE, $_GET ) && '' !== $_GET[ self::FILTER_DATE ] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$month = new \DateTime( sanitize_text_field( $_GET[ self::FILTER_DATE ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 			// If we have a valid date, set the date from and date to.

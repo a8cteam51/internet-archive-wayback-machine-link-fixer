@@ -833,7 +833,7 @@ class Report_Repository {
 		global $wpdb;
 
 		$query = $blog_id
-			? $wpdb->prepare( "SELECT DISTINCT DATE(create_date) as date FROM {$this->report_table_name()} WHERE blog_id = %d", $blog_id ) //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, cant prepare table names
+			? $wpdb->prepare( "SELECT DISTINCT DATE(create_date) as date FROM {$this->report_table_name()} WHERE blog_id = %d", $blog_id ) //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant prepare table names
 			: "SELECT DISTINCT DATE(create_date) as date FROM {$this->report_table_name()}"; //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, cant prepare table names
 
 		// Get the dates.
