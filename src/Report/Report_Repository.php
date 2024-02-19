@@ -819,4 +819,26 @@ class Report_Repository {
 
 		return array_map( fn( \stdClass $user ) => absint( $user->user_id ), $users );
 	}
+
+	/**
+	 * Get all dates of reports.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param integer|null $blog_id The blog id to filter by.
+	 *
+	 * @return string[]
+	 */
+	public function get_dates_of_reports( ?int $blog_id = null ): array {
+		global $wpdb;
+
+		$query = $blog_id
+			? $wpdb->prepare( "SELECT DISTINCT DATE(create_date) as date FROM {$this->report_table_name()} WHERE blog_id = %d", $blog_id ) //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant prepare table names
+			: "SELECT DISTINCT DATE(create_date) as date FROM {$this->report_table_name()}"; //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, cant prepare table names
+
+		// Get the dates.
+		$dates = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, cant prepare table names.
+
+		return array_map( fn( \stdClass $date ) => $date->date, $dates );
+	}
 }

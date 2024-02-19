@@ -33,15 +33,16 @@
 		 */
 		jQuery('.wlf-multiselect2').select2({
 			placeholder: function () {
-				$(this).data('placeholder');
+				jQuery(this).data('placeholder');
 			},
-			width: "100%",
 			allowClear: true,
-			height: '28px'
+			height: '32px',
+			width: '100px'
 		});
 		jQuery('.wlf-select2').select2({
-			width: '100%',
-			height: '33px',
+			height: '32px',
+			dropdownAutoWidth: true,
+			width: '100px'
 		});
 
 
