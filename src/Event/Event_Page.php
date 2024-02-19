@@ -216,11 +216,15 @@ class Event_Page {
 
 			// Iterate over all the blogs
 			$events = array();
+
 			foreach ( $blogs as $blog_id ) {
 				// Create the event.
 				$event_id = $this->events->create_event( $post_types, $http_codes, $exclude_posts, $ignore_link_cache, $user_id, $blog_id, $fix_links );
 				$events[] = $event_id;
+
 			}
+
+
 		} catch ( \Throwable $th ) {
 			wp_send_json_error(
 				array(
@@ -269,7 +273,7 @@ class Event_Page {
 		// Return the event hash.
 		wp_send_json_success(
 			array(
-				'message' => __( 'Event created successfully.', 'wpcomsp_wayback_link_fixer' ),
+				'message' => __( 'Event(s) created successfully.', 'wpcomsp_wayback_link_fixer' ),
 				'data'    => array(
 					'eventId'      => $event_id,
 					'row'          => $html,

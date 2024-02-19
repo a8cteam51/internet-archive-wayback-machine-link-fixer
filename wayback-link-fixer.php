@@ -30,7 +30,10 @@
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Runner\Runner;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Updater\Updater;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
+use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Content_Analyzer;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner\Scheduled_Runner;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -97,3 +100,12 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
+
+
+add_action('init', function(){
+	// $r = 'C:51:"WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Event":1351:{a:6:{s:8:"post_ids";a:11:{i:0;i:65;i:1;i:67;i:2;i:66;i:3;i:63;i:4;i:64;i:5;i:15;i:6;i:9;i:7;i:6;i:8;i:2;i:9;i:1;i:10;i:3;}s:10:"http_codes";a:8:{i:0;s:3:"200";i:1;s:3:"300";i:2;s:3:"301";i:3;s:3:"303";i:4;s:3:"404";i:5;s:3:"410";i:6;s:3:"500";i:7;s:3:"502";}s:12:"ignore_cache";b:1;s:6:"report";s:998:"O:53:"WPCOMSpecialProjects\\Wayback_Link_Fixer\\Report\\Report":8:{s:57:"' . "\0" . 'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Report\\Report' . "\0" . 'id";i:80;s:64:"' . "\0" . 'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Report\\Report' . "\0" . 'report_id";s:32:"51074f87acc028b59ad4cbf44b118a3b";s:62:"' . "\0" . 'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Report\\Report' . "\0" . 'user_id";i:1;s:62:"' . "\0" . 'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Report\\Report' . "\0" . 'blog_id";i:1;s:62:"' . "\0" . 'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Report\\Report' . "\0" . 'process";s:7:"pending";s:66:"' . "\0" . 'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Report\\Report' . "\0" . 'description";s:162:"Event created for all posts from the post,page post types, with 200,300,301,303,404,410,500,502 http codes, ignoring posts [], ignoring the cache and fixing links";s:65:"' . "\0" . 'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Report\\Report' . "\0" . 'created_at";O:17:"DateTimeImmutable":3:{s:4:"date";s:26:"2024-02-19 14:46:50.000000";s:13:"timezone_type";i:3;s:8:"timezone";s:3:"UTC";}s:67:"' . "\0" . 'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Report\\Report' . "\0" . 'completed_at";N;}";s:9:"processed";a:0:{}s:14:"auto_fix_links";b:1;}}';
+
+
+	// $runner = new Scheduled_Runner();
+	// $runner->__invoke($r);
+});

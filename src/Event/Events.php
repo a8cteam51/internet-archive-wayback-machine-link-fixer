@@ -81,8 +81,14 @@ class Events {
 		// Allow for filters to add additional posts to ignore.
 		$ignore_posts = apply_filters( 'wpcomsp_wayback_link_fixer_ignore_posts', $ignore_posts );
 
+		$initial_blog = get_current_blog_id();
+
+		switch_to_blog( $blog_id );
+
+		$post_ids = $this->get_post_ids( $post_types, $ignore_posts );
+
 		$args = array(
-			'posts'        => join( ', ', $this->get_post_ids( $post_types, $ignore_posts ) ),
+			'posts'        => join( ', ', $post_ids ),
 			'processed'    => '',
 			'ignore_cache' => $ignore_cache,
 			'http_codes'   => join( ', ', $http_codes ),
@@ -115,7 +121,7 @@ class Events {
 
 		// Create the event.
 		$event = new Event(
-			$this->get_post_ids( $post_types, $ignore_posts ),
+			$post_ids,
 			$http_codes,
 			$ignore_cache,
 			$report,
@@ -123,7 +129,12 @@ class Events {
 		);
 
 		// Schedule the event passing a serialized version of the event.
-		return $this->enqueue_event( $event );
+		$event_ref = $this->enqueue_event( $event );
+
+		// Switch back to the initial blog.
+		switch_to_blog( $initial_blog );
+
+		return $event_ref;
 	}
 
 	/**

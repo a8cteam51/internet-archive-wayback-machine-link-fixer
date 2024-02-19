@@ -629,7 +629,7 @@ class Settings_Page {
 			id="<?php echo esc_attr( Settings::EVENT_POSTS_PER_BATCH ); ?>"
 			name="<?php echo esc_attr( Settings::EVENT_POSTS_PER_BATCH ); ?>"
 			value="<?php echo absint( Settings::get_posts_per_batch() ); ?>"
-			min="0"
+			min="2"
 		/>
 		<?php
 	}
