@@ -129,17 +129,29 @@ class Report_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Render the filters.
+	 * Generates the table navigation above or below the table
 	 *
-	 * @param string $position The position being rendered.
+	 * @since 3.1.0
+	 *
+	 * @param string $which Position of the nav, top or bottom.
 	 *
 	 * @return void
 	 */
-	protected function extra_tablenav( $position ) {
-		// if not top, bail.
-		if ( 'top' !== $position ) {
-			return;
+	protected function display_tablenav( $which ) {
+		parent::display_tablenav( $which );
+
+		// Render the custom filters, if top
+		if ( 'top' === $which ) {
+			$this->render_filters();
 		}
+	}
+
+	/**
+	 * Render the filters.
+	 *
+	 * @return void
+	 */
+	protected function render_filters() {
 
 		// Get the current page slug.
 		$page_arg = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -152,28 +164,33 @@ class Report_Table extends \WP_List_Table {
 			<input type="hidden" name="page" value="<?php echo esc_attr( $page_arg ); ?>" />
 			<input type="hidden" name="report_id" value="<?php echo esc_attr( $this->report->get_report_id() ); ?>" />
 
-			<label for="<?php echo esc_attr( self::FILTER_STATUS ); ?>" class="screen-reader-text"><?php esc_html_e( 'HTTP Code', 'wpcomsp_wayback_link_fixer' ); ?></label>
-			<select data-placeholder="Any HTTP Code" class="wlf-multiselect2" name="<?php echo esc_attr( self::FILTER_STATUS ); ?>[]" id="<?php echo esc_attr( self::FILTER_STATUS ); ?>" multiple>
-				<option value=""><?php echo esc_html__( 'Any HTTP Code', 'wpcomsp_wayback_link_fixer' ); ?></option>
-				<?php foreach ( $this->get_http_codes() as $http_code ) : ?>
-					<option value="<?php echo esc_attr( $http_code ); ?>" <?php echo in_array( (string) $http_code, $filters[ self::FILTER_STATUS ], true ) ? 'selected="selected"' : ''; ?>><?php echo esc_attr( $http_code ); ?></option>
-				<?php endforeach; ?>
-			</select>
+			<div class="wlf-filter select-multi wide">
+				<label for="<?php echo esc_attr( self::FILTER_STATUS ); ?>" class="screen-reader-text"><?php esc_html_e( 'HTTP Code', 'wpcomsp_wayback_link_fixer' ); ?></label>
+				<select data-placeholder="Any HTTP Code" class="wlf-multiselect2" name="<?php echo esc_attr( self::FILTER_STATUS ); ?>[]" id="<?php echo esc_attr( self::FILTER_STATUS ); ?>" multiple>
+					<option value=""><?php echo esc_html__( 'Any HTTP Code', 'wpcomsp_wayback_link_fixer' ); ?></option>
+					<?php foreach ( $this->get_http_codes() as $http_code ) : ?>
+						<option value="<?php echo esc_attr( $http_code ); ?>" <?php echo in_array( (string) $http_code, $filters[ self::FILTER_STATUS ], true ) ? 'selected="selected"' : ''; ?>><?php echo esc_attr( $http_code ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+			<div class="wlf-filter select-single">
+				<label for="<?php echo esc_attr( self::FILTER_POST_ID ); ?>" class="screen-reader-text"><?php esc_html_e( 'Post', 'wpcomsp_wayback_link_fixer' ); ?></label>
+				<select class="wlf-select2" name="<?php echo esc_attr( self::FILTER_POST_ID ); ?>" id="<?php echo esc_attr( self::FILTER_POST_ID ); ?>">
+					<option value=""><?php echo esc_html__( 'Any Post', 'wpcomsp_wayback_link_fixer' ); ?></option>
+					<?php foreach ( $this->get_posts_in_report() as $post_id => $post_title ) : ?>
+						<option value="<?php echo esc_attr( $post_id ); ?>" <?php selected( $post_id, $filters[ self::FILTER_POST_ID ] ); ?>><?php echo esc_attr( $post_title ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+			<div class="wlf-filter select-single">
+				<label for="<?php echo esc_attr( self::FILTER_FIXED ); ?>" class="screen-reader-text"><?php esc_html_e( 'Fixed', 'wpcomsp_wayback_link_fixer' ); ?></label>
+				<select class="wlf-select2" name="<?php echo esc_attr( self::FILTER_FIXED ); ?>" id="<?php echo esc_attr( self::FILTER_FIXED ); ?>">
+					<option value="any"><?php echo esc_html__( 'Any Fixed', 'wpcomsp_wayback_link_fixer' ); ?></option>
+					<option value="fixed" <?php selected( 'fixed', $filters[ self::FILTER_FIXED ] ); ?>><?php echo esc_html__( 'Fixed Link', 'wpcomsp_wayback_link_fixer' ); ?></option>
+					<option value="unfixed" <?php selected( 'unfixed', $filters[ self::FILTER_FIXED ] ); ?>><?php echo esc_html__( 'Unfixed Link', 'wpcomsp_wayback_link_fixer' ); ?></option>
+				</select>
+			</div>
 
-			<label for="<?php echo esc_attr( self::FILTER_POST_ID ); ?>" class="screen-reader-text"><?php esc_html_e( 'Post', 'wpcomsp_wayback_link_fixer' ); ?></label>
-			<select class="wlf-select2" name="<?php echo esc_attr( self::FILTER_POST_ID ); ?>" id="<?php echo esc_attr( self::FILTER_POST_ID ); ?>">
-				<option value=""><?php echo esc_html__( 'Any Post', 'wpcomsp_wayback_link_fixer' ); ?></option>
-				<?php foreach ( $this->get_posts_in_report() as $post_id => $post_title ) : ?>
-					<option value="<?php echo esc_attr( $post_id ); ?>" <?php selected( $post_id, $filters[ self::FILTER_POST_ID ] ); ?>><?php echo esc_attr( $post_title ); ?></option>
-				<?php endforeach; ?>
-			</select>
-
-			<label for="<?php echo esc_attr( self::FILTER_FIXED ); ?>" class="screen-reader-text"><?php esc_html_e( 'Fixed', 'wpcomsp_wayback_link_fixer' ); ?></label>
-			<select class="wlf-select2" name="<?php echo esc_attr( self::FILTER_FIXED ); ?>" id="<?php echo esc_attr( self::FILTER_FIXED ); ?>">
-				<option value="any"><?php echo esc_html__( 'Any Fixed', 'wpcomsp_wayback_link_fixer' ); ?></option>
-				<option value="fixed" <?php selected( 'fixed', $filters[ self::FILTER_FIXED ] ); ?>><?php echo esc_html__( 'Fixed Link', 'wpcomsp_wayback_link_fixer' ); ?></option>
-				<option value="unfixed" <?php selected( 'unfixed', $filters[ self::FILTER_FIXED ] ); ?>><?php echo esc_html__( 'Unfixed Link', 'wpcomsp_wayback_link_fixer' ); ?></option>
-			</select>
 			<?php submit_button( __( 'Filter Links', 'wpcomsp_wayback_link_fixer' ), '', 'filter_action', false, array( 'id' => 'wlf-table-filter' ) ); ?>
 
 		</div>
@@ -400,6 +417,15 @@ class Report_Table extends \WP_List_Table {
 			$links = array_filter(
 				$links,
 				function ( array $link ) use ( $filters ): bool {
+
+					// If we have any filters with unknown, ensure any with null as status are returned.
+					if ( in_array( 'Unknown', $filters[ self::FILTER_STATUS ], true )
+					&& $link['link']->get_http_code() === null
+					) {
+						return true;
+					}
+
+					// Check if the links status code is in the fitlers.
 					return in_array( (string) $link['link']->get_http_code(), $filters[ self::FILTER_STATUS ], true );
 				}
 			);

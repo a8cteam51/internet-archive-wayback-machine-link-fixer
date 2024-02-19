@@ -12,11 +12,12 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report\List_Table;
 
 defined( 'ABSPATH' ) || exit;
 
+use DateTime;
+use PHPCompatibility\Sniffs\FunctionDeclarations\NewNullableTypesSniff;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Reports;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Helper;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer\Report_List_View;
 
 /**
  * List Table
@@ -39,6 +40,7 @@ class Report_List_Table extends \WP_List_Table {
 	public const FILTER_STATUS    = 'wlf-status';
 	public const FILTER_DATE_FROM = 'wlf-date-from';
 	public const FILTER_DATE_TO   = 'wlf-date-to';
+	public const FILTER_DATE      = 'wlf-date';
 
 	//Actions
 	public const ACTION_DELETE = 'delete';
@@ -176,6 +178,7 @@ class Report_List_Table extends \WP_List_Table {
 			'date_to'   => $filters[ self::FILTER_DATE_TO ],
 		);
 
+		// Add the date range, if set.
 		return $args;
 	}
 
@@ -201,7 +204,7 @@ class Report_List_Table extends \WP_List_Table {
 	 * @return integer
 	 */
 	public function get_reports_per_page(): int {
-		return absint( \apply_filters( 'wpcomsp_wayback_link_fixer_reports_per_page', 20 ) );
+		return absint( \apply_filters( 'wpcomsp_wayback_link_fixer_reports_per_page', 10 ) );
 	}
 
 	/**
@@ -247,9 +250,22 @@ class Report_List_Table extends \WP_List_Table {
 				? absint( $_GET[ self::FILTER_BLOG_ID ] )  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				: null,
 			self::FILTER_STATUS    => array(),
-			self::FILTER_DATE_FROM => \array_key_exists( self::FILTER_DATE_FROM, $_GET ) ? sanitize_text_field( $_GET[ self::FILTER_DATE_FROM ] ) : null, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			self::FILTER_DATE_TO   => \array_key_exists( self::FILTER_DATE_TO, $_GET ) ? sanitize_text_field( $_GET[ self::FILTER_DATE_TO ] ) : null, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			self::FILTER_DATE_FROM => null,
+			self::FILTER_DATE_TO   => null,
+			self::FILTER_DATE      => null,
 		);
+
+		// If date is set in the url.
+		if ( \array_key_exists( self::FILTER_DATE, $_GET ) && '' !== $_GET[ self::FILTER_DATE ] ) {
+			$month = new \DateTime( sanitize_text_field( $_GET[ self::FILTER_DATE ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+			// If we have a valid date, set the date from and date to.
+			if ( $month instanceof \DateTime ) {
+				$filters[ self::FILTER_DATE_FROM ] = $month->format( 'Y-m-01' );
+				$filters[ self::FILTER_DATE_TO ]   = $month->format( 'Y-m-t' );
+				$filters[ self::FILTER_DATE ]      = $month->format( 'Y-m-01' );
+			}
+		}
 
 		// Add the statuses if in the URL.
 		if ( \array_key_exists( self::FILTER_STATUS, $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -263,17 +279,75 @@ class Report_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Render the filters.
+	 * Get all months from existing reports.
 	 *
-	 * @param string $position The position being rendered.
+	 * @return array{date:string, display:string}[]
+	 */
+	private function get_report_months(): array {
+		$months = array();
+
+		// Get all the report created dates.
+		$dates = $this->report_repository->get_dates_of_reports( $this->get_blog_id() );
+
+		// Cast to datetime.
+		$dates = array_map( fn( string $date ) => new \DateTime( $date ), $dates );
+
+		// Iterate through dates.
+		foreach ( $dates as $date ) {
+			// Get the year.
+			$year  = $date->format( 'Y' );
+			$month = $date->format( 'm' );
+
+			// If the year doesnt exist in the months array, add it.
+			if ( ! array_key_exists( $year, $months ) ) {
+				$months[ $year ] = array();
+			}
+
+			// If the months doesnt exist as child of year, add it.
+			if ( ! array_key_exists( $month, $months[ $year ] ) ) {
+				$months[ $year ][ $month ] = array(
+					'date'    => $date->format( 'Y-m-01' ),
+					'display' => $date->format( 'F Y' ),
+				);
+			}
+		}
+
+		// Flatten the array
+		$months = array_reduce( $months, fn( $carry, $item ) => array_merge( $carry, array_values( $item ) ), array() );
+
+		// Sort the array based on the date.
+		usort(
+			$months,
+			fn( array $a, array $b ) => strtotime( $b['date'] ) - strtotime( $a['date'] )
+		);
+
+		return $months;
+	}
+
+	/**
+	 * Generates the table navigation above or below the table
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string $which Position of the nav, top or bottom.
 	 *
 	 * @return void
 	 */
-	protected function extra_tablenav( $position ) {
-		// if not top, bail.
-		if ( 'top' !== $position ) {
-			return;
+	protected function display_tablenav( $which ) {
+		parent::display_tablenav( $which );
+
+		// Render the custom filters, if top
+		if ( 'top' === $which ) {
+			$this->render_filters();
 		}
+	}
+
+	/**
+	 * Render the filters.
+	 *
+	 * @return void
+	 */
+	protected function render_filters() {
 
 		// Get the current page slug.
 		$page_arg = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -283,45 +357,47 @@ class Report_List_Table extends \WP_List_Table {
 
 		// Get existing filters.
 		$filters = $this->get_filters();
+
 		?>
-		<div class="wlf-filters">
-				<input type="hidden" name="page" value="<?php echo esc_attr( $page_arg ); ?>" />
-				<label for="<?php echo esc_attr( self::FILTER_USER_ID ); ?>" class="screen-reader-text"><?php esc_html_e( 'Reported created by user', 'wpcomsp_wayback_link_fixer' ); ?></label>
-				<select class="wlf-select2" name="<?php echo esc_attr( self::FILTER_USER_ID ); ?>" id="<?php echo esc_attr( self::FILTER_USER_ID ); ?>">
-					<option value=""><?php echo esc_html__( 'All users', 'wpcomsp_wayback_link_fixer' ); ?></option>
+		<div class="wlf-filters select-multi wide">
+			<input type="hidden" name="page" value="<?php echo esc_attr( $page_arg ); ?>" />
+			<label for="<?php echo esc_attr( self::FILTER_USER_ID ); ?>" class="screen-reader-text"><?php esc_html_e( 'Reported created by user', 'wpcomsp_wayback_link_fixer' ); ?></label>
+			<div class="wlf-filter select-single">
+				<select class="wlf-multiselect2" MULTIPLE data-placeholder="<?php echo esc_html__( 'Any user', 'wpcomsp_wayback_link_fixer' ); ?>" name="<?php echo esc_attr( self::FILTER_USER_ID ); ?>" id="<?php echo esc_attr( self::FILTER_USER_ID ); ?>">
 					<?php foreach ( $users as $user ) : ?>
 						<option value="<?php echo esc_attr( $user->ID ); ?>" <?php selected( $filters[ self::FILTER_USER_ID ], $user->ID ); ?>><?php echo esc_html( wpcomsp_wayback_link_fixer_get_user_name( $user ) ); ?></option>
 					<?php endforeach; ?>
 				</select>
+			</div>
 
-				<?php if ( \is_multisite() && \is_network_admin() ) : ?>
+			<?php if ( \is_multisite() && \is_network_admin() ) : ?>
+				<div class="wlf-filter select-multi wide">
 					<label for="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" class="screen-reader-text"><?php esc_html_e( 'Reported created by user', 'wpcomsp_wayback_link_fixer' ); ?></label>
-					<select class="wlf-select2" name="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" id="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" >
-						<option value=""><?php echo esc_html__( 'All sites', 'wpcomsp_wayback_link_fixer' ); ?></option>
+					<select class="wlf-multiselect2" MULTIPLE data-placeholder="<?php echo esc_html__( 'Any site', 'wpcomsp_wayback_link_fixer' ); ?>" name="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" id="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" >
 						<?php foreach ( \get_sites() as $site ) : ?>
 							<option value="<?php echo esc_attr( $site->blog_id ); ?>"><?php echo esc_html( $site->blogname ); ?></option>
 						<?php endforeach; ?>
 					</select>
-				<?php endif; ?>
-
+				</div>
+			<?php endif; ?>
+			<div class="wlf-filter select-multi wide">
 				<label for="<?php echo esc_attr( self::FILTER_STATUS ); ?>" class="screen-reader-text"><?php esc_html_e( 'Report status', 'wpcomsp_wayback_link_fixer' ); ?></label>
 				<select class="wlf-multiselect2" data-placeholder="<?php esc_html_e( 'Any Status', 'wpcomsp_wayback_link_fixer' ); ?>" name="<?php echo esc_attr( self::FILTER_STATUS ); ?>[]" id="<?php echo esc_attr( self::FILTER_STATUS ); ?>" MULTIPLE>
-					<option value=""><?php esc_html_e( 'Any Status', 'wpcomsp_wayback_link_fixer' ); ?></option>
 					<option value="<?php echo esc_attr( Reports::PENDING_STATUS ); ?>"<?php echo in_array( Reports::PENDING_STATUS, $filters[ self::FILTER_STATUS ], true ) ? ' selected' : ''; ?>><?php esc_html_e( 'Pending', 'wpcomsp_wayback_link_fixer' ); ?></option>
 					<option value="<?php echo esc_attr( Reports::IN_PROGRESS_STATUS ); ?>"<?php echo in_array( Reports::IN_PROGRESS_STATUS, $filters[ self::FILTER_STATUS ], true ) ? ' selected' : ''; ?>><?php esc_html_e( 'In Progress', 'wpcomsp_wayback_link_fixer' ); ?></option>
 					<option value="<?php echo esc_attr( Reports::COMPLETED_STATUS ); ?>"<?php echo in_array( Reports::COMPLETED_STATUS, $filters[ self::FILTER_STATUS ], true ) ? ' selected' : ''; ?>><?php esc_html_e( 'Completed', 'wpcomsp_wayback_link_fixer' ); ?></option>
 				</select>
+			</div>
 
-				<!-- Date From -->
-			<label><?php esc_html_e( 'Date From: ', 'wpcomsp_wayback_link_fixer' ); ?>
-				<input type="date" name="<?php echo esc_attr( self::FILTER_DATE_FROM ); ?>" value="<?php echo esc_attr( $filters[ self::FILTER_DATE_FROM ] ); ?>" placeholder="Date From"/>
-			</label>
-
-			<!-- Date To -->
-			<label><?php esc_html_e( 'Date To: ', 'wpcomsp_wayback_link_fixer' ); ?>
-				<input type="date" name="<?php echo esc_attr( self::FILTER_DATE_TO ); ?>" value="<?php echo esc_attr( $filters[ self::FILTER_DATE_TO ] ); ?>" />
-
-			</label>
+			<div class="wlf-filter select-single">
+				<label for="<?php echo esc_attr( self::FILTER_DATE ); ?>" class="screen-reader-text"><?php esc_html_e( 'Date', 'wpcomsp_wayback_link_fixer' ); ?></label>
+				<select class="wlf-select2" name="<?php echo esc_attr( self::FILTER_DATE ); ?>" id="<?php echo esc_attr( self::FILTER_DATE ); ?>">
+					<option value="" ><?php esc_html_e( 'All Dates', 'wpcomsp_wayback_link_fixer' ); ?></option>
+					<?php foreach ( $this->get_report_months() as $month ) : ?>
+						<option value="<?php echo esc_attr( $month['date'] ); ?>" <?php selected( $filters[ self::FILTER_DATE ], $month['date'] ); ?>><?php echo esc_html( $month['display'] ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
 
 			<?php submit_button( __( 'Filter Reports', 'wpcomsp_wayback_link_fixer' ), '', 'filter_action', false, array( 'id' => 'wlf-table-filter' ) ); ?>
 
@@ -349,10 +425,33 @@ class Report_List_Table extends \WP_List_Table {
 		$sortable              = array();
 		$primary               = 'name';
 		$this->_column_headers = array( $columns, $hidden, $sortable, $primary );
-
 		// Get the reports.
-		$this->items = $this->report_repository->query_reports( ...$this->get_query_args() );
+		$this->items = $this->get_items();
 	}
+
+	/**
+	 * Get the items based on pagination and filters.
+	 *
+	 * @return array{report: Report, logs: integer}[]
+	 */
+	public function get_items(): array {
+		$limit  = $this->get_reports_per_page();
+		$offset = 1 === $this->get_pagenum() ? 0 : ( $this->get_pagenum() - 1 ) * $limit;
+
+		// Filter values.
+		$filter_values = $this->get_query_args();
+
+		return $this->report_repository->query_reports(
+			$limit,
+			$offset,
+			$filter_values['user_id'],
+			$filter_values['blog_id'],
+			$filter_values['statuses'],
+			$filter_values['date_from'],
+			$filter_values['date_to']
+		);
+	}
+
 
 	/**
 	 * Set the column values
