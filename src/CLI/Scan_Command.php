@@ -263,7 +263,9 @@ class Scan_Command {
 			$current_blog = get_current_blog_id();
 
 			// Switch to the blog.
-			switch_to_blog( $blog_id );
+			if ( is_multisite() ) {
+				switch_to_blog( $blog_id );
+			}
 		} else {
 			$blog_id = 1;
 		}
@@ -355,7 +357,9 @@ class Scan_Command {
 			\WP_CLI::line( '------' );
 
 			// Switch back to the current blog.
-			switch_to_blog( $current_blog );
+			if ( is_multisite() ) {
+				switch_to_blog( $current_blog );
+			}
 		}
 
 		return true;

@@ -247,7 +247,9 @@ class Event_Page {
 		foreach ( $events as $blog => $event_ids ) {
 
 			// Swtich to the blog.
-			switch_to_blog( $blog );
+			if ( is_multisite() ) {
+				switch_to_blog( $blog );
+			}
 
 			foreach ( $event_ids as $event_id ) {
 				$html .= ( function ( int $event_id ): string {
@@ -271,7 +273,9 @@ class Event_Page {
 		}
 
 		// Switch back to the original blog.
-		switch_to_blog( $current_blog );
+		if ( is_multisite() ) {
+			switch_to_blog( $current_blog );
+		}
 
 		// If the html is empty, throw an error.
 		if ( '' === $html ) {

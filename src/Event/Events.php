@@ -97,7 +97,9 @@ class Events {
 
 		$initial_blog = get_current_blog_id();
 
-		switch_to_blog( $blog_id );
+		if ( is_multisite() ) {
+			switch_to_blog( $blog_id );
+		}
 
 		$post_ids = $this->get_post_ids( $post_types, $ignore_posts );
 
@@ -146,7 +148,9 @@ class Events {
 		$event_ref = $this->enqueue_event( $event );
 
 		// Switch back to the initial blog.
-		switch_to_blog( $initial_blog );
+		if ( is_multisite() ) {
+			switch_to_blog( $initial_blog );
+		}
 
 		return $event_ref;
 	}
