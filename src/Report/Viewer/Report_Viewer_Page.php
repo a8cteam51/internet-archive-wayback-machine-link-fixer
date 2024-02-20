@@ -75,7 +75,7 @@ class Report_Viewer_Page {
 
 		// Enable network support for pages.
 		if ( \is_multisite() ) {
-			add_action( 'network_admin_menu', array( $this, 'register_page' ), 9 );
+			add_action( 'network_admin_menu', array( $this, 'register_network_page' ), 9 );
 			add_action( 'network_admin_menu', array( $this, 'change_wp_menu_title' ), 50 );
 		}
 	}
@@ -88,26 +88,48 @@ class Report_Viewer_Page {
 	 * @return void
 	 */
 	public function register_page(): void {
-		$this->page_hook = \add_menu_page(
+		$this->page_hook = \add_submenu_page(
+			'tools.php',
 			__( 'Wayback Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			__( 'Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
 			self::PAGE_SLUG,
 			$this->is_list_view()
-				? new Report_List_View( $this->report_repository )
-				: new Report_Single_View( $this->report_repository ),
+			? new Report_List_View( $this->report_repository )
+			: new Report_Single_View( $this->report_repository ),
 			'dashicons-admin-tools',
 			self::MENU_POSITION,
 		);
 	}
 
 	/**
- * Will remove a report if passed in the URL.
- *
- * @since 1.0.0
- *
- * @return void
- */
+	 * Register the network page.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 */
+	public function register_network_page(): void {
+		$this->page_hook = \add_menu_page(
+			__( 'Wayback Link Fixer', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Link Fixer', 'wpcomsp_wayback_link_fixer' ),
+			'manage_options',
+			self::PAGE_SLUG,
+			$this->is_list_view()
+			? new Report_List_View( $this->report_repository )
+			: new Report_Single_View( $this->report_repository ),
+			'dashicons-admin-tools',
+			self::MENU_POSITION,
+		);
+	}
+
+	/**
+	 * Will remove a report if passed in the URL.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
 	public function maybe_remove_report(): void {
 		// If action=delete-report in url.
 		if ( isset( $_GET['action'] )
