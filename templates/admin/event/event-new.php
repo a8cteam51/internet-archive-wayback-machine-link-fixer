@@ -64,25 +64,30 @@ $wlf_default_http_codes = explode( ',', Settings::get_http_status_codes() );
 				<label for="event_post_types">Which post types should be checked.</label>
 			</td>
 		</tr>
+		<?php if ( ! is_multisite() ) : ?>
+			<input type="hidden" id="wlf_event_blog_ids[1]" name="wlf_event_blog_ids[]" value="1">
+		<?php else : ?>
+			<?php if ( is_network_admin() ) : ?>
+				<tr class="form-field">
+					<th scope="row"><label for="wlf_event_blog_ids"><?php esc_html_e( 'Sites to check', 'wpcomsp_wayback_link_fixer' ); ?></label></th>
+					<td>
+						<select id="wlf_event_blog_ids" class="select2" multiple style="width: 100%">
+							<?php foreach ( get_sites() as $wlf_site ) : ?>
+						<option value="<?php echo esc_attr( $wlf_site->blog_id ); ?>" SELECTED>
+							<?php echo esc_html( $wlf_site->blogname ); ?>
+						</option>
+					<?php endforeach; ?>
+
+						</select>
+						<label for="event_post_types"><?php esc_html_e( 'A separate report will be generated per site selected.', 'wpcomsp_wayback_link_fixer' ); ?></label>
+					</td>
+				</tr>
+			<?php else : ?>
+				<input type="hidden" id="wlf_event_blog_ids" name="wlf_event_blog_ids[]" value="<?php echo esc_attr( get_current_blog_id() ); ?>">
+			<?php endif; ?>
+		<?php endif; ?>
 	</tbody>
 </table>
 
 		<input type="button" id="event_trigger" class="button" value="<?php esc_html_e( 'Create Report', 'wpcomsp_wayback_link_fixer' ); ?>">
 
-		<?php if ( ! is_multisite() ) : ?>
-			<input type="hidden" id="wlf_event_blog_ids[1]" name="wlf_event_blog_ids[]" value="1">
-		<?php else : ?>
-			<?php if ( is_network_admin() ) : ?>
-				<p><strong><?php esc_html_e( 'Sites to check', 'wpcomsp_wayback_link_fixer' ); ?></strong></p>
-				<select id="wlf_event_blog_ids" class="select2" multiple style="width: 100%">
-					<?php foreach ( get_sites() as $wlf_site ) : ?>
-						<option value="<?php echo esc_attr( $wlf_site->blog_id ); ?>" SELECTED>
-							<?php echo esc_html( $wlf_site->blogname ); ?>
-						</option>
-					<?php endforeach; ?>
-				</select>
-				<p class="description"><?php esc_html_e( 'A separate report will be generated per site selected.', 'wpcomsp_wayback_link_fixer' ); ?></p>
-			<?php else : ?>
-				<input type="hidden" id="wlf_event_blog_ids" name="wlf_event_blog_ids[]" value="<?php echo esc_attr( get_current_blog_id() ); ?>">
-			<?php endif; ?>
-		<?php endif; ?>

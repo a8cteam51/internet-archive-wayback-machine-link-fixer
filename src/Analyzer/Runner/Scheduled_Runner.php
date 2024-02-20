@@ -70,8 +70,6 @@ class Scheduled_Runner {
 			throw new \Exception( 'The event passed to the runner is not an instance of Event.' . esc_attr( $event ) );
 		}
 
-
-
 		// Populate the properties.
 		$this->reports = new Reports();
 		$this->events  = new Events();
@@ -83,7 +81,6 @@ class Scheduled_Runner {
 
 		// Process the next batch.
 		$wlf_batch_size = Settings::get_posts_per_batch();
-		dump($wlf_batch_size);
 
 		for ( $wlf_batch_count = 0; $wlf_batch_count < $wlf_batch_size; $wlf_batch_count++ ) {
 			$event = $this->process_next_post( $event );

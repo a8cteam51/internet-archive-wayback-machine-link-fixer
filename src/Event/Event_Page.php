@@ -219,12 +219,9 @@ class Event_Page {
 
 			foreach ( $blogs as $blog_id ) {
 				// Create the event.
-				$event_id = $this->events->create_event( $post_types, $http_codes, $exclude_posts, $ignore_link_cache, $user_id, $blog_id, $fix_links );
-				$events[] = $event_id;
-
+				$event_id             = $this->events->create_event( $post_types, $http_codes, $exclude_posts, $ignore_link_cache, $user_id, $blog_id, $fix_links );
+				$events[ $blog_id ][] = $event_id;
 			}
-
-
 		} catch ( \Throwable $th ) {
 			wp_send_json_error(
 				array(
@@ -243,27 +240,39 @@ class Event_Page {
 			);
 		}
 
+		// Cache the current blog id.
+		$current_blog = get_current_blog_id();
+
 		// Generate the HTML for the result.
 		$html = '';
-		foreach ( $events as $event_id ) {
-			$html .= ( function ( int $event_id ): string {
-				// Get the event.
-				$event = $this->events->get_event( $event_id );
+		foreach ( $events as $blog => $event_ids ) {
 
-				// If we have no event, return empty.
-				if ( null === $event ) {
-					return '';
-				}
-				return wpcomsp_wayback_link_fixer_render_template(
-					'admin/event/event-row.php',
-					array(
-						'event' => $event,
-						'id'    => $event_id,
-					),
-					false
-				);
-			} )( (int) $event_id );
+			// Swtich to the blog.
+			switch_to_blog( $blog );
+
+			foreach ( $event_ids as $event_id ) {
+				$html .= ( function ( int $event_id ): string {
+					// Get the event.
+					$event = $this->events->get_event( $event_id );
+
+					// If we have no event, return empty.
+					if ( null === $event ) {
+						return '';
+					}
+					return wpcomsp_wayback_link_fixer_render_template(
+						'admin/event/event-row.php',
+						array(
+							'event' => $event,
+							'id'    => $event_id,
+						),
+						false
+					);
+				} )( (int) $event_id );
+			}
 		}
+
+		// Switch back to the original blog.
+		switch_to_blog( $current_blog );
 
 		// If the html is empty, throw an error.
 		if ( '' === $html ) {
@@ -283,6 +292,7 @@ class Event_Page {
 					'excludePosts' => $exclude_posts,
 					'blogId'       => $blog_id,
 					'userId'       => $user_id,
+					'events'       => $events,
 				),
 			)
 		);
