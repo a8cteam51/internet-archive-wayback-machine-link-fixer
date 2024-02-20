@@ -159,9 +159,12 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_posts_per_batch(): int {
-		return \is_multisite()
+		$per_batch = \is_multisite()
 			? absint( get_site_option( self::EVENT_POSTS_PER_BATCH, 10 ) )
 			: absint( get_option( self::EVENT_POSTS_PER_BATCH, 10 ) );
+
+		// If value is less than or equal to 1, set as 2.
+		return $per_batch <= 1 ? 2 : $per_batch;
 	}
 
 	/**

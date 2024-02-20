@@ -30,7 +30,10 @@
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Runner\Runner;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Updater\Updater;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
+use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Content_Analyzer;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner\Scheduled_Runner;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -106,15 +106,44 @@ class Event implements Serializable {
 	 */
 	public function serialize(): string {
 		return serialize( //phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
-			array(
-				'post_ids'       => $this->post_ids,
-				'http_codes'     => $this->http_codes,
-				'ignore_cache'   => $this->ignore_cache,
-				'report'         => serialize( $this->report ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
-				'processed'      => $this->processed_post_ids,
-				'auto_fix_links' => $this->auto_fix_links,
-			)
+			$this->__serialize()
 		);
+	}
+
+	/**
+	 * PHP8.1 Compatability __serialize method.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array
+	 */
+	public function __serialize(): array {
+		return array(
+			'post_ids'       => $this->post_ids,
+			'http_codes'     => $this->http_codes,
+			'ignore_cache'   => $this->ignore_cache,
+			'report'         => serialize( $this->report ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+			'processed'      => $this->processed_post_ids,
+			'auto_fix_links' => $this->auto_fix_links,
+		);
+	}
+
+	/**
+	 * PHP8.1 Compatability __unserialize method.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $data The data to unserialize.
+	 *
+	 * @return void
+	 */
+	public function __unserialize( array $data ): void {
+		$this->post_ids           = array_map( 'absint', $data['post_ids'] );
+		$this->http_codes         = array_map( 'sanitize_text_field', $data['http_codes'] );
+		$this->ignore_cache       = (bool) $data['ignore_cache'];
+		$this->report             = \unserialize( $data['report'] ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
+		$this->processed_post_ids = array_map( 'absint', $data['processed'] );
+		$this->auto_fix_links     = (bool) $data['auto_fix_links'];
 	}
 
 	/**
@@ -128,13 +157,7 @@ class Event implements Serializable {
 	 */
 	public function unserialize( $serialized ): void {
 		$data = unserialize( $serialized ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
-
-		$this->post_ids           = array_map( 'absint', $data['post_ids'] );
-		$this->http_codes         = array_map( 'sanitize_text_field', $data['http_codes'] );
-		$this->ignore_cache       = (bool) $data['ignore_cache'];
-		$this->report             = \unserialize( $data['report'] ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
-		$this->processed_post_ids = array_map( 'absint', $data['processed'] );
-		$this->auto_fix_links     = (bool) $data['auto_fix_links'];
+		$this->__unserialize( $data );
 	}
 
 	/**

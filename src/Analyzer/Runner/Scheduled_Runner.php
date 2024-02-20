@@ -81,13 +81,14 @@ class Scheduled_Runner {
 
 		// Process the next batch.
 		$wlf_batch_size = Settings::get_posts_per_batch();
+
 		for ( $wlf_batch_count = 0; $wlf_batch_count < $wlf_batch_size; $wlf_batch_count++ ) {
 			$event = $this->process_next_post( $event );
 		}
 
 		// If we have more events, add again.
 		if ( $event->has_more_events() ) {
-			$this->events->enqueue_event( $event );
+			$r = $this->events->enqueue_in_progress_event( $event );
 		} else {
 			$this->events->finalize_event( $event );
 		}

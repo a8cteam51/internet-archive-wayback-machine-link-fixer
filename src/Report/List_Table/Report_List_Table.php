@@ -13,11 +13,11 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report\List_Table;
 defined( 'ABSPATH' ) || exit;
 
 use DateTime;
-use PHPCompatibility\Sniffs\FunctionDeclarations\NewNullableTypesSniff;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Reports;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Helper;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Repository;
+use PHPCompatibility\Sniffs\FunctionDeclarations\NewNullableTypesSniff;
 
 /**
  * List Table
@@ -172,7 +172,7 @@ class Report_List_Table extends \WP_List_Table {
 
 		$args = array(
 			'user_id'   => $filters[ self::FILTER_USER_ID ],
-			'blog_id'   => $this->get_blog_id(),
+			'blog_id'   => $filters[ self::FILTER_BLOG_ID ] ?? $this->get_blog_id(),
 			'statuses'  => $filters[ self::FILTER_STATUS ],
 			'date_from' => $filters[ self::FILTER_DATE_FROM ],
 			'date_to'   => $filters[ self::FILTER_DATE_TO ],
@@ -204,7 +204,7 @@ class Report_List_Table extends \WP_List_Table {
 	 * @return integer
 	 */
 	public function get_reports_per_page(): int {
-		return absint( \apply_filters( 'wpcomsp_wayback_link_fixer_reports_per_page', 10 ) );
+		return absint( \apply_filters( 'wpcomsp_wayback_link_fixer_reports_per_list', 10 ) );
 	}
 
 	/**
@@ -371,11 +371,12 @@ class Report_List_Table extends \WP_List_Table {
 			</div>
 
 			<?php if ( \is_multisite() && \is_network_admin() ) : ?>
-				<div class="wlf-filter select-multi wide">
+				<div class="wlf-filter select-single">
 					<label for="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" class="screen-reader-text"><?php esc_html_e( 'Reported created by user', 'wpcomsp_wayback_link_fixer' ); ?></label>
-					<select class="wlf-multiselect2" MULTIPLE data-placeholder="<?php echo esc_html__( 'Any site', 'wpcomsp_wayback_link_fixer' ); ?>" name="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" id="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" >
+					<select class="wlf-select2" data-placeholder="<?php echo esc_html__( 'Any site', 'wpcomsp_wayback_link_fixer' ); ?>" name="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" id="<?php echo esc_attr( self::FILTER_BLOG_ID ); ?>" >
+						<option value=""><?php esc_html_e( 'Any site', 'wpcomsp_wayback_link_fixer' ); ?></option>
 						<?php foreach ( \get_sites() as $site ) : ?>
-							<option value="<?php echo esc_attr( $site->blog_id ); ?>"><?php echo esc_html( $site->blogname ); ?></option>
+							<option value="<?php echo esc_attr( $site->blog_id ); ?>" <?php selected( $filters[ self::FILTER_BLOG_ID ], $site->blog_id ); ?>><?php echo esc_html( $site->blogname ); ?></option>
 						<?php endforeach; ?>
 					</select>
 				</div>

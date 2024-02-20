@@ -123,7 +123,6 @@ class Runner {
 		$report = $report ?? $this->generate_report();
 		// Generate the logs for the post and assign to the report.
 		$this->reports->log_post_for_report( $report, $this->post->ID, $wlf_links );
-
 		// Return a fresh version of the report.
 		return $this->report_repository->find_by_report_id( $report->get_report_id() );
 	}

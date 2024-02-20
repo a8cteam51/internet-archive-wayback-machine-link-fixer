@@ -118,9 +118,9 @@ class Settings_Page {
 	 */
 	public function register_page(): void {
 		$this->menu_hook = \add_submenu_page(
-			Report_Viewer_Page::PAGE_SLUG,
+			'settings.php',
 			__( 'Wayback Link Fixer', 'wpcomsp_wayback_link_fixer' ),
-			__( 'Settings', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )
@@ -629,7 +629,7 @@ class Settings_Page {
 			id="<?php echo esc_attr( Settings::EVENT_POSTS_PER_BATCH ); ?>"
 			name="<?php echo esc_attr( Settings::EVENT_POSTS_PER_BATCH ); ?>"
 			value="<?php echo absint( Settings::get_posts_per_batch() ); ?>"
-			min="0"
+			min="2"
 		/>
 		<?php
 	}

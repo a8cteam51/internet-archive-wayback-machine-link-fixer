@@ -505,7 +505,7 @@ class Report_Table extends \WP_List_Table {
 	 * @return integer
 	 */
 	public function get_links_per_page() {
-		return 2;
+		return absint( \apply_filters( 'wpcomsp_wayback_link_fixer_reports_per_report', 10 ) );
 	}
 
 	/**

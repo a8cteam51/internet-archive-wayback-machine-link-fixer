@@ -42,6 +42,7 @@
 		jQuery('.wlf-select2').select2({
 			height: '32px',
 			dropdownAutoWidth: true,
+			allowClear: true,
 			width: '100px'
 		});
 
