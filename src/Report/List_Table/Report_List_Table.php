@@ -204,7 +204,7 @@ class Report_List_Table extends \WP_List_Table {
 	 * @return integer
 	 */
 	public function get_reports_per_page(): int {
-		return absint( \apply_filters( 'wpcomsp_wayback_link_fixer_reports_per_page', 10 ) );
+		return absint( \apply_filters( 'wpcomsp_wayback_link_fixer_reports_per_list', 10 ) );
 	}
 
 	/**
