@@ -148,7 +148,7 @@ class Events {
 		$event_ref = $this->enqueue_event( $event );
 
 		// Switch back to the initial blog.
-		if ( is_multisite() ){
+		if ( is_multisite() ) {
 			switch_to_blog( $initial_blog );
 		}
 

@@ -3,7 +3,7 @@
         'name' => 'a8cteam51/wayback-link-fixer',
         'pretty_version' => 'dev-develop',
         'version' => 'dev-develop',
-        'reference' => 'c262665db1dff41f09a36f2c75ddea10301c550f',
+        'reference' => 'dac25be2026bfcf378287cf58dc21a245fa5bd8c',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'a8cteam51/wayback-link-fixer' => array(
             'pretty_version' => 'dev-develop',
             'version' => 'dev-develop',
-            'reference' => 'c262665db1dff41f09a36f2c75ddea10301c550f',
+            'reference' => 'dac25be2026bfcf378287cf58dc21a245fa5bd8c',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

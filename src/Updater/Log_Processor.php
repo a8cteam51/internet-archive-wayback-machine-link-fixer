@@ -279,7 +279,7 @@ class Log_Processor {
 				$link_text = \apply_filters( 'wpcomsp_wayback_link_fixer_archived_link_text', esc_html__( '(archive.org link)', 'wpcomsp_wayback_link_fixer' ) );
 
 				// Set link text.
-				$new_link->nodeValue = esc_html( $link_text );
+				$new_link->nodeValue = esc_html( $link_text ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase, from PHP Core Lib
 
 				// Add class
 				$new_link->setAttribute( 'class', 'wlf-archived__redirect' );
