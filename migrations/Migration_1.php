@@ -89,11 +89,15 @@ class Migration_1 extends Abstract_Migration {
 
 		// Drop the log table.
 
-		$log_table_name = $wpdb->prefix . Settings::SCAN_LOG_TABLE_NAME;
+		$log_table_name = Settings::SCAN_LOG_TABLE_NAME;
 		$wpdb->query( "DROP TABLE IF EXISTS $log_table_name" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant due to table name.
 
 		// Drop the report table.
-		$report_table_name = $wpdb->prefix . Settings::SCAN_REPORT_TABLE_NAME;
+		$report_table_name = Settings::SCAN_REPORT_TABLE_NAME;
 		$wpdb->query( "DROP TABLE IF EXISTS $report_table_name" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant due to table name.
+
+		// Drop the link cache table.
+		$link_cache_table_name = Settings::SCAN_LINK_CACHE_TABLE;
+		$wpdb->query( "DROP TABLE IF EXISTS $link_cache_table_name" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant due to table name.
 	}
 }

@@ -61,7 +61,6 @@ class Migrations {
 	 * @return void
 	 */
 	public static function down(): void {
-
 		// If we are not dropping tables on deactivation, do nothing.
 		if ( ! Settings::drop_tables_on_uninstall() ) {
 			return;
