@@ -10,7 +10,7 @@
  */
 ?>
 <div class="wrap">
-	<h1><?php esc_html_e( 'New Report', 'wpcomsp_wayback_link_fixer' ); ?></h1>
+	<h1><?php esc_html_e( 'Wayback Link Fixer :: New Report', 'wpcomsp_wayback_link_fixer' ); ?></h1>
 	<?php wpcomsp_wayback_link_fixer_render_template( 'admin/event/event-new.php' ); ?>
 	<div id="wlf-events-details">
 		<p><?php esc_html_e( 'The following reports are scheduled to be run/running.', 'wpcomsp_wayback_link_fixer' ); ?></p>
