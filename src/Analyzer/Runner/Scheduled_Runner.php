@@ -88,7 +88,7 @@ class Scheduled_Runner {
 
 		// If we have more events, add again.
 		if ( $event->has_more_events() ) {
-			$this->events->enqueue_event( $event );
+			$r = $this->events->enqueue_in_progress_event( $event );
 		} else {
 			$this->events->finalize_event( $event );
 		}

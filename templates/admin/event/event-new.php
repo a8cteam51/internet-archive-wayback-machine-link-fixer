@@ -24,7 +24,7 @@ $wlf_default_http_codes = explode( ',', Settings::get_http_status_codes() );
 <table class="form-table" role="presentation">
 	<tbody>
 		<tr class="form-field">
-			<th scope="row"><label for="user_login">HTTP Codes</label></th>
+			<th scope="row"><label for="user_login"><?php esc_html_e( 'HTTP Codes', 'wpcomsp_wayback_link_fixer' ); ?></label></th>
 			<td>
 				<select id="event_http" class="select2" multiple style="width: 100%">
 					<?php foreach ( wpcomsp_wayback_link_fixer_get_http_codes() as $wlf_http_code ) : ?>
@@ -33,25 +33,25 @@ $wlf_default_http_codes = explode( ',', Settings::get_http_status_codes() );
 						</option>
 					<?php endforeach; ?>
 				</select>
-				<label for="event_http">Which HTTP code(s) should be checked</label>
+				<label for="event_http"><?php esc_html_e( 'Which HTTP code(s) should be checked', 'wpcomsp_wayback_link_fixer' ); ?></label>
 			</td>
 		</tr>
 		<tr class="form-field">
-			<th scope="row">Link Cache</th>
+			<th scope="row"><?php esc_html_e( 'Link Cache', 'wpcomsp_wayback_link_fixer' ); ?></th>
 			<td>
 				<input type="checkbox" name="event_ignore_cache" id="event_ignore_cache" value="1" checked="checked">
-				<label for="event_ignore_cache">Ignore cache and check every link?</label>
+				<label for="event_ignore_cache"><?php esc_html_e( 'Ignore cache and check every link?', 'wpcomsp_wayback_link_fixer' ); ?></label>
 			</td>
 		</tr>
 		<tr class="form-field">
-			<th scope="row">Auto fix</th>
+			<th scope="row"><?php esc_html_e( 'Auto fix', 'wpcomsp_wayback_link_fixer' ); ?></th>
 			<td>
 				<input type="checkbox" name="event_fix_links" id="event_fix_links" value="1" checked="checked">
-				<label for="event_fix_links">If archived link found, auto fix?</label>
+				<label for="event_fix_links"><?php esc_html_e( 'If archived link found, auto fix?', 'wpcomsp_wayback_link_fixer' ); ?></label>
 			</td>
 		</tr>
 		<tr class="form-field">
-			<th scope="row"><label for="user_login">Post Types</label></th>
+			<th scope="row"><label for="user_login"><?php esc_html_e( 'Post Types', 'wpcomsp_wayback_link_fixer' ); ?></label></th>
 			<td>
 				<select id="event_post_types" class="select2" multiple style="width: 100%">
 					<?php foreach ( Settings::get_post_types() as $wlf_cpt ) : ?>
@@ -61,7 +61,7 @@ $wlf_default_http_codes = explode( ',', Settings::get_http_status_codes() );
 					<?php endforeach; ?>
 
 				</select>
-				<label for="event_post_types">Which post types should be checked.</label>
+				<label for="event_post_types"><?php esc_html_e( 'Which post types should be checked.', 'wpcomsp_wayback_link_fixer' ); ?></label>
 			</td>
 		</tr>
 		<?php if ( ! is_multisite() ) : ?>
@@ -73,11 +73,10 @@ $wlf_default_http_codes = explode( ',', Settings::get_http_status_codes() );
 					<td>
 						<select id="wlf_event_blog_ids" class="select2" multiple style="width: 100%">
 							<?php foreach ( get_sites() as $wlf_site ) : ?>
-						<option value="<?php echo esc_attr( $wlf_site->blog_id ); ?>" SELECTED>
-							<?php echo esc_html( $wlf_site->blogname ); ?>
-						</option>
-					<?php endforeach; ?>
-
+								<option value="<?php echo esc_attr( $wlf_site->blog_id ); ?>" SELECTED>
+									<?php echo esc_html( $wlf_site->blogname ); ?>
+								</option>
+							<?php endforeach; ?>
 						</select>
 						<label for="event_post_types"><?php esc_html_e( 'A separate report will be generated per site selected.', 'wpcomsp_wayback_link_fixer' ); ?></label>
 					</td>
@@ -89,5 +88,5 @@ $wlf_default_http_codes = explode( ',', Settings::get_http_status_codes() );
 	</tbody>
 </table>
 
-		<input type="button" id="event_trigger" class="button" value="<?php esc_html_e( 'Create Report', 'wpcomsp_wayback_link_fixer' ); ?>">
+<input type="button" id="event_trigger" class="button" value="<?php esc_html_e( 'Create Report', 'wpcomsp_wayback_link_fixer' ); ?>">
 

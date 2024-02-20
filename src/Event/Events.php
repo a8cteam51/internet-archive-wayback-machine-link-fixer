@@ -9,10 +9,14 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
+use ActionScheduler;
+use ActionScheduler_Store;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Log;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Reports;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner\Scheduled_Runner;
 
 defined( 'ABSPATH' ) || exit;
@@ -34,12 +38,22 @@ class Events {
 	private Reports $reports;
 
 	/**
+	 * The report repository.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var Report_Repository
+	 */
+	private Report_Repository $report_repository;
+
+	/**
 	 * Creates a new instance of the Events repository.
 	 *
 	 * @since  1.0.0
 	 */
 	public function __construct() {
-		$this->reports = new Reports();
+		$this->reports           = new Reports();
+		$this->report_repository = new Report_Repository();
 	}
 
 	/**
@@ -149,10 +163,47 @@ class Events {
 	public function enqueue_event( Event $event ): int {
 		return \as_enqueue_async_action(
 			Settings::RUNNER_EVENT,
-			array( 'event' => \serialize( $event ) ), //phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+			array(
+				'event' => \serialize( $event ), //phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+				'time'  => time(),
+			),
 			self::EVENT_GROUP,
-			true
+			false
 		);
+	}
+
+	/**
+	 * Adds a in progress event to the queue.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param Event $event The event to enqueue.
+	 *
+	 * @return integer The event id.
+	 */
+	public function enqueue_in_progress_event( Event $event ): int {
+
+		// Get the report.
+		$report = $event->get_report();
+
+		// Add the processed posts to the report.
+		$report = $this->reports->add_description_to_report(
+			$report,
+			sprintf(
+				// translators: %1$s is the original description, %2$s is the list of processed posts.
+				__( '%1$s. Processed posts: [%2$s]', 'wpcomsp_wayback_link_fixer' ),
+				$report->get_description(),
+				join( ',', $event->get_processed_post_ids() )
+			)
+		);
+
+		// Update report.
+		$report = $this->report_repository->upsert( $report );
+
+		// Update event with new report.
+		$event = $event->update_report( $report );
+
+		return $this->enqueue_event( $event );
 	}
 
 	/**

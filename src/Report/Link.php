@@ -152,6 +152,7 @@ class Link implements JsonSerializable {
 	 *
 	 * @return \stdClass
 	 */
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize() {
 		return (object) array(
 			'post_id'             => $this->get_post_id(),

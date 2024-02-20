@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Plugin;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
 
 // region
@@ -413,6 +414,24 @@ function wpcomsp_wayback_link_fixer_get_blog_name( int $blog_id ): string {
  */
 function wpcomsp_wayback_link_fixer_get_date_time_format(): string {
 	return esc_attr( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) );
+}
+
+/**
+ * Generates the link for a new report.
+ *
+ * Takes into account if network admin or not.
+ *
+ * @since 1.1.0
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_get_new_report_link(): string {
+	$wlf_page_slug = Event_Page::PAGE_SLUG;
+
+	if ( is_network_admin() ) {
+		return admin_url( "network/admin.php?page={$wlf_page_slug}&action=new" );
+	}
+	return admin_url( "admin.php?page={$wlf_page_slug}&action=new" );
 }
 
 // endregion
