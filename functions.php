@@ -448,6 +448,32 @@ function wpcomsp_wayback_link_fixer_get_new_report_link(): string {
 	return admin_url( "admin.php?page={$wlf_page_slug}&action=new" );
 }
 
+/**
+ * Render the CSS used for archived links in the header.
+ *
+ * @since 1.1.0
+ *
+ * @return void
+ */
+function wpcomsp_wayback_link_fixer_render_archived_link_css(): void {
+	$css = <<<CSS
+		.wlf-archived__redirect{
+			    color: var(--wp--preset--color--primary) !important;
+    			padding: 0 8px;
+    			font-size: 75%;
+		}
+		.wlf-archived__redirect:hover {
+			color: #005f7b;
+		}
+}
+CSS;
+
+	// Filter the css.
+	$css = apply_filters( 'wpcomsp_wayback_link_fixer_archived_link_css', $css );
+
+	echo '<style>' . $css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
 // endregion
 
 //region OTHERS

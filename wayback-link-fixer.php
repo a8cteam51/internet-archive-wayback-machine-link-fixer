@@ -4,17 +4,17 @@
  * The wayback-link-fixer bootstrap file.
  *
  * @since       1.0.0
- * @version     1.0.0
+ * @version     1.1.0
  * @author      WordPress.com Special Projects
  * @license     GPL-3.0-or-later
  *
  * @noinspection    ALL
  *
  * @wordpress-plugin
- * Plugin Name:             wayback-link-fixer
+ * Plugin Name:             Wayback Link Fixer
  * Plugin URI:              https://wpspecialprojects.wordpress.com
- * Description:
- * Version:                 1.0.0
+ * Description:             Scans links in your content and fixes them to use the Wayback Machine, archived version.
+ * Version:                 1.1.0
  * Requires at least:       6.2
  * Tested up to:            6.2
  * Requires PHP:            8.0
@@ -27,13 +27,6 @@
  * WC requires at least:    7.4
  * WC tested up to:         7.4
  **/
-
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Runner\Runner;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Updater\Updater;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
-use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Content_Analyzer;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Analyzer\Runner\Scheduled_Runner;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -92,6 +85,8 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	\WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations::$migrations = array( //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1::class,
 	);
+
+	add_action( 'wp_head', 'wpcomsp_wayback_link_fixer_render_archived_link_css', 999 );
 
 
 	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'functions.php';
