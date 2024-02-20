@@ -118,7 +118,7 @@ class Settings_Page {
 	 */
 	public function register_page(): void {
 		$this->menu_hook = \add_submenu_page(
-			'settings.php',
+			\is_network_admin() ? 'settings.php' : 'options-general.php',
 			__( 'Wayback Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			__( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
