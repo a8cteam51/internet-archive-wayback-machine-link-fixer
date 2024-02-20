@@ -104,8 +104,7 @@ class Event_Page {
 		}
 
 		// Include select2
-		wp_enqueue_style( 'select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', array(), '4.1.0-rc.0' );
-		wp_enqueue_script( 'select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array( self::PAGE_SLUG ), '4.1.0-rc.0', true );
+		wpcomsp_wayback_link_fixer_enqueue_select2_assets( array( self::PAGE_SLUG ) );
 
 		// Register the admin-event script.
 		wp_register_script(

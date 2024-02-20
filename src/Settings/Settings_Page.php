@@ -118,7 +118,7 @@ class Settings_Page {
 	 */
 	public function register_page(): void {
 		$this->menu_hook = \add_submenu_page(
-			'settings.php',
+			\is_network_admin() ? 'settings.php' : 'options-general.php',
 			__( 'Wayback Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			__( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
@@ -144,6 +144,9 @@ class Settings_Page {
 		if ( $this->menu_hook !== $page_hook ) {
 			return;
 		}
+
+		// Register select2
+		wpcomsp_wayback_link_fixer_enqueue_select2_assets( array( self::PAGE_SLUG ) );
 
 		\wp_register_script(
 			self::PAGE_SLUG,
@@ -430,6 +433,7 @@ class Settings_Page {
 			<br />
 			<?php
 		}
+		echo '<p class="description">' . esc_html__( 'Select which post types can be chosen in reports.', 'wpcomsp_wayback_link_fixer' ) . '</p>';
 	}
 
 	/**
@@ -451,6 +455,9 @@ class Settings_Page {
 			/>
 			<?php esc_html_e( 'Drop tables on uninstall', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
+		<p class="description">
+			<?php esc_html_e( 'If checked, the plugin will drop the tables on uninstall.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
 		<?php
 	}
 
@@ -458,7 +465,7 @@ class Settings_Page {
 	 * Render the link checker timeout field.
 	 *
 	 * @since   1.0.0
-	 *-+
+	 *
 	 * @return  void
 	 */
 	public function render_link_checker_timeout_field(): void {
@@ -471,6 +478,9 @@ class Settings_Page {
 			min="0"
 			max="5000"
 		/>
+		<p class="description">
+			<?php esc_html_e( 'The timeout in milliseconds to wait when checking if a link is valid or not.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
 		<?php
 	}
 
@@ -482,13 +492,26 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_http_status_codes_field(): void {
+		// Get the current selected codes.
+		$selected = explode( ',', Settings::get_http_status_codes() );
+		$selected = array_map( 'intval', $selected );
 		?>
 		<input
-			type="text"
+			type="hidden"
 			id="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>"
 			name="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>"
 			value="<?php echo esc_attr( Settings::get_http_status_codes() ); ?>"
 		/>
+		<select id="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>_select" multiple>
+			<?php foreach ( wpcomsp_wayback_link_fixer_get_http_codes() as $code ) : ?>
+				<option value="<?php echo esc_attr( $code ); ?>" <?php echo in_array( $code, $selected, true ) ? 'SELECTED' : ''; ?>>
+					<?php echo esc_html( $code ); ?>
+				</option>
+			<?php endforeach; ?>
+		</select>
+		<p class="description">
+			<?php esc_html_e( 'Select which HTTP codes should be preselected for new reports and defaults for CLI calls.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
 		<?php
 	}
 
@@ -508,6 +531,9 @@ class Settings_Page {
 			value="<?php echo absint( Settings::get_link_cache_expiration() ); ?>"
 			min="0"
 		/>
+		<p class="description">
+			<?php esc_html_e( 'The expiration time in seconds for the link cache.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
 		<?php
 	}
 
@@ -631,6 +657,10 @@ class Settings_Page {
 			value="<?php echo absint( Settings::get_posts_per_batch() ); ?>"
 			min="2"
 		/>
+
+		<p class="description">
+			<?php esc_html_e( 'The number of posts to process per batch for both action scheduler and CLI runners.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
 		<?php
 	}
 }
