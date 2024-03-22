@@ -270,37 +270,37 @@ class Settings_Page {
 			)
 		);
 
-		\register_setting(
-			self::PAGE_SLUG,
-			Settings::HTTP_STATUS_CODES,
-			array(
-				'type'              => 'string',
-				'sanitize_callback' => 'sanitize_text_field',
-				'default'           => '404,410,500,502,300,301,303',
-				'show_in_rest'      => array(
-					'name'   => Settings::HTTP_STATUS_CODES,
-					'schema' => array(
-						'type' => 'string',
-					),
-				),
-			)
-		);
+		// \register_setting(
+		//  self::PAGE_SLUG,
+		//  Settings::HTTP_STATUS_CODES,
+		//  array(
+		//      'type'              => 'string',
+		//      'sanitize_callback' => 'sanitize_text_field',
+		//      'default'           => '404,410,500,502,300,301,303',
+		//      'show_in_rest'      => array(
+		//          'name'   => Settings::HTTP_STATUS_CODES,
+		//          'schema' => array(
+		//              'type' => 'string',
+		//          ),
+		//      ),
+		//  )
+		// );
 
-		\register_setting(
-			self::PAGE_SLUG,
-			Settings::LINK_CACHE_EXPIRATION,
-			array(
-				'type'              => 'integer',
-				'sanitize_callback' => 'absint',
-				'default'           => DAY_IN_SECONDS,
-				'show_in_rest'      => array(
-					'name'   => Settings::LINK_CACHE_EXPIRATION,
-					'schema' => array(
-						'type' => 'integer',
-					),
-				),
-			)
-		);
+		// \register_setting(
+		//  self::PAGE_SLUG,
+		//  Settings::LINK_CACHE_EXPIRATION,
+		//  array(
+		//      'type'              => 'integer',
+		//      'sanitize_callback' => 'absint',
+		//      'default'           => DAY_IN_SECONDS,
+		//      'show_in_rest'      => array(
+		//          'name'   => Settings::LINK_CACHE_EXPIRATION,
+		//          'schema' => array(
+		//              'type' => 'integer',
+		//          ),
+		//      ),
+		//  )
+		// );
 
 		\register_setting(
 			self::PAGE_SLUG,
@@ -321,21 +321,21 @@ class Settings_Page {
 			)
 		);
 
-		\register_setting(
-			self::PAGE_SLUG,
-			Settings::EVENT_POSTS_PER_BATCH,
-			array(
-				'type'              => 'integer',
-				'sanitize_callback' => 'absint',
-				'default'           => 10,
-				'show_in_rest'      => array(
-					'name'   => Settings::EVENT_POSTS_PER_BATCH,
-					'schema' => array(
-						'type' => 'integer',
-					),
-				),
-			)
-		);
+		// \register_setting(
+		//  self::PAGE_SLUG,
+		//  Settings::EVENT_POSTS_PER_BATCH,
+		//  array(
+		//      'type'              => 'integer',
+		//      'sanitize_callback' => 'absint',
+		//      'default'           => 10,
+		//      'show_in_rest'      => array(
+		//          'name'   => Settings::EVENT_POSTS_PER_BATCH,
+		//          'schema' => array(
+		//              'type' => 'integer',
+		//          ),
+		//      ),
+		//  )
+		// );
 	}
 
 	/**
@@ -377,21 +377,21 @@ class Settings_Page {
 			self::SETTINGS_SECTION
 		);
 
-		\add_settings_field(
-			Settings::HTTP_STATUS_CODES,
-			__( 'HTTP Status Codes', 'wpcomsp_wayback_link_fixer' ),
-			array( $this, 'render_http_status_codes_field' ),
-			self::PAGE_SLUG,
-			self::SETTINGS_SECTION
-		);
+		// \add_settings_field(
+		//  Settings::HTTP_STATUS_CODES,
+		//  __( 'HTTP Status Codes', 'wpcomsp_wayback_link_fixer' ),
+		//  array( $this, 'render_http_status_codes_field' ),
+		//  self::PAGE_SLUG,
+		//  self::SETTINGS_SECTION
+		// );
 
-		\add_settings_field(
-			Settings::LINK_CACHE_EXPIRATION,
-			__( 'Link Cache Expiration in Seconds', 'wpcomsp_wayback_link_fixer' ),
-			array( $this, 'render_link_cache_expiration_field' ),
-			self::PAGE_SLUG,
-			self::SETTINGS_SECTION
-		);
+		// \add_settings_field(
+		//  Settings::LINK_CACHE_EXPIRATION,
+		//  __( 'Link Cache Expiration in Seconds', 'wpcomsp_wayback_link_fixer' ),
+		//  array( $this, 'render_link_cache_expiration_field' ),
+		//  self::PAGE_SLUG,
+		//  self::SETTINGS_SECTION
+		// );
 
 		\add_settings_field(
 			Settings::LINK_EXCLUSIONS,
@@ -401,13 +401,13 @@ class Settings_Page {
 			self::SETTINGS_SECTION
 		);
 
-		\add_settings_field(
-			Settings::EVENT_POSTS_PER_BATCH,
-			__( 'Posts per Batch', 'wpcomsp_wayback_link_fixer' ),
-			array( $this, 'render_event_posts_per_batch_field' ),
-			self::PAGE_SLUG,
-			self::SETTINGS_SECTION
-		);
+		// \add_settings_field(
+		//  Settings::EVENT_POSTS_PER_BATCH,
+		//  __( 'Posts per Batch', 'wpcomsp_wayback_link_fixer' ),
+		//  array( $this, 'render_event_posts_per_batch_field' ),
+		//  self::PAGE_SLUG,
+		//  self::SETTINGS_SECTION
+		// );
 	}
 
 	/**
@@ -433,7 +433,7 @@ class Settings_Page {
 			<br />
 			<?php
 		}
-		echo '<p class="description">' . esc_html__( 'Select which post types can be chosen in reports.', 'wpcomsp_wayback_link_fixer' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Which post type should be checked?', 'wpcomsp_wayback_link_fixer' ) . '</p>';
 	}
 
 	/**
@@ -492,6 +492,9 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_http_status_codes_field(): void {
+		// REMOVE ME
+
+		return;
 		// Get the current selected codes.
 		$selected = explode( ',', Settings::get_http_status_codes() );
 		$selected = array_map( 'intval', $selected );
@@ -523,6 +526,9 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_link_cache_expiration_field(): void {
+		// REMOVE ME
+		return;
+
 		?>
 		<input
 			type="number"
@@ -649,6 +655,8 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_event_posts_per_batch_field(): void {
+		// REMOVE ME
+		return;
 		?>
 		<input
 			type="number"
