@@ -2,11 +2,11 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\CLI\Commands;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Events;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event_Page;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Ajax_Controller;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event_Controller;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Handler;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer\Report_Viewer_Page;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Table_Controller;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,21 +18,21 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Integrations {
 	// region FIELDS AND CONSTANTS
-	private Settings_Page $settings_page;
-	private Report_Viewer_Page $report_viewer_page;
-	private Event_Page $event_page;
-	private Events $events;
-	private Commands $commands;
+	private $settings_page;
+	private $post_handler;
+	private $event_controller;
+	private $ajax_controller;
+	private $wp_post_table_controller;
 
 	/**
 	 * Creates a new instance of the integrations component.
 	 */
 	public function __construct() {
-		$this->settings_page      = new Settings_Page();
-		$this->report_viewer_page = new Report_Viewer_Page();
-		$this->event_page         = new Event_Page();
-		$this->events             = new Events();
-		$this->commands           = new Commands();
+		$this->settings_page            = new Settings_Page();
+		$this->post_handler             = new Post_Handler();
+		$this->event_controller         = new Event_Controller();
+		$this->ajax_controller          = new Ajax_Controller();
+		$this->wp_post_table_controller = new WP_Post_Table_Controller();
 	}
 
 
@@ -50,10 +50,10 @@ final class Integrations {
 	 */
 	public function initialize(): void {
 		$this->settings_page->initialize();
-		$this->report_viewer_page->initialize();
-		$this->event_page->initialize();
-		$this->events->initialize();
-		$this->commands->initialize();
+		$this->post_handler->initialize();
+		$this->event_controller->initialize();
+		$this->ajax_controller->initialize();
+		$this->wp_post_table_controller->initialize();
 	}
 
 	// endregion

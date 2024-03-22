@@ -19,39 +19,55 @@ defined( 'ABSPATH' ) || exit;
 class Settings {
 
 	// Prefix.
-	private const SETTINGS_PREFIX = 't51_wlf_';
+	public const SETTINGS_PREFIX = 't51_wlf_';
+
 
 	// Option keys
+	public const LINK_CHECK_DURATION          = self::SETTINGS_PREFIX . 'link_check_duration';
 	public const POST_TYPES_OPTION_KEY        = self::SETTINGS_PREFIX . 'post_types';
-	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
 	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
-	public const LINK_CHECKER_TIMEOUT         = self::SETTINGS_PREFIX . 'link_checker_timeout';
-	public const HTTP_STATUS_CODES            = self::SETTINGS_PREFIX . 'http_status_codes';
-	public const LINK_CACHE_EXPIRATION        = self::SETTINGS_PREFIX . 'link_cache_expiration';
+	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
 	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
-	public const EVENT_POSTS_PER_BATCH        = self::SETTINGS_PREFIX . 'async_posts_per_batch';
+	public const LINK_CHECKER_TIMEOUT         = self::SETTINGS_PREFIX . 'link_checker_timeout';
 
-	## Table names.
+	// Table names.
 	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
 	public const SCAN_REPORT_TABLE_NAME = self::SETTINGS_PREFIX . 'scan_report';
 	public const SCAN_LINK_CACHE_TABLE  = self::SETTINGS_PREFIX . 'scan_link_cache';
+	public const LINK_TABLE             = self::SETTINGS_PREFIX . 'link_archive';
 
-	## Events
+	// Events
 	public const RUNNER_EVENT = self::SETTINGS_PREFIX . 'event_runner';
 
+	// Meta Keys
+	public const LINK_META_KEY = self::SETTINGS_PREFIX . 'links';
+
+	// Old settings to remove
+	public const HTTP_STATUS_CODES     = self::SETTINGS_PREFIX . 'http_status_codes';
+	public const LINK_CACHE_EXPIRATION = self::SETTINGS_PREFIX . 'link_cache_expiration';
+	public const EVENT_POSTS_PER_BATCH = self::SETTINGS_PREFIX . 'async_posts_per_batch';
+
+	/**
+	 * Gets the link table name.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string
+	 */
+	public static function get_link_table_name(): string {
+		global $wpdb;
+		return $wpdb->prefix . self::LINK_TABLE;
+	}
 
 	/**
 	 * Get all post types which should be scanned.
 	 *
 	 * @since   1.0.0
-	 * @version 1.0.0
 	 *
 	 * @return  string[]
 	 */
 	public static function get_post_types(): array {
-		return \is_multisite()
-			? array_map( 'esc_html', (array) \get_site_option( self::POST_TYPES_OPTION_KEY, array( 'page', 'post' ) ) )
-			: array_map( 'esc_html', (array) get_option( self::POST_TYPES_OPTION_KEY, array( 'page', 'post' ) ) );
+		return array_map( 'esc_html', (array) get_option( self::POST_TYPES_OPTION_KEY, array( 'page', 'post' ) ) );
 	}
 
 	/**
@@ -62,9 +78,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function drop_tables_on_uninstall(): bool {
-		return \is_multisite()
-			? (bool) get_site_option( self::DROP_TABLES_ON_UNINSTALL_KEY, false )
-			: (bool) get_option( self::DROP_TABLES_ON_UNINSTALL_KEY, false );
+		return (bool) get_option( self::DROP_TABLES_ON_UNINSTALL_KEY, false );
 	}
 
 	/**
@@ -75,9 +89,7 @@ class Settings {
 	 * @return class-string<Abstract_Migration>[]
 	 */
 	public static function migrations(): array {
-		return \is_multisite()
-			? (array) get_site_option( self::MIGRATIONS_KEY, array() )
-			: (array) get_option( self::MIGRATIONS_KEY, array() );
+		return (array) get_option( self::MIGRATIONS_KEY, array() );
 	}
 
 	/**
@@ -90,11 +102,7 @@ class Settings {
 	 * @return void
 	 */
 	public static function update_migrations( array $migrations ): void {
-		if ( \is_multisite() ) {
-			update_site_option( self::MIGRATIONS_KEY, $migrations );
-		} else {
-			update_option( self::MIGRATIONS_KEY, $migrations, false );
-		}
+		update_option( self::MIGRATIONS_KEY, $migrations, false );
 	}
 
 	/**
@@ -105,9 +113,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_checker_timeout(): int {
-		return \is_multisite()
-			? absint( get_site_option( self::LINK_CHECKER_TIMEOUT, 1000 ) )
-			: absint( get_option( self::LINK_CHECKER_TIMEOUT, 1000 ) );
+		return absint( get_option( self::LINK_CHECKER_TIMEOUT, 1000 ) );
 	}
 
 	/**
@@ -119,9 +125,7 @@ class Settings {
 	 * @return string
 	 */
 	public static function get_http_status_codes(): string {
-		return \is_multisite()
-			? sanitize_text_field( (string) get_site_option( self::HTTP_STATUS_CODES, '404,410,500,502,300,301,303' ) )
-			: sanitize_text_field( (string) get_option( self::HTTP_STATUS_CODES, '404,410,500,502,300,301,303' ) );
+		return sanitize_text_field( (string) get_option( self::HTTP_STATUS_CODES, '404,410,500,502,300,301,303' ) );
 	}
 
 	/**
@@ -132,9 +136,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_cache_expiration(): int {
-		return \is_multisite()
-			? absint( get_site_option( self::LINK_CACHE_EXPIRATION, DAY_IN_SECONDS ) )
-			: absint( get_option( self::LINK_CACHE_EXPIRATION, DAY_IN_SECONDS ) );
+		return absint( get_option( self::LINK_CACHE_EXPIRATION, DAY_IN_SECONDS ) );
 	}
 
 	/**
@@ -145,9 +147,7 @@ class Settings {
 	 * @return string[]
 	 */
 	public static function get_link_exclusions(): array {
-		$links = \is_multisite()
-			? array_map( 'esc_html', (array) get_site_option( self::LINK_EXCLUSIONS, array() ) )
-			: array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
+		$links = array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
 		return apply_filters( 'wlf_link_exclusions', $links );
 	}
 
@@ -159,9 +159,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_posts_per_batch(): int {
-		$per_batch = \is_multisite()
-			? absint( get_site_option( self::EVENT_POSTS_PER_BATCH, 10 ) )
-			: absint( get_option( self::EVENT_POSTS_PER_BATCH, 10 ) );
+		$per_batch = absint( get_option( self::EVENT_POSTS_PER_BATCH, 10 ) );
 
 		// If value is less than or equal to 1, set as 2.
 		return $per_batch <= 1 ? 2 : $per_batch;
@@ -193,5 +191,29 @@ class Settings {
 				)
 			)
 		);
+	}
+
+	/**
+	 * Get the link check duration.
+	 * In days
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return integer
+	 */
+	public static function get_link_check_duration(): int {
+		return absint( get_option( self::LINK_CHECK_DURATION, 7 ) );
+	}
+
+	/**
+	 * Which HTTP Status codes are treated as valid.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return integer[]
+	 */
+	public static function get_valid_http_status_codes(): array {
+		$codes = array( 200 );
+		return apply_filters( 'wlf_valid_http_status_codes', $codes );
 	}
 }

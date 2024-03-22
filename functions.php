@@ -6,6 +6,9 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Plugin;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Rest_Client\Wayback_Machine_Rest;
 
 // region
 
@@ -56,6 +59,31 @@ function wpcomsp_wayback_link_fixer_deactivate(): void {
  */
 function wpcomsp_wayback_link_fixer_get_plugin_slug(): string {
 	return sanitize_key( WPCOMSP_WAYBACK_LINK_FIXER_METADATA['TextDomain'] );
+}
+
+/**
+ * Escape a HTTP status code.
+ *
+ * @since 1.0.0
+ *
+ * @param integer|string $code The status code.
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_escape_http_status_code( $code ): string {
+	$code = absint( (int) $code );
+	return $code > 0 ? esc_attr( $code ) : '';
+}
+
+/**
+ * Get the current Wayback Machine Client
+ *
+ * @since 1.2.0
+ *
+ * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Client
+ */
+function wpcomsp_wayback_link_fixer_get_http_client(): Client {
+	return apply_filters( 'wpcomsp_wayback_link_fixer_link_checker_instance', new Wayback_Machine_Rest() );
 }
 
 /**
@@ -186,7 +214,7 @@ function wpcomsp_wayback_link_fixer_get_http_codes(): array {
 
 
 /**
- * Get the name of a staus code.
+ * Get the name of a status code.
  *
  * @since 1.0.0
  *
