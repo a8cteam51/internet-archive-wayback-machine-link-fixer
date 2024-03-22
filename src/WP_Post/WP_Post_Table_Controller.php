@@ -54,7 +54,6 @@ class WP_Post_Table_Controller {
 		add_filter( 'manage_posts_columns', array( $this, 'add_column' ) );
 		add_action( 'manage_posts_custom_column', array( $this, 'render_link_column' ), 10, 2 );
 		add_action( 'manage_pages_custom_column', array( $this, 'render_link_column' ), 10, 2 );
-		// add_filter( 'wp_insert_post_data', array( $this, 'save_links' ), 10, 2 );
 	}
 
 	/**
@@ -139,14 +138,28 @@ class WP_Post_Table_Controller {
 		// Get the links.
 		$links = array_map( array( $this, 'get_link' ), $links );
 
+		// Remove any null values.
+		$links = array_filter( $links );
+
 		// Get the stats.
 		$stats = $this->get_stats( $links );
 
-		\printf(
+		// If we have no links, show a message.
+		if ( empty( $stats['total'] ) ) {
+			echo \esc_html__( 'No links found', 'wpcomsp_wayback_link_fixer' );
+			return;
+		}
+
+		print \wp_kses(
+			sprintf(
 			// translators: %1$s is the number of broken links, %2$s is the total number of links.
-			__( '<strong>%1$s</strong> broken out of <strong>%2$s</strong>', 'wpcomsp_wayback_link_fixer' ),
-			absint( $stats['broken'] ),
-			absint( $stats['total'] )
+				__( '<strong>%1$s</strong> broken out of <strong>%2$s</strong>', 'wpcomsp_wayback_link_fixer' ),
+				absint( $stats['broken'] ),
+				absint( $stats['total'] )
+			),
+			array(
+				'strong' => array(),
+			)
 		);
 	}
 
@@ -157,7 +170,10 @@ class WP_Post_Table_Controller {
 	 *
 	 * @return array{total: integer, broken: integer}
 	 */
-	private function get_stats( array $links ): array {
+	private function get_stats( ?array $links = array() ): array {
+		// If we have no links, cast to array.
+		$links = $links ?? array();
+
 		$total  = \count( $links );
 		$broken = \count(
 			array_filter(

@@ -44,8 +44,10 @@ class Archive_Link_Event {
 
 	/**
 	 * Sets up the events dependencies, but delayed until its called.
+	 *
+	 * @return void
 	 */
-	public function setup() {
+	public function setup(): void {
 		$this->link_checker    = new Link_Checker();
 		$this->link_repository = new Link_Repository();
 		$this->wayback_machine = wpcomsp_wayback_link_fixer_get_http_client();
@@ -66,8 +68,10 @@ class Archive_Link_Event {
 	 * The invocation of the event.
 	 *
 	 * @param integer $link_id The link id.
+	 *
+	 * @return void
 	 */
-	public function __invoke( int $link_id ) {
+	public function __invoke( int $link_id ): void {
 
 		// Set up
 		$this->setup();

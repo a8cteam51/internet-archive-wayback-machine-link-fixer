@@ -57,8 +57,10 @@ class Update_Archive_URL_Event {
 
 	/**
 	 * Sets up the events dependencies, but delayed until its called.
+	 *
+	 * @return void
 	 */
-	public function setup() {
+	public function setup(): void {
 		$this->max_attempts    = \apply_filters( 'wpcomsp_wayback_link_fixer_max_archive_attempts', $this->max_attempts );
 		$this->wayback_machine = new Wayback_Machine_Client();
 		$this->repository      = new Link_Repository();
@@ -73,14 +75,14 @@ class Update_Archive_URL_Event {
 	 *
 	 * @return void
 	 */
-	public static function add_to_queue( int $link_id, int $attempt = 0, int $delay = 0 ) {
+	public static function add_to_queue( int $link_id, int $attempt = 0, int $delay = 0 ): void {
 		\as_schedule_single_action(
 			\time() + $delay,
 			self::HANDLE,
 			array(
-				'link_id'      => $link_id,
-				'attempt'      => $attempt,
-				'why' 		=> 'Update Archive URL',
+				'link_id' => $link_id,
+				'attempt' => $attempt,
+				'why'     => 'Update Archive URL',
 			)
 		);
 	}
@@ -95,7 +97,7 @@ class Update_Archive_URL_Event {
 	 *
 	 * @return void
 	 */
-	public function __invoke( int $link_id, int $attempt = 1 ) {
+	public function __invoke( int $link_id, int $attempt = 1 ): void {
 
 		// Setup
 		$this->setup();
@@ -105,21 +107,17 @@ class Update_Archive_URL_Event {
 
 		// If we dont have a link, then we can't do anything.
 		if ( null === $link ) {
-			throw new \Exception( "Could not find the link with ID {$link_id}", 1 );
+			throw new \Exception( esc_attr( "Could not find the link with ID {$link_id}" ), 1 );
 		}
 
 		// If we have reached the maximum number of attempts, then mark the link as broken.
 		if ( $attempt > $this->max_attempts ) {
 			$this->mark_link_broken( $link );
-			throw new \Exception( "Reached maximum number of attempts for link with ID {$link_id}", 1 );
+			throw new \Exception( esc_attr( "Reached maximum number of attempts for link with ID {$link_id}" ), 1 );
 		}
-
-		// $link = new Link('https://www.theguardian.com/business/2024/mar/13/hopes-of-economic-recovery-boosted-as-uk-gdp-rises-by-02-in-january');
-
 
 		// Attempt to get the snapshot url.
 		$archive_url = $this->wayback_machine->find_archive( $link->get_href() );
-
 
 		// If we have an archive URL, then update the link and return.
 		if ( null !== $archive_url ) {

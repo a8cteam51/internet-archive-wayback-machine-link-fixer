@@ -160,8 +160,6 @@ const checkLinks = () => {
 			continue;
 		}
 
-		console.log(archived);
-
 		// If the link is already marked as broken, add the data attributes
 		if (archived.broken) {
 			addDataAttributes(archived);
@@ -217,7 +215,6 @@ const checkLink = async (link) => {
 	})
 		.then(response => response.json())
 		.then(data => {
-			console.log('AJAX SU', data);
 			return data;
 		})
 		.catch((error) => {

@@ -39,7 +39,7 @@ interface Client {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param string $url  The URL to check.
+	 * @param string             $url  The URL to check.
 	 * @param \DateTimeImmutable $date The date to check.
 	 *
 	 * @return array{status:int, available:boolean, url:string, timestamp:string}|null

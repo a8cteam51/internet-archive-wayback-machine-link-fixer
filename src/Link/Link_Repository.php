@@ -42,7 +42,7 @@ class Link_Repository {
 		global $wpdb;
 
 		$this->wpdb       = $wpdb;
-		$this->table_name = $table_name ?? Settings::LINK_TABLE;
+		$this->table_name = $table_name ?? Settings::get_link_table_name();
 	}
 
 	/**
@@ -54,10 +54,10 @@ class Link_Repository {
 	 */
 	public function find_by_url( string $url ): ?Link {
 		// Query.
-		$query = $this->wpdb->prepare( "SELECT * FROM {$this->table_name} WHERE url = %s", $url );
+		$query = $this->wpdb->prepare( "SELECT * FROM {$this->table_name} WHERE url = %s", $url ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, only table name is interpolated.
 
 		// Get the row.
-		$row = $this->wpdb->get_row( $query );
+		$row = $this->wpdb->get_row( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, is prepared!
 
 		// If no row, return null.
 		if ( null === $row ) {
@@ -78,10 +78,10 @@ class Link_Repository {
 	public function find_by_id( int $id ): ?Link {
 
 		// Query.
-		$query = $this->wpdb->prepare( "SELECT * FROM {$this->table_name} WHERE id = %d", $id );
+		$query = $this->wpdb->prepare( "SELECT * FROM {$this->table_name} WHERE id = %d", $id ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, only table name is interpolated.
 
 		// Get the row.
-		$row = $this->wpdb->get_row( $query );
+		$row = $this->wpdb->get_row( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, is prepared!
 
 		// If no row, return null.
 		if ( null === $row ) {
@@ -147,8 +147,7 @@ class Link_Repository {
 
 		// If the insert failed, throw an exception.
 		if ( false === $result ) {
-			echo $this->wpdb->last_error;
-			throw new \Exception( 'Failed to insert link.' );
+			throw new \Exception( esc_html( 'Failed to insert link: ' . $this->wpdb->last_error ) );
 		}
 
 		// Get the last insert id.

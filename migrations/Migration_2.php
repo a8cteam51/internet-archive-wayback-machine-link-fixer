@@ -35,7 +35,7 @@ class Migration_2 extends Abstract_Migration {
 		$charset_collate = $wpdb->get_charset_collate();
 
 		// Create the link cache table.
-		$link_cache_table_name = Settings::LINK_TABLE;
+		$link_cache_table_name = Settings::get_link_table_name();
 
 		$link_cache_sql = "CREATE TABLE $link_cache_table_name (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -51,9 +51,9 @@ class Migration_2 extends Abstract_Migration {
 		dbDelta( $link_cache_sql );
 
 		// Drop the old tables.
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . Settings::SCAN_LOG_TABLE_NAME ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant due to table name.
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . Settings::SCAN_REPORT_TABLE_NAME ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant due to table name;
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . Settings::SCAN_LINK_CACHE_TABLE ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant due to table name;
+		$wpdb->query( 'DROP TABLE IF EXISTS ' . Settings::SCAN_LOG_TABLE_NAME ); //phpcs:ignore
+		$wpdb->query( 'DROP TABLE IF EXISTS ' . Settings::SCAN_REPORT_TABLE_NAME ); //phpcs:ignore
+		$wpdb->query( 'DROP TABLE IF EXISTS ' . Settings::SCAN_LINK_CACHE_TABLE ); //phpcs:ignore
 	}
 
 	/**

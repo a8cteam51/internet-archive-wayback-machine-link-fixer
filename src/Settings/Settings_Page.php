@@ -83,7 +83,13 @@ class Settings_Page {
 		}
 
 		// Options
-		$options = array_filter( $GLOBALS['wp_registered_settings'], fn( $setting ) => 0 === strpos( $setting, 't51_wlf_' ), ARRAY_FILTER_USE_KEY );
+		$options = array_filter(
+			$GLOBALS['wp_registered_settings'],
+			function ( $setting ) {
+				return 0 === strpos( $setting, Settings::SETTINGS_PREFIX );
+			},
+			ARRAY_FILTER_USE_KEY
+		);
 
 		// Iterate over the options and update them.
 		foreach ( $options as $name => $option ) {
@@ -126,9 +132,6 @@ class Settings_Page {
 			array( $this, 'render_page' )
 		);
 	}
-
-
-
 
 	/**
 	 * Enqueue the settings page scripts.
@@ -270,38 +273,6 @@ class Settings_Page {
 			)
 		);
 
-		// \register_setting(
-		//  self::PAGE_SLUG,
-		//  Settings::HTTP_STATUS_CODES,
-		//  array(
-		//      'type'              => 'string',
-		//      'sanitize_callback' => 'sanitize_text_field',
-		//      'default'           => '404,410,500,502,300,301,303',
-		//      'show_in_rest'      => array(
-		//          'name'   => Settings::HTTP_STATUS_CODES,
-		//          'schema' => array(
-		//              'type' => 'string',
-		//          ),
-		//      ),
-		//  )
-		// );
-
-		// \register_setting(
-		//  self::PAGE_SLUG,
-		//  Settings::LINK_CACHE_EXPIRATION,
-		//  array(
-		//      'type'              => 'integer',
-		//      'sanitize_callback' => 'absint',
-		//      'default'           => DAY_IN_SECONDS,
-		//      'show_in_rest'      => array(
-		//          'name'   => Settings::LINK_CACHE_EXPIRATION,
-		//          'schema' => array(
-		//              'type' => 'integer',
-		//          ),
-		//      ),
-		//  )
-		// );
-
 		\register_setting(
 			self::PAGE_SLUG,
 			Settings::LINK_EXCLUSIONS,
@@ -320,22 +291,6 @@ class Settings_Page {
 				),
 			)
 		);
-
-		// \register_setting(
-		//  self::PAGE_SLUG,
-		//  Settings::EVENT_POSTS_PER_BATCH,
-		//  array(
-		//      'type'              => 'integer',
-		//      'sanitize_callback' => 'absint',
-		//      'default'           => 10,
-		//      'show_in_rest'      => array(
-		//          'name'   => Settings::EVENT_POSTS_PER_BATCH,
-		//          'schema' => array(
-		//              'type' => 'integer',
-		//          ),
-		//      ),
-		//  )
-		// );
 	}
 
 	/**
@@ -377,22 +332,6 @@ class Settings_Page {
 			self::SETTINGS_SECTION
 		);
 
-		// \add_settings_field(
-		//  Settings::HTTP_STATUS_CODES,
-		//  __( 'HTTP Status Codes', 'wpcomsp_wayback_link_fixer' ),
-		//  array( $this, 'render_http_status_codes_field' ),
-		//  self::PAGE_SLUG,
-		//  self::SETTINGS_SECTION
-		// );
-
-		// \add_settings_field(
-		//  Settings::LINK_CACHE_EXPIRATION,
-		//  __( 'Link Cache Expiration in Seconds', 'wpcomsp_wayback_link_fixer' ),
-		//  array( $this, 'render_link_cache_expiration_field' ),
-		//  self::PAGE_SLUG,
-		//  self::SETTINGS_SECTION
-		// );
-
 		\add_settings_field(
 			Settings::LINK_EXCLUSIONS,
 			__( 'Link Exclusions', 'wpcomsp_wayback_link_fixer' ),
@@ -400,14 +339,6 @@ class Settings_Page {
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
-
-		// \add_settings_field(
-		//  Settings::EVENT_POSTS_PER_BATCH,
-		//  __( 'Posts per Batch', 'wpcomsp_wayback_link_fixer' ),
-		//  array( $this, 'render_event_posts_per_batch_field' ),
-		//  self::PAGE_SLUG,
-		//  self::SETTINGS_SECTION
-		// );
 	}
 
 	/**
@@ -480,65 +411,6 @@ class Settings_Page {
 		/>
 		<p class="description">
 			<?php esc_html_e( 'The timeout in milliseconds to wait when checking if a link is valid or not.', 'wpcomsp_wayback_link_fixer' ); ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Render the http status codes field.
-	 *
-	 * @since   1.0.0
-	 *
-	 * @return  void
-	 */
-	public function render_http_status_codes_field(): void {
-		// REMOVE ME
-
-		return;
-		// Get the current selected codes.
-		$selected = explode( ',', Settings::get_http_status_codes() );
-		$selected = array_map( 'intval', $selected );
-		?>
-		<input
-			type="hidden"
-			id="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>"
-			name="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>"
-			value="<?php echo esc_attr( Settings::get_http_status_codes() ); ?>"
-		/>
-		<select id="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>_select" multiple>
-			<?php foreach ( wpcomsp_wayback_link_fixer_get_http_codes() as $code ) : ?>
-				<option value="<?php echo esc_attr( $code ); ?>" <?php echo in_array( $code, $selected, true ) ? 'SELECTED' : ''; ?>>
-					<?php echo esc_html( $code ); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
-		<p class="description">
-			<?php esc_html_e( 'Select which HTTP codes should be preselected for new reports and defaults for CLI calls.', 'wpcomsp_wayback_link_fixer' ); ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Render the link cache expiration field.
-	 *
-	 * @since   1.0.0
-	 *
-	 * @return  void
-	 */
-	public function render_link_cache_expiration_field(): void {
-		// REMOVE ME
-		return;
-
-		?>
-		<input
-			type="number"
-			id="<?php echo esc_attr( Settings::LINK_CACHE_EXPIRATION ); ?>"
-			name="<?php echo esc_attr( Settings::LINK_CACHE_EXPIRATION ); ?>"
-			value="<?php echo absint( Settings::get_link_cache_expiration() ); ?>"
-			min="0"
-		/>
-		<p class="description">
-			<?php esc_html_e( 'The expiration time in seconds for the link cache.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</p>
 		<?php
 	}
@@ -646,29 +518,5 @@ class Settings_Page {
 			esc_html__( 'Remove', 'wpcomsp_wayback_link_fixer' )
 		);
 	}
-
-	/**
-	 * Render the event posts per batch field.
-	 *
-	 * @since   1.0.0
-	 *
-	 * @return  void
-	 */
-	public function render_event_posts_per_batch_field(): void {
-		// REMOVE ME
-		return;
-		?>
-		<input
-			type="number"
-			id="<?php echo esc_attr( Settings::EVENT_POSTS_PER_BATCH ); ?>"
-			name="<?php echo esc_attr( Settings::EVENT_POSTS_PER_BATCH ); ?>"
-			value="<?php echo absint( Settings::get_posts_per_batch() ); ?>"
-			min="2"
-		/>
-
-		<p class="description">
-			<?php esc_html_e( 'The number of posts to process per batch for both action scheduler and CLI runners.', 'wpcomsp_wayback_link_fixer' ); ?>
-		</p>
-		<?php
-	}
 }
+

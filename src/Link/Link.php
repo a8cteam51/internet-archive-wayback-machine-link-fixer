@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+
 /**
  * Link Model
  */
@@ -118,12 +120,13 @@ class Link implements \JsonSerializable {
 	 * Add a check to the link.
 	 *
 	 * @param integer $http_code The HTTP code.
+	 * @param string  $date      The date of the check in Y-m-d H:i:s format.
 	 *
 	 * @return self
 	 */
 	public function add_check( int $http_code, ?string $date = null ): self {
 		$this->checks[] = array(
-			'date'      => $date ?? date( 'Y-m-d H:i:s' ),
+			'date'      => $date ?? gmdate( 'Y-m-d H:i:s' ),
 			'http_code' => $http_code,
 		);
 

@@ -80,8 +80,10 @@ class Wayback_Machine_Rest implements Client {
 		// add the timestamp to the query string
 		$url = add_query_arg( 'timestamp', $date->format( 'Ymd' ), $url );
 
-		$response = wp_remote_get( $url );
+		// Allow the url to be filtered.
+		$url = apply_filters( 'wlf_get_closest_snapshot_url', $url, $api_url, $date );
 
+		$response = wp_remote_get( $url );
 
 		return $this->extract_response( $response );
 	}
@@ -103,7 +105,7 @@ class Wayback_Machine_Rest implements Client {
 		$snapshot_url = esc_url( $base_url . $url );
 
 		// Trigger a none blocking wp_get request.
-		$r = wp_remote_get(
+		wp_remote_get(
 			$snapshot_url,
 			array(
 				'timeout'   => 100,

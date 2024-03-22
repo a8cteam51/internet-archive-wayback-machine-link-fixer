@@ -1,7 +1,7 @@
 <?php
 
 /**
- * handles the various post actions.
+ * Handles the various post actions.
  *
  * Registered as an integration in src/Integrations.php
  *
@@ -65,7 +65,7 @@ class Post_Handler {
 	 *
 	 * @return void
 	 */
-	public function on_save_post( int $post_id, \WP_Post $post, bool $update ): void {
+	public function on_save_post( int $post_id, \WP_Post $post, bool $update ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		// Check the post type is one we are checking.
 		if ( in_array( $post->post_type, Settings::get_post_types(), true ) === false ) {

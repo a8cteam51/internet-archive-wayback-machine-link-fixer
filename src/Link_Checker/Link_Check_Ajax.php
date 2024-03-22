@@ -51,18 +51,19 @@ class Link_Check_Ajax {
 	 */
 	public static function register_ajax_call(): void {
 		$handler = static function () {
-			( new self() )->invoke();
+			( new self() )->__invoke();
 		};
 
-		\add_action( 'wp_ajax_' . self::ACTION, new self() );
-		\add_action( 'wp_ajax_nopriv_' . self::ACTION, new self() );
-		// adump(1111);
+		\add_action( 'wp_ajax_' . self::ACTION, $handler );
+		\add_action( 'wp_ajax_nopriv_' . self::ACTION, $handler );
 	}
 
 	/**
-	 * setup a new instance of the Link_Check_Ajax.
+	 * Setup a new instance of the Link_Check_Ajax.
+	 *
+	 * @return void
 	 */
-	private function setup() {
+	private function setup(): void {
 		$this->link_repository = new Link_Repository();
 		$this->link_checker    = new Link_Checker();
 	}
@@ -84,7 +85,7 @@ class Link_Check_Ajax {
 		}
 
 		// Find the link.
-		$link = $this->link_repository->find_by_url( \sanitize_text_field( $_POST['link'] ) );
+		$link = $this->link_repository->find_by_url( \sanitize_text_field( $_POST['link'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, Checked above.
 
 		// If the link does not exist, send an error.
 		if ( null === $link ) {
@@ -130,8 +131,6 @@ class Link_Check_Ajax {
 		// Get the difference in days.
 		$diff = $now->diff( $last_check );
 
-		// dd([$diff->days, $duration, $diff->days > $duration]);
-
 		// If the last check was more than the duration set in the settings, return true.
 		return $diff->days > $duration;
 	}
@@ -139,7 +138,9 @@ class Link_Check_Ajax {
 	/**
 	 * Check the link.
 	 *
-	 * @param integer $link_id The link id.
+	 * @param Link $link The link to check.
+	 *
+	 * @return void
 	 */
 	private function check_link( Link $link ): void {
 

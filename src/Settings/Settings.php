@@ -19,31 +19,45 @@ defined( 'ABSPATH' ) || exit;
 class Settings {
 
 	// Prefix.
-	private const SETTINGS_PREFIX = 't51_wlf_';
+	public const SETTINGS_PREFIX = 't51_wlf_';
+
 
 	// Option keys
-	public const POST_TYPES_OPTION_KEY        = self::SETTINGS_PREFIX . 'post_types';
-	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
-	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
-	public const LINK_CHECKER_TIMEOUT         = self::SETTINGS_PREFIX . 'link_checker_timeout';
-	public const HTTP_STATUS_CODES            = self::SETTINGS_PREFIX . 'http_status_codes';
-	public const LINK_CACHE_EXPIRATION        = self::SETTINGS_PREFIX . 'link_cache_expiration';
-	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
-	public const EVENT_POSTS_PER_BATCH        = self::SETTINGS_PREFIX . 'async_posts_per_batch';
 	public const LINK_CHECK_DURATION          = self::SETTINGS_PREFIX . 'link_check_duration';
+	public const POST_TYPES_OPTION_KEY        = self::SETTINGS_PREFIX . 'post_types';
+	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
+	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
+	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
+	public const LINK_CHECKER_TIMEOUT         = self::SETTINGS_PREFIX . 'link_checker_timeout';
 
-	## Table names.
+	// Table names.
 	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
 	public const SCAN_REPORT_TABLE_NAME = self::SETTINGS_PREFIX . 'scan_report';
 	public const SCAN_LINK_CACHE_TABLE  = self::SETTINGS_PREFIX . 'scan_link_cache';
-	public const LINK_TABLE             = self::SETTINGS_PREFIX . 'link';
+	public const LINK_TABLE             = self::SETTINGS_PREFIX . 'link_archive';
 
-	## Events
+	// Events
 	public const RUNNER_EVENT = self::SETTINGS_PREFIX . 'event_runner';
 
-	## Meta Keys
+	// Meta Keys
 	public const LINK_META_KEY = self::SETTINGS_PREFIX . 'links';
 
+	// Old settings to remove
+	public const HTTP_STATUS_CODES     = self::SETTINGS_PREFIX . 'http_status_codes';
+	public const LINK_CACHE_EXPIRATION = self::SETTINGS_PREFIX . 'link_cache_expiration';
+	public const EVENT_POSTS_PER_BATCH = self::SETTINGS_PREFIX . 'async_posts_per_batch';
+
+	/**
+	 * Gets the link table name.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string
+	 */
+	public static function get_link_table_name(): string {
+		global $wpdb;
+		return $wpdb->prefix . self::LINK_TABLE;
+	}
 
 	/**
 	 * Get all post types which should be scanned.
