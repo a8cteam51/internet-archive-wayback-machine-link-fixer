@@ -143,7 +143,7 @@ class Link implements \JsonSerializable {
 	}
 
 	/**
-	 * Checks if a link has an archived href.
+	 * Checks if a link has an archived href.o
 	 *
 	 * @return boolean
 	 */
