@@ -6,8 +6,6 @@
 
 import { toolTip } from "./tooltip";
 
-
-
 /**
  * Get all the links from the localized object
  */
@@ -63,9 +61,9 @@ const linkObserver = new IntersectionObserver((links, observer) => {
 		}
 	});
 }, {
-	root: null, // Use viewport as root
-	rootMargin: '0px', // No margin around the viewport
-	threshold: 0 // Callback executed as soon as even one pixel is visible
+	root: null,
+	rootMargin: '0px',
+	threshold: 0
 });
 
 
@@ -98,42 +96,6 @@ const getViewportSize = () => {
 const viewPortWith = getViewportSize().width;
 const viewPortHeight = getViewportSize().height;
 
-// When the page is scrolled, get all the link that are visible and check if they are valid using VANILLA JS
-const getLinksInViewport = () => {
-	return [];
-
-	// Get the bounding rectangle of the viewport
-	const viewport = {
-		top: 0,
-		left: 0,
-		right: viewPortWith,
-		bottom: viewPortHeight
-	};
-
-	// Get all <a> elements in the document
-	const links = document.getElementsByTagName('a');
-	const linksInViewport = [];
-
-	// Iterate through all <a> elements
-	for (var i = 0; i < links.length; i++) {
-		let link = links[i];
-		let rect = link.getBoundingClientRect();
-
-		// Check if the link is in the viewport
-		if (
-			rect.top >= viewport.top &&
-			rect.left >= viewport.left &&
-			rect.bottom <= viewport.bottom &&
-			rect.right <= viewport.right
-		) {
-			// Add the link's href to the array
-			linksInViewport.push(link.href);
-		}
-	}
-
-	return linksInViewport;
-}
-
 /**
  * Checks if the link has been checked.
  *
@@ -149,8 +111,6 @@ const hasBeenChecked = (link) => checkedLinks.includes(link);
  * @returns
  */
 const addCheckedLink = (link) => checkedLinks.push(link);
-
-
 
 /**
  * Gets the archived link details if it exists
@@ -276,10 +236,7 @@ const verifyLink = async (link) => {
 		});
 
 	return await response;
-
 }
-
-
 
 /**
  * Initialize the scripts.
