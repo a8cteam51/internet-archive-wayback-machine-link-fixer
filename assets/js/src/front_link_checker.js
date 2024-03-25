@@ -9,7 +9,7 @@ import { toolTip } from "./tooltip";
 
 
 /**
- * Get all the links from the localised object
+ * Get all the links from the localized object
  */
 const linkArchives = JSON.parse(wlfArchivedLinks.links);
 
@@ -59,7 +59,6 @@ const linkObserver = new IntersectionObserver((links, observer) => {
 	links.forEach(entry => {
 		if (entry.isIntersecting) {
 			// Check the link
-
 			checkLink(entry.target.href);
 		}
 	});
