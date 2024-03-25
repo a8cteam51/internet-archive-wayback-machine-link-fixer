@@ -28,13 +28,62 @@ const linkCheckSettings = {
 };
 
 /**
+ * Holds all the checked links
+ *
+ * @type {Array}
+ */
+const checkedLinks = [];
+
+/**
  * Initialize event listeners
  *
  * @returns {void}
  */
-const initEventListeners = () => {
-	// When the screen is scrolled by the user, check the links
-	window.addEventListener('scroll', checkLinks);
+const initObservers = () => {
+	// Select all links you want to monitor
+	const links = document.querySelectorAll('a');
+
+	// Observe each link
+	links.forEach(link => {
+		linkObserver.observe(link);
+	});
+
+}
+
+/**
+ * Create an instance of the IntersectionObserver for the links
+ *
+ * @returns {void}
+ */
+const linkObserver = new IntersectionObserver((links, observer) => {
+	links.forEach(entry => {
+		if (entry.isIntersecting) {
+			// Check the link
+
+			checkLink(entry.target.href);
+		}
+	});
+}, {
+	root: null, // Use viewport as root
+	rootMargin: '0px', // No margin around the viewport
+	threshold: 0 // Callback executed as soon as even one pixel is visible
+});
+
+
+/**
+ * Gets the number of days since the passed date.
+ *
+ * @param {string} date The date to check
+ * @returns {number} The number of days since the date
+ */
+const daysSince = (date) => {
+	const now = new Date();
+	const lastChecked = new Date(date);
+
+	const diff = now - lastChecked;
+	const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+	return days;
 }
 
 /**
@@ -52,6 +101,8 @@ const viewPortHeight = getViewportSize().height;
 
 // When the page is scrolled, get all the link that are visible and check if they are valid using VANILLA JS
 const getLinksInViewport = () => {
+	return [];
+
 	// Get the bounding rectangle of the viewport
 	const viewport = {
 		top: 0,
@@ -83,6 +134,24 @@ const getLinksInViewport = () => {
 
 	return linksInViewport;
 }
+
+/**
+ * Checks if the link has been checked.
+ *
+ * @param {string} link The link to check
+ * @returns {boolean} If the link has been checked
+ */
+const hasBeenChecked = (link) => checkedLinks.includes(link);
+
+/**
+ * Add a link to the checked links
+ *
+ * @param {string} link The link to add
+ * @returns
+ */
+const addCheckedLink = (link) => checkedLinks.push(link);
+
+
 
 /**
  * Gets the archived link details if it exists
@@ -141,67 +210,53 @@ const addDataAttributes = (link) => {
 }
 
 /**
- * Checks all the links in the viewport and checks if they are valid
+ * Checks a link.
  *
- * @returns {void}
+ * Verifies if the link has an archived version and if it is broken.
+ * Will also check the link if it has not been checked in the last x days.
+ *
+ * @param {string} link The link to check
+ * @return {void}
  */
-const checkLinks = () => {
-	// Get all the links in the viewport
-	const linksInViewport = getLinksInViewport();
+const checkLink = (link) => {
+	// If the link has been checked, continue
+	if (hasBeenChecked(link)) {
+		return;
+	} else {
+		addCheckedLink(link);
+	}
 
-	// Iterate through all the links in the viewport and see if they exist in the archived links
-	for (let i = 0; i < linksInViewport.length; i++) {
-		let link = linksInViewport[i];
+	// Check if the link has been archived and data passed.
+	const archived = getArchivedLink(link);
 
-		let archived = getArchivedLink(link);
+	// If we dont have any details, continue
+	if (archived === null) {
+		return;
+	}
 
-		// If we dont have any details, continue
-		if (archived === null) {
-			continue;
-		}
+	// If the link is already marked as broken, add the data attributes
+	if (archived.broken) {
+		addDataAttributes(archived);
+		return;
+	}
 
-		// If the link is already marked as broken, add the data attributes
-		if (archived.broken) {
-			addDataAttributes(archived);
-			continue;
-		}
-
-
-		// IF the last checked is NULL or outside the delay, check the link
-		if (archived.last_checked === null || daysSince(archived.last_checked.date) > linkDelay) {
-			// Check the link
-			checkLink(link).then((result) => {
-				addDataAttributes(result.data.link);
-			});
-
-			continue;
-		}
+	// IF the last checked is NULL or outside the delay, check the link
+	if (archived.last_checked === null || daysSince(archived.last_checked.date) > linkDelay) {
+		// Check the link
+		verifyLink(link).then((result) => {
+			addDataAttributes(result.data.link);
+		});
 	}
 }
 
-/**
- * Gets the number of days since the passed date.
- *
- * @param {string} date The date to check
- * @returns {number} The number of days since the date
- */
-const daysSince = (date) => {
-	const now = new Date();
-	const lastChecked = new Date(date);
-
-	const diff = now - lastChecked;
-	const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-
-	return days;
-}
 
 /**
- * Check if a link is valid or not.
+ * Verifies the link using the server.
  *
  * @param {string} link The link to check
  * @return {number} The status of the link
  */
-const checkLink = async (link) => {
+const verifyLink = async (link) => {
 	const settings = linkCheckSettings;
 
 	const formData = new FormData();
@@ -233,8 +288,7 @@ const checkLink = async (link) => {
  * @returns {void}
  */
 const init = () => {
-	initEventListeners();
-	checkLinks();
+	initObservers();
 	toolTip.init();
 }
 init();
