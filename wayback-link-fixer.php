@@ -98,11 +98,3 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
-
-// add_action(
-// 	'init',
-// 	function () {
-// 		$a = new Link_Checker();
-// 		$a->check_single( 'https://fallout.fandom.com/wiki/ffFallout_Demo' );
-// 	}
-// );

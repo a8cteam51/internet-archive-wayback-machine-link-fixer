@@ -30,7 +30,6 @@ class Link_Checker {
 	 */
 	public function __construct() {
 		$this->timeout = absint( Settings::get_link_checker_timeout() );
-		// $this->timeout = 999999;
 	}
 
 	/**
@@ -47,10 +46,12 @@ class Link_Checker {
 		// Compile the url for the livewebcheck service.
 		$url_params = array(
 			'url' => esc_url( $url ),
+			'impersonate' => 1,
+
 		);
 
 		// Filter the url params.
-		$url_params = apply_filters( 'wayback_link_fixer_check_url_params', $url_params );
+		$url_params = apply_filters( 'wpcomsp_wayback_link_fixer_check_url_params', $url_params );
 
 		$query_url = add_query_arg(
 			$url_params,

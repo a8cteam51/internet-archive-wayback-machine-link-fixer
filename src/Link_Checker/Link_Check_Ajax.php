@@ -147,8 +147,7 @@ class Link_Check_Ajax {
 		// Get the current status.
 		try {
 			$status = $this->link_checker->check_single( $link->get_href() );
-		}
-		catch ( \Exception $e ) {
+		} catch ( \Exception $e ) {
 			$this->send_error( $e->getMessage(), 500 );
 		}
 
