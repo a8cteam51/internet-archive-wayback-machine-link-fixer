@@ -38,13 +38,63 @@ class Link_Checker {
 	 * @param string $url The URL to check.
 	 *
 	 * @return integer the HTTP status code.
+	 *
+	 * @throws Exception If the service is offline or the response is invalid.
 	 */
 	public function check_single( string $url ): int {
-		// Do a simple HEAD request to check the status code.
-		$response = wp_remote_head( $url, array( 'timeout' => $this->timeout ) );
 
-		// Get the status code.
-		return wp_remote_retrieve_response_code( $response );
+		// Compile the url for the livewebcheck service.
+		$url_params = array(
+			'url'         => esc_url( $url ),
+			'impersonate' => 1,
+
+		);
+
+		// Filter the url params.
+		$url_params = apply_filters( 'wpcomsp_wayback_link_fixer_check_url_params', $url_params );
+
+		$query_url = add_query_arg(
+			$url_params,
+			'https://iabot-api.archive.org/livewebcheck'
+		);
+
+		// Do a simple HEAD request to check the status code.
+		$response = wp_remote_get( $query_url, array( 'timeout' => $this->timeout ) );
+
+		// If we dont have a 200 response, service may be offline, throw exception.
+		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			throw new \Exception( 'Service is offline' );
+		}
+
+		// Unpack the body.
+		$body = wp_remote_retrieve_body( $response );
+
+		// If we dont have a valid body, throw exception.
+		if ( ! is_string( $body ) ) {
+			throw new \Exception( 'Invalid response body' );
+		}
+
+		// Decode the body.
+		$body = json_decode( $body, true );
+
+		// If we dont have a valid body, throw exception.
+		if ( ! is_array( $body ) ) {
+			throw new \Exception( 'Invalid response body' );
+		}
+
+		// If we dont have a status code, throw exception.
+		if ( ! isset( $body['status'] ) ) {
+			throw new \Exception( 'Invalid response body' );
+		}
+
+		$code = absint( $body['status'] );
+
+		// If we dont have a valid status code, throw exception.
+		if ( ! $code ) {
+			throw new \Exception( 'Invalid response body' );
+		}
+
+		return $code;
 	}
 
 	/**
@@ -58,7 +108,12 @@ class Link_Checker {
 		return array_reduce(
 			$urls,
 			function ( $carry, $url ) {
-				$carry[ esc_url( $url ) ] = $this->check_single( $url );
+				try {
+					$carry[ esc_url( $url ) ] = $this->check_single( $url );
+				} catch ( \Throwable $th ) {
+					return $carry;
+				}
+
 				return $carry;
 			},
 			array()

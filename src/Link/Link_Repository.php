@@ -268,6 +268,11 @@ class Link_Repository {
 		// Get from post meta.
 		$links = get_post_meta( $post_id, Settings::LINK_META_KEY, true );
 
+		// If not an array or empty, returnc ollection.
+		if ( ! is_array( $links ) || empty( $links ) ) {
+			return $collection;
+		}
+
 		// Get all links.
 		$links = array_map(
 			function ( int $link_id ): ?Link {

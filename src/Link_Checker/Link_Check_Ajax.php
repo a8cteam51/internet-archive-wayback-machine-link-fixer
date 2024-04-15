@@ -145,7 +145,11 @@ class Link_Check_Ajax {
 	private function check_link( Link $link ): void {
 
 		// Get the current status.
-		$status = $this->link_checker->check_single( $link->get_href() );
+		try {
+			$status = $this->link_checker->check_single( $link->get_href() );
+		} catch ( \Exception $e ) {
+			$this->send_error( $e->getMessage(), 500 );
+		}
 
 		// Add the status to the link.
 		$link->add_check( $status );
