@@ -19,6 +19,15 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Archive_Link_Event;
  */
 class Link_Repository {
 
+	public const LINK_STATUS_BROKEN = 1;
+	public const LINK_STATUS_OK     = 0;
+	public const ORDER_DATE_ASC     = 'date_asc';
+	public const ORDER_DATE_DESC    = 'date_desc';
+	public const ORDER_ID_ASC       = 'id_asc';
+	public const ORDER_ID_DESC      = 'id_desc';
+	public const ORDER_URL_ASC      = 'url_asc';
+	public const ORDER_URL_DESC     = 'url_desc';
+
 	/**
 	 * The table name, taking into account the prefix.
 	 *
@@ -235,7 +244,8 @@ class Link_Repository {
 	 */
 	private function map_link( object $row ): Link {
 		$link = new Link( esc_url( $row->url ) );
-		$link->set_id( (int) $row->id )
+		$link
+			->set_id( (int) $row->id )
 			->set_archived_href( esc_url( $row->archived ) );
 
 		// Iterate through the checks and add them to the link.
@@ -243,7 +253,10 @@ class Link_Repository {
 
 		if ( is_array( $checks ) ) {
 			foreach ( $checks as $check ) {
-				$link->add_check( (int) $check['http_code'], esc_attr( $check['date'] ) );
+				$code = \array_key_exists( 'http_code', $check ) ? (int) $check['http_code'] : 0;
+				$date = \array_key_exists( 'date', $check ) ? esc_attr( $check['date'] ) : null;
+
+				$link->add_check( $code, $date );
 			}
 		}
 
@@ -289,5 +302,180 @@ class Link_Repository {
 		}
 
 		return $collection;
+	}
+
+	/**
+	 * Query the database for links.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param integer     $limit    The limit of links to return.
+	 * @param integer     $page     The page of links to return.
+	 * @param array       $status   The status of the links to return.
+	 * @param array       $link_ids The link ids to query.
+	 * @param string      $order_by The order by.
+	 * @param string|NULL $date     The date of the links to return (yy-mm).
+	 *
+	 * @return Link[]
+	 */
+	public function query_links(
+		int $limit = 10,
+		int $page = 1,
+		array $status = array(),
+		array $link_ids = array(),
+		string $order_by = self::ORDER_DATE_DESC,
+		?string $date = null
+	): array {
+
+		// Remove any invalid statuses.
+		$status = array_filter(
+			$status,
+			function ( $status ): bool {
+				return is_int( $status ) && in_array( $status, array( self::LINK_STATUS_BROKEN, self::LINK_STATUS_OK ), true );
+			}
+		);
+
+		// Remove any invalid link ids.
+		$link_ids = array_filter(
+			$link_ids,
+			function ( $link_id ): bool {
+				return is_int( $link_id );
+			}
+		);
+
+		// Ensure limit is a positive integer and not zero.
+		$limit = absint( $limit );
+
+		// Ensure page is a positive integer and not zero.
+		$page = absint( $page );
+
+		// Ensure date is a valid date.
+		$date = $date ? gmdate( 'Y-m', strtotime( esc_attr( $date ) ) ) : null;
+
+		// Prepare the query.
+		$query = "SELECT * FROM {$this->table_name}";
+
+		// If we have statuses, add to the query.
+		if ( ! empty( $status ) ) {
+			$statuses = implode( ',', array_map( 'sanitize_text_field', $status ) );
+			$query   .= " WHERE is_broken IN ({$statuses})";
+		}
+
+		// If we have link ids, add to the query.
+		if ( ! empty( $link_ids ) ) {
+			$ids    = implode( ',', array_map( 'absint', $link_ids ) );
+			$query .= " WHERE id IN ({$ids})";
+		}
+
+		// If we have a date, add to the query getting the last date from json column.
+		if ( $date ) {
+			$query .= ' WHERE JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date")) LIKE \'{$date}%\'';
+		}
+
+		// Add the order by.
+		$query .= $this->compile_order_by( $order_by );
+
+		// Add the limit and offset.
+		$query .= " LIMIT {$limit} OFFSET " . ( ( $page - 1 ) * $limit );
+
+		// Get the rows.
+		$rows = $this->wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
+
+		// If no rows, return an empty collection.
+		if ( empty( $rows ) ) {
+			return array();
+		}
+
+		return array_map( array( $this, 'map_link' ), $rows );
+	}
+
+	/**
+	 * Compile the Query order by.
+	 *
+	 * @param string $order_by The order by.
+	 *
+	 * @return string
+	 */
+	private function compile_order_by( string $order_by ): string {
+		// Sanitize the order by.
+		$order_by = sanitize_text_field( $order_by );
+		switch ( $order_by ) {
+			case self::ORDER_DATE_ASC:
+				// Here we check we have a date as the last entry of checks, if not use a late for last in results.
+				return ' ORDER BY
+  CASE WHEN JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date")) IS NULL
+       THEN \'9999-12-31\'
+       ELSE JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date"))
+  END ASC';
+
+			case self::ORDER_DATE_DESC:
+				return ' ORDER BY
+    CASE WHEN JSON_LENGTH(`checks`) = 0 THEN 1 ELSE 0 END ASC,
+    CASE WHEN JSON_LENGTH(`checks`) = 0 THEN NULL ELSE JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date")) END DESC';
+
+			case self::ORDER_URL_ASC:
+				return ' ORDER BY url ASC';
+			case self::ORDER_URL_DESC:
+				return ' ORDER BY url DESC';
+			case self::ORDER_ID_DESC:
+			default:
+				return ' ORDER BY id DESC';
+		}
+	}
+
+	/**
+	 * Get the post id form link id.
+	 *
+	 * @param integer $link_id The link id.
+	 *
+	 * @return integer[]
+	 */
+	public function get_post_id_from_link_id( int $link_id ): array {
+		static $meta = null;
+		if ( null === $meta ) {
+			$meta = $this->get_all_link_meta();
+		}
+
+		return $meta[ $link_id ] ?? array();
+	}
+
+	/**
+	 * Get all the link meta values.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array
+	 */
+	private function get_all_link_meta(): array {
+		// Prepare the query.
+		$query = "SELECT * FROM {$this->wpdb->postmeta} WHERE meta_key = %s";
+
+		// Get the rows.
+		$rows = $this->wpdb->get_results(
+			$this->wpdb->prepare( $query, Settings::LINK_META_KEY ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, wpdb called as $this->wpdb
+		);
+
+		$return = array();
+
+		// If no rows, return an empty collection.
+		if ( empty( $rows ) ) {
+			return array();
+		}
+
+		// Iterate over each row and extract the links.
+		foreach ( $rows as $row ) {
+			$links = \maybe_unserialize( $row->meta_value );
+
+			if ( ! is_array( $links ) ) {
+				continue;
+			}
+
+			// Iterate over each link and add to the return array with link to post id..
+			foreach ( $links as $link ) {
+				$return[ $link ][] = (int) $row->post_id;
+			}
+		}
+
+		return $return;
 	}
 }

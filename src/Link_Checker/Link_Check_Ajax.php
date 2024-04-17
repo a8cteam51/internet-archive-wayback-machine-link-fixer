@@ -152,7 +152,7 @@ class Link_Check_Ajax {
 		}
 
 		// Add the status to the link.
-		$link->add_check( $status );
+		$link->add_check( $status, gmdate( 'Y-m-d H:i:s' ) );
 
 		// Validate the link.
 		$valid = $link->is_valid();

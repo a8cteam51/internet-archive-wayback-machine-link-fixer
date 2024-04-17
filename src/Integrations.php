@@ -23,6 +23,7 @@ final class Integrations {
 	private $event_controller;
 	private $ajax_controller;
 	private $wp_post_table_controller;
+	private $report_page;
 
 	/**
 	 * Creates a new instance of the integrations component.
@@ -33,6 +34,7 @@ final class Integrations {
 		$this->event_controller         = new Event_Controller();
 		$this->ajax_controller          = new Ajax_Controller();
 		$this->wp_post_table_controller = new WP_Post_Table_Controller();
+		$this->report_page              = new Report\Report_Page();
 	}
 
 
@@ -54,6 +56,7 @@ final class Integrations {
 		$this->event_controller->initialize();
 		$this->ajax_controller->initialize();
 		$this->wp_post_table_controller->initialize();
+		$this->report_page->initialize();
 	}
 
 	// endregion
