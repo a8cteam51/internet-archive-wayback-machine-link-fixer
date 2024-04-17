@@ -14,6 +14,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 
 /**
@@ -152,13 +153,17 @@ class WP_Post_Table_Controller {
 
 		print \wp_kses(
 			sprintf(
-			// translators: %1$s is the number of broken links, %2$s is the total number of links.
-				__( '<strong>%1$s</strong> broken out of <strong>%2$s</strong>', 'wpcomsp_wayback_link_fixer' ),
+			// translators: %2$s is the url to view the links in a report, %2$s is the number of broken links, %3$s is the total number of links.
+				__( '<a href="%1$s"><strong>%2$s</strong> broken out of <strong>%3$s</strong></a>', 'wpcomsp_wayback_link_fixer' ),
+				$this->generate_report_page_url( $links, $post_id ),
 				absint( $stats['broken'] ),
 				absint( $stats['total'] )
 			),
 			array(
 				'strong' => array(),
+				'a'      => array(
+					'href' => array(),
+				),
 			)
 		);
 	}
@@ -185,5 +190,37 @@ class WP_Post_Table_Controller {
 		);
 
 		return compact( 'total', 'broken' );
+	}
+
+	/**
+	 * Generate the report page url based on the link ids.
+	 *
+	 * @param array<Link> $links   The links.
+	 * @param integer     $post_id The post id.
+	 *
+	 * @return string
+	 */
+	private function generate_report_page_url( array $links, int $post_id ): string {
+
+		// Extract the ids from the links.
+		$ids = \array_map(
+			function ( Link $link ): int {
+				return absint( $link->get_id() );
+			},
+			$links
+		);
+
+		$url = Report_Page::get_page_url();
+
+		// Iterate over the ids and add them to the url as a valid php array.
+		foreach ( $ids as $key => $id ) {
+			$key = 'wlf_links[' . absint( $key ) . ']';
+			$url = \add_query_arg( $key, $id, $url );
+		}
+
+		// Add the post id.
+		$url = \add_query_arg( 'wlf_filtered_post_id', $post_id, $url );
+
+		return $url;
 	}
 }
