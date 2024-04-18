@@ -148,7 +148,7 @@ class Link implements \JsonSerializable {
 	 * @return boolean
 	 */
 	public function has_archived_href(): bool {
-		return null !== $this->archived_href;
+		return null !== $this->archived_href && '' !== $this->archived_href;
 	}
 
 	/**
