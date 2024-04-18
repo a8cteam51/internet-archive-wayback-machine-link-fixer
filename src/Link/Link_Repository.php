@@ -455,8 +455,6 @@ class Link_Repository {
 			$this->wpdb->prepare( $query, Settings::LINK_META_KEY ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, wpdb called as $this->wpdb
 		);
 
-		dump($this->wpdb->prepare( $query, Settings::LINK_META_KEY ));
-
 		$return = array();
 
 		// If no rows, return an empty collection.
