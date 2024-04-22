@@ -61,7 +61,7 @@ class Archive_Link_Event {
 	 * @return void
 	 */
 	public static function add_to_queue( int $link_id ): void {
-		as_enqueue_async_action( self::HANDLE, array( 'link_id' => $link_id ) );
+		as_enqueue_async_action( self::HANDLE, array( 'link_id' => $link_id ), 'wayback-link-fixer' );
 	}
 
 	/**

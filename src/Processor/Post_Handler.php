@@ -72,6 +72,17 @@ class Post_Handler {
 			return;
 		}
 
+		$this->process_single_post( $post_id );
+	}
+
+	/**
+	 * Process a single post.
+	 *
+	 * @param integer $post_id The post id.
+	 *
+	 * @return void
+	 */
+	public function process_single_post( int $post_id ): void {
 		// Create an instance of the processor.
 		$post_processor = new Post_Processor( $post_id );
 		$links          = $post_processor->process();
@@ -82,6 +93,7 @@ class Post_Handler {
 		// Update the link meta.
 		$this->update_link_meta( $post_id, $links );
 	}
+
 
 	/**
 	 * Remove any excluded links from the links array.
