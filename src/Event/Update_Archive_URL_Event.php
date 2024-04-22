@@ -82,8 +82,8 @@ class Update_Archive_URL_Event {
 			array(
 				'link_id' => $link_id,
 				'attempt' => $attempt,
-				'why'     => 'Update Archive URL',
-			)
+			),
+			'wayback-link-fixer'
 		);
 	}
 

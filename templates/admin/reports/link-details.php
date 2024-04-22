@@ -35,7 +35,18 @@
 			<?php foreach ( $wlf_posts as $wlf_post ) : ?>
 				<li>
 					<a href="<?php echo esc_url( get_edit_post_link( $wlf_post->ID ) ); ?>">
-						<?php echo esc_html( $wlf_post->post_title ); ?>
+						<?php if ( '' === $wlf_post->post_title ) : ?>
+							<?php
+							printf(
+								// Translators: %1$d is the post ID, %2$s is the post type.
+								'No title [#%1$d - %2$s]',
+								absint( $wlf_post->ID ),
+								esc_html( $wlf_post->post_type )
+							);
+							?>
+						<?php else : ?>
+							<?php echo esc_html( $wlf_post->post_title ); ?>
+						<?php endif; ?>
 					</a>
 				</li>
 			<?php endforeach; ?>
