@@ -180,7 +180,7 @@ class Post_Handler {
 				'links'           => $links->to_json(),
 				'linkCheckAjax'   => Link_Check_Ajax::ACTION,
 				'linkCheckNonce'  => wp_create_nonce( Link_Check_Ajax::ACTION ),
-				'linkDelayInDays' => \apply_filters( 'wpcomsp_wayback_link_fixer_link_delay_in_days', 7 ),
+				'linkDelayInDays' => \apply_filters( 'wlf_link_delay_in_days', 7 ),
 				'ajaxUrl'         => \admin_url( 'admin-ajax.php' ),
 			)
 		);

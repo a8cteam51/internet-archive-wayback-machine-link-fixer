@@ -80,7 +80,7 @@ function wpcomsp_wayback_link_fixer_escape_http_status_code( $code ): string {
  * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Client
  */
 function wpcomsp_wayback_link_fixer_get_http_client(): Client {
-	return apply_filters( 'wpcomsp_wayback_link_fixer_link_checker_instance', new Wayback_Machine_Rest() );
+	return apply_filters( 'wlf_link_checker_instance', new Wayback_Machine_Rest() );
 }
 
 /**
@@ -179,7 +179,7 @@ function wpcomsp_wayback_link_fixer_render_archived_link_css(): void {
 CSS;
 
 	// Filter the css.
-	$css = apply_filters( 'wpcomsp_wayback_link_fixer_archived_link_css', $css );
+	$css = apply_filters( 'wlf_archived_link_css', $css );
 
 	echo '<style>' . $css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }

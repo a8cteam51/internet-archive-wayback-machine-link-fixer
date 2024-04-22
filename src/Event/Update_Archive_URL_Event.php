@@ -61,7 +61,7 @@ class Update_Archive_URL_Event {
 	 * @return void
 	 */
 	public function setup(): void {
-		$this->max_attempts    = \apply_filters( 'wpcomsp_wayback_link_fixer_max_archive_attempts', $this->max_attempts );
+		$this->max_attempts    = \apply_filters( 'wlf_max_archive_attempts', $this->max_attempts );
 		$this->wayback_machine = new Wayback_Machine_Client();
 		$this->repository      = new Link_Repository();
 	}

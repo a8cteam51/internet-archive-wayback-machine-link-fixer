@@ -208,7 +208,7 @@ class Link implements \JsonSerializable {
 	public function is_valid(): bool {
 
 		// @todo make this a setting.
-		$failed_count = \apply_filters( 'wpcomsp_wayback_link_fixer_failed_count', 3 );
+		$failed_count = \apply_filters( 'wlf_failed_count', 3 );
 
 		// Get the last checks based on the failed count.
 		$last_checks = array_slice( $this->checks, - $failed_count );
@@ -227,7 +227,7 @@ class Link implements \JsonSerializable {
 				$is_valid = in_array( absint( $check['http_code'] ), Settings::get_valid_http_status_codes(), true );
 
 				// Allow additional checks
-				return \apply_filters( 'wpcomsp_wayback_link_fixer_is_valid_check', $is_valid, $check, $this );
+				return \apply_filters( 'wlf_is_valid_check', $is_valid, $check, $this );
 			}
 		);
 

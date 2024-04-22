@@ -85,7 +85,7 @@ class Link_Check_Ajax {
 		}
 
 		// Find the link.
-		$link = $this->link_repository->find_by_url( \sanitize_text_field( $_POST['link'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, Checked above.
+		$link = $this->link_repository->find_by_url( \sanitize_text_field( \untrailingslashit( $_POST['link'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, Checked above.
 
 		// If the link does not exist, send an error.
 		if ( null === $link ) {
