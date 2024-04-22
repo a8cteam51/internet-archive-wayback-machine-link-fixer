@@ -78,13 +78,13 @@ class Scan_Posts_Event {
 		}
 
 		// Get the delay of the event.
-		$delay = \absint( \apply_filters( 'wpcomsp_wayback_link_fixer_scan_posts_delay', 0 ) );
+		$interval = \absint( \apply_filters( 'wpcomsp_wayback_link_fixer_scan_posts_interval', 0 ) );
 
-		// If we have 0 delay, add as async action.
-		if ( 0 === $delay ) {
+		// If we have 0 interval, add as async action.
+		if ( 0 === $interval ) {
 			\as_enqueue_async_action( self::HANDLE, array(), 'wayback-link-fixer' );
 		} else {
-			\as_schedule_single_action( \time() + $delay, self::HANDLE, array(), 'wayback-link-fixer' );
+			\as_schedule_single_action( \time() + $interval, self::HANDLE, array(), 'wayback-link-fixer' );
 		}
 	}
 
