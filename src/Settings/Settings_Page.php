@@ -259,15 +259,15 @@ class Settings_Page {
 
 		\register_setting(
 			self::PAGE_SLUG,
-			Settings::LINK_CHECKER_TIMEOUT,
+			Settings::SCAN_EXISTING_POSTS,
 			array(
-				'type'              => 'integer',
-				'sanitize_callback' => 'absint',
-				'default'           => 1000,
+				'type'              => 'boolean',
+				'sanitize_callback' => 'wp_validate_boolean',
+				'default'           => true,
 				'show_in_rest'      => array(
-					'name'   => Settings::LINK_CHECKER_TIMEOUT,
+					'name'   => Settings::SCAN_EXISTING_POSTS,
 					'schema' => array(
-						'type' => 'integer',
+						'type' => 'boolean',
 					),
 				),
 			)
@@ -325,9 +325,9 @@ class Settings_Page {
 		);
 
 		\add_settings_field(
-			Settings::LINK_CHECKER_TIMEOUT,
-			__( 'Link Checker Timeout in MS', 'wpcomsp_wayback_link_fixer' ),
-			array( $this, 'render_link_checker_timeout_field' ),
+			Settings::SCAN_EXISTING_POSTS,
+			__( 'Should existing posts be checked', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_check_existing_posts' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
@@ -393,24 +393,26 @@ class Settings_Page {
 	}
 
 	/**
-	 * Render the link checker timeout field.
+	 * Renders the field for checking existing posts.
 	 *
-	 * @since   1.0.0
+	 * @since 1.2.0
 	 *
-	 * @return  void
+	 * @return void
 	 */
-	public function render_link_checker_timeout_field(): void {
+	public function render_check_existing_posts(): void {
 		?>
-		<input
-			type="number"
-			id="<?php echo esc_attr( Settings::LINK_CHECKER_TIMEOUT ); ?>"
-			name="<?php echo esc_attr( Settings::LINK_CHECKER_TIMEOUT ); ?>"
-			value="<?php echo absint( Settings::get_link_checker_timeout() ); ?>"
-			min="0"
-			max="5000"
-		/>
+		<label for="<?php echo esc_attr( Settings::SCAN_EXISTING_POSTS ); ?>">
+			<input
+				type="checkbox"
+				id="<?php echo esc_attr( Settings::SCAN_EXISTING_POSTS ); ?>"
+				name="<?php echo esc_attr( Settings::SCAN_EXISTING_POSTS ); ?>"
+				value="1"
+				<?php checked( Settings::should_scan_existing_posts() ); ?>
+			/>
+			<?php esc_html_e( 'Scan existing posts', 'wpcomsp_wayback_link_fixer' ); ?>
+		</label>
 		<p class="description">
-			<?php esc_html_e( 'The timeout in milliseconds to wait when checking if a link is valid or not.', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'If checked, the plugin will scan existing posts for broken links.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</p>
 		<?php
 	}
