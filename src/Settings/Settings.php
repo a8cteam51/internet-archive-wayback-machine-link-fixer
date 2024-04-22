@@ -23,12 +23,12 @@ class Settings {
 
 
 	// Option keys
-	public const LINK_CHECK_DURATION          = self::SETTINGS_PREFIX . 'link_check_duration';
 	public const POST_TYPES_OPTION_KEY        = self::SETTINGS_PREFIX . 'post_types';
 	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
 	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
 	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
-	public const LINK_CHECKER_TIMEOUT         = self::SETTINGS_PREFIX . 'link_checker_timeout';
+	public const SCAN_EXISTING_POSTS          = self::SETTINGS_PREFIX . 'scan_existing_posts';
+
 
 	// Table names.
 	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
@@ -41,11 +41,6 @@ class Settings {
 
 	// Meta Keys
 	public const LINK_META_KEY = self::SETTINGS_PREFIX . 'links';
-
-	// Old settings to remove
-	public const HTTP_STATUS_CODES     = self::SETTINGS_PREFIX . 'http_status_codes';
-	public const LINK_CACHE_EXPIRATION = self::SETTINGS_PREFIX . 'link_cache_expiration';
-	public const EVENT_POSTS_PER_BATCH = self::SETTINGS_PREFIX . 'async_posts_per_batch';
 
 	/**
 	 * Gets the link table name.
@@ -113,30 +108,12 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_checker_timeout(): int {
-		return absint( get_option( self::LINK_CHECKER_TIMEOUT, 1000 ) );
-	}
-
-	/**
-	 * Gets the list of all HTTP status to look for.
-	 * As comma separated string.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string
-	 */
-	public static function get_http_status_codes(): string {
-		return sanitize_text_field( (string) get_option( self::HTTP_STATUS_CODES, '404,410,500,502,300,301,303' ) );
-	}
-
-	/**
-	 * Get the link cache expiry (in seconds.)
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return integer
-	 */
-	public static function get_link_cache_expiration(): int {
-		return absint( get_option( self::LINK_CACHE_EXPIRATION, DAY_IN_SECONDS ) );
+		return absint(
+			apply_filters(
+				'wlf_link_checker_timeout',
+				5000
+			)
+		);
 	}
 
 	/**
@@ -159,38 +136,10 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_posts_per_batch(): int {
-		$per_batch = absint( get_option( self::EVENT_POSTS_PER_BATCH, 10 ) );
+		$per_batch = apply_filters( 'wlf_posts_per_batch', 10 );
 
 		// If value is less than or equal to 1, set as 2.
 		return $per_batch <= 1 ? 2 : $per_batch;
-	}
-
-	/**
-	 * Get all classes which should be ignored.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @return string[]
-	 */
-	public static function get_ignored_classes(): array {
-		$skipped = (array) apply_filters(
-			'wlf_ignored_classes',
-			array(
-				'wp-element-button',
-			)
-		);
-
-		// Ensure all plugin classes are in the array.
-		return array_unique(
-			array_merge(
-				$skipped,
-				array(
-					'wlf-archived',
-					'wlf-archived__redirect',
-					'wlf-archived__skipped',
-				)
-			)
-		);
 	}
 
 	/**
@@ -202,7 +151,12 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_check_duration(): int {
-		return absint( get_option( self::LINK_CHECK_DURATION, 7 ) );
+		return absint(
+			apply_filters(
+				'wlf_link_check_duration_in_days',
+				7
+			)
+		);
 	}
 
 	/**
@@ -214,6 +168,17 @@ class Settings {
 	 */
 	public static function get_valid_http_status_codes(): array {
 		$codes = array( 200 );
-		return apply_filters( 'wlf_valid_http_status_codes', $codes );
+		return (array) apply_filters( 'wlf_valid_http_status_codes', $codes );
+	}
+
+	/**
+	 * Should existing posts be scanned?
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return boolean
+	 */
+	public static function should_scan_existing_posts(): bool {
+		return (bool) get_option( self::SCAN_EXISTING_POSTS, true );
 	}
 }

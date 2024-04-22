@@ -37,6 +37,7 @@ class Scheduler {
 	 * The migration callback.
 	 */
 	public function run_migration() {
+		// wp_die('test');
 		$migration_runner = $this->get_migration_runner();
 		$count            = $migration_runner->run( $this->get_batch_size() );
 
@@ -86,7 +87,7 @@ class Scheduler {
 			$when = time() + MINUTE_IN_SECONDS;
 		}
 
-		return as_schedule_single_action( $when, self::HOOK, array(), self::GROUP );
+		return as_schedule_single_action( $when, self::HOOK, array('aaa' => 123), self::GROUP );
 	}
 
 	/**

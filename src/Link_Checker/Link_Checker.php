@@ -51,7 +51,7 @@ class Link_Checker {
 		);
 
 		// Filter the url params.
-		$url_params = apply_filters( 'wpcomsp_wayback_link_fixer_check_url_params', $url_params );
+		$url_params = apply_filters( 'wlf_check_url_params', $url_params );
 
 		$query_url = add_query_arg(
 			$url_params,

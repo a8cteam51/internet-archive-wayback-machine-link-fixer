@@ -66,7 +66,7 @@ class Scan_Posts_Event {
 	 */
 	public static function add_to_action_scheduler(): void {
 		// Check if enabled in settings.
-		$allow = true;
+		$allow = Settings::should_scan_existing_posts();
 
 		if ( ! $allow ) {
 			return;
@@ -77,7 +77,15 @@ class Scan_Posts_Event {
 			return;
 		}
 
-		\as_enqueue_async_action( self::HANDLE, array(), 'wayback-link-fixer' );
+		// Get the delay of the event.
+		$interval = \absint( \apply_filters( 'wlf_scan_posts_interval', 0 ) );
+
+		// If we have 0 interval, add as async action.
+		if ( 0 === $interval ) {
+			\as_enqueue_async_action( self::HANDLE, array(), 'wayback-link-fixer' );
+		} else {
+			\as_schedule_single_action( \time() + $interval, self::HANDLE, array(), 'wayback-link-fixer' );
+		}
 	}
 
 	/**

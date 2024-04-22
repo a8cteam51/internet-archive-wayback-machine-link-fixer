@@ -127,13 +127,22 @@ const getArchivedLink = (link) => {
 		let archivedLink = archivedLinks[i];
 
 		// Check if the link exists in the archived links
-		if (archivedLink.href === link) {
+		if (removeTrailingSlash(archivedLink.href) === removeTrailingSlash(link)) {
 			return archivedLink;
 		}
 	}
 
 	return null;
 }
+
+/**
+ * Removes the trailing slash from a string if set.
+ *
+ * @param {string} str The string to check
+ * @returns {string} The string without the trailing slash
+ */
+const removeTrailingSlash = (str) => str.replace(/\/$/, '');
+
 
 /**
  * Adds the data attributes to a link.
@@ -192,6 +201,8 @@ const checkLink = (link) => {
 	if (archived === null) {
 		return;
 	}
+
+
 
 	// If the link is already marked as broken, add the data attributes
 	if (archived.broken) {
