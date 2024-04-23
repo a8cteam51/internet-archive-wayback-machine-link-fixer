@@ -8,9 +8,4 @@ $baseDir = dirname($vendorDir);
 return array(
     'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\' => array($baseDir . '/migrations'),
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\' => array($baseDir . '/src'),
-    'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
-    'Symfony\\Polyfill\\Ctype\\' => array($vendorDir . '/symfony/polyfill-ctype'),
-    'Symfony\\Component\\DomCrawler\\' => array($vendorDir . '/symfony/dom-crawler'),
-    'Symfony\\Component\\CssSelector\\' => array($vendorDir . '/symfony/css-selector'),
-    'Masterminds\\' => array($vendorDir . '/masterminds/html5/src'),
 );
