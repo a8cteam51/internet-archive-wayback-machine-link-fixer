@@ -62,7 +62,7 @@ class Link_Checker {
 		// Compile the url for the livewebcheck service.
 		$url_params = array(
 			'url'         => esc_url( $url ),
-			// 'impersonate' => 1,
+			'impersonate' => 1,
 
 		);
 

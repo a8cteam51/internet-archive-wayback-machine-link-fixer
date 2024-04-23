@@ -81,7 +81,7 @@ class Archive_Link_Event {
 
 		// If we have no link, throw an error.
 		if ( null === $link ) {
-			throw new \Exception( 'Link not found with id ' . $link_id );
+			throw new \Exception( esc_html( 'Link not found with id ' . $link_id ) ); //
 		}
 
 		// If the link already has a archived link, return early.

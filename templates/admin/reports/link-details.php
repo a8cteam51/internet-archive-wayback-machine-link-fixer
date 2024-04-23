@@ -15,7 +15,7 @@
 	<p>Link URL - <?php echo esc_html( $wlf_link->get_href() ); ?></p>
 	<p>Archived URL - <?php echo esc_html( $wlf_link->get_archived_href() ); ?></p>
 
-	<?php if($wlf_link->get_redirect_href() !== null) : ?>
+	<?php if ( $wlf_link->get_redirect_href() !== null ) : ?>
 		<p>Redirect URL - <?php echo esc_html( $wlf_link->get_redirect_href() ); ?></p>
 	<?php endif; ?>
 	<p>Is the link broken? <b><?php echo esc_html( $wlf_link->is_broken() ? 'Yes' : 'No' ); ?></b></p>
