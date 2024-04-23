@@ -4,8 +4,6 @@
  * @since 1.2.0
  */
 
-import { toolTip } from "./tooltip";
-
 /**
  * Get all the links from the localized object
  */
@@ -152,7 +150,7 @@ const removeTrailingSlash = (str) => str.replace(/\/$/, '');
  */
 const addDataAttributes = (link) => {
 	// Get the href.
-	const href = link.href;
+	const href = removeTrailingSlash(link.href);
 
 	// Look for every instance of the link on the page.
 	const links = document.getElementsByTagName('a');
@@ -162,7 +160,7 @@ const addDataAttributes = (link) => {
 		let currentLink = links[i];
 
 		// If the link is the same as the current link, add the data attributes
-		if (currentLink.href === href) {
+		if (removeTrailingSlash(currentLink.href) === href) {
 			currentLink.setAttribute('data-wlf-archived-url', link.archived_href);
 			currentLink.setAttribute('data-wlf-current-url', href);
 			currentLink.setAttribute('data-wlf-archived-broken', link.broken);
@@ -191,6 +189,7 @@ const checkLink = (link) => {
 	if (hasBeenChecked(link)) {
 		return;
 	} else {
+		// add a checked link
 		addCheckedLink(link);
 	}
 
@@ -201,8 +200,6 @@ const checkLink = (link) => {
 	if (archived === null) {
 		return;
 	}
-
-
 
 	// If the link is already marked as broken, add the data attributes
 	if (archived.broken) {
@@ -218,7 +215,6 @@ const checkLink = (link) => {
 		});
 	}
 }
-
 
 /**
  * Verifies the link using the server.
@@ -256,6 +252,5 @@ const verifyLink = async (link) => {
  */
 const init = () => {
 	initObservers();
-	toolTip.init();
 }
 init();
