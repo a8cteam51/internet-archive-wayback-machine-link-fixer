@@ -24,11 +24,8 @@
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             wpcomsp-wayback-link-fixer
  * Domain Path:             /languages
- * WC requires at least:    7.4
- * WC tested up to:         7.4
  **/
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\Link_Checker;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -87,6 +84,7 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	\WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations::$migrations = array( //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1::class,
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_2::class,
+		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_3::class,
 	);
 
 	add_action( 'wp_head', 'wpcomsp_wayback_link_fixer_render_archived_link_css', 999 );

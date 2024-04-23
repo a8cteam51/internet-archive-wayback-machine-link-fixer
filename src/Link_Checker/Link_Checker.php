@@ -33,20 +33,36 @@ class Link_Checker {
 	}
 
 	/**
-	 * Check a link.
+	 * Get final url.
 	 *
 	 * @param string $url The URL to check.
 	 *
-	 * @return integer the HTTP status code.
+	 * @return string The final URL.
 	 *
 	 * @throws Exception If the service is offline or the response is invalid.
 	 */
-	public function check_single( string $url ): int {
+	public function get_final_url( string $url ): string {
+		$response = $this->get_decoded_response( $this->query_url( $url ) );
+
+		// Return the location if it exists, otherwise return the original url.
+		return isset( $response['location'] )
+			? esc_url( $response['location'] )
+			: $url;
+	}
+
+	/**
+	 * Query URL.
+	 *
+	 * @param string $url The URL to check.
+	 *
+	 * @return array The Response.
+	 */
+	private function query_url( string $url ): array {
 
 		// Compile the url for the livewebcheck service.
 		$url_params = array(
 			'url'         => esc_url( $url ),
-			'impersonate' => 1,
+			// 'impersonate' => 1,
 
 		);
 
@@ -58,9 +74,20 @@ class Link_Checker {
 			'https://iabot-api.archive.org/livewebcheck'
 		);
 
-		// Do a simple HEAD request to check the status code.
-		$response = wp_remote_get( $query_url, array( 'timeout' => $this->timeout ) );
+		// Get the response.
+		return wp_remote_get( $query_url, array( 'timeout' => $this->timeout ) );
+	}
 
+	/**
+	 * Get the decoded repsone.
+	 *
+	 * @param array $response The response.
+	 *
+	 * @return array The decoded response.
+	 *
+	 * @throws Exception If the response is invalid.
+	 */
+	private function get_decoded_response( array $response ): array {
 		// If we dont have a 200 response, service may be offline, throw exception.
 		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			throw new \Exception( 'Service is offline' );
@@ -82,12 +109,31 @@ class Link_Checker {
 			throw new \Exception( 'Invalid response body' );
 		}
 
+		return $body;
+	}
+
+	/**
+	 * Check a link.
+	 *
+	 * @param string $url The URL to check.
+	 *
+	 * @return integer the HTTP status code.
+	 *
+	 * @throws Exception If the service is offline or the response is invalid.
+	 */
+	public function check_single( string $url ): int {
+
+		// Get the redirected URL if it exists.
+		$url = $this->get_final_url( $url );
+
+		$response = $this->get_decoded_response( $this->query_url( $url ) );
+
 		// If we dont have a status code, throw exception.
-		if ( ! isset( $body['status'] ) ) {
+		if ( ! isset( $response['status'] ) ) {
 			throw new \Exception( 'Invalid response body' );
 		}
 
-		$code = absint( $body['status'] );
+		$code = absint( $response['status'] );
 
 		// If we dont have a valid status code, throw exception.
 		if ( ! $code ) {

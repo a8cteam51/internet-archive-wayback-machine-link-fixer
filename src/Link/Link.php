@@ -42,6 +42,13 @@ class Link implements \JsonSerializable {
 	private $archived_href = null;
 
 	/**
+	 * The redirect href.
+	 *
+	 * @var string|null
+	 */
+	private $redirect_href = null;
+
+	/**
 	 * Denotes if a link is broken and should not checked.
 	 *
 	 * @var boolean
@@ -94,6 +101,27 @@ class Link implements \JsonSerializable {
 	 */
 	public function set_archived_href( string $archived_href ): self {
 		$this->archived_href = $archived_href;
+		return $this;
+	}
+
+	/**
+	 * Gets the redirect href.
+	 *
+	 * @return string|null
+	 */
+	public function get_redirect_href(): ?string {
+		return $this->redirect_href;
+	}
+
+	/**
+	 * Sets the redirect href.
+	 *
+	 * @param string $redirect_href The redirect href.
+	 *
+	 * @return self
+	 */
+	public function set_redirect_href( string $redirect_href ): self {
+		$this->redirect_href = $redirect_href;
 		return $this;
 	}
 
@@ -255,6 +283,11 @@ class Link implements \JsonSerializable {
 			$link->set_archived_href( esc_url( $data['archived_href'] ) );
 		}
 
+		// If contains redirect href, set it.
+		if ( isset( $data['redirect_href'] ) ) {
+			$link->set_redirect_href( esc_url( $data['redirect_href'] ) );
+		}
+
 		// Set the id.
 		if ( isset( $data['id'] ) ) {
 			$link->set_id( absint( $data['id'] ) );
@@ -283,6 +316,7 @@ class Link implements \JsonSerializable {
 			'id'            => $this->id,
 			'href'          => $this->href,
 			'archived_href' => $this->archived_href,
+			'redirect_href' => $this->redirect_href,
 			'checks'        => $this->checks,
 			'broken'        => $this->is_broken,
 			'last_checked'  => $this->get_last_check(),

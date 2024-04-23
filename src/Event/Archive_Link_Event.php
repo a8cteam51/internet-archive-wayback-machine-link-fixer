@@ -79,17 +79,32 @@ class Archive_Link_Event {
 		// Look for the link.
 		$link = $this->link_repository->find_by_id( $link_id );
 
+		// If we have no link, throw an error.
+		if ( null === $link ) {
+			throw new \Exception( 'Link not found with id ' . $link_id );
+		}
+
 		// If the link already has a archived link, return early.
 		if ( $link->has_archived_href() && '' !== $link->get_archived_href() ) {
 			return;
 		}
 
+		// Ensure we are working with the final link, incase its been redirected.
+		$link_url = $this->link_checker->get_final_url( $link->get_href() );
+
+		// If the link url is different to the href, update the link.
+		if ( $link_url !== $link->get_href() ) {
+			$link = $this->link_repository->upsert(
+				$link->set_redirect_href( $link->get_href() )
+			);
+		}
+
 		// Attempt to get the archived link
-		$archive_url = $this->get_archived_link( $link->get_href() );
+		$archive_url = $this->get_archived_link( $link_url );
 
 		// If we don't have an archived link, create a snapshot
 		if ( null === $archive_url ) {
-			$this->wayback_machine->create_snapshot( $link->get_href() );
+			$this->wayback_machine->create_snapshot( $link_url );
 
 			// Add the event to update the the link with the archive URL (this is run later, to allow Wayback time to process the snapshot)
 			Update_Archive_URL_Event::add_to_queue( $link_id, 0, 15 * MINUTE_IN_SECONDS );
@@ -100,6 +115,11 @@ class Archive_Link_Event {
 
 		// Update the link with the archive URL
 		$link->set_archived_href( $archive_url );
+
+		// If the link_url is not the same as the href, set the redirect href
+		if ( $link_url !== $link->get_href() ) {
+			$link->set_redirect_href( $link_url );
+		}
 
 		// Save the link
 		$this->link_repository->upsert( $link );

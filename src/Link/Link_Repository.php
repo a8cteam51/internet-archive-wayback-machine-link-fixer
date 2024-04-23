@@ -63,7 +63,7 @@ class Link_Repository {
 	 */
 	public function find_by_url( string $url ): ?Link {
 		// Query.
-		$query = $this->wpdb->prepare( "SELECT * FROM {$this->table_name} WHERE url = %s", $url ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, only table name is interpolated.
+		$query = $this->wpdb->prepare( "SELECT * FROM {$this->table_name} WHERE url = %s OR redirect_url = %s", $url, $url ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, only table name is interpolated.
 
 		// Get the row.
 		$row = $this->wpdb->get_row( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, is prepared!
@@ -135,6 +135,7 @@ class Link_Repository {
 		$href          = $link->get_href();
 		$archived_href = $link->get_archived_href();
 		$checks        = $link->get_checks();
+		$redirect_href = $link->get_redirect_href();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -143,11 +144,13 @@ class Link_Repository {
 		$result = $this->wpdb->insert(
 			$this->table_name,
 			array(
-				'url'      => $href,
-				'archived' => $archived_href,
-				'checks'   => $checks,
+				'url'          => $href,
+				'archived'     => $archived_href,
+				'checks'       => $checks,
+				'redirect_url' => $redirect_href,
 			),
 			array(
+				'%s',
 				'%s',
 				'%s',
 				'%s',
@@ -181,6 +184,7 @@ class Link_Repository {
 		$href          = $link->get_href();
 		$archived_href = $link->get_archived_href();
 		$checks        = $link->get_checks();
+		$redirect_href = $link->get_redirect_href();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -189,14 +193,16 @@ class Link_Repository {
 		$result = $this->wpdb->update(
 			$this->table_name,
 			array(
-				'url'      => $href,
-				'archived' => $archived_href,
-				'checks'   => $checks,
+				'url'          => $href,
+				'archived'     => $archived_href,
+				'checks'       => $checks,
+				'redirect_url' => $redirect_href,
 			),
 			array(
 				'id' => $id,
 			),
 			array(
+				'%s',
 				'%s',
 				'%s',
 				'%s',
@@ -222,11 +228,14 @@ class Link_Repository {
 	 * @return Link
 	 */
 	public function find_or_create( string $url ): Link {
+
+		// Strip any trailing slashes.
+		$url = \untrailingslashit( $url );
+
 		$link = $this->find_by_url( $url );
 
 		if ( null === $link ) {
-			$link = new Link( $url );
-			$link = $this->upsert( $link );
+			$link = $this->upsert( new Link( $url ) );
 
 			// Trigger the event to get the archived link.
 			Archive_Link_Event::add_to_queue( $link->get_id() );
@@ -246,7 +255,8 @@ class Link_Repository {
 		$link = new Link( esc_url( $row->url ) );
 		$link
 			->set_id( (int) $row->id )
-			->set_archived_href( esc_url( $row->archived ) );
+			->set_archived_href( esc_url( $row->archived ) )
+			->set_redirect_href( esc_url( $row->redirect_url ) );
 
 		// Iterate through the checks and add them to the link.
 		$checks = json_decode( $row->checks, true );
@@ -472,7 +482,7 @@ class Link_Repository {
 
 			// Iterate over each link and add to the return array with link to post id..
 			foreach ( $links as $link ) {
-				$return[ $link ][] = (int) $row->post_id;
+				$return[ absint( $link ) ][] = (int) $row->post_id;
 			}
 		}
 

@@ -136,10 +136,10 @@ class Wayback_Machine_Client {
 		$snapshot_url = esc_url( $base_url . $url );
 
 		// Trigger a none blocking wp_get request.
-		wp_remote_get(
+		$r = wp_remote_get(
 			$snapshot_url,
 			array(
-				'timeout'   => 0.01,
+				'timeout'   => 1,
 				'blocking'  => false,
 				'sslverify' => false,
 			)
