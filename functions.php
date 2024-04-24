@@ -65,11 +65,11 @@ function wpcomsp_wayback_link_fixer_get_plugin_slug(): string {
  *
  * @param integer|string $code The status code.
  *
- * @return string
+ * @return integer|null
  */
-function wpcomsp_wayback_link_fixer_escape_http_status_code( $code ): string {
+function wpcomsp_wayback_link_fixer_escape_http_status_code( $code ): ?int {
 	$code = absint( (int) $code );
-	return $code > 0 ? esc_attr( $code ) : '';
+	return $code > 0 ? $code : null;
 }
 
 /**

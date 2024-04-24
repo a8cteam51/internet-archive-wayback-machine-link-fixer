@@ -37,7 +37,12 @@
         "phpstan/phpstan": "1.*",
         "szepeviktor/phpstan-wordpress": "<=1.3.1",
         "symfony/var-dumper": "^5.0",
-        "php-stubs/wordpress-stubs": "6.3.*"
+        "php-stubs/wordpress-stubs": "6.3.*",
+        "phpunit/phpunit": "^8.5 || ^9.0",
+        "roots/wordpress": "6.5.*",
+        "wp-phpunit/wp-phpunit": "6.5.*",
+        "yoast/phpunit-polyfills": "^1.0.0 || ^2.0.0",
+        "vlucas/phpdotenv": "<=5.5.0"
     },
     "autoload": {
         "psr-4": {
@@ -48,7 +53,11 @@
             "models/"
         ]
     },
-    "autoload-dev": {},
+    "autoload-dev": {
+        "psr-4": {
+            "WPCOMSpecialProjects\\Wayback_Link_Fixer_Tests\\": "tests/"
+        }
+    },
     "scripts": {
         "generate-autoloader": "@composer dump-autoload -o",
         "format:php": "phpcbf --standard=./.phpcs.xml --basepath=. . -v",
@@ -58,6 +67,8 @@
             "@updatepo",
             "@makejson"
         ],
+        "test:php": "./vendor/bin/phpunit --testdox --colors=always",
+        "coverage:php": "./vendor/bin/phpunit --coverage-html=coverage --coverage-text --colors=always --testdox",
         "makepot": "wp i18n make-pot .",
         "updatepo": "wp i18n update-po ./languages/wayback-link-fixer.pot",
         "makejson": "wp i18n make-json ./languages --pretty-print --no-purge",
@@ -72,7 +83,8 @@
     "config": {
         "allow-plugins": {
             "composer/*": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "roots/wordpress-core-installer": true
         }
     },
     "extra": {
