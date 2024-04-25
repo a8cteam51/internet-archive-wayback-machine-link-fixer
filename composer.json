@@ -80,7 +80,7 @@
       "makemo": "wp i18n make-mo ./languages",
 
       "packages-install": "@composer install --ignore-platform-reqs --no-interaction",
-      "package-install--no-dev": "@packages-install --no-dev",
+      "packages-install--no-dev": "@packages-install --no-dev",
 
       "packages-update": [
           "@composer clear-cache",
