@@ -72,6 +72,11 @@ class Scan_Posts_Event {
 			return;
 		}
 
+		// Bail if action scheduler is not available.
+		if ( ! \function_exists( 'as_has_scheduled_action' ) ) {
+			return;
+		}
+
 		// If the event is not scheduled, schedule it.
 		if ( \as_has_scheduled_action( self::HANDLE ) ) {
 			return;
