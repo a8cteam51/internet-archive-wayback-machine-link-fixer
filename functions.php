@@ -197,8 +197,6 @@ CSS;
 	echo '<style>' . $css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
-<<<<<<< HEAD
-=======
 /**
  * Get image asset URL from filename.
  *
@@ -212,5 +210,4 @@ function wpcomsp_wayback_link_fixer_get_image_asset_url( string $filename ): str
 	return esc_url( WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/images/' . $filename );
 }
 
->>>>>>> develop
 // endregion

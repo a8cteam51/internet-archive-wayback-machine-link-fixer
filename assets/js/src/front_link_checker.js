@@ -211,7 +211,6 @@ const checkLink = (link) => {
 	}
 
 	// IF the last checked is NULL or outside the delay, check the link
-	console.log(archived.last_checked);
 	if (archived.last_checked === null || daysSince(archived.last_checked.date) > linkDelay) {
 		// Check the link
 		verifyLink(link).then((result) => {
