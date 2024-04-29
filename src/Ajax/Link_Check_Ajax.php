@@ -8,12 +8,12 @@
 
 declare( strict_types = 1 );
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\Link_Checker;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 
 /**
  * Link_Check_Ajax
@@ -40,7 +40,7 @@ class Link_Check_Ajax {
 	/**
 	 * Access to the Link Checker.
 	 *
-	 * @var Link_Checker
+	 * @var Link_Checker_Client
 	 */
 	private $link_checker;
 
@@ -65,7 +65,7 @@ class Link_Check_Ajax {
 	 */
 	private function setup(): void {
 		$this->link_repository = new Link_Repository();
-		$this->link_checker    = new Link_Checker();
+		$this->link_checker    = wpcomsp_wayback_link_fixer_get_link_checker_client();
 	}
 
 	/**

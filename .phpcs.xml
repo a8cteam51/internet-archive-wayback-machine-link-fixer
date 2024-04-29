@@ -4,6 +4,8 @@
 
     <exclude-pattern>/lib/*</exclude-pattern>
 	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/wordpress/*</exclude-pattern>
+	<exclude-pattern>/tests/*</exclude-pattern>
 
 	<!-- Extend the A8CTeam51 ruleset. -->
 	<rule ref="./vendor/a8cteam51/team51-configs/quality-tools/phpcs.xml.dist"/>

@@ -10,18 +10,18 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Processor;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Link_Check_Ajax;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Processor;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\Link_Check_Ajax;
 
 /**
  * Handles the various post actions.
  */
-class Post_Handler {
+class WP_Post_Controller {
 
 	/**
 	 * The link repository.
@@ -68,7 +68,7 @@ class Post_Handler {
 	public function on_save_post( int $post_id, \WP_Post $post, bool $update ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		// Check the post type is one we are checking.
-		if ( in_array( $post->post_type, Settings::get_post_types(), true ) === false ) {
+		if ( in_array( $post->post_type, Settings::get_allowed_post_types(), true ) === false ) {
 			return;
 		}
 
@@ -180,20 +180,12 @@ class Post_Handler {
 				'links'           => $links->to_json(),
 				'linkCheckAjax'   => Link_Check_Ajax::ACTION,
 				'linkCheckNonce'  => wp_create_nonce( Link_Check_Ajax::ACTION ),
-				'linkDelayInDays' => \apply_filters( 'wlf_link_delay_in_days', 7 ),
+				'linkDelayInDays' => \apply_filters( 'wlf_link_check_delay_in_days', 7 ),
 				'ajaxUrl'         => \admin_url( 'admin-ajax.php' ),
 			)
 		);
 
 		// Enqueue the script.
 		\wp_enqueue_script( 'wpcomsp-wayback-link-fixer-front-link-checker' );
-
-		// Enqueue the styles.
-		\wp_enqueue_style(
-			'wpcomsp-wayback-link-fixer-front-link-checker',
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/front_link_checker.scss.css',
-			array(),
-			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
-		);
 	}
 }

@@ -111,6 +111,6 @@ final class NamingConventions
         }
 
         // Comparing via strcasecmp will only compare ASCII letters case-insensitively.
-        return (strcasecmp($nameA, $nameB) === 0);
+        return (\strcasecmp($nameA, $nameB) === 0);
     }
 }

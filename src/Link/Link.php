@@ -234,15 +234,18 @@ class Link implements \JsonSerializable {
 	 * @return boolean
 	 */
 	public function is_valid(): bool {
-
-		// @todo make this a setting.
-		$failed_count = \apply_filters( 'wlf_failed_count', 3 );
+		$failed_count = Settings::get_failed_count();
 
 		// Get the last checks based on the failed count.
 		$last_checks = array_slice( $this->checks, - $failed_count );
 
 		// If we do not have any checks, then it is valid.
 		if ( empty( $last_checks ) ) {
+			return true;
+		}
+
+		// If we have less checks than the failed count, then it is valid.
+		if ( count( $last_checks ) < $failed_count ) {
 			return true;
 		}
 

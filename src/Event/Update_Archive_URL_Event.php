@@ -15,7 +15,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 /**
  * Update Archive URL Event class.
@@ -44,7 +44,7 @@ class Update_Archive_URL_Event {
 	/**
 	 * The Wayback Machine Client.
 	 *
-	 * @var Wayback_Machine_Client
+	 * @var Wayback_Machine_Service
 	 */
 	private $wayback_machine;
 
@@ -61,8 +61,10 @@ class Update_Archive_URL_Event {
 	 * @return void
 	 */
 	public function setup(): void {
-		$this->max_attempts    = \apply_filters( 'wlf_max_archive_attempts', $this->max_attempts );
-		$this->wayback_machine = new Wayback_Machine_Client();
+		$this->max_attempts = \apply_filters( 'wlf_max_archive_attempts', $this->max_attempts );
+		$this->max_attempts = 99999;
+
+		$this->wayback_machine = new Wayback_Machine_Service();
 		$this->repository      = new Link_Repository();
 	}
 

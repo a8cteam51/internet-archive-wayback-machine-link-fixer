@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Scans a post for links.
+ * Scans a block of content for valid links.
  *
  * @since 1.2.0
  */
@@ -11,12 +11,12 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Processor;
 
 /**
- * Post Scanner class.
+ * Content Scanner class.
  */
-class Post_Scanner {
+class Content_Scanner {
 
 	/**
-	 * The post content.
+	 * The content.
 	 *
 	 * @var string
 	 */

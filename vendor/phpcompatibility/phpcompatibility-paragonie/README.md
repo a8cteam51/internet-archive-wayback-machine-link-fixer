@@ -27,9 +27,9 @@ Paragonie Polyfill Library | Corresponding PHPCompatibility Ruleset | Includes
 
 ## Requirements
 
-* [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer).
-    * PHP 5.3+ for use with [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) 2.3.0+.
-    * PHP 5.4+ for use with [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) 3.0.2+.
+* [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer).
+    * PHP 5.3+ for use with [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer) 2.3.0+.
+    * PHP 5.4+ for use with [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer) 3.0.2+.
 
     Use the latest stable release of PHP_CodeSniffer for the best results.
     The minimum _recommended_ version of PHP_CodeSniffer is version 2.6.0.
@@ -97,6 +97,12 @@ All code within the PHPCompatibility organisation is released under the GNU Less
 
 ## Changelog
 
+### 1.3.3 - 2024-04-25
+
+* Prevent a new false positive when the ruleset is run over the code of the latest 1.x version of the `sodium_compat` polyfill itself.
+* The recommended version of the [Composer PHPCS plugin] is now `^1.0`.
+* Other housekeeping. Includes a contribution from [@fredden].
+
 ### 1.3.2 - 2022-10-25
 
 - README: Updated the installation instructions for [compatibility with Composer >= 2.2][composer22announce].
@@ -140,4 +146,5 @@ Initial release of PHPCompatibilityParagonie containing rulesets covering the `r
 
 [Composer PHPCS plugin]: https://github.com/PHPCSStandards/composer-installer/
 
+[@fredden]:   https://github.com/fredden
 [@GaryJones]: https://github.com/GaryJones

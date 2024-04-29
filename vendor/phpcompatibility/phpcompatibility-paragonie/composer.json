@@ -15,23 +15,25 @@
   } ],
   "support" : {
     "issues" : "https://github.com/PHPCompatibility/PHPCompatibilityParagonie/issues",
-    "source" : "https://github.com/PHPCompatibility/PHPCompatibilityParagonie"
+    "source" : "https://github.com/PHPCompatibility/PHPCompatibilityParagonie",
+    "security": "https://github.com/PHPCompatibility/PHPCompatibilityParagonie/security/policy"
   },
   "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
-    }
+    },
+    "lock": false
   },
   "require" : {
     "phpcompatibility/php-compatibility" : "^9.0"
   },
   "require-dev" : {
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
     "paragonie/random_compat": "dev-master",
     "paragonie/sodium_compat": "dev-master"
   },
   "suggest" : {
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7 || This Composer plugin will sort out the PHP_CodeSniffer 'installed_paths' automatically.",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0 || This Composer plugin will sort out the PHP_CodeSniffer 'installed_paths' automatically.",
     "roave/security-advisories": "dev-master || Helps prevent installing dependencies with known security issues."
   },
   "prefer-stable" : true

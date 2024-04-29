@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Unit\Link;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Link;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_3;

@@ -10,7 +10,7 @@ declare( strict_types = 1 );
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\Link_Check_Ajax;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Link_Check_Ajax;
 
 /**
  * Ajax_Controller

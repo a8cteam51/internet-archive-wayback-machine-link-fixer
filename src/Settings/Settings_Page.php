@@ -40,14 +40,7 @@ class Settings_Page {
 	public function initialize(): void {
 		add_action( 'admin_init', array( $this, 'register_fields' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-		// Enable network support for pages.
-		if ( \is_multisite() ) {
-			add_action( 'network_admin_menu', array( $this, 'register_page' ) );
-			add_action( 'network_admin_edit_' . self::PAGE_SLUG, array( $this, 'update_multisite_settings' ) );
-		} else {
-			add_action( 'admin_menu', array( $this, 'register_page' ), 20, 0 );
-		}
+		add_action( 'admin_menu', array( $this, 'register_page' ), 20, 0 );
 	}
 
 	/**
@@ -64,55 +57,6 @@ class Settings_Page {
 		$this->add_settings_fields();
 	}
 
-		/**
-	 * Handle saving settings for multisite.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return void
-	 */
-	public function update_multisite_settings(): void {
-		// If the multiste settings nonce is not set, show an error.
-		if ( ! isset( $_POST['_multisite_settings_nonce'] ) ) {
-			wp_die( esc_html__( 'Invalid request.', 'wpcomsp_wayback_link_fixer' ) );
-		}
-
-		// Verify the nonce.
-		if ( ! wp_verify_nonce( $_POST['_multisite_settings_nonce'], self::PAGE_SLUG ) ) {
-			wp_die( esc_html__( 'Invalid request.', 'wpcomsp_wayback_link_fixer' ) );
-		}
-
-		// Options
-		$options = array_filter(
-			$GLOBALS['wp_registered_settings'],
-			function ( $setting ) {
-				return 0 === strpos( $setting, Settings::SETTINGS_PREFIX );
-			},
-			ARRAY_FILTER_USE_KEY
-		);
-
-		// Iterate over the options and update them.
-		foreach ( $options as $name => $option ) {
-			$value = isset( $_POST[ $name ] ) ? $_POST[ $name ] : $option['default'];
-
-			// Sanitize the option.
-			$value = $option['sanitize_callback']( $value );
-			// Update the option.
-			update_site_option( $name, $value );
-		}
-
-		// Redirect back to the network settings page.
-		wp_safe_redirect(
-			add_query_arg(
-				array(
-					'page'    => self::PAGE_SLUG,
-					'updated' => 'true',
-				),
-				network_admin_url( 'admin.php' )
-			)
-		);
-		exit;
-	}
 
 	/**
 	 * Registers the settings page.
@@ -124,7 +68,7 @@ class Settings_Page {
 	 */
 	public function register_page(): void {
 		$this->menu_hook = \add_submenu_page(
-			\is_network_admin() ? 'settings.php' : 'options-general.php',
+			'options-general.php',
 			__( 'Wayback Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			__( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
@@ -186,25 +130,7 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_page(): void {
-		if ( \is_multisite() ) {
-			// If updated, show notice.
-			if ( isset( $_GET['updated'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings updated.', 'wpcomsp_wayback_link_fixer' ) . '</p></div>';
-			}
-
-			echo wp_kses(
-				'<form action="edit.php?action=' . self::PAGE_SLUG . '" method="post">',
-				array(
-					'form' => array(
-						'action' => array(),
-						'method' => array(),
-					),
-				)
-			);
-			wp_nonce_field( self::PAGE_SLUG, '_multisite_settings_nonce', false, true );
-		} else {
-			echo '<form action="options.php" method="post">';
-		}
+		echo '<form action="options.php" method="post">';
 
 		\do_settings_sections( self::PAGE_SLUG );
 		\settings_fields( self::PAGE_SLUG );
@@ -224,13 +150,13 @@ class Settings_Page {
 	private function register_settings_fields(): void {
 		\register_setting(
 			self::PAGE_SLUG,
-			Settings::POST_TYPES_OPTION_KEY,
+			Settings::ALLOWED_POST_TYPES,
 			array(
 				'type'              => 'array',
 				'sanitize_callback' => fn( $value ): array => array_map( 'sanitize_text_field', (array) $value ),
 				'default'           => array( 'page', 'post' ),
 				'show_in_rest'      => array(
-					'name'   => Settings::POST_TYPES_OPTION_KEY,
+					'name'   => Settings::ALLOWED_POST_TYPES,
 					'schema' => array(
 						'type'  => 'array',
 						'items' => array(
@@ -309,7 +235,7 @@ class Settings_Page {
 		);
 
 		\add_settings_field(
-			Settings::POST_TYPES_OPTION_KEY,
+			Settings::ALLOWED_POST_TYPES,
 			__( 'Post Types', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_post_types_field' ),
 			self::PAGE_SLUG,
@@ -351,13 +277,13 @@ class Settings_Page {
 	public function render_post_types_field(): void {
 		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type ) {
 			?>
-			<label for="<?php echo esc_attr( Settings::POST_TYPES_OPTION_KEY ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
+			<label for="<?php echo esc_attr( Settings::ALLOWED_POST_TYPES ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
 				<input
 					type="checkbox"
-					id="<?php echo esc_attr( Settings::POST_TYPES_OPTION_KEY ); ?>_<?php echo esc_attr( $post_type->name ); ?>"
-					name="<?php echo esc_attr( Settings::POST_TYPES_OPTION_KEY ); ?>[]"
+					id="<?php echo esc_attr( Settings::ALLOWED_POST_TYPES ); ?>_<?php echo esc_attr( $post_type->name ); ?>"
+					name="<?php echo esc_attr( Settings::ALLOWED_POST_TYPES ); ?>[]"
 					value="<?php echo esc_attr( $post_type->name ); ?>"
-					<?php checked( in_array( $post_type->name, Settings::get_post_types(), true ) ); ?>
+					<?php checked( in_array( $post_type->name, Settings::get_allowed_post_types(), true ) ); ?>
 				/>
 				<?php echo esc_html( $post_type->label ); ?>
 			</label>

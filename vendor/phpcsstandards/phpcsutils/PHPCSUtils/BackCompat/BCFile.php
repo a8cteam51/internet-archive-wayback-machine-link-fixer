@@ -462,7 +462,7 @@ final class BCFile
      *
      * Changelog for the PHPCS native function:
      * - Introduced in PHPCS 0.0.5.
-     * - The upstream method has received no significant updates since PHPCS 3.9.0.
+     * - PHPCS 3.9.2: skip over closure use statements. PHPCS #421.
      *
      * @see \PHP_CodeSniffer\Files\File::getMethodProperties()      Original source.
      * @see \PHPCSUtils\Utils\FunctionDeclarations::getProperties() PHPCSUtils native improved version.
@@ -480,7 +480,147 @@ final class BCFile
      */
     public static function getMethodProperties(File $phpcsFile, $stackPtr)
     {
-        return $phpcsFile->getMethodProperties($stackPtr);
+        $tokens = $phpcsFile->getTokens();
+
+        if ($tokens[$stackPtr]['code'] !== T_FUNCTION
+            && $tokens[$stackPtr]['code'] !== T_CLOSURE
+            && $tokens[$stackPtr]['code'] !== T_FN
+        ) {
+            throw new RuntimeException('$stackPtr must be of type T_FUNCTION or T_CLOSURE or T_FN');
+        }
+
+        if ($tokens[$stackPtr]['code'] === T_FUNCTION) {
+            $valid = [
+                T_PUBLIC      => T_PUBLIC,
+                T_PRIVATE     => T_PRIVATE,
+                T_PROTECTED   => T_PROTECTED,
+                T_STATIC      => T_STATIC,
+                T_FINAL       => T_FINAL,
+                T_ABSTRACT    => T_ABSTRACT,
+                T_WHITESPACE  => T_WHITESPACE,
+                T_COMMENT     => T_COMMENT,
+                T_DOC_COMMENT => T_DOC_COMMENT,
+            ];
+        } else {
+            $valid = [
+                T_STATIC      => T_STATIC,
+                T_WHITESPACE  => T_WHITESPACE,
+                T_COMMENT     => T_COMMENT,
+                T_DOC_COMMENT => T_DOC_COMMENT,
+            ];
+        }
+
+        $scope          = 'public';
+        $scopeSpecified = false;
+        $isAbstract     = false;
+        $isFinal        = false;
+        $isStatic       = false;
+
+        for ($i = ($stackPtr - 1); $i > 0; $i--) {
+            if (isset($valid[$tokens[$i]['code']]) === false) {
+                break;
+            }
+
+            switch ($tokens[$i]['code']) {
+                case T_PUBLIC:
+                    $scope          = 'public';
+                    $scopeSpecified = true;
+                    break;
+                case T_PRIVATE:
+                    $scope          = 'private';
+                    $scopeSpecified = true;
+                    break;
+                case T_PROTECTED:
+                    $scope          = 'protected';
+                    $scopeSpecified = true;
+                    break;
+                case T_ABSTRACT:
+                    $isAbstract = true;
+                    break;
+                case T_FINAL:
+                    $isFinal = true;
+                    break;
+                case T_STATIC:
+                    $isStatic = true;
+                    break;
+            }
+        }
+
+        $returnType         = '';
+        $returnTypeToken    = false;
+        $returnTypeEndToken = false;
+        $nullableReturnType = false;
+        $hasBody            = true;
+        $returnTypeTokens   = Collections::returnTypeTokens();
+
+        if (isset($tokens[$stackPtr]['parenthesis_closer']) === true) {
+            $scopeOpener = null;
+            if (isset($tokens[$stackPtr]['scope_opener']) === true) {
+                $scopeOpener = $tokens[$stackPtr]['scope_opener'];
+            }
+
+            for ($i = $tokens[$stackPtr]['parenthesis_closer']; $i < $phpcsFile->numTokens; $i++) {
+                if (($scopeOpener === null && $tokens[$i]['code'] === T_SEMICOLON)
+                    || ($scopeOpener !== null && $i === $scopeOpener)
+                ) {
+                    // End of function definition.
+                    break;
+                }
+
+                if ($tokens[$i]['code'] === T_USE) {
+                    // Skip over closure use statements.
+                    for ($j = ($i + 1); $j < $phpcsFile->numTokens && isset(Tokens::$emptyTokens[$tokens[$j]['code']]) === true; $j++);
+                    if ($tokens[$j]['code'] === T_OPEN_PARENTHESIS) {
+                        if (isset($tokens[$j]['parenthesis_closer']) === false) {
+                            // Live coding/parse error, stop parsing.
+                            break;
+                        }
+
+                        $i = $tokens[$j]['parenthesis_closer'];
+                        continue;
+                    }
+                }
+
+                if ($tokens[$i]['code'] === T_NULLABLE) {
+                    $nullableReturnType = true;
+                }
+
+                if (isset($returnTypeTokens[$tokens[$i]['code']]) === true) {
+                    if ($returnTypeToken === false) {
+                        $returnTypeToken = $i;
+                    }
+
+                    $returnType        .= $tokens[$i]['content'];
+                    $returnTypeEndToken = $i;
+                }
+            }
+
+            if ($tokens[$stackPtr]['code'] === T_FN) {
+                $bodyToken = T_FN_ARROW;
+            } else {
+                $bodyToken = T_OPEN_CURLY_BRACKET;
+            }
+
+            $end     = $phpcsFile->findNext([$bodyToken, T_SEMICOLON], $tokens[$stackPtr]['parenthesis_closer']);
+            $hasBody = ($end !== false && $tokens[$end]['code'] === $bodyToken);
+        }
+
+        if ($returnType !== '' && $nullableReturnType === true) {
+            $returnType = '?' . $returnType;
+        }
+
+        return [
+            'scope'                 => $scope,
+            'scope_specified'       => $scopeSpecified,
+            'return_type'           => $returnType,
+            'return_type_token'     => $returnTypeToken,
+            'return_type_end_token' => $returnTypeEndToken,
+            'nullable_return_type'  => $nullableReturnType,
+            'is_abstract'           => $isAbstract,
+            'is_final'              => $isFinal,
+            'is_static'             => $isStatic,
+            'has_body'              => $hasBody,
+        ];
     }
 
     /**

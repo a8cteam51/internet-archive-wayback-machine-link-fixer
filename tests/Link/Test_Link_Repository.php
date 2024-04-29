@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Unit\Link;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Link;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
@@ -46,7 +46,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		parent::setUp();
 
 		$this->link_repository = new Link_Repository();
-		$this->link_ids		= array();
+		$this->link_ids        = array();
 	}
 
 	/**
@@ -111,6 +111,17 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox When searching for a link by its id, if no link is found, null should be returned.
+	 *
+	 * @return void
+	 */
+	public function test_find_by_id_returns_null_if_no_link_found(): void {
+		$found_link = $this->link_repository->find_by_id( 999999999 );
+
+		$this->assertNull( $found_link );
+	}
+
+	/**
 	 * @testdox It should be possible to find or create a link by its URL.
 	 *
 	 * @return void
@@ -159,7 +170,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	 *
 	 * @return void
 	 */
-	public function test_can_order_links_by_first_check_date(): void {
+	public function test_can_order_links_by_first_check_date_dec(): void {
 		// Insert the default links.
 		$this->populate_database();
 
@@ -170,6 +181,29 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$expected = array(
 			'https://walnut.org',  // 2023-08-01 00:00:00
 			'https://example.com', // 2022-01-01 00:00:00
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertContains( $link->get_href(), $expected );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to order the links by the first check date ASC.
+	 *
+	 * @return void
+	 */
+	public function test_can_order_links_by_first_check_date_asc(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), Link_Repository::ORDER_DATE_ASC );
+
+		// We should have the first two links
+		$expected = array(
+			'https://jump.uk', // 2020-06-01 00:00:00
+			'https://foo.com', // 2021-02-01 00:00:00
 		);
 
 		foreach ( $queried_links as $index => $link ) {
@@ -342,7 +376,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$links = $this->link_provider();
 
 		foreach ( $links as $link ) {
-			$inserted = $this->link_repository->upsert( $link );
+			$inserted         = $this->link_repository->upsert( $link );
 			$this->link_ids[] = $inserted->get_id();
 		}
 	}
@@ -418,17 +452,52 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 10, 1, array(), array(), Link_Repository::ORDER_DATE_DESC, '2021-10' );
+		$queried_links = $this->link_repository->query_links( 10, 1, array(), array(), Link_Repository::ORDER_DATE_DESC, '2022-01' );
 
 		$this->assertCount( 1, $queried_links );
 
-		// We should have the first two links
+		// We should get back this site only.
 		$expected = array(
-			'https://acorn.retro',
+			'https://example.com', // Matches the last date of 3 checks {"date":"2022-01-01 00:00:00","http_code":200}
 		);
 
 		foreach ( $queried_links as $index => $link ) {
 			$this->assertContains( $link->get_href(), $expected );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to get a list of all posts that a link is used on.
+	 *
+	 * @return void
+	 */
+	public function test_can_get_posts_for_link(): void {
+		// Create the link.
+		$link = new Link( 'https://example.com' );
+
+		// Insert the link.
+		$link = $this->link_repository->upsert( $link );
+
+		// Create 2 mock posts.
+		$post_ids = array( 1, 2 );
+
+		// Add the link to the posts.
+		foreach ( $post_ids as $post_id ) {
+			// Add as post meta.
+			update_post_meta( $post_id, Settings::LINK_META_KEY, array( $link->get_id() ) );
+		}
+
+		// Try to get the posts for the link.
+		$posts = $this->link_repository->get_post_ids_from_link_id( $link->get_id() );
+
+		$this->assertCount( 2, $posts );
+
+		// Check the post ids are the same.
+		$this->assertSame( $post_ids, $posts );
+
+		// Clean up.
+		foreach ( $post_ids as $post_id ) {
+			delete_post_meta( $post_id, Settings::LINK_META_KEY );
 		}
 	}
 
@@ -498,5 +567,34 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 			),
 
 		);
+	}
+
+	/**
+	 * @testdox It should be possible to use the upsert method to update an existing link.
+	 *
+	 * @return void
+	 */
+	public function test_can_update_existing_link(): void {
+		$link = new Link( 'https://example.com' );
+		$link = $this->link_repository->upsert( $link );
+
+		$this->assertNotNull( $link->get_id() );
+
+		// Update the link.
+		$link->set_archived_href( 'https://example.com/updated' );
+		$link = $this->link_repository->upsert( $link );
+
+		$this->assertSame( 'https://example.com/updated', $link->get_archived_href() );
+	}
+
+	/**
+	 * @testdox Attempting to get links for a post that has none defined in meta should result in an empty collection.
+	 *
+	 * @return void
+	 */
+	public function test_get_links_for_post_with_no_links(): void {
+		$link_collection = $this->link_repository->get_links_for_post( 999999999 );
+
+		$this->assertCount( 0, $link_collection->get_links() );
 	}
 }

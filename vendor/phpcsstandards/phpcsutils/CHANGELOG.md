@@ -9,6 +9,27 @@ This projects adheres to [Keep a CHANGELOG](https://keepachangelog.com/) and use
 
 _Nothing yet._
 
+## [1.0.11] - 2024-04-24
+
+### Changed
+
+#### Other
+
+* Various housekeeping and documentation improvements. Includes a contribution from [@fredden].
+
+### Fixed
+
+#### PHPCS BackCompat
+
+* `BCFile::getMethodProperties()`: small performance improvement & more defensive coding, in line with same fix in PHPCS 3.9.2. [#573]
+
+#### Utils
+
+* `FunctionDeclarations::getProperties()`: small performance improvement & more defensive coding, in line with same fix in PHPCS 3.9.2. [#573]
+
+[#573]: https://github.com/PHPCSStandards/PHPCSUtils/pull/573
+
+
 ## [1.0.10] - 2024-03-18
 
 ### Changed
@@ -477,7 +498,7 @@ Please report any bugs/oversights you encounter!
 All properties have a replacement which should be used instead, in most cases this will be a method with the same name as the previously used property,
 
 | Deprecated                                                    | Replacement                                                                                          | PR             | Remarks                                  |
-|---------------------------------------------------------------|------------------------------------------------------------------------------------------------------|----------------|------------------------------------------|
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------- | ---------------------------------------- |
 | `Collections::$alternativeControlStructureSyntaxTokens`       | `Collections::alternativeControlStructureSyntaxes()`                                                 | [#311]         | Mind the change in the name!             |
 | `Collections::$alternativeControlStructureSyntaxCloserTokens` | `Collections::alternativeControlStructureSyntaxClosers()`                                            | [#311]         | Mind the change in the name!             |
 | `Collections::$arrayTokens`                                   | `Collections::arrayTokens()`                                                                         | [#311]         |                                          |
@@ -510,7 +531,7 @@ All properties have a replacement which should be used instead, in most cases th
 Additionally, the following methods in the `Collections` class have been deprecated:
 
 | Deprecated                                   | Replacement                                | PR     |
-|----------------------------------------------|--------------------------------------------|--------|
+| -------------------------------------------- | ------------------------------------------ | ------ |
 | `Collections::arrowFunctionTokensBC()`       | Use the `T_FN` token instead.              | [#347] |
 | `Collections::functionDeclarationTokensBC()` | `Collections::functionDeclarationTokens()` | [#347] |
 | `Collections::parameterTypeTokensBC()`       | `Collections::parameterTypeTokens()`       | [#347] |
@@ -984,6 +1005,7 @@ This initial alpha release contains the following utility classes:
 
 
 [Unreleased]:   https://github.com/PHPCSStandards/PHPCSUtils/compare/stable...HEAD
+[1.0.11]:       https://github.com/PHPCSStandards/PHPCSUtils/compare/1.0.10...1.0.11
 [1.0.10]:       https://github.com/PHPCSStandards/PHPCSUtils/compare/1.0.9...1.0.10
 [1.0.9]:        https://github.com/PHPCSStandards/PHPCSUtils/compare/1.0.8...1.0.9
 [1.0.8]:        https://github.com/PHPCSStandards/PHPCSUtils/compare/1.0.7...1.0.8

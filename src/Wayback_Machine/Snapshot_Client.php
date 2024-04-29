@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine;
 
-interface Client {
+interface Snapshot_Client {
 
 	/**
 	 * Checks if a URL is in the Wayback Machine.
@@ -39,12 +39,12 @@ interface Client {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param string             $url  The URL to check.
-	 * @param \DateTimeImmutable $date The date to check.
+	 * @param string    $url  The URL to check.
+	 * @param \DateTime $date The date to check.
 	 *
 	 * @return array{status:int, available:boolean, url:string, timestamp:string}|null
 	 */
-	public function get_closest_snapshot( string $url, \DateTimeImmutable $date ): ?array;
+	public function get_closest_snapshot( string $url, \DateTime $date ): ?array;
 
 	/**
 	 * Create a snapshot of a given URL.

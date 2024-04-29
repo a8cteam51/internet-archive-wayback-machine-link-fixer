@@ -386,7 +386,7 @@ class Link_Repository {
 		// If we have a date, add to the query getting the last date from json column.
 		if ( $date ) {
 			$date_range = $this->get_date_range( $date );
-			$query     .= ' WHERE STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date"))), \'%Y-%%m-%d %%H:%i:%s\')'; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
+			$query     .= ' WHERE STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date"))), \'%Y-%m-%d %H:%i:%s\')'; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
 			$query     .= $this->wpdb->prepare( ' BETWEEN %s AND %s', $date_range['start'], $date_range['end'] );
 		}
 
@@ -418,11 +418,6 @@ class Link_Repository {
 		// Create DateTime object from 'yyyy-mm' date.
 		$date = new \DateTime( $date );
 
-		// If we dont have a valid, date return wide range.
-		if ( ! $date ) {
-			return array( '0000-00-00', '9999-12-31' );
-		}
-
 		// Get the start of the month.
 		$start = $date->format( 'Y-m-01' );
 
@@ -430,8 +425,8 @@ class Link_Repository {
 		$end = $date->format( 'Y-m-t' );
 
 		return array(
-			'start' => $start,
-			'end'   => $end,
+			'start' => esc_attr( $start ),
+			'end'   => esc_attr( $end ),
 		);
 	}
 
@@ -478,7 +473,7 @@ class Link_Repository {
 	 *
 	 * @return integer[]
 	 */
-	public function get_post_id_from_link_id( int $link_id ): array {
+	public function get_post_ids_from_link_id( int $link_id ): array {
 		static $meta = null;
 		if ( null === $meta ) {
 			$meta = $this->get_all_link_meta();

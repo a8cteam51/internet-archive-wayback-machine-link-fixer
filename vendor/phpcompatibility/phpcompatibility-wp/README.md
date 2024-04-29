@@ -17,9 +17,9 @@ This WordPress specific ruleset prevents false positives from the [PHPCompatibil
 
 ## Requirements
 
-* [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer).
-    * PHP 5.3+ for use with [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) 2.3.0+.
-    * PHP 5.4+ for use with [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) 3.0.2+.
+* [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer).
+    * PHP 5.3+ for use with [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer) 2.3.0+.
+    * PHP 5.4+ for use with [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer) 3.0.2+.
 
     Use the latest stable release of PHP_CodeSniffer for the best results.
     The minimum _recommended_ version of PHP_CodeSniffer is version 2.6.0.
@@ -85,6 +85,12 @@ All code within the PHPCompatibility organisation is released under the GNU Less
 
 ## Changelog
 
+### 2.1.5 - 2024-04-25
+
+- Ruleset: Updated for compatibility with WordPress 6.5. Thanks [@swissspidy]
+- The recommended version of the [Composer PHPCS plugin] is now `^1.0`.
+- Other housekeeping and documentation updates. Includes contributions from [@fredden] and [@johnbillion].
+
 ### 2.1.4 - 2022-10-24
 
 - Composer: The package will now identify itself as a static analysis tool. Thanks [@GaryJones]!
@@ -132,4 +138,7 @@ Initial release of the PHPCompatibilityWP ruleset.
 
 [Composer PHPCS plugin]: https://github.com/PHPCSStandards/composer-installer/
 
-[@GaryJones]: https://github.com/GaryJones
+[@fredden]:     https://github.com/fredden
+[@GaryJones]:   https://github.com/GaryJones
+[@johnbillion]: https://github.com/johnbillion
+[@swissspidy]:  https://github.com/swissspidy

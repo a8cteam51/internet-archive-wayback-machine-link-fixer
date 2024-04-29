@@ -203,6 +203,7 @@
     </rule>
     <rule ref="PHPCompatibility.FunctionNameRestrictions.NewMagicMethods.__debuginfoFound">
         <exclude-pattern>/sodium_compat/src/Core(32)?/Curve25519/Fe\.php$</exclude-pattern>
+        <exclude-pattern>/sodium_compat/src/Core/AES/Block\.php$</exclude-pattern>
     </rule>
     <rule ref="PHPCompatibility.FunctionUse.NewFunctions.hash_equalsFound">
         <exclude-pattern>/sodium_compat/src/Core/Util\.php$</exclude-pattern>

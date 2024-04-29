@@ -55,7 +55,7 @@ class Scan_Posts_Event {
 	 */
 	public function setup(): void {
 		$this->posts_per_call     = Settings::get_posts_per_batch();
-		$this->allowed_post_types = Settings::get_post_types();
+		$this->allowed_post_types = Settings::get_allowed_post_types();
 		$this->post_handler       = new Post_Handler();
 	}
 

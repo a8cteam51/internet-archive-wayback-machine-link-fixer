@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Unit\Link;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Link;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 
@@ -299,5 +299,74 @@ class Test_Link extends \WP_UnitTestCase {
 		$this->assertStringContainsString( '"date":"20240101000000"', $json );
 		$this->assertStringContainsString( '"http_code":418', $json );
 
+	}
+
+	/**
+	 * @testdox It should be possible to cast a link to json and back to a link and have the order the checks remain the same (oldest first).
+	 *
+	 * @return void
+	 */
+	public function test_can_cast_link_to_json_and_back_and_maintain_order(): void {
+		$link = new Link( 'https://example.com' );
+		$link->add_check( 418, '20240101000000' );
+		$link->add_check( 418, '20250101000000' );
+		$link->add_check( 418, '20260101000000' );
+
+		$json = json_encode( $link );
+
+		// Add a mock id.
+		$json = str_replace( '"id":null', '"id":1', $json );
+
+		$link = Link::from_json( $json );
+
+		$checks = $link->get_checks();
+
+		$this->assertSame( '20240101000000', $checks[0]['date'] );
+		$this->assertSame( '20250101000000', $checks[1]['date'] );
+		$this->assertSame( '20260101000000', $checks[2]['date'] );
+	}
+
+	/**
+	 * @testdox It should be possible to check if a link has an archived href.
+	 *
+	 * @return void
+	 */
+	public function test_can_check_if_has_archived_href(): void {
+		// If archived link is null, this shoud fail.
+		$link = new Link( 'https://example.com' );
+
+		$this->assertFalse( $link->has_archived_href() );
+
+		// If link is empty string, should fail.
+		$link->set_archived_href( '' );
+
+		$this->assertFalse( $link->has_archived_href() );
+
+		// If link is set, should pass.
+		$link->set_archived_href( 'https://web.archive.org/web/20240101000000/https://example.com' );
+
+		$this->assertTrue( $link->has_archived_href() );
+	}
+
+	/**
+	 * @testdox When checking if a link is valid, less checks that the min failures required, will result in being valid.
+	 *
+	 * @return void
+	 */
+	public function test_less_checks_than_min_failures(): void {
+		$link = new Link( 'https://example.com' );
+
+		// By default the link should be valid.
+		$this->assertTrue( $link->is_valid() );
+
+		// By having 1 check with 500, the link should be valid.
+		$link->add_check( 500, '20230101000000' );
+		$this->assertTrue( $link->is_valid() );
+
+		// By having 3 checks with 500, the link should be invalid.
+		$link->add_check( 500, '20240101000000' );
+		$link->add_check( 500, '20250101000000' );
+
+		$this->assertFalse( $link->is_valid() );
 	}
 }
