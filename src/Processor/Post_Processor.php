@@ -21,7 +21,7 @@ class Post_Processor {
 	/**
 	 * The post scanner.
 	 *
-	 * @var Post_Scanner
+	 * @var Content_Scanner
 	 */
 	private $post_scanner;
 
@@ -39,7 +39,7 @@ class Post_Processor {
 	 * @param integer $post_id The post id.
 	 */
 	public function __construct( int $post_id ) {
-		$this->post_scanner    = Post_Scanner::for_post( $post_id );
+		$this->post_scanner    = Content_Scanner::for_post( $post_id );
 		$this->link_repository = new Link_Repository();
 	}
 

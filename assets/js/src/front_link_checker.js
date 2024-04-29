@@ -164,7 +164,10 @@ const addDataAttributes = (link) => {
 			currentLink.setAttribute('data-wlf-archived-url', link.archived_href);
 			currentLink.setAttribute('data-wlf-current-url', href);
 			currentLink.setAttribute('data-wlf-archived-broken', link.broken);
-			currentLink.setAttribute('data-wlf-archived-last-checked', link.last_checked.date);
+			// If we have a last checked date, add it
+			if(link.last_checked !== null && link.last_checked.date !== null){
+				currentLink.setAttribute('data-wlf-archived-last-checked', link.last_checked.date);
+			}
 
 			// If the link is broken, add a class and change the href
 			if (link.broken) {

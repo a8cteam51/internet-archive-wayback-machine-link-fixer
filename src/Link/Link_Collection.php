@@ -40,6 +40,15 @@ class Link_Collection {
 	}
 
 	/**
+	 * Get the post id.
+	 *
+	 * @return integer
+	 */
+	public function get_post_id(): int {
+		return $this->post_id;
+	}
+
+	/**
 	 * Add a link to the collection.
 	 *
 	 * @param Link $link The link to add.
@@ -48,6 +57,15 @@ class Link_Collection {
 	 */
 	public function add( Link $link ): void {
 		$this->links[] = $link;
+	}
+
+	/**
+	 * Get links.
+	 *
+	 * @return Link[]
+	 */
+	public function get_links(): array {
+		return $this->links;
 	}
 
 	/**

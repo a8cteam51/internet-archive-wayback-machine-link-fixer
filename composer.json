@@ -1,107 +1,105 @@
 {
     "name": "a8cteam51/wayback-link-fixer",
     "type": "wordpress-plugin",
-
     "description": "",
     "homepage": "https://github.com/a8cteam51/wayback-link-fixer",
     "license": "GPL-2.0-or-later",
-    "authors": [
-      {
-        "name": "WordPress.com Special Projects Team",
-        "homepage": "https://wpspecialprojects.com/"
-      },
-      {
-        "name": "Contributors",
-        "homepage": "https://github.com/a8cteam51/wayback-link-fixer/graphs/contributors"
-      }
+    "authors": [{
+            "name": "WordPress.com Special Projects Team",
+            "homepage": "https://wpspecialprojects.com/"
+        },
+        {
+            "name": "Contributors",
+            "homepage": "https://github.com/a8cteam51/wayback-link-fixer/graphs/contributors"
+        }
     ],
-
-    "repositories": [
-      {
-        "type": "vcs",
-        "url": "https://github.com/a8cteam51/team51-configs"
-      },
-      {
-        "type": "composer",
-        "url": "https://wpackagist.org"
-      }
+    "repositories": [{
+            "type": "vcs",
+            "url": "https://github.com/a8cteam51/team51-configs"
+        },
+        {
+            "type": "composer",
+            "url": "https://wpackagist.org"
+        }
     ],
     "require": {
         "php": ">=7.4",
         "ext-json": "*"
     },
     "require-dev": {
-      "a8cteam51/team51-configs": "dev-trunk",
-
-      "wp-cli/i18n-command": "^2.6",
-
-      "wp-coding-standards/wpcs": "^3",
-      "phpcompatibility/phpcompatibility-wp": "*",
-
-      "phpstan/phpstan": "1.*",
-      "szepeviktor/phpstan-wordpress": "<=1.3.1",
-      "symfony/var-dumper": "^5.0",
-      "php-stubs/wordpress-stubs": "6.3.*",
-
-      "roave/security-advisories": "dev-latest"
+        "a8cteam51/team51-configs": "dev-trunk",
+        "wp-cli/i18n-command": "^2.4",
+        "squizlabs/php_codesniffer": "3.*",
+        "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "roave/security-advisories": "dev-latest",
+        "php-stubs/wordpress-stubs": "6.3.*",
+        "phpunit/phpunit": "^8.5 || ^9.0",
+        "roots/wordpress": "6.5.*",
+        "wp-phpunit/wp-phpunit": "6.5.*",
+        "yoast/phpunit-polyfills": "^1.0.0 || ^2.0.0",
+        "vlucas/phpdotenv": "<=5.5.0",
+        "wp-coding-standards/wpcs": "^3",
+        "phpcompatibility/phpcompatibility-wp": "*",
+        "phpstan/phpstan": "1.*",
+        "szepeviktor/phpstan-wordpress": "<=1.3.1",
+        "symfony/var-dumper": "^5.0"
     },
-
     "autoload": {
         "psr-4": {
             "WPCOMSpecialProjects\\Wayback_Link_Fixer\\": "src",
             "WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\": "migrations"
         },
         "classmap": [
-          "dependencies",
-          "models"
+            "models"
         ]
     },
-    "autoload-dev": {},
-
+    "autoload-dev": {
+        "psr-4": {
+            "WPCOMSpecialProjects\\Wayback_Link_Fixer_Tests\\": "tests"
+        }
+    },
     "scripts": {
-      "generate-autoloader": "@composer dump-autoload -o",
-      "scope-php-dependencies": [
-        "vendor/bin/php-scoper add-prefix --prefix=WPCOMSpecialProjects\\\\Wayback_Link_Fixer_Deps --output-dir=./dependencies --config=.php-scoper.inc.php --force --quiet",
-        "@generate-autoloader"
-      ],
-
-      "analyze:php": "phpstan analyse -l8",
-      "format:php": "phpcbf --standard=./.phpcs.xml --basepath=. . -v",
-      "lint:php": "phpcs --standard=./.phpcs.xml --basepath=. . -v",
-
-      "internationalize": [
-          "@makepot",
-          "@updatepo",
-          "@makejson"
-      ],
-      "makepot": "wp i18n make-pot .",
-      "updatepo": "wp i18n update-po ./languages/wayback-link-fixer.pot",
-      "makejson": "wp i18n make-json ./languages --pretty-print --no-purge",
-      "makemo": "wp i18n make-mo ./languages",
-
-      "packages-install": "@composer install --ignore-platform-reqs --no-interaction",
-      "packages-install--no-dev": "@packages-install --no-dev",
-
-      "packages-update": [
-          "@composer clear-cache",
-          "@composer update --prefer-stable --no-interaction"
-      ]
+        "generate-autoloader": "@composer dump-autoload -o",
+        "scope-php-dependencies": [
+            "vendor/bin/php-scoper add-prefix --prefix=WPCOMSpecialProjects\\\\Wayback_Link_Fixer_Deps --output-dir=./dependencies --config=.php-scoper.inc.php --force --quiet",
+            "@generate-autoloader"
+        ],
+        "test:php": "./vendor/bin/phpunit --testdox --colors=always",
+        "coverage:php": "./vendor/bin/phpunit --coverage-html=coverage --coverage-text --colors=always --testdox",
+        "analyze:php": "phpstan analyse -l8",
+        "format:php": "phpcbf --standard=./.phpcs.xml --basepath=. . -v",
+        "lint:php": "phpcs --standard=./.phpcs.xml --basepath=. . -v",
+        "internationalize": [
+            "@makepot",
+            "@updatepo",
+            "@makejson"
+        ],
+        "makepot": "wp i18n make-pot .",
+        "updatepo": "wp i18n update-po ./languages/wayback-link-fixer.pot",
+        "makejson": "wp i18n make-json ./languages --pretty-print --no-purge",
+        "makemo": "wp i18n make-mo ./languages",
+        "packages-install": "@composer install --ignore-platform-reqs --no-interaction",
+        "packages-install--no-dev": "@packages-install --no-dev",
+        "packages-update": [
+            "@composer clear-cache",
+            "@composer update --prefer-stable --no-interaction"
+        ]
     },
     "config": {
-      "allow-plugins": {
-        "composer/*": true,
-        "dealerdirect/phpcodesniffer-composer-installer": true
-      }
+        "allow-plugins": {
+            "composer/*": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "roots/wordpress-core-installer": true
+        }
     },
-
     "extra": {
-      "installer-paths": {
-        "vendor/wpackagist-plugin/{$name}/": [
-          "type:wordpress-plugin"
-        ],
-        "vendor/wpackagist-theme/{$name}/": [
-          "type:wordpress-theme"
-        ]
-      }
+        "installer-paths": {
+            "vendor/wpackagist-plugin/{$name}/": [
+                "type:wordpress-plugin"
+            ],
+            "vendor/wpackagist-theme/{$name}/": [
+                "type:wordpress-theme"
+            ]
+        }
     }
 }

@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\Link_Checker;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
 
 /**
  * Archive Link Event class.
@@ -36,11 +36,11 @@ class Archive_Link_Event {
 	private $link_repository;
 
 	/**
-	 * Wayback Machine Client.
+	 * Snapshot client.
 	 *
-	 * @var Client
+	 * @var Snapshot_Client
 	 */
-	private $wayback_machine;
+	private $snapshots;
 
 	/**
 	 * Sets up the events dependencies, but delayed until its called.
@@ -50,7 +50,7 @@ class Archive_Link_Event {
 	public function setup(): void {
 		$this->link_checker    = new Link_Checker();
 		$this->link_repository = new Link_Repository();
-		$this->wayback_machine = wpcomsp_wayback_link_fixer_get_http_client();
+		$this->snapshots       = wpcomsp_wayback_link_fixer_get_snapshot_client();
 	}
 
 	/**
@@ -104,7 +104,7 @@ class Archive_Link_Event {
 
 		// If we don't have an archived link, create a snapshot
 		if ( null === $archive_url ) {
-			$this->wayback_machine->create_snapshot( $link_url );
+			$this->snapshots->create_snapshot( $link_url );
 
 			// Add the event to update the the link with the archive URL (this is run later, to allow Wayback time to process the snapshot)
 			Update_Archive_URL_Event::add_to_queue( $link_id, 0, 15 * MINUTE_IN_SECONDS );
@@ -133,7 +133,7 @@ class Archive_Link_Event {
 	 * @return string|null The URL of the archived link.
 	 */
 	private function get_archived_link( string $url ): ?string {
-		$archive_url = $this->wayback_machine->get_latest_snapshot( $url );
+		$archive_url = $this->snapshots->get_latest_snapshot( $url );
 
 		// if we dont have an archive url, return null
 		if ( null === $archive_url ) {
@@ -142,16 +142,5 @@ class Archive_Link_Event {
 
 		// return the archive url
 		return esc_url( $archive_url['url'] );
-	}
-
-	/**
-	 * Create a snapshot of the link.
-	 *
-	 * @param string $url The URL to archive.
-	 *
-	 * @return void
-	 */
-	private function create_snapshot( string $url ) {
-		$this->link_checker->create_snapshot( $url );
 	}
 }

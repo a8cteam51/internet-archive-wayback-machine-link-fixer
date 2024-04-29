@@ -2,9 +2,9 @@
 
 namespace Action_Scheduler\Migration;
 
-use ActionScheduler_StoreSchema;
-use ActionScheduler_LoggerSchema;
 use ActionScheduler_DataController;
+use ActionScheduler_LoggerSchema;
+use ActionScheduler_StoreSchema;
 use Action_Scheduler\WP_CLI\ProgressBar;
 
 /**
@@ -210,7 +210,6 @@ class Controller {
 	public static function init() {
 		if ( \ActionScheduler_DataController::dependencies_met() ) {
 			self::instance()->hook();
-			// (new Scheduler())->hook();
 		}
 	}
 

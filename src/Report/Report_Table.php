@@ -131,9 +131,9 @@ class Report_Table extends \WP_List_Table {
 		return array(
 			self::COLUMN_CHECKBOX         => '',
 			self::COLUMN_LINK_URL         => __( 'URL', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_LINK_ARCHIVE     => __( 'Archived', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_IS_BROKEN        => __( 'Broken', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_LINK_CHECKS      => __( 'Checks', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_ARCHIVE     => __( 'Has Archived Link', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_IS_BROKEN        => __( 'Broken Link', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_CHECKS      => __( 'Check Count', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'wpcomsp_wayback_link_fixer' ),
 		);
 	}
@@ -321,11 +321,20 @@ class Report_Table extends \WP_List_Table {
 					)
 					: '<span class="dashicons dashicons-dismiss"></span>';
 			case self::COLUMN_IS_BROKEN:
-				return $item->is_broken()
-					? sprintf(
-						'<span class="dashicons dashicons-yes-alt"></span>'
-					)
-					: '<span class="dashicons dashicons-dismiss"></span>';
+				return sprintf(
+					'<span class="%s"><img src="%s" alt="%s" style="width:20px"/></span>',
+					$item->is_broken()
+						? 'wlf-broken'
+						: 'wlf-not-broken',
+					wpcomsp_wayback_link_fixer_get_image_asset_url(
+						$item->is_broken()
+							? 'error.svg'
+							: 'heart.svg'
+					),
+					$item->is_broken()
+						? esc_html__( 'Broken', 'wpcomsp_wayback_link_fixer' )
+						: esc_html__( 'Not Broken', 'wpcomsp_wayback_link_fixer' )
+				);
 			case self::COLUMN_LINK_CHECKS:
 				return count( $item->get_checks() );
 
