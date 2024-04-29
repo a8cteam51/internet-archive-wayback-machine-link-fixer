@@ -23,7 +23,7 @@ class Settings {
 
 
 	// Option keys
-	public const POST_TYPES_OPTION_KEY        = self::SETTINGS_PREFIX . 'post_types';
+	public const ALLOWED_POST_TYPES           = self::SETTINGS_PREFIX . 'post_types';
 	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
 	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
 	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
@@ -61,8 +61,8 @@ class Settings {
 	 *
 	 * @return  string[]
 	 */
-	public static function get_post_types(): array {
-		return array_map( 'esc_html', (array) get_option( self::POST_TYPES_OPTION_KEY, array( 'page', 'post' ) ) );
+	public static function get_allowed_post_types(): array {
+		return array_map( 'esc_html', (array) get_option( self::ALLOWED_POST_TYPES, array( 'page', 'post' ) ) );
 	}
 
 	/**
@@ -167,7 +167,7 @@ class Settings {
 	 * @return integer[]
 	 */
 	public static function get_valid_http_status_codes(): array {
-		$codes = array( 200 );
+		$codes = array( 200, 206 );
 		return (array) apply_filters( 'wlf_valid_http_status_codes', $codes );
 	}
 
@@ -180,5 +180,21 @@ class Settings {
 	 */
 	public static function should_scan_existing_posts(): bool {
 		return (bool) get_option( self::SCAN_EXISTING_POSTS, true );
+	}
+
+	/**
+	 * How many times does a link need to be invalid before considered broken.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return integer
+	 */
+	public static function get_failed_count(): int {
+		return absint(
+			apply_filters(
+				'wlf_failed_count',
+				3
+			)
+		);
 	}
 }

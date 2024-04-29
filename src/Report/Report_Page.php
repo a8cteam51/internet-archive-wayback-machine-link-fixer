@@ -20,7 +20,7 @@ class Report_Page {
 	/**
 	 * The page slug.
 	 */
-	private const SLUG = 'wayback-link-fixer-report';
+	private const SLUG = 'wayback-link-fixer-links';
 
 	/**
 	 * The parent page slug.
@@ -73,8 +73,8 @@ class Report_Page {
 	public function register_page(): void {
 		add_submenu_page(
 			self::PARENT_SLUG,
-			__( 'Report', 'wpcomsp_wayback_link_fixer' ),
-			__( 'Report', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Links', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Links', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
 			self::SLUG,
 			array( $this, 'render_page' )
@@ -119,7 +119,7 @@ class Report_Page {
 		echo '<div class="wrap">';
 		printf(
 			'<h1 class="wp-heading-inline">%s</h1>',
-			esc_html__( 'Link Reports', 'wpcomsp_wayback_link_fixer' ),
+			esc_html__( 'Link', 'wpcomsp_wayback_link_fixer' ),
 		);
 
 		echo '<hr class="wp-header-end">';
@@ -194,7 +194,7 @@ class Report_Page {
 			'admin/reports/link-details.php',
 			array(
 				'wlf_link'     => $link,
-				'wlf_posts'    => array_map( 'get_post', $this->link_repository->get_post_id_from_link_id( $link->get_id() ) ),
+				'wlf_posts'    => array_map( 'get_post', $this->link_repository->get_post_ids_from_link_id( $link->get_id() ) ),
 				'wlf_back_url' => wp_get_referer() ?: self::get_page_url(), // phpcs:ignore Universal.Operators.DisallowShortTernary.Found, returns false, so cant use ??
 			)
 		);

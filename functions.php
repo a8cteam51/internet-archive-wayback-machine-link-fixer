@@ -4,8 +4,10 @@ defined( 'ABSPATH' ) || exit;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Plugin;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Rest_Client\Wayback_Machine_Rest;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Link_Checker_Client;
 
 // region
 
@@ -65,22 +67,33 @@ function wpcomsp_wayback_link_fixer_get_plugin_slug(): string {
  *
  * @param integer|string $code The status code.
  *
- * @return string
+ * @return integer|null
  */
-function wpcomsp_wayback_link_fixer_escape_http_status_code( $code ): string {
+function wpcomsp_wayback_link_fixer_escape_http_status_code( $code ): ?int {
 	$code = absint( (int) $code );
-	return $code > 0 ? esc_attr( $code ) : '';
+	return $code > 0 ? $code : null;
 }
 
 /**
- * Get the current Wayback Machine Client
+ * Gets the current Snapshot Client.
  *
  * @since 1.2.0
  *
- * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Client
+ * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client
  */
-function wpcomsp_wayback_link_fixer_get_http_client(): Client {
-	return apply_filters( 'wlf_link_checker_instance', new Wayback_Machine_Rest() );
+function wpcomsp_wayback_link_fixer_get_snapshot_client(): Snapshot_Client {
+	return apply_filters( 'wlf_snapshot_client', new HTTP_Snapshot_Client() );
+}
+
+/**
+ * Gets the current Link Checker Client.
+ *
+ * @since 1.2.0
+ *
+ * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client
+ */
+function wpcomsp_wayback_link_fixer_get_link_checker_client(): Link_Checker_Client {
+	return apply_filters( 'wlf_link_checker_client', new HTTP_Link_Checker_Client() );
 }
 
 /**
@@ -184,11 +197,17 @@ CSS;
 	echo '<style>' . $css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
-// endregion
-
-//region OTHERS
-
-require WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'includes/assets.php';
-require WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'includes/settings.php';
+/**
+ * Get image asset URL from filename.
+ *
+ * @since 1.2.0
+ *
+ * @param string $filename The filename.
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_get_image_asset_url( string $filename ): string {
+	return esc_url( WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/images/' . $filename );
+}
 
 // endregion

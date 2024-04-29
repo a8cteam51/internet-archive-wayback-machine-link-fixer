@@ -136,6 +136,7 @@ class Link_Repository {
 		$archived_href = $link->get_archived_href();
 		$checks        = $link->get_checks();
 		$redirect_href = $link->get_redirect_href();
+		$is_broken     = $link->is_broken();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -148,12 +149,14 @@ class Link_Repository {
 				'archived'     => $archived_href,
 				'checks'       => $checks,
 				'redirect_url' => $redirect_href,
+				'is_broken'    => $is_broken,
 			),
 			array(
 				'%s',
 				'%s',
 				'%s',
 				'%s',
+				'%d',
 			)
 		);
 
@@ -185,6 +188,7 @@ class Link_Repository {
 		$archived_href = $link->get_archived_href();
 		$checks        = $link->get_checks();
 		$redirect_href = $link->get_redirect_href();
+		$is_broken     = $link->is_broken();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -197,6 +201,7 @@ class Link_Repository {
 				'archived'     => $archived_href,
 				'checks'       => $checks,
 				'redirect_url' => $redirect_href,
+				'is_broken'    => $is_broken,
 			),
 			array(
 				'id' => $id,
@@ -206,6 +211,7 @@ class Link_Repository {
 				'%s',
 				'%s',
 				'%s',
+				'%d',
 			),
 			array(
 				'%d',
@@ -379,7 +385,9 @@ class Link_Repository {
 
 		// If we have a date, add to the query getting the last date from json column.
 		if ( $date ) {
-			$query .= ' WHERE JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date")) LIKE \'{$date}%\'';
+			$date_range = $this->get_date_range( $date );
+			$query     .= ' WHERE STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date"))), \'%Y-%m-%d %H:%i:%s\')'; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
+			$query     .= $this->wpdb->prepare( ' BETWEEN %s AND %s', $date_range['start'], $date_range['end'] );
 		}
 
 		// Add the order by.
@@ -397,6 +405,29 @@ class Link_Repository {
 		}
 
 		return array_map( array( $this, 'map_link' ), $rows );
+	}
+
+	/**
+	 * Gets the date range from a defined date.
+	 *
+	 * @param string $date The date to get the range from.
+	 *
+	 * @return array
+	 */
+	private function get_date_range( string $date ): array {
+		// Create DateTime object from 'yyyy-mm' date.
+		$date = new \DateTime( $date );
+
+		// Get the start of the month.
+		$start = $date->format( 'Y-m-01' );
+
+		// Get the end of the month.
+		$end = $date->format( 'Y-m-t' );
+
+		return array(
+			'start' => esc_attr( $start ),
+			'end'   => esc_attr( $end ),
+		);
 	}
 
 	/**
@@ -427,6 +458,8 @@ class Link_Repository {
 				return ' ORDER BY url ASC';
 			case self::ORDER_URL_DESC:
 				return ' ORDER BY url DESC';
+			case self::ORDER_ID_ASC:
+				return ' ORDER BY id ASC';
 			case self::ORDER_ID_DESC:
 			default:
 				return ' ORDER BY id DESC';
@@ -440,7 +473,7 @@ class Link_Repository {
 	 *
 	 * @return integer[]
 	 */
-	public function get_post_id_from_link_id( int $link_id ): array {
+	public function get_post_ids_from_link_id( int $link_id ): array {
 		static $meta = null;
 		if ( null === $meta ) {
 			$meta = $this->get_all_link_meta();

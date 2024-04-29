@@ -51,9 +51,7 @@ class WP_Post_Table_Controller {
 	 * @return void
 	 */
 	private function register_hooks(): void {
-		add_filter( 'manage_pages_columns', array( $this, 'add_column' ) );
 		add_filter( 'manage_posts_columns', array( $this, 'add_column' ) );
-		add_action( 'manage_posts_custom_column', array( $this, 'render_link_column' ), 10, 2 );
 		add_action( 'manage_pages_custom_column', array( $this, 'render_link_column' ), 10, 2 );
 	}
 
@@ -102,7 +100,7 @@ class WP_Post_Table_Controller {
 		$post_type = \get_post_type();
 
 		// Get the post types from settings.
-		$allowed_post_types = Settings::get_post_types();
+		$allowed_post_types = Settings::get_allowed_post_types();
 
 		// If the post type is not in the allowed post types, return the columns.
 		if ( ! \in_array( $post_type, $allowed_post_types, true ) ) {
