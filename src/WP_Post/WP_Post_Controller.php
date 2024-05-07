@@ -151,7 +151,9 @@ class WP_Post_Controller {
 		$post_id = get_the_ID();
 
 		// Get the links.
-		$links = $this->link_repository->get_links_for_post( $post_id );
+		$links = is_numeric( $post_id ) && get_post_status( $post_id )
+			? $this->link_repository->get_links_for_post( $post_id )
+			: array();
 
 		// Get the scripts assets file.
 		$script_assets = WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'assets/js/build/front_link_checker.asset.php';
@@ -177,7 +179,7 @@ class WP_Post_Controller {
 			'wpcomsp-wayback-link-fixer-front-link-checker',
 			'wlfArchivedLinks',
 			array(
-				'links'           => $links->to_json(),
+				'links'           => wp_json_encode( $links ),
 				'linkCheckAjax'   => Link_Check_Ajax::ACTION,
 				'linkCheckNonce'  => wp_create_nonce( Link_Check_Ajax::ACTION ),
 				'linkDelayInDays' => \apply_filters( 'wlf_link_check_delay_in_days', 7 ),

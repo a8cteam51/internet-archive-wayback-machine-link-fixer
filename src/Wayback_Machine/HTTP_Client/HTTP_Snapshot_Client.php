@@ -125,7 +125,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 
 		// Trigger a none blocking wp_get request.
 		wp_remote_get(
-			esc_url( $snapshot_url ),
+			esc_url( $snapshot_url ?? '' ),
 			array(
 				'timeout'   => 100,
 				'blocking'  => false,

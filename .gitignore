@@ -83,6 +83,12 @@ lib-cov
 coverage
 *.lcov
 
+# PHPUnit and Coverage
+coverage.xml
+wordpress
+coverage-report
+.phpunit.result.cache
+
 # nyc test coverage
 .nyc_output
 
@@ -138,6 +144,7 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
+tests/.env
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -380,5 +387,9 @@ $RECYCLE.BIN/
 
 # and uncomment the following lines
 # .pnp.*
+
+# Custom
+pack
+wayback-link-fixer.zip
 
 # End of https://www.toptal.com/developers/gitignore/api/node,yarn,linux,macos,windows,sublimetext,phpstorm+all,visualstudiocode

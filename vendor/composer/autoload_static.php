@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit0036c2ef12577a19325a1f6643a32857
+class ComposerStaticInit4306a6418d6b9eb38703d40c88c8d2a0
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -37,28 +37,21 @@ class ComposerStaticInit0036c2ef12577a19325a1f6643a32857
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link\\Link' => __DIR__ . '/../..' . '/src/Link/Link.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link\\Link_Collection' => __DIR__ . '/../..' . '/src/Link/Link_Collection.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link\\Link_Repository' => __DIR__ . '/../..' . '/src/Link/Link_Repository.php',
-        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link_Checker\\Link_Check_Ajax' => __DIR__ . '/../..' . '/src/Link_Checker/Link_Check_Ajax.php',
-        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link_Checker\\Link_Checker' => __DIR__ . '/../..' . '/src/Link_Checker/Link_Checker.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Migration\\Abstract_Migration' => __DIR__ . '/../..' . '/src/Migration/Abstract_Migration.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Migration\\Migrations' => __DIR__ . '/../..' . '/src/Migration/Migrations.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Plugin' => __DIR__ . '/../..' . '/src/Plugin.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Processor\\Content_Scanner' => __DIR__ . '/../..' . '/src/Processor/Content_Scanner.php',
-        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Processor\\Post_Handler' => __DIR__ . '/../..' . '/src/Processor/Post_Handler.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Processor\\Post_Processor' => __DIR__ . '/../..' . '/src/Processor/Post_Processor.php',
-        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Processor\\Post_Scanner' => __DIR__ . '/../..' . '/src/Processor/Post_Scanner.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Report\\Report_Page' => __DIR__ . '/../..' . '/src/Report/Report_Page.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Report\\Report_Table' => __DIR__ . '/../..' . '/src/Report/Report_Table.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Settings\\Settings' => __DIR__ . '/../..' . '/src/Settings/Settings.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Settings\\Settings_Page' => __DIR__ . '/../..' . '/src/Settings/Settings_Page.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\WP_Post\\WP_Post_Controller' => __DIR__ . '/../..' . '/src/WP_Post/WP_Post_Controller.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\WP_Post\\WP_Post_Table_Controller' => __DIR__ . '/../..' . '/src/WP_Post/WP_Post_Table_Controller.php',
-        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/Client.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\HTTP_Client\\HTTP_Link_Checker_Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/HTTP_Client/HTTP_Link_Checker_Client.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\HTTP_Client\\HTTP_Snapshot_Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/HTTP_Client/HTTP_Snapshot_Client.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Link_Checker_Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/Link_Checker_Client.php',
-        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Rest_Client\\Wayback_Machine_Rest' => __DIR__ . '/../..' . '/src/Wayback_Machine/Rest_Client/Wayback_Machine_Rest.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Snapshot_Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/Snapshot_Client.php',
-        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Wayback_Machine_Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/Wayback_Machine_Client.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Wayback_Machine_Service' => __DIR__ . '/../..' . '/src/Wayback_Machine/Wayback_Machine_Service.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_1' => __DIR__ . '/../..' . '/migrations/Migration_1.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_2' => __DIR__ . '/../..' . '/migrations/Migration_2.php',
@@ -68,9 +61,9 @@ class ComposerStaticInit0036c2ef12577a19325a1f6643a32857
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit0036c2ef12577a19325a1f6643a32857::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit0036c2ef12577a19325a1f6643a32857::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit0036c2ef12577a19325a1f6643a32857::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4306a6418d6b9eb38703d40c88c8d2a0::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4306a6418d6b9eb38703d40c88c8d2a0::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4306a6418d6b9eb38703d40c88c8d2a0::$classMap;
 
         }, null, ClassLoader::class);
     }

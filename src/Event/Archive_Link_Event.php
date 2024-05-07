@@ -141,6 +141,6 @@ class Archive_Link_Event {
 		}
 
 		// return the archive url
-		return esc_url( $archive_url['url'] );
+		return esc_url( $archive_url['url'] ?? '' );
 	}
 }

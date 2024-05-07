@@ -137,7 +137,7 @@ class Report_Page {
 					// translators: %1$s is the post title, %2$s is the link to view all links.
 					__( 'Showing links for %1$s <a href="%2$s">(Show all links)</a>', 'wpcomsp_wayback_link_fixer' ),
 					esc_html( $post->post_title ),
-					esc_url( self::get_page_url() )
+					esc_url( self::get_page_url() ?? '' )
 				);
 
 				printf(

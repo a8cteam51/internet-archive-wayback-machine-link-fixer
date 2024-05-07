@@ -4,7 +4,7 @@
  * The wayback-link-fixer bootstrap file.
  *
  * @since       1.0.0
- * @version     1.1.0
+ * @version     1.1.1
  * @author      WordPress.com Special Projects
  * @license     GPL-3.0-or-later
  *
