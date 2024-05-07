@@ -68,6 +68,5 @@ if ( ! function_exists( 'action_scheduler_register_3_dot_7_dot_4' ) && function_
 		action_scheduler_initialize_3_dot_7_dot_4(); // WRCS: DEFINED_VERSION.
 		do_action( 'action_scheduler_pre_theme_init' );
 		ActionScheduler_Versions::initialize_latest_version();
-			dump( 'init' );
 	}
 }
