@@ -21,6 +21,19 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
 class Test_WP_Post_Controller extends \WP_UnitTestCase {
 
 	/**
+	 * On tear down, ensure all localised data is removed.
+	 *
+	 * @return void
+	 */
+	public function tearDown(): void {
+		// Remove any global post.
+		// unset( $GLOBALS['post'] );
+
+		// Clear all enqueued scripts.
+		// wp_dequeue_script( 'wpcomsp-wayback-link-fixer-front-link-checker' );
+	}
+
+	/**
 	 * @testdox It should be possible to create a post that has links in the contents and have the links added to the meta array.
 	 *
 	 * @return void
@@ -121,10 +134,13 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 
 	/**
 	 * @testdox When called from the front end, the front end script should be enqueued with all the posts links passed in a localized data.
-	 *
+	 * @group localized-data
 	 * @return void
 	 */
 	public function test_front_end_script_is_enqueued(): void {
+		// Clear the wp-scripts global.
+		wp_scripts()->registered = array();
+
 		$post_id = \WP_UnitTestCase_Base::factory()->post->create();
 
 		$GLOBALS['post'] = get_post( $post_id );
@@ -160,11 +176,14 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Check the localized data.
 		$localized_data = wp_scripts()->get_data( 'wpcomsp-wayback-link-fixer-front-link-checker', 'data' );
 
+		// Clean up.
+		unset( $GLOBALS['post'] );
+
 		// Check starts with var wlfArchivedLinks =
 		$this->assertStringStartsWith( 'var wlfArchivedLinks = ', $localized_data );
 
 		// Extract everything between first and last {}
-		$matches = [];
+		$matches = array();
 		preg_match( '/\{.*\}/', $localized_data, $matches );
 		$data = json_decode( $matches[0], true );
 
@@ -176,7 +195,63 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$this->assertArrayHasKey( 'ajaxUrl', $data );
 
 		// Check we have 2 links
-		$this->assertCount( 2, json_decode($data['links'], true) );
+		$this->assertCount( 2, json_decode( $data['links'], true ) );
+	}
+
+	/**
+	 * @testdox When a post has no links and its not been scanned, do not attempt to add any links to the localized data.
+	 * @group localized-data
+	 * @see https://github.com/a8cteam51/wayback-link-fixer/issues/48
+	 * @since 1.1.1
+	 *
+	 * @return void
+	 */
+	public function test_no_links_no_localized_data(): void {
+		// Clear the wp-scripts global.
+		wp_scripts()->registered = array();
+
+		// Create a post with no links and set as the global post (we set an invalid ID to mock unprocessed post)
+		$post_id         = \WP_UnitTestCase_Base::factory()->post->create() + 9999;
+		$GLOBALS['post'] = get_post( $post_id );
+
+		$handler = new WP_Post_Controller();
+
+		// Get the post meta.
+		$meta = get_post_meta( $post_id, Settings::LINK_META_KEY, true );
+		$this->assertEquals( '', $meta );
+
+		// Enqueue the script.
+		$handler->enqueue_frontend_script();
+
+		// Trigger the action.
+		do_action( 'wp_enqueue_scripts' );
+
+		// Check the script is enqueued.
+		$this->assertTrue( wp_script_is( 'wpcomsp-wayback-link-fixer-front-link-checker' ) );
+
+		// Check the localized data.
+		$localized_data = wp_scripts()->get_data( 'wpcomsp-wayback-link-fixer-front-link-checker', 'data' );
+
+		// Clean up.
+		unset( $GLOBALS['post'] );
+
+		// Check starts with var wlfArchivedLinks =
+		$this->assertStringStartsWith( 'var wlfArchivedLinks = ', $localized_data );
+
+		// Extract everything between first and last {}
+		$matches = array();
+		preg_match( '/\{.*\}/', $localized_data, $matches );
+		$data = json_decode( $matches[0], true );
+
+		$this->assertIsArray( $data );
+		$this->assertArrayHasKey( 'linkCheckNonce', $data );
+		$this->assertArrayHasKey( 'linkDelayInDays', $data );
+		$this->assertArrayHasKey( 'linkCheckAjax', $data );
+		$this->assertArrayHasKey( 'links', $data );
+		$this->assertArrayHasKey( 'ajaxUrl', $data );
+
+		// Check we have 0 links
+		$this->assertEmpty( json_decode( $data['links'], true ) );
 
 		// Clean up.
 		unset( $GLOBALS['post'] );

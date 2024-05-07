@@ -21,7 +21,7 @@ define( 'FIXTURES_PATH', __DIR__ . '/Fixtures' );
 
 
 tests_add_filter(
-	'plugins_loaded',
+	'muplugins_loaded',
 	function () {
 		// Activate the plugin.
 		include_once ABSPATH . 'wp-admin/includes/plugin.php';

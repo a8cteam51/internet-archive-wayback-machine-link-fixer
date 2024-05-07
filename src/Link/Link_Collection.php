@@ -13,7 +13,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 /**
  * Link collection class.
  */
-class Link_Collection {
+class Link_Collection implements \JsonSerializable {
 
 	/**
 	 * The post ID.
@@ -74,6 +74,17 @@ class Link_Collection {
 	 * @return string
 	 */
 	public function to_json(): string {
-		return wp_json_encode( $this->links );
+		return wp_json_encode( $this->jsonSerialize() );
+	}
+
+	/**
+	 * Get the links as an array.
+	 *
+	 * @since 1.1.1
+	 *
+	 * @return array
+	 */
+	public function jsonSerialize(): array {
+		return $this->links;
 	}
 }

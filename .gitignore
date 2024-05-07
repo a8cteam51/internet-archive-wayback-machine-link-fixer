@@ -388,4 +388,8 @@ $RECYCLE.BIN/
 # and uncomment the following lines
 # .pnp.*
 
+# Custom
+pack
+wayback-link-fixer.zip
+
 # End of https://www.toptal.com/developers/gitignore/api/node,yarn,linux,macos,windows,sublimetext,phpstorm+all,visualstudiocode

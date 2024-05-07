@@ -94,6 +94,6 @@ class Wayback_Machine_Service {
 			return null;
 		}
 
-		return esc_url( $latest_snapshot['url'] );
+		return esc_url( $latest_snapshot['url'] ?? '' );
 	}
 }

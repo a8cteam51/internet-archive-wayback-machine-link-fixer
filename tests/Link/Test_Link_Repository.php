@@ -47,6 +47,9 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 
 		$this->link_repository = new Link_Repository();
 		$this->link_ids        = array();
+
+		// Empty the table.
+		$GLOBALS['wpdb']->query( 'TRUNCATE TABLE ' . Settings::get_link_table_name() );
 	}
 
 	/**

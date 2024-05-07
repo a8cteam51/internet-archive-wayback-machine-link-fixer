@@ -47,7 +47,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 
 		// Return the location if it exists, otherwise return the original url.
 		return isset( $response['location'] )
-			? esc_url( $response['location'] )
+			? esc_url( $response['location'] ?? '' )
 			: $url;
 	}
 
