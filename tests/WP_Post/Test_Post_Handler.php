@@ -202,7 +202,7 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	 * @testdox When a post has no links and its not been scanned, do not attempt to add any links to the localized data.
 	 * @group localized-data
 	 * @see https://github.com/a8cteam51/wayback-link-fixer/issues/48
-	 * @since 1.1.1
+	 * @since 1.1.1-m "TR-m "
 	 *
 	 * @return void
 	 */

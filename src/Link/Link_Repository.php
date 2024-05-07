@@ -261,8 +261,8 @@ class Link_Repository {
 		$link = new Link( esc_url( $row->url ?? '' ) );
 		$link
 			->set_id( (int) $row->id )
-			->set_archived_href( esc_url( $row->archived ) ?? '' )
-			->set_redirect_href( esc_url( $row->redirect_url ) ?? '' );
+			->set_archived_href( esc_url( $row->archived ?? '' ) )
+			->set_redirect_href( esc_url( $row->redirect_url ?? '' ) );
 
 		// Iterate through the checks and add them to the link.
 		$checks = json_decode( $row->checks, true );
