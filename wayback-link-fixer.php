@@ -14,7 +14,7 @@
  * Plugin Name:             Wayback Link Fixer
  * Plugin URI:              https://wpspecialprojects.wordpress.com
  * Description:             Scans links in your content and fixes them to use the Wayback Machine, archived version.
- * Version:                 1.1.0
+ * Version:                 1.1.1
  * Requires at least:       6.2
  * Tested up to:            6.2
  * Requires PHP:            8.0
