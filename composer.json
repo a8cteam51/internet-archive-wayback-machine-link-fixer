@@ -59,6 +59,13 @@
         }
     },
     "scripts": {
+        "run:php": [
+            "composer install --ignore-platform-reqs --no-interaction",
+            "@test:php",
+            "@format:php",
+            "@lint:php",
+            "composer install --ignore-platform-reqs --no-interaction --no-dev -o"
+        ],
         "generate-autoloader": "@composer dump-autoload -o",
         "scope-php-dependencies": [
             "vendor/bin/php-scoper add-prefix --prefix=WPCOMSpecialProjects\\\\Wayback_Link_Fixer_Deps --output-dir=./dependencies --config=.php-scoper.inc.php --force --quiet",
@@ -66,7 +73,6 @@
         ],
         "test:php": "./vendor/bin/phpunit --testdox --colors=always",
         "coverage:php": "./vendor/bin/phpunit --coverage-html=coverage --coverage-text --colors=always --testdox",
-        "analyze:php": "phpstan analyse -l8",
         "format:php": "phpcbf --standard=./.phpcs.xml --basepath=. . -v",
         "lint:php": "phpcs --standard=./.phpcs.xml --basepath=. . -v",
         "internationalize": [
@@ -74,7 +80,7 @@
             "@updatepo",
             "@makejson"
         ],
-        "makepot": "wp i18n make-pot .",
+        "makepot": "wp i18n make-pot . --exclude=vendor,node_modules,pack,tests,lib,migrations,coverage,coverate-reports ",
         "updatepo": "wp i18n update-po ./languages/wayback-link-fixer.pot",
         "makejson": "wp i18n make-json ./languages --pretty-print --no-purge",
         "makemo": "wp i18n make-mo ./languages",

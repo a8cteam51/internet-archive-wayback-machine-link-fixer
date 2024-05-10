@@ -62,7 +62,6 @@ class Update_Archive_URL_Event {
 	 */
 	public function setup(): void {
 		$this->max_attempts = \apply_filters( 'wlf_max_archive_attempts', $this->max_attempts );
-		$this->max_attempts = 99999;
 
 		$this->wayback_machine = new Wayback_Machine_Service();
 		$this->repository      = new Link_Repository();

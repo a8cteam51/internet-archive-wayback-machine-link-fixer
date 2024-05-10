@@ -1,10 +1,9 @@
 <?php
-
 /**
  * The wayback-link-fixer bootstrap file.
  *
  * @since       1.0.0
- * @version     1.1.1
+ * @version     1.1.2
  * @author      WordPress.com Special Projects
  * @license     GPL-3.0-or-later
  *
@@ -14,10 +13,10 @@
  * Plugin Name:             Wayback Link Fixer
  * Plugin URI:              https://wpspecialprojects.wordpress.com
  * Description:             Scans links in your content and fixes them to use the Wayback Machine, archived version.
- * Version:                 1.1.1
+ * Version:                 1.1.2
  * Requires at least:       6.2
  * Tested up to:            6.2
- * Requires PHP:            8.0
+ * Requires PHP:            7.4
  * Author:                  WordPress.com Special Projects
  * Author URI:              https://wpspecialprojects.wordpress.com
  * License:                 GPL v3 or later

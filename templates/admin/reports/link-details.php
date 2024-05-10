@@ -10,6 +10,8 @@
  */
 ?>
 <div class="wrap">
+	<h1><?php echo esc_html( $wlf_link->get_href() ); ?></h1>
+
 	<a href="<?php echo esc_url( $wlf_back_url ); ?>" class="page-title">Back to report</a>
 
 	<p>Link URL - <?php echo esc_html( $wlf_link->get_href() ); ?></p>
