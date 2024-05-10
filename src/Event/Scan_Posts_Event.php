@@ -13,7 +13,8 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Handler;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
+
 
 /**
  * Scan Posts Event class.
@@ -42,9 +43,9 @@ class Scan_Posts_Event {
 	/**
 	 * The post handler.
 	 *
-	 * @var Post_Handler
+	 * @var WP_Post_Controller
 	 */
-	private $post_handler;
+	private $post_controller;
 
 
 	/**
@@ -56,7 +57,7 @@ class Scan_Posts_Event {
 	public function setup(): void {
 		$this->posts_per_call     = Settings::get_posts_per_batch();
 		$this->allowed_post_types = Settings::get_allowed_post_types();
-		$this->post_handler       = new Post_Handler();
+		$this->post_controller    = new WP_Post_Controller();
 	}
 
 	/**
@@ -120,7 +121,7 @@ class Scan_Posts_Event {
 		if ( $query->have_posts() ) {
 			// Iterate over the posts.
 			foreach ( $query->posts as $post ) {
-				$this->post_handler->process_single_post( $post->ID );
+				$this->post_controller->process_single_post( $post->ID );
 			}
 		}
 
