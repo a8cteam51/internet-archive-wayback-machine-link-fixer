@@ -48,7 +48,7 @@ class Archive_Link_Event {
 	 * @return void
 	 */
 	public function setup(): void {
-		$this->link_checker    = new Link_Checker();
+		$this->link_checker    = wpcomsp_wayback_link_fixer_get_link_checker_client();
 		$this->link_repository = new Link_Repository();
 		$this->snapshots       = wpcomsp_wayback_link_fixer_get_snapshot_client();
 	}

@@ -1,5 +1,11 @@
 <?php
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
+use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1;
+use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_2;
+use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_3;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Update_Archive_URL_Event;
+
 /**
  * The wayback-link-fixer bootstrap file.
  *
@@ -17,7 +23,7 @@
  * Version:                 1.1.2
  * Requires at least:       6.2
  * Tested up to:            6.2
- * Requires PHP:            8.0
+ * Requires PHP:            7.4
  * Author:                  WordPress.com Special Projects
  * Author URI:              https://wpspecialprojects.wordpress.com
  * License:                 GPL v3 or later
@@ -96,3 +102,14 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
+
+add_action('init', function(){
+	if(! isset($_GET['foo'])){
+		return;
+	}
+
+	$hand = new Update_Archive_URL_Event();
+
+	$hand(69);
+	dd(1);
+});
