@@ -102,14 +102,3 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
-
-add_action('init', function(){
-	if(! isset($_GET['foo'])){
-		return;
-	}
-
-	$hand = new Update_Archive_URL_Event();
-
-	$hand(69);
-	dd(1);
-});
