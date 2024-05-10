@@ -1,11 +1,4 @@
 <?php
-
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
-use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1;
-use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_2;
-use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_3;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Update_Archive_URL_Event;
-
 /**
  * The wayback-link-fixer bootstrap file.
  *
