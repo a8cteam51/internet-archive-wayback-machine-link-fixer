@@ -178,7 +178,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), Link_Repository::ORDER_DATE_DESC );
+		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC );
 
 		// We should have the first two links
 		$expected = array(
@@ -201,7 +201,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), Link_Repository::ORDER_DATE_ASC );
+		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), array(), Link_Repository::ORDER_DATE_ASC );
 
 		// We should have the first two links
 		$expected = array(
@@ -224,7 +224,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), Link_Repository::ORDER_ID_ASC );
+		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), array(), Link_Repository::ORDER_ID_ASC );
 
 		// We should have the first two from data provider
 		$expected = array(
@@ -247,7 +247,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), Link_Repository::ORDER_ID_DESC );
+		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(),  array(), Link_Repository::ORDER_ID_DESC );
 
 		// We should have the first two links
 		$expected = array(
@@ -270,7 +270,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), Link_Repository::ORDER_URL_ASC );
+		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(),  array(), Link_Repository::ORDER_URL_ASC );
 
 		// We should have the first two links
 		$expected = array(
@@ -353,7 +353,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), Link_Repository::ORDER_URL_DESC );
+		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(),  array(), Link_Repository::ORDER_URL_DESC );
 
 		// We should have the first two links
 		$expected = array(
@@ -429,20 +429,20 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_query_links_by_ids(): void {
-		// Insert the default links.
-		$this->populate_database();
+	 // Insert the default links.
+	 $this->populate_database();
 
-		// Get first 5 link ids.
-		$link_ids = array_slice( $this->link_ids, 0, 5 );
+	 // Get first 5 link ids.
+	 $link_ids = array_slice( $this->link_ids, 0, 5 );
 
-		// Query the links.
-		$queried_links = $this->link_repository->query_links( 10, 1, array(), $link_ids );
+	 // Query the links.
+	 $queried_links = $this->link_repository->query_links( 10, 1, array(), $link_ids );
 
-		$this->assertCount( 5, $queried_links );
+	 $this->assertCount( 5, $queried_links );
 
-		foreach ( $queried_links as $index => $link ) {
-			$this->assertContains( $link->get_id(), $link_ids );
-		}
+	 foreach ( $queried_links as $index => $link ) {
+	     $this->assertContains( $link->get_id(), $link_ids );
+	 }
 	}
 
 	/**
@@ -455,7 +455,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 10, 1, array(), array(), Link_Repository::ORDER_DATE_DESC, '2022-01' );
+		$queried_links = $this->link_repository->query_links( 10, 1, array(), array(),  array(), Link_Repository::ORDER_DATE_DESC, null, '2022-01' );
 
 		$this->assertCount( 1, $queried_links );
 
@@ -501,6 +501,30 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		// Clean up.
 		foreach ( $post_ids as $post_id ) {
 			delete_post_meta( $post_id, Settings::LINK_META_KEY );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to search links using partial URLs.
+	 *
+	 * @return void
+	 */
+	public function test_can_search_links_by_partial_url(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links( 10, 1, array(), array(),  array(), Link_Repository::ORDER_DATE_DESC, 'glynn' );
+
+		$this->assertCount( 1, $queried_links );
+
+		// We should get back this site only.
+		$expected = array(
+			'https://glynn.com', // Matches the last date of 3 checks {"date":"2022-01-01 00:00:00","http_code":200}
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertContains( $link->get_href(), $expected );
 		}
 	}
 
