@@ -12,7 +12,9 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\Link_Checker;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Update_Archive_URL_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 /**
  * Archive Link Event class.
@@ -22,13 +24,6 @@ class Archive_Link_Event {
 	public const HANDLE = 'wpcomsp_wayback_link_fixer_archive_link';
 
 	/**
-	 * The Link Checker.
-	 *
-	 * @var Link_Checker
-	 */
-	private $link_checker;
-
-	/**
 	 * The link repository.
 	 *
 	 * @var Link_Repository
@@ -36,11 +31,11 @@ class Archive_Link_Event {
 	private $link_repository;
 
 	/**
-	 * Snapshot client.
+	 * The wayback machine service.
 	 *
-	 * @var Snapshot_Client
+	 * @var Wayback_Machine_Service
 	 */
-	private $snapshots;
+	private $wayback_machine;
 
 	/**
 	 * Sets up the events dependencies, but delayed until its called.
@@ -48,9 +43,8 @@ class Archive_Link_Event {
 	 * @return void
 	 */
 	public function setup(): void {
-		$this->link_checker    = wpcomsp_wayback_link_fixer_get_link_checker_client();
 		$this->link_repository = new Link_Repository();
-		$this->snapshots       = wpcomsp_wayback_link_fixer_get_snapshot_client();
+		$this->wayback_machine = new Wayback_Machine_Service();
 	}
 
 	/**
@@ -58,10 +52,10 @@ class Archive_Link_Event {
 	 *
 	 * @param integer $link_id The link id.
 	 *
-	 * @return void
+	 * @return integer
 	 */
-	public static function add_to_queue( int $link_id ): void {
-		as_enqueue_async_action( self::HANDLE, array( 'link_id' => $link_id ), 'wayback-link-fixer' );
+	public static function add_to_queue( int $link_id ): int {
+		return as_enqueue_async_action( self::HANDLE, array( 'link_id' => $link_id ), 'wayback-link-fixer' );
 	}
 
 	/**
@@ -90,7 +84,7 @@ class Archive_Link_Event {
 		}
 
 		// Ensure we are working with the final link, incase its been redirected.
-		$link_url = $this->link_checker->get_final_url( $link->get_href() );
+		$link_url = $this->wayback_machine->get_final_url( $link->get_href() );
 
 		// If the link url is different to the href, update the link.
 		if ( $link_url !== $link->get_href() ) {
@@ -104,7 +98,7 @@ class Archive_Link_Event {
 
 		// If we don't have an archived link, create a snapshot
 		if ( null === $archive_url ) {
-			$this->snapshots->create_snapshot( $link_url );
+			$this->wayback_machine->create_snapshot( $link_url );
 
 			// Add the event to update the the link with the archive URL (this is run later, to allow Wayback time to process the snapshot)
 			Update_Archive_URL_Event::add_to_queue( $link_id, 0, 15 * MINUTE_IN_SECONDS );
@@ -133,7 +127,7 @@ class Archive_Link_Event {
 	 * @return string|null The URL of the archived link.
 	 */
 	private function get_archived_link( string $url ): ?string {
-		$archive_url = $this->snapshots->get_latest_snapshot( $url );
+		$archive_url = $this->wayback_machine->get_latest_snapshot( $url );
 
 		// if we dont have an archive url, return null
 		if ( null === $archive_url ) {

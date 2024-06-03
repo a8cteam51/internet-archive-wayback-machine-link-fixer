@@ -52,7 +52,9 @@ class WP_Post_Table_Controller {
 	 */
 	private function register_hooks(): void {
 		add_filter( 'manage_posts_columns', array( $this, 'add_column' ) );
+		add_filter( 'manage_pages_columns', array( $this, 'add_column' ) );
 		add_action( 'manage_pages_custom_column', array( $this, 'render_link_column' ), 10, 2 );
+		add_action( 'manage_posts_custom_column', array( $this, 'render_link_column' ), 10, 2 );
 	}
 
 	/**
@@ -97,8 +99,7 @@ class WP_Post_Table_Controller {
 	 */
 	public function add_column( array $columns ): array {
 		// Get the post type.
-		$post_type = \get_post_type();
-
+		$post_type = \get_current_screen()->post_type;
 		// Get the post types from settings.
 		$allowed_post_types = Settings::get_allowed_post_types();
 

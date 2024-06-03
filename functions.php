@@ -161,17 +161,6 @@ function wpcomsp_wayback_link_fixer_enqueue_select2_assets( array $deps = array(
 }
 
 /**
- * Get the sites date/time format.
- *
- * @since 1.1.0
- *
- * @return string
- */
-function wpcomsp_wayback_link_fixer_get_date_time_format(): string {
-	return esc_attr( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) );
-}
-
-/**
  * Render the CSS used for archived links in the header.
  *
  * @since 1.1.0
@@ -208,6 +197,25 @@ CSS;
  */
 function wpcomsp_wayback_link_fixer_get_image_asset_url( string $filename ): string {
 	return esc_url( WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/images/' . $filename );
+}
+
+/**
+ * Trims a string based on a defined length with a suffix.
+ *
+ * @since 1.2.0
+ *
+ * @param string  $text   The text to trim.
+ * @param integer $length The length to trim to.
+ * @param string  $suffix The suffix to append.
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_trim_string( string $text, int $length, string $suffix = '...' ): string {
+	if ( mb_strlen( $text ) <= $length ) {
+		return $text;
+	}
+
+	return mb_strimwidth( $text, 0, $length, $suffix );
 }
 
 // endregion

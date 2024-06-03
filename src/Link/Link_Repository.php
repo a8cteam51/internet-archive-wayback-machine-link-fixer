@@ -21,6 +21,8 @@ class Link_Repository {
 
 	public const LINK_STATUS_BROKEN = 1;
 	public const LINK_STATUS_OK     = 0;
+	public const LINK_HAS_ARCHIVE   = 1;
+	public const LINK_NO_ARCHIVE    = 0;
 	public const ORDER_DATE_ASC     = 'date_asc';
 	public const ORDER_DATE_DESC    = 'date_desc';
 	public const ORDER_ID_ASC       = 'id_asc';
@@ -325,12 +327,14 @@ class Link_Repository {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param integer     $limit    The limit of links to return.
-	 * @param integer     $page     The page of links to return.
-	 * @param array       $status   The status of the links to return.
-	 * @param array       $link_ids The link ids to query.
-	 * @param string      $order_by The order by.
-	 * @param string|NULL $date     The date of the links to return (yy-mm).
+	 * @param integer     $limit          The limit of links to return.
+	 * @param integer     $page           The page of links to return.
+	 * @param array       $status         The status of the links to return.
+	 * @param array       $link_ids       The link ids to query.
+	 * @param array       $archive_status The archive status of the links to return.
+	 * @param string      $order_by       The order by.
+	 * @param string|NULL $search_term    The search term to query.
+	 * @param string|NULL $date           The date of the links to return (yy-mm).
 	 *
 	 * @return Link[]
 	 */
@@ -339,15 +343,24 @@ class Link_Repository {
 		int $page = 1,
 		array $status = array(),
 		array $link_ids = array(),
+		array $archive_status = array(),
 		string $order_by = self::ORDER_DATE_DESC,
+		?string $search_term = null,
 		?string $date = null
 	): array {
-
 		// Remove any invalid statuses.
 		$status = array_filter(
 			$status,
 			function ( $status ): bool {
-				return is_int( $status ) && in_array( $status, array( self::LINK_STATUS_BROKEN, self::LINK_STATUS_OK ), true );
+				return is_numeric( $status ) && in_array( (int) $status, array( self::LINK_STATUS_BROKEN, self::LINK_STATUS_OK ), true );
+			}
+		);
+
+		// Remove any invalid archive statuses.
+		$archive_status = array_filter(
+			$archive_status,
+			function ( $status ): bool {
+				return is_numeric( $status ) && in_array( (int) $status, array( self::LINK_HAS_ARCHIVE, self::LINK_NO_ARCHIVE ), true );
 			}
 		);
 
@@ -371,23 +384,47 @@ class Link_Repository {
 		// Prepare the query.
 		$query = "SELECT * FROM {$this->table_name}";
 
+		// Where statement has been used.
+		$where = false;
+
 		// If we have statuses, add to the query.
 		if ( ! empty( $status ) ) {
 			$statuses = implode( ',', array_map( 'sanitize_text_field', $status ) );
 			$query   .= " WHERE is_broken IN ({$statuses})";
+			$where    = true;
+		}
+
+		// If we have archive statuses, add to the query.
+		if ( ! empty( $archive_status ) ) {
+			$query .= true === $where ? ' AND' : ' WHERE';
+			$query .= boolval( $archive_status[0] ) ? ' archived != ""' : ' archived = ""';
+			$where  = true;
 		}
 
 		// If we have link ids, add to the query.
 		if ( ! empty( $link_ids ) ) {
 			$ids    = implode( ',', array_map( 'absint', $link_ids ) );
-			$query .= " WHERE id IN ({$ids})";
+			$query .= true === $where ? ' AND' : ' WHERE';
+			$query .= " id IN ({$ids})";
+			$where  = true;
 		}
 
 		// If we have a date, add to the query getting the last date from json column.
 		if ( $date ) {
 			$date_range = $this->get_date_range( $date );
-			$query     .= ' WHERE STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date"))), \'%Y-%m-%d %H:%i:%s\')'; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
+			$query     .= true === $where ? ' AND' : ' WHERE';
+			$query     .= ' STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date"))), \'%Y-%m-%d %H:%i:%s\')'; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
 			$query     .= $this->wpdb->prepare( ' BETWEEN %s AND %s', $date_range['start'], $date_range['end'] );
+			$where      = true;
+		}
+
+		// If we have a search term, add to the query.
+		if ( $search_term ) {
+			$search_term = sanitize_text_field( $search_term );
+			$query      .= true === $where ? ' AND' : ' WHERE';
+			$query      .= ' url LIKE %s';
+			$query       = $this->wpdb->prepare( $query, '%' . $search_term . '%' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
+			$where       = true;
 		}
 
 		// Add the order by.

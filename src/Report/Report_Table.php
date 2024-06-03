@@ -12,6 +12,10 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Check_Action;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Archive_Link_Event;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Rescan_Action;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Util\List_Table_Action_Notification_Cache;
 
 /**
  * The report table class.
@@ -21,11 +25,13 @@ class Report_Table extends \WP_List_Table {
 	// Table columns.
 	public const COLUMN_CHECKBOX         = 'cb';
 	public const COLUMN_POSTS            = 'report-post-id';
-	public const COLUMN_IS_BROKEN        = 'report-is-broken';
+	public const COLUMN_LINK_HEALTH      = 'report-is-broken';
 	public const COLUMN_LINK_URL         = 'report-link-url';
 	public const COLUMN_LINK_ARCHIVE     = 'report-link-archive';
 	public const COLUMN_LINK_CHECKS      = 'report-link-checks';
 	public const COLUMN_LINK_CHECKS_LAST = 'report-link-checks-last';
+
+
 
 
 
@@ -55,18 +61,46 @@ class Report_Table extends \WP_List_Table {
 	 * @param Link_Repository $links The links repository.
 	 */
 	public function __construct( Link_Repository $links ) {
-		$this->links = $links;
-
 		// Populate the parent class properties.
 		parent::__construct(
 			array(
 				'singular' => 'report',
 				'plural'   => 'reports',
-				'ajax'     => false,
+				'ajax'     => true,
 			)
 		);
+
+		$this->links = $links;
+
+		// Attempt to get any cached notifications.
+		$this->populate_cached_notifications();
 	}
 
+	/**
+	 * Populated any cached notifications.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return void
+	 */
+	private function populate_cached_notifications(): void {
+		// Check if 'wlf_completed_action' is set in url.
+		if ( ! array_key_exists( 'wlf_completed_action', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			return;
+		}
+
+		// Check the cache key is set in url.
+		if ( ! array_key_exists( 'wlf_notification', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			return;
+		}
+
+		$key    = sanitize_text_field( $_GET['wlf_notification'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		$action = sanitize_text_field( $_GET['wlf_completed_action'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+
+		// Get the cache and populate the notices.
+		$cache         = new List_Table_Action_Notification_Cache( $action );
+		$this->notices = $cache->get( $key );
+	}
 
 	/**
 	 * Number of links per page to render.
@@ -76,10 +110,315 @@ class Report_Table extends \WP_List_Table {
 	 * @return integer
 	 */
 	private function get_links_per_page(): int {
-		return 10;
+		$option = get_current_screen()->get_option( 'per_page' );
+
+		// If the option is not set, return 10.
+		if ( ! $option ) {
+			return 10;
+		}
+
+		$from_meta = get_user_meta( get_current_user_id(), $option['option'], true );
+
+		return \is_numeric( $from_meta )
+			? absint( $from_meta )
+			: absint( $option['default'] );
 	}
 
+	/**
+	 * Set the column checkbox.
+	 *
+	 * @param Link $link The link being rendered on this row.
+	 *
+	 * @return string
+	 */
+	public function column_cb( $link ): string {
+		return sprintf(
+			'<input type="checkbox" name="%1$s[]" value="%2$s" />',
+			'wlf_link_action',
+			$link->get_id()
+		);
+	}
 
+	/**
+	 * Process the bulk actions.
+	 *
+	 * @return void
+	 */
+	public function process_bulk_action(): void {
+
+		// If action or action2 not set in url, return.
+		if ( ! array_key_exists( 'action', $_REQUEST ) && ! array_key_exists( 'action2', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			return;
+		}
+
+		// Verify the nonce and referrer.
+		if ( ! \wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) && check_admin_referer( 'bulk-' . $this->_args['plural'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			// Add a notice.
+			$this->notices[] = array(
+				'message' => __( 'Something went wrong, please try again', 'wpcomsp_wayback_link_fixer' ),
+				'type'    => 'error',
+			);
+
+			return;
+		}
+
+		$current_action = $this->current_action();
+
+		if ( ! in_array( $current_action, array( 'rescan', 'update', 'check' ), true ) ) {
+			return;
+		}
+
+		$links = array_key_exists( 'wlf_link_action', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? array_map( 'absint', $_GET['wlf_link_action'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			: array();
+
+		if ( empty( $links ) ) {
+			$this->notices[] = array(
+				'message' => __( 'No links selected.', 'wpcomsp_wayback_link_fixer' ),
+				'type'    => 'error',
+			);
+			return;
+		}
+
+		switch ( $current_action ) {
+			case 'check':
+				$this->process_check_action( $links );
+				$this->redirect_after_action();
+				break;
+
+			case 'rescan':
+				$this->process_rescan_action( $links );
+				$this->redirect_after_action();
+				break;
+
+			case 'update':
+				$this->process_update_action( $links );
+				$this->redirect_after_action();
+				break;
+
+			default:
+				// Generate an error notification unknown action.
+				$this->notices[] = array(
+					'message' => __( 'Unknown action.', 'wpcomsp_wayback_link_fixer' ),
+					'type'    => 'error',
+				);
+				break;
+		}
+	}
+
+	/**
+	 * Redirect after action is processed.
+	 *
+	 * @return never|void
+	 */
+	public function redirect_after_action(): void {
+
+		// Cache the notifications.
+		$cache = new List_Table_Action_Notification_Cache( $this->current_action() );
+		foreach ( $this->notices as $notice ) {
+			$cache->push( $notice );
+		}
+		$cache_key = $cache->save();
+
+		// Redirect to the same page with all actions removed.
+		$redirect = remove_query_arg( array( 'action', 'action2', 'wlf_link_action', 'wlf_links', '_wpnonce', '_wp_http_referer' ) );
+		$redirect = add_query_arg( 'wlf_notification', $cache_key, $redirect );
+		$redirect = add_query_arg( 'wlf_completed_action', esc_attr( $this->current_action() ), $redirect );
+
+		// Add to the redirect the current page.
+		$url = \home_url() . $redirect;
+
+		// Redirect to the page using JS as page already loaded headers.
+		echo "<script>window.location = '$url';</script>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, this is just a redirect.
+		exit;
+	}
+
+	/**
+	 * Process the Link Checking action.
+	 *
+	 * @param integer[] $links The links to check.
+	 *
+	 * @return void
+	 */
+	private function process_check_action( array $links ): void {
+		$checker = new Link_Check_Action();
+
+		foreach ( $links as $link_id ) {
+			$results = $checker->check_link( $link_id );
+
+			// If we have no link, add a notice.
+			if ( ! $results['link'] ) {
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: %d is the link id.
+						__( 'Link not found with id:%d', 'wpcomsp_wayback_link_fixer' ),
+						absint( $link_id )
+					),
+					'type'    => 'error',
+				);
+				continue;
+			}
+
+			// If the link was not updated
+			if ( ! $results['checked'] ) {
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: %s is the link url.
+						__( 'It was not possible to check %s', 'wpcomsp_wayback_link_fixer' ),
+						esc_html( wpcomsp_wayback_link_fixer_trim_string( $results['link']->get_href(), 54 ) )
+					),
+					'type'    => 'error',
+				);
+				continue;
+			}
+
+			$last_check = $results['link']->get_last_check();
+			$link_url   = $results['link']->get_href();
+
+			// If we have no last check, add a notice.
+			if ( ! $last_check ) {
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: %s is the link url.
+						__( 'Link %s has no checks.', 'wpcomsp_wayback_link_fixer' ),
+						esc_html( wpcomsp_wayback_link_fixer_trim_string( $link_url, 54 ) )
+					),
+					'type'    => 'error',
+				);
+				continue;
+			}
+
+			// Add a success notice.
+			$this->notices[] = array(
+				'message' => sprintf(
+					// translators: %1$s is the link url, %2$s is the last check date, %3$s is the last check http code.
+					__( 'Link %1$s checked successfully on %2$s with %3$s status', 'wpcomsp_wayback_link_fixer' ),
+					esc_html( wpcomsp_wayback_link_fixer_trim_string( $link_url, 54 ) ),
+					\DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) ),
+					esc_html( $last_check['http_code'] )
+				),
+				'type'    => 'success',
+			);
+		}
+	}
+
+	/**
+	 * Process the Link Rescan action.
+	 *
+	 * @param integer[] $links The links to rescan.
+	 *
+	 * @return void
+	 */
+	private function process_rescan_action( array $links ): void {
+		$action = new Link_Rescan_Action();
+
+		// Itrerates over the links and rescan them.
+		foreach ( $links as $link_id ) {
+			$result = $action->rescan_link( absint( $link_id ) );
+
+			// If we have no link, add a notice.
+			if ( null === $result['link'] ) {
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: %d is the link id.
+						__( 'Link not found with id:%d', 'wpcomsp_wayback_link_fixer' ),
+						absint( $link_id )
+					),
+					'type'    => 'error',
+				);
+				continue;
+			}
+
+			// If no archived link was found.
+			if ( ! $result['found'] ) {
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: %s is the link url.
+						__( 'No archived link found for %s', 'wpcomsp_wayback_link_fixer' ),
+						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+					),
+					'type'    => 'error',
+				);
+				continue;
+			}
+
+			// If the link was not updated
+			if ( ! $result['updated'] ) {
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: %s is the link url.
+						__( 'It was not possible to update %s, the latest archive link is the same', 'wpcomsp_wayback_link_fixer' ),
+						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+					),
+					'type'    => 'notice',
+				);
+				continue;
+			}
+
+			// We have a success notice.
+			$this->notices[] = array(
+				'message' => sprintf(
+					// translators: %s is the link url.
+					__( 'Link %s updated successfully', 'wpcomsp_wayback_link_fixer' ),
+					esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+				),
+				'type'    => 'success',
+			);
+		}
+	}
+
+	/**
+	 * Process the Link Update action.
+	 *
+	 * @param integer[] $links The links to update.
+	 *
+	 * @return void
+	 */
+	private function process_update_action( array $links ): void {
+		//Iterate over the links and update them.
+		foreach ( $links as $link_id ) {
+			// Attempt to get the link.
+			$link = $this->links->find_by_id( absint( $link_id ) );
+
+			// If we have no link, add a notice.
+			if ( ! $link ) {
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: %d is the link id.
+						__( 'Link not found with id:%d', 'wpcomsp_wayback_link_fixer' ),
+						absint( $link_id )
+					),
+					'type'    => 'error',
+				);
+				continue;
+			}
+
+			$event_id = Archive_Link_Event::add_to_queue( absint( $link_id ) );
+
+			// If we have an event id, add a success notice.
+			if ( $event_id ) {
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: %s is the link url.
+						__( 'Link %s added to the queue for updating, please wait.', 'wpcomsp_wayback_link_fixer' ),
+						wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+					),
+					'type'    => 'success',
+				);
+				continue;
+			} else {
+				// Add an error notice.
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: %s is the link url.
+						__( 'Link %s could not be added to the queue for updating.', 'wpcomsp_wayback_link_fixer' ),
+						wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+					),
+					'type'    => 'error',
+				);
+			}
+		}
+	}
 
 
 	/**
@@ -129,44 +468,99 @@ class Report_Table extends \WP_List_Table {
 	 */
 	public function get_columns() {
 		return array(
-			self::COLUMN_CHECKBOX         => '',
+			self::COLUMN_CHECKBOX         => '<input type="checkbox" />',
 			self::COLUMN_LINK_URL         => __( 'URL', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_ARCHIVE     => __( 'Has Archived Link', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_IS_BROKEN        => __( 'Broken Link', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_HEALTH      => __( 'Link Health', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS      => __( 'Check Count', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'wpcomsp_wayback_link_fixer' ),
 		);
 	}
 
 	/**
-	 * Get all the statuses from the links.
+	 * Adds the status filter.
 	 *
-	 * @since 1.1.0
+	 * @since 1.2.0
 	 *
-	 * @return array<string>
+	 * @param string $which The location of the filter.
+	 *
+	 * @return void
 	 */
-	public function get_statuses(): array {
-		$statuses = array_map(
-			function ( array $link ): ?int {
-				return $link['link']->get_http_code();
-			},
-			$this->links
-		);
+	public function extra_tablenav( $which ) {
+		// If not top, return.
+		if ( 'top' !== $which ) {
+			return;
+		}
+		?>
+		<label for="wlf_status" class="screen-reader-text"><?php esc_html_e( 'Filter by status', 'wpcomsp_wayback_link_fixer' ); ?></label>
+		<select name="wlf_status" id="wlf_status">
+			<option value="all"><?php esc_html_e( 'Show valid and broken links', 'wpcomsp_wayback_link_fixer' ); ?></option>
+			<?php
+			$statuses = array(
+				Link_Repository::LINK_STATUS_BROKEN => __( 'Show Broken links ', 'wpcomsp_wayback_link_fixer' ),
+				Link_Repository::LINK_STATUS_OK     => __( 'Show Valid links', 'wpcomsp_wayback_link_fixer' ),
+			);
+			foreach ( $statuses as $status => $label ) {
+				printf(
+					'<option value="%s"%s>%s</option>',
+					esc_attr( $status ),
+					selected( $this->get_status_from_url(), $status, false ),
+					esc_html( $label )
+				);
+			}
+			?>
+		</select>
 
-		$statuses = array_unique( $statuses );
+		<label for="wlf_has_archive" class="screen-reader-text"><?php esc_html_e( 'Filter by archived link', 'wpcomsp_wayback_link_fixer' ); ?></label>
+		<select name="wlf_has_archive" id="wlf_has_archive">
+			<option value=""><?php esc_html_e( 'Show with or without archived link', 'wpcomsp_wayback_link_fixer' ); ?></option>
+			<?php
+			$has_archive = array(
+				Link_Repository::LINK_HAS_ARCHIVE => __( 'Show links with archived link', 'wpcomsp_wayback_link_fixer' ),
+				Link_Repository::LINK_NO_ARCHIVE  => __( 'Show links without archived link', 'wpcomsp_wayback_link_fixer' ),
+			);
+			foreach ( $has_archive as $archive => $label ) {
+				printf(
+					'<option value="%s"%s>%s</option>',
+					esc_attr( $archive ),
+					selected( $this->get_archived_status_from_url(), $archive, false ),
+					esc_html( $label )
+				);
+			}
+			?>
+		</select>
 
-		// Remove any empty/null values from the array.
-		$statuses = array_filter( $statuses );
+		<?php foreach ( $this->get_link_ids_from_url() as $link_id ) : ?>
+			<input type="hidden" name="wlf_links[]" value="<?php echo esc_attr( $link_id ); ?>" />
+		<?php endforeach; ?>
 
-		// Cast to string
-		$statuses = array_map(
-			function ( int $status ): string {
-				return esc_html( (string) $status );
-			},
-			$statuses
-		);
+		<input type="submit" class="button" value="<?php esc_attr_e( 'Filter', 'wpcomsp_wayback_link_fixer' ); ?>"  />
 
-		return $statuses;
+		<?php
+	}
+
+	/**
+	 * Get the status filter values from url if set.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string
+	 */
+	private function get_status_from_url(): ?string {
+		return array_key_exists( 'wlf_status', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? \sanitize_text_field( $_GET['wlf_status'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			: '';
+	}
+
+	/**
+	 * Gets the archived status filter values from url if set.
+	 *
+	 * @return string
+	 */
+	private function get_archived_status_from_url(): ?string {
+		return array_key_exists( 'wlf_has_archive', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? \sanitize_text_field( $_GET['wlf_has_archive'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			: '';
 	}
 
 	/**
@@ -184,9 +578,11 @@ class Report_Table extends \WP_List_Table {
 		return $this->links->query_links(
 			$limit,
 			$page,
-			$status,
+			array( $this->get_status_from_url() ),
 			$this->get_link_ids_from_url(),
-			$this->get_sort_order_from_url()
+			array( $this->get_archived_status_from_url() ),
+			$this->get_sort_order_from_url(),
+			$this->get_search_term()
 		);
 	}
 
@@ -231,6 +627,21 @@ class Report_Table extends \WP_List_Table {
 	}
 
 	/**
+	 * Get the bulk actions.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array<string, string>
+	 */
+	protected function get_bulk_actions(): array {
+		return array(
+			'rescan' => __( 'Rescan', 'wpcomsp_wayback_link_fixer' ),
+			'update' => __( 'Update Archived', 'wpcomsp_wayback_link_fixer' ),
+			'check'  => __( 'Check Link', 'wpcomsp_wayback_link_fixer' ),
+		);
+	}
+
+	/**
 	 * Get any link ids form the url.
 	 *
 	 * @since 1.2.0
@@ -272,7 +683,25 @@ class Report_Table extends \WP_List_Table {
 		$this->_column_headers = array( $columns, $hidden, $sortable, $primary );
 
 		// Get the reports.
-		$this->items = $this->get_links( $this->get_links_per_page(), $this->get_pagenum() );
+		$this->items = $this->get_links(
+			$this->get_links_per_page(),
+			$this->get_pagenum(),
+			array( $this->get_status_from_url() ),
+			$this->get_search_term()
+		);
+	}
+
+	/**
+	 * Get the defined search term if set.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string
+	 */
+	private function get_search_term(): string {
+		return array_key_exists( 's', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( $_GET['s'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			: '';
 	}
 
 	/**
@@ -311,7 +740,7 @@ class Report_Table extends \WP_List_Table {
 						)
 					),
 					// Trim url to 36 chars.
-					esc_html( mb_strimwidth( $item->get_href(), 0, 54, '...' ) )
+					esc_html( wpcomsp_wayback_link_fixer_trim_string( $item->get_href(), 54 ) )
 				);
 			case self::COLUMN_LINK_ARCHIVE:
 				return $item->has_archived_href()
@@ -320,7 +749,7 @@ class Report_Table extends \WP_List_Table {
 						esc_url( $item->get_archived_href() )
 					)
 					: '<span class="dashicons dashicons-dismiss"></span>';
-			case self::COLUMN_IS_BROKEN:
+			case self::COLUMN_LINK_HEALTH:
 				return sprintf(
 					'<span class="%s"><img src="%s" alt="%s" style="width:20px"/></span>',
 					$item->is_broken()
@@ -340,6 +769,11 @@ class Report_Table extends \WP_List_Table {
 
 			case self::COLUMN_LINK_CHECKS_LAST:
 				return $this->compile_details_cell( $item );
+			case 'cb':
+				return sprintf(
+					'<input type="checkbox" name="wlf_links[]" value="%d" />',
+					$item->get_id()
+				);
 			default:
 				return '';
 		}

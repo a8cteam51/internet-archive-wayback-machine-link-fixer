@@ -60,7 +60,17 @@ class Report_Page {
 	 * @return void
 	 */
 	public function initialize(): void {
+
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
+
+		add_filter(
+			'set-screen-option',
+			function ( $status, $option, $value ) {
+				return ( 'links_per_page' === $option ) ? (int) $value : $status;
+			},
+			10,
+			3
+		);
 	}
 
 	/**
@@ -71,7 +81,7 @@ class Report_Page {
 	 * @return void
 	 */
 	public function register_page(): void {
-		add_submenu_page(
+		$hook = add_submenu_page(
 			self::PARENT_SLUG,
 			__( 'Links', 'wpcomsp_wayback_link_fixer' ),
 			__( 'Links', 'wpcomsp_wayback_link_fixer' ),
@@ -79,6 +89,9 @@ class Report_Page {
 			self::SLUG,
 			array( $this, 'render_page' )
 		);
+
+		// Add the screen options.
+		add_action( "load-$hook", array( $this, 'register_screen_options' ) );
 	}
 
 	/**
@@ -97,6 +110,25 @@ class Report_Page {
 
 		// Otherwise, render the list page.
 		$this->render_list_page();
+	}
+
+	/**
+	 * Register the screen options for the list table.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return void
+	 */
+	public function register_screen_options(): void {
+		// Links per page option.
+		$option = 'per_page';
+		$args   = array(
+			'label'   => __( 'Links', 'wpcomsp_wayback_link_fixer' ),
+			'default' => 20,
+			'option'  => 'links_per_page',
+		);
+
+		\add_screen_option( $option, $args );
 	}
 
 	/**
@@ -151,6 +183,8 @@ class Report_Page {
 		// Render the table.
 		$table->prepare_items();
 		echo '<form method="get">';
+		echo '<input type="hidden" name="page" value="' . esc_attr( $_REQUEST['page'] ) . '">'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+		$table->search_box( __( 'Search', 'wpcomsp_wayback_link_fixer' ), 'wlf-link-search' );
 		$table->display();
 		echo '</form>';
 

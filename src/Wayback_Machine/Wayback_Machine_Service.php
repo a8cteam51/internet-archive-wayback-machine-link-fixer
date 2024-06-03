@@ -96,4 +96,31 @@ class Wayback_Machine_Service {
 
 		return esc_url( $latest_snapshot['url'] ?? '' );
 	}
+
+	/**
+	 * Get final url.
+	 *
+	 * @param string $url The URL to check.
+	 *
+	 * @return string The final URL.
+	 *
+	 * @throws \Exception If the service is offline or the response is invalid.
+	 */
+	public function get_final_url( string $url ): string {
+		return $this->link_checker_client->get_final_url( $url );
+	}
+
+	/**
+	 * Check a link.
+	 *
+	 * @param string               $url               The URL to check.
+	 * @param array<string, mixed> $additional_params Additional parameters to pass to the service.
+	 *
+	 * @return integer the HTTP status code.
+	 *
+	 * @throws Exception If the service is offline or the response is invalid.
+	 */
+	public function check_single( string $url, array $additional_params = array() ): int {
+		return $this->link_checker_client->check_single( $url, $additional_params );
+	}
 }
