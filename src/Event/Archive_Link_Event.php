@@ -144,10 +144,7 @@ class Archive_Link_Event {
 			try {
 				$this->wayback_machine->create_snapshot( $link_url );
 			} catch ( \Throwable $th ) {
-				// Add back as a delayed event
-				if ( $this->attempt > 0 ) {
-					self::add_delayed_to_queue( $link_id, $attempt + 1 );
-				}
+				self::add_delayed_to_queue( $link_id, $attempt + 1 );
 				return;
 			}
 
