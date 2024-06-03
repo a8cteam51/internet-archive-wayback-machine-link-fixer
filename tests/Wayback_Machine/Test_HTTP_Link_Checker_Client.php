@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Link_Checker_Client;
 
 /**
@@ -194,8 +196,8 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		// Mock the response with a none 200 code.
 		$this->mock_wp_http_response( array( 'response' => array( 'code' => 404 ) ) );
 
-		$this->expectException( \Exception::class );
-		$this->expectExceptionMessage( 'Service is offline' );
+		$this->expectException( Service_Offline_Exception::class );
+		$this->expectExceptionMessage( 'The service is offline. Response:404' );
 
 		$client->check_single( 'https://example.com' );
 	}
@@ -216,8 +218,8 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 			)
 		);
 
-		$this->expectException( \Exception::class );
-		$this->expectExceptionMessage( 'Invalid response body' );
+		$this->expectException( Invalid_Response_Exception::class );
+		$this->expectExceptionMessage( 'The response is invalid.' );
 
 		$client->check_single( 'https://example.com' );
 	}
@@ -233,8 +235,8 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		// Mock the response without a body.
 		$this->mock_wp_http_response( array( 'response' => array( 'code' => 200 ) ) );
 
-		$this->expectException( \Exception::class );
-		$this->expectExceptionMessage( 'Invalid response body' );
+		$this->expectException( Invalid_Response_Exception::class );
+		$this->expectExceptionMessage( 'The response is invalid.' );
 
 		$client->check_single( 'https://example.com' );
 	}
@@ -290,10 +292,10 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		$client = new HTTP_Link_Checker_Client();
 
 		// Mock the response with a WP_Error.
-		$this->mock_wp_http_response( new \WP_Error( 'error', 'error' ) );
+		$this->mock_wp_http_response( new \WP_Error( 'error', 'SomeError' ) );
 
-		$this->expectException( \Exception::class );
-		$this->expectExceptionMessage( 'Service is offline' );
+		$this->expectException( Service_Offline_Exception::class );
+		$this->expectExceptionMessage( 'The service is offline. SomeError' );
 
 		$client->check_single( 'https://example.com' );
 	}
@@ -313,9 +315,8 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 				'body'     => array( 'foo' => 'bar' ),
 			)
 		);
-
-		$this->expectException( \Exception::class );
-		$this->expectExceptionMessage( 'Invalid response body' );
+		$this->expectException( Invalid_Response_Exception::class );
+		$this->expectExceptionMessage( 'The response is invalid.' );
 
 		$client->check_single( 'https://example.com' );
 	}
@@ -357,8 +358,8 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 			)
 		);
 
-		$this->expectException( \Exception::class );
-		$this->expectExceptionMessage( 'Invalid response body' );
+		$this->expectException( Invalid_Response_Exception::class );
+		$this->expectExceptionMessage( 'The response is invalid' );
 
 		$client->check_single( 'https://example.com' );
 	}

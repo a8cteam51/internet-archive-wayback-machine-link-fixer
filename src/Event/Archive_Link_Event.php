@@ -11,9 +11,7 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\Link_Checker;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Update_Archive_URL_Event;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 /**
@@ -38,6 +36,13 @@ class Archive_Link_Event {
 	private $wayback_machine;
 
 	/**
+	 * The number of attempts.
+	 *
+	 * @var integer
+	 */
+	private $attempt = 0;
+
+	/**
 	 * Sets up the events dependencies, but delayed until its called.
 	 *
 	 * @return void
@@ -45,30 +50,66 @@ class Archive_Link_Event {
 	public function setup(): void {
 		$this->link_repository = new Link_Repository();
 		$this->wayback_machine = new Wayback_Machine_Service();
+		$this->attempt         = \apply_filters( 'wlf_max_archive_attempts', 3 );
 	}
 
 	/**
 	 * Adds the event to the queue.
 	 *
-	 * @param integer $link_id The link id.
+	 * @param integer      $link_id The link id.
+	 * @param integer|null $attempt The attempt number.
 	 *
 	 * @return integer
 	 */
-	public static function add_to_queue( int $link_id ): int {
-		return as_enqueue_async_action( self::HANDLE, array( 'link_id' => $link_id ), 'wayback-link-fixer' );
+	public static function add_to_queue( int $link_id, int $attempt = 0 ): int {
+		return as_enqueue_async_action(
+			self::HANDLE,
+			array(
+				'link_id' => $link_id,
+				'attempt' => $attempt,
+			),
+			'wayback-link-fixer'
+		);
+	}
+
+	/**
+	 * Adds a delayed event to the queue.
+	 *
+	 * @param integer $link_id The link id.
+	 * @param integer $attempt The attempt number.
+	 * @param integer $delay   The delay in seconds.
+	 *
+	 * @return integer
+	 */
+	public static function add_delayed_to_queue( int $link_id, int $attempt, int $delay = 15 * \MINUTE_IN_SECONDS ): int {
+		return \as_schedule_single_action(
+			time() + $delay,
+			self::HANDLE,
+			array(
+				'link_id' => $link_id,
+				'attempt' => $attempt,
+			),
+			'wayback-link-fixer'
+		);
 	}
 
 	/**
 	 * The invocation of the event.
 	 *
 	 * @param integer $link_id The link id.
+	 * @param integer $attempt The attempt number.
 	 *
 	 * @return void
 	 */
-	public function __invoke( int $link_id ): void {
+	public function __invoke( int $link_id, int $attempt = 0 ): void {
 
 		// Set up
 		$this->setup();
+
+		// If the attempt is greater than or equal to the max attempts, return early.
+		if ( $attempt >= $this->attempt ) {
+			throw new \Exception( esc_html( 'Max attempts reached for link ' . $link_id ) );
+		}
 
 		// Look for the link.
 		$link = $this->link_repository->find_by_id( $link_id );
@@ -98,7 +139,17 @@ class Archive_Link_Event {
 
 		// If we don't have an archived link, create a snapshot
 		if ( null === $archive_url ) {
-			$this->wayback_machine->create_snapshot( $link_url );
+
+			// Attempt to create a snapshot
+			try {
+				$this->wayback_machine->create_snapshot( $link_url );
+			} catch ( \Throwable $th ) {
+				// Add back as a delayed event
+				if ( $this->attempt > 0 ) {
+					self::add_delayed_to_queue( $link_id, $attempt + 1 );
+				}
+				return;
+			}
 
 			// Add the event to update the the link with the archive URL (this is run later, to allow Wayback time to process the snapshot)
 			Update_Archive_URL_Event::add_to_queue( $link_id, 0, 15 * MINUTE_IN_SECONDS );

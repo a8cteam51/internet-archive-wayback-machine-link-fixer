@@ -12,6 +12,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
 
 /**
  * Link Checker.
@@ -75,14 +77,14 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 		);
 
 		// Get the response.
-		$repsonse = wp_remote_get( $query_url, array( 'timeout' => $this->timeout ) );
+		$response = wp_remote_get( $query_url, array( 'timeout' => $this->timeout ) );
 
 		// If we dont have a valid response, throw exception
-		if ( is_wp_error( $repsonse ) ) {
-			throw new \Exception( 'Service is offline' );
+		if ( is_wp_error( $response ) ) {
+			throw Service_Offline_Exception::create( esc_attr( $response->get_error_message() ) );
 		}
 
-		return $repsonse;
+		return $response;
 	}
 
 	/**
@@ -97,7 +99,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 	private function get_decoded_response( array $response ): array {
 		// If we dont have a 200 response, service may be offline, throw exception.
 		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			throw new \Exception( 'Service is offline' );
+			throw Service_Offline_Exception::create( esc_attr( 'Response:' . wp_remote_retrieve_response_code( $response ) ) );
 		}
 
 		// Unpack the body.
@@ -105,7 +107,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 
 		// If we dont have a valid body, throw exception.
 		if ( ! is_string( $body ) ) {
-			throw new \Exception( 'Invalid response body' );
+			throw Invalid_Response_Exception::create();
 		}
 
 		// Decode the body.
@@ -113,7 +115,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 
 		// If we dont have a valid body, throw exception.
 		if ( ! is_array( $body ) ) {
-			throw new \Exception( 'Invalid response body' );
+			throw Invalid_Response_Exception::create();
 		}
 
 		return $body;
@@ -138,14 +140,14 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 
 		// If we dont have a status code, throw exception.
 		if ( ! isset( $response['status'] ) ) {
-			throw new \Exception( 'Invalid response body' );
+			throw Invalid_Response_Exception::create();
 		}
 
 		$code = \sanitize_text_field( $response['status'] );
 
 		// If we dont have a valid status code, throw exception.
 		if ( ! is_numeric( $code ) ) {
-			throw new \Exception( 'Invalid response body' );
+			throw Invalid_Response_Exception::create();
 		}
 
 		return absint( $code );

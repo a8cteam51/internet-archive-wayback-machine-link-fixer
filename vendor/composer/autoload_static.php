@@ -51,6 +51,8 @@ class ComposerStaticInit4306a6418d6b9eb38703d40c88c8d2a0
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Util\\List_Table_Action_Notification_Cache' => __DIR__ . '/../..' . '/src/Util/List_Table_Action_Notification_Cache.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\WP_Post\\WP_Post_Controller' => __DIR__ . '/../..' . '/src/WP_Post/WP_Post_Controller.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\WP_Post\\WP_Post_Table_Controller' => __DIR__ . '/../..' . '/src/WP_Post/WP_Post_Table_Controller.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Exception\\Invalid_Response_Exception' => __DIR__ . '/../..' . '/src/Wayback_Machine/Exception/Invalid_Response_Exception.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Exception\\Service_Offline_Exception' => __DIR__ . '/../..' . '/src/Wayback_Machine/Exception/Service_Offline_Exception.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\HTTP_Client\\HTTP_Link_Checker_Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/HTTP_Client/HTTP_Link_Checker_Client.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\HTTP_Client\\HTTP_Snapshot_Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/HTTP_Client/HTTP_Snapshot_Client.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Link_Checker_Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/Link_Checker_Client.php',
