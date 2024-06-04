@@ -149,7 +149,7 @@ class Create_New_Snapshot_Event {
 					throw $th;
 				}
 
-				self::add_delayed_to_queue( $link_id, $attempt + $attempt );
+				self::add_delayed_to_queue( $link_id, $attempt + 1 );
 				return;
 			}
 
