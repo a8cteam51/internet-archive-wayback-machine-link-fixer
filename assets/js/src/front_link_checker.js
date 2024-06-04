@@ -149,6 +149,7 @@ const removeTrailingSlash = (str) => str.replace(/\/$/, '');
  * @returns {void}
  */
 const addDataAttributes = (link) => {
+
 	// Get the href.
 	const href = removeTrailingSlash(link.href);
 
@@ -172,7 +173,7 @@ const addDataAttributes = (link) => {
 			// If the link is broken, add a class and change the href
 			if (link.broken) {
 				currentLink.classList.add('wlf-broken-link');
-				currentLink.href = link.archived_href;
+				currentLink.href = '' !== link.archived_href ? link.archived_href : href;
 			}
 		}
 	}
@@ -207,6 +208,11 @@ const checkLink = (link) => {
 	// If the link is already marked as broken, add the data attributes
 	if (archived.broken) {
 		addDataAttributes(archived);
+		return;
+	}
+
+	// If there is no archived link, return
+	if (archived.archived_href === null || archived.archived_href === '') {
 		return;
 	}
 

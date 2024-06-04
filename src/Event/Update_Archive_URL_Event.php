@@ -112,7 +112,6 @@ class Update_Archive_URL_Event {
 
 		// If we have reached the maximum number of attempts, then mark the link as broken.
 		if ( $attempt > $this->max_attempts ) {
-			$this->mark_link_broken( $link );
 			throw new \Exception( esc_attr( "Reached maximum number of attempts for link with ID {$link_id}" ), 1 );
 		}
 

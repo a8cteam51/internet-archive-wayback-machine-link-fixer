@@ -193,7 +193,7 @@ class Settings {
 		return absint(
 			apply_filters(
 				'wlf_failed_count',
-				3
+				5
 			)
 		);
 	}

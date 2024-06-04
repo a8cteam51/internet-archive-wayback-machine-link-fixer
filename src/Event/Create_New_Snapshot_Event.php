@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Snapshot_Status_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 /**
@@ -148,7 +149,7 @@ class Create_New_Snapshot_Event {
 					throw $th;
 				}
 
-				self::add_delayed_to_queue( $link_id, $attempt + 1 );
+				self::add_delayed_to_queue( $link_id, $attempt + $attempt );
 				return;
 			}
 

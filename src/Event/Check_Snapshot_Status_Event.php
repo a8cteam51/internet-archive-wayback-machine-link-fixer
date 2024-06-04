@@ -124,6 +124,10 @@ class Check_Snapshot_Status_Event {
 
 		// If status is error, throw exception with error code.
 		if ( 'error' === $status['status'] ) {
+			// Update the link with the error message.
+			$link = $link->set_message( esc_html( $status['message'] ) );
+			$this->link_repository->upsert( $link );
+
 			throw new \Exception(
 				esc_html(
 					sprintf(

@@ -157,13 +157,15 @@ class Link_Check_Ajax {
 		// Validate the link.
 		$valid = $link->is_valid();
 
+		// Based on the link status, either set the link as broken or not.
+		if ( ! $valid ) {
+			$link->set_broken();
+		} else {
+			$link->set_valid();
+		}
+
 		// Update the link.
 		$this->link_repository->upsert( $link );
-
-		// Check if the link is broken.
-		if ( ! in_array( $status, Settings::get_valid_http_status_codes(), true ) ) {
-			$link->set_broken();
-		}
 
 		// Send the success response.
 		$this->send_success(

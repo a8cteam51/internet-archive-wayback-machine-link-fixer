@@ -21,6 +21,13 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
  */
 class Test_Link extends \WP_UnitTestCase {
 
+	// Clear all custom actions on tear down.
+	public function tear_down(): void {
+		parent::tear_down();
+		remove_all_filters( 'wlf_failed_count' );
+		remove_all_filters( 'wlf_is_valid_check' );
+	}
+
 	/**
 	 * @testdox It should be possible to set a new link based only on a URl.
 	 *
@@ -157,6 +164,7 @@ class Test_Link extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_check_if_link_is_valid(): void {
+		add_filter( 'wlf_failed_count', fn () => 3 );
 		$link = new Link( 'https://example.com' );
 
 		// By default the link should be valid.
@@ -203,6 +211,8 @@ class Test_Link extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_use_filter_to_override_is_valid(): void {
+		add_filter( 'wlf_failed_count', fn () => 3 );
+		
 		add_filter(
 			'wlf_is_valid_check',
 			/**
@@ -234,6 +244,8 @@ class Test_Link extends \WP_UnitTestCase {
 
 		// Clear the filter.
 		remove_all_filters( 'wlf_is_valid_check' );
+		remove_all_filters( 'wlf_failed_count' );
+
 	}
 
 	/**
@@ -354,6 +366,8 @@ class Test_Link extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_less_checks_than_min_failures(): void {
+		add_filter( 'wlf_failed_count', fn () => 3 );
+		
 		$link = new Link( 'https://example.com' );
 
 		// By default the link should be valid.
@@ -362,7 +376,7 @@ class Test_Link extends \WP_UnitTestCase {
 		// By having 1 check with 500, the link should be valid.
 		$link->add_check( 500, '20230101000000' );
 		$this->assertTrue( $link->is_valid() );
-
+ 
 		// By having 3 checks with 500, the link should be invalid.
 		$link->add_check( 500, '20240101000000' );
 		$link->add_check( 500, '20250101000000' );
