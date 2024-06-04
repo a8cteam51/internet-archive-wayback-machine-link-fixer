@@ -64,7 +64,7 @@ class Content_Scanner {
 		}
 
 		$dom = new \DOMDocument();
-		$dom->loadHTML( $this->content );
+		$dom->loadHTML( $this->content, LIBXML_NOERROR );
 
 		$anchors = $dom->getElementsByTagName( 'a' );
 
