@@ -13,7 +13,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Check_Action;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Archive_Link_Event;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Rescan_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Util\List_Table_Action_Notification_Cache;
 
@@ -393,7 +393,7 @@ class Report_Table extends \WP_List_Table {
 				continue;
 			}
 
-			$event_id = Archive_Link_Event::add_to_queue( absint( $link_id ) );
+			$event_id = Create_New_Snapshot_Event::add_to_queue( absint( $link_id ) );
 
 			// If we have an event id, add a success notice.
 			if ( $event_id ) {

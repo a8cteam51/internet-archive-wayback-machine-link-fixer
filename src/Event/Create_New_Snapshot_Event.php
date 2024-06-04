@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The Action Scheduler Event for archiving links.
+ * The Action Scheduler Event for creating a new archive.
  *
  * @since 1.2.0
  */
@@ -11,15 +11,14 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Update_Archive_URL_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 /**
  * Archive Link Event class.
  */
-class Archive_Link_Event {
+class Create_New_Snapshot_Event {
 
-	public const HANDLE = 'wpcomsp_wayback_link_fixer_archive_link';
+	public const HANDLE = 'wlf_create_new_snapshot';
 
 	/**
 	 * The link repository.
@@ -142,16 +141,19 @@ class Archive_Link_Event {
 
 			// Attempt to create a snapshot
 			try {
-				$this->wayback_machine->create_snapshot( $link_url );
+				$job_id = $this->wayback_machine->create_snapshot( $link_url );
 			} catch ( \Throwable $th ) {
+				// If this is the last attempt, re throw the error.
+				if ( $attempt >= $this->attempt ) {
+					throw $th;
+				}
+
 				self::add_delayed_to_queue( $link_id, $attempt + 1 );
 				return;
 			}
 
-			// Add the event to update the the link with the archive URL (this is run later, to allow Wayback time to process the snapshot)
-			Update_Archive_URL_Event::add_to_queue( $link_id, 0, 15 * MINUTE_IN_SECONDS );
-
-			// Exit early, we don't want to update the link yet
+			// Add check snapshot status event.
+			Check_Snapshot_Status_Event::add_to_queue( $link_id, $job_id );
 			return;
 		}
 

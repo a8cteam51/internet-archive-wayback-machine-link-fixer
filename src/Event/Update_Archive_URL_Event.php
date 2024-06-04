@@ -24,7 +24,7 @@ class Update_Archive_URL_Event {
 	/**
 	 * The event handle.
 	 */
-	public const HANDLE = 'wpcomsp_wayback_link_fixer_update_archive_url';
+	public const HANDLE = 'wlf_update_archive_url';
 
 	/**
 	 * The current attempt.

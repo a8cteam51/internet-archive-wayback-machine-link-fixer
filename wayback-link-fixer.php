@@ -84,6 +84,7 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1::class,
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_2::class,
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_3::class,
+		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_4::class,
 	);
 
 	add_action( 'wp_head', 'wpcomsp_wayback_link_fixer_render_archived_link_css', 999 );

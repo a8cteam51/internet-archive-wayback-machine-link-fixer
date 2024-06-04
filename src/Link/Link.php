@@ -63,6 +63,13 @@ class Link implements \JsonSerializable {
 	private $checks = array();
 
 	/**
+	 * Any messages that have been generated for the link.
+	 *
+	 * @var string
+	 */
+	private $message = '';
+
+	/**
 	 * Creates a new instance of the link model.
 	 *
 	 * @param string $href The original href.
@@ -142,6 +149,27 @@ class Link implements \JsonSerializable {
 	 */
 	public function is_broken(): bool {
 		return $this->is_broken;
+	}
+
+	/**
+	 * Sets a message for the link.
+	 *
+	 * @param string $message The message.
+	 *
+	 * @return self
+	 */
+	public function set_message( string $message ): self {
+		$this->message = esc_html( $message );
+		return $this;
+	}
+
+	/**
+	 * Gets the message for the link.
+	 *
+	 * @return string
+	 */
+	public function get_message(): string {
+		return $this->message;
 	}
 
 	/**

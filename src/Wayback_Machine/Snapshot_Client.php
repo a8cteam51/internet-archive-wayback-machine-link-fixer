@@ -53,7 +53,23 @@ interface Snapshot_Client {
 	 *
 	 * @param string $url The URL to snapshot.
 	 *
-	 * @return void
+	 * @return string The job id.
+	 *
+	 * @throws Service_Offline_Exception If the service is offline.
+	 * @throws Exception If the response is invalid.
 	 */
-	public function create_snapshot( string $url ): void;
+	public function create_snapshot( string $url ): string;
+
+	/**
+	 * Get snapshot creation status.
+	 *
+	 * @since 1.2.1
+	 *
+	 * @param string $ref_code The snapshot reference.
+	 *
+	 * @return array{job_id:string, status:'pending'|'success'|'failure', message:string}
+	 *
+	 * @throws Exception If the service is offline or the response is invalid.
+	 */
+	public function get_snapshot_status( string $ref_code ): array;
 }

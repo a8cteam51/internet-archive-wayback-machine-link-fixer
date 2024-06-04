@@ -23,9 +23,10 @@ class Event_Controller {
 	 * @return void
 	 */
 	public function initialize(): void {
-		add_action( Archive_Link_Event::HANDLE, new Archive_Link_Event(), 10, 1 );
+		add_action( Create_New_Snapshot_Event::HANDLE, new Create_New_Snapshot_Event(), 10, 1 );
 		add_action( Update_Archive_URL_Event::HANDLE, new Update_Archive_URL_Event(), 10, 2 );
 		add_action( Scan_Posts_Event::HANDLE, new Scan_Posts_Event(), 10, 1 );
+		add_action( Check_Snapshot_Status_Event::HANDLE, new Check_Snapshot_Status_Event(), 10, 3 );
 
 		// Ensure the post scan event is added to the action scheduler.
 		add_action(
