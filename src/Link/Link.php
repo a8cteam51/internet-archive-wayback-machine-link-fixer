@@ -165,7 +165,7 @@ class Link implements \JsonSerializable {
 
 	/**
 	 * Gets the message for the link.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_message(): string {

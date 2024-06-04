@@ -146,7 +146,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 
 		// if we dont have a 200 response, throw an exception.
 		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			throw Service_Offline_Exception::create( 'Response:' . wp_remote_retrieve_response_code( $response ) );
+			throw Service_Offline_Exception::create( esc_html( 'Response:' . wp_remote_retrieve_response_code( $response ) ) );
 		}
 
 		// Attempt to get the job id from body.
@@ -253,7 +253,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 
 		// if we dont have a 200 response, throw an exception.
 		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			throw Service_Offline_Exception::create( 'Response:' . wp_remote_retrieve_response_code( $response ) );
+			throw Service_Offline_Exception::create( esc_html( 'Response:' . wp_remote_retrieve_response_code( $response ) ) );
 		}
 
 		// Get the response body.

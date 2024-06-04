@@ -98,6 +98,7 @@ class Check_Snapshot_Status_Event {
 	 * Handle the event.
 	 *
 	 * @param integer $link_id The link ID.
+	 * @param string  $job_id  The job ID.
 	 * @param integer $attempt The attempt number.
 	 *
 	 * @return void
@@ -142,6 +143,5 @@ class Check_Snapshot_Status_Event {
 
 		// Assume pendning if not success or error
 		self::add_to_queue( $link_id, $job_id, $attempt + 1 );
-		return;
 	}
 }

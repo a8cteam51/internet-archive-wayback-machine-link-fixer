@@ -25,8 +25,6 @@
  * Domain Path:             /languages
  **/
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Snapshot_Status_Event;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -98,20 +96,3 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
-
-add_action('init', function(){
-	// if glynn=1 not in url, bail.
-	if (!isset($_GET['foo']) || $_GET['foo'] != '1') {
-		return;
-	}
-	$client = new Wayback_Machine_Service();
-	$action = new Check_Snapshot_Status_Event();
-	// $job = $client->create_snapshot('https://www.bbc.co.uk/sport/cricket/articles/cn0025jlem7o');
-	// $status = $client->get_snapshot_status($job); 
-	$job = 'spn2-534b88588bff0f2b4b22c85428250029efbc2b96';
-	dump($job, $action(92, $job, 0));
-	$status = $client->get_snapshot_status($job); 
-	dump($status);
-	dd(1);
-	// dd($status);
-});

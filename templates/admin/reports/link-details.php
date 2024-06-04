@@ -23,7 +23,7 @@ dump( $wlf_link );
 	<?php endif; ?>
 	<p>Is the link broken? <b><?php echo esc_html( $wlf_link->is_broken() ? 'Yes' : 'No' ); ?></b></p>
 
-	<?php if('' !== $wlf_link->get_message() ):?>
+	<?php if ( '' !== $wlf_link->get_message() ) : ?>
 		<p>Message - <?php echo esc_html( $wlf_link->get_message() ); ?></p>
 	<?php endif; ?>
 

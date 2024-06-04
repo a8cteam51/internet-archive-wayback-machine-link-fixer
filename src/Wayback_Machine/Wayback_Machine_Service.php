@@ -132,7 +132,7 @@ class Wayback_Machine_Service {
 	 *
 	 * @since 1.2.1
 	 *
-	 * @param string $ref_code The snapshot reference
+	 * @param string $ref_code The snapshot reference.
 	 *
 	 * @return array{job_id:string, status:'pending'|'success'|'failure', message:string}
 	 *

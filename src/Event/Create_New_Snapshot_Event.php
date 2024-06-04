@@ -147,7 +147,7 @@ class Create_New_Snapshot_Event {
 				if ( $attempt >= $this->attempt ) {
 					throw $th;
 				}
-				
+
 				self::add_delayed_to_queue( $link_id, $attempt + 1 );
 				return;
 			}
