@@ -120,6 +120,11 @@ class Report_Page {
 	 * @return void
 	 */
 	public function register_screen_options(): void {
+		// If we viewing a single link, do not show the screen options.
+		if ( isset( $_GET['wlf_link_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+			return;
+		}
+
 		// Links per page option.
 		$option = 'per_page';
 		$args   = array(
