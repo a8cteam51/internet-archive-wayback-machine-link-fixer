@@ -49,8 +49,6 @@ class Test_Content_Scanner extends \WP_UnitTestCase {
 
 	/**
 	 * @testdox It should be possible to create an instance of a the content scanner with a post ID.
-	 *
-	 *
 	 */
 	public function test_can_create_instance_with_post_id(): void {
 		$post_id = \WP_UnitTestCase_Base::factory()->post->create();
@@ -83,5 +81,18 @@ class Test_Content_Scanner extends \WP_UnitTestCase {
 		$links   = $scanner->scan()->get_links();
 
 		$this->assertCount( 1, $links );
+	}
+
+	/**
+	 * @testdox Invalid HTML should not throw any exceptions.
+	 *
+	 * @return void
+	 */
+	public function test_invalid_html_does_not_throw_exceptions(): void {
+		$content = '<header>Some text here</header>';
+		$scanner = new Content_Scanner( $content );
+		$links   = $scanner->scan()->get_links();
+
+		$this->assertCount( 0, $links );
 	}
 }
