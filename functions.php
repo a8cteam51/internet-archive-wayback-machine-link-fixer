@@ -218,4 +218,15 @@ function wpcomsp_wayback_link_fixer_trim_string( string $text, int $length, stri
 	return mb_strimwidth( $text, 0, $length, $suffix );
 }
 
+/**
+ * Get the sites date/time format
+ *
+ * @since 1.2.0
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_get_date_format(): string {
+	return get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+}
+
 // endregion
