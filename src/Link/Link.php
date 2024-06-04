@@ -143,6 +143,16 @@ class Link implements \JsonSerializable {
 	}
 
 	/**
+	 * Sets the link as valid.
+	 *
+	 * @return self
+	 */
+	public function set_valid(): self {
+		$this->is_broken = false;
+		return $this;
+	}
+
+	/**
 	 * Checks if the link is broken.
 	 *
 	 * @return boolean
@@ -266,14 +276,15 @@ class Link implements \JsonSerializable {
 
 		// Get the last checks based on the failed count.
 		$last_checks = array_slice( $this->checks, - $failed_count );
-
 		// If we do not have any checks, then it is valid.
 		if ( empty( $last_checks ) ) {
+			$this->is_broken = false;
 			return true;
 		}
 
 		// If we have less checks than the failed count, then it is valid.
 		if ( count( $last_checks ) < $failed_count ) {
+			$this->is_broken = false;
 			return true;
 		}
 

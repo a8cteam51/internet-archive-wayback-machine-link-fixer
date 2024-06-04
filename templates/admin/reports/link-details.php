@@ -42,6 +42,10 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 							<?php if ( '' !== $wlf_link->get_redirect_href() ) : ?>
 								<p class="wlf_link_redirected_url"><strong><?php esc_html_e( 'Has Redirect Url', 'wpcomsp_wayback_link_fixer' ); ?></strong> : <?php echo esc_html( $wlf_link->get_redirect_href() ); ?></p>
 							<?php endif; ?>
+
+							<?php if ( '' !== $wlf_link->get_message() ) : ?>
+								<p class="wlf_link_message"><strong><?php esc_html_e( 'Message', 'wpcomsp_wayback_link_fixer' ); ?></strong> : <?php echo esc_html( $wlf_link->get_message() ); ?></p>
+							<?php endif; ?>
 						</div>
 					</div>
 
@@ -64,7 +68,12 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 									</tr>
 								</thead>
 								<tbody>
-									<?php // If we have a hidden count, show a button to reveal the hidden checks. ?>
+									<?php if ( 0 === count( $wlf_link->get_checks() ) ) : ?>
+										<tr>
+											<td colspan="2"><?php esc_html_e( 'No checks found for this link.', 'wpcomsp_wayback_link_fixer' ); ?></td>
+										</tr>
+									<?php endif; ?>
+									
 									<?php if ( $wlf_hide_check_count > 0 ) : ?>
 										<tr id="wlf_reveal_hidden_checks">
 											<td colspan="2">

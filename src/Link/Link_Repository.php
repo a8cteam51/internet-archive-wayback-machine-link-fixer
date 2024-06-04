@@ -139,6 +139,7 @@ class Link_Repository {
 		$checks        = $link->get_checks();
 		$redirect_href = $link->get_redirect_href();
 		$is_broken     = $link->is_broken();
+		$message       = $link->get_message();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -152,6 +153,7 @@ class Link_Repository {
 				'checks'       => $checks,
 				'redirect_url' => $redirect_href,
 				'is_broken'    => $is_broken,
+				'message'      => $message,
 			),
 			array(
 				'%s',
@@ -159,6 +161,7 @@ class Link_Repository {
 				'%s',
 				'%s',
 				'%d',
+				'%s',
 			)
 		);
 
@@ -191,6 +194,7 @@ class Link_Repository {
 		$checks        = $link->get_checks();
 		$redirect_href = $link->get_redirect_href();
 		$is_broken     = $link->is_broken();
+		$message       = $link->get_message();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -204,6 +208,7 @@ class Link_Repository {
 				'checks'       => $checks,
 				'redirect_url' => $redirect_href,
 				'is_broken'    => $is_broken,
+				'message'      => $message,
 			),
 			array(
 				'id' => $id,
@@ -214,6 +219,7 @@ class Link_Repository {
 				'%s',
 				'%s',
 				'%d',
+				'%s',
 			),
 			array(
 				'%d',
