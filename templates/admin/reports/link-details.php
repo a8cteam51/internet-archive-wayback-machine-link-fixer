@@ -8,6 +8,7 @@
  * @var \WP_Post[] $wlf_posts The posts that contain the link.
  * @var string $wlf_back_url The URL to return to the report.
  */
+dump( $wlf_link );
 ?>
 <div class="wrap">
 	<h1><?php echo esc_html( $wlf_link->get_href() ); ?></h1>
@@ -21,6 +22,10 @@
 		<p>Redirect URL - <?php echo esc_html( $wlf_link->get_redirect_href() ); ?></p>
 	<?php endif; ?>
 	<p>Is the link broken? <b><?php echo esc_html( $wlf_link->is_broken() ? 'Yes' : 'No' ); ?></b></p>
+
+	<?php if('' !== $wlf_link->get_message() ):?>
+		<p>Message - <?php echo esc_html( $wlf_link->get_message() ); ?></p>
+	<?php endif; ?>
 
 	<h2>Checks:</h2>
 	<ul>

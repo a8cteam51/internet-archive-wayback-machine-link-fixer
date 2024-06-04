@@ -66,16 +66,19 @@ class Wayback_Machine_Service {
 	}
 
 	/**
-	 * Creates a snapshot of a given url.
+	 * Create a snapshot of a given URL.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param string $url The url to create a snapshot of.
+	 * @param string $url The URL to snapshot.
 	 *
-	 * @return void
+	 * @return string The job id.
+	 *
+	 * @throws Service_Offline_Exception If the service is offline.
+	 * @throws Exception If the response is invalid.
 	 */
-	public function create_snapshot( string $url ): void {
-		$this->snapshot_client->create_snapshot( $url );
+	public function create_snapshot( string $url ): string {
+		return $this->snapshot_client->create_snapshot( $url );
 	}
 
 	/**
@@ -122,5 +125,20 @@ class Wayback_Machine_Service {
 	 */
 	public function check_single( string $url, array $additional_params = array() ): int {
 		return $this->link_checker_client->check_single( $url, $additional_params );
+	}
+
+	/**
+	 * Get snapshot creation status.
+	 *
+	 * @since 1.2.1
+	 *
+	 * @param string $ref_code The snapshot reference
+	 *
+	 * @return array{job_id:string, status:'pending'|'success'|'failure', message:string}
+	 *
+	 * @throws Exception If the service is offline or the response is invalid.
+	 */
+	public function get_snapshot_status( string $ref_code ): array {
+		return $this->snapshot_client->get_snapshot_status( $ref_code );
 	}
 }

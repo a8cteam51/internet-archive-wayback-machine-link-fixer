@@ -12,7 +12,10 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client;
 
+use Exception;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
 
 /**
  * The Wayback Machine Rest Client.
@@ -111,9 +114,12 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	 *
 	 * @param string $url The URL to snapshot.
 	 *
-	 * @return void
+	 * @return string The job id.
+	 *
+	 * @throws Service_Offline_Exception If the service is offline.
+	 * @throws Exception If the response is invalid.
 	 */
-	public function create_snapshot( string $url ): void {
+	public function create_snapshot( string $url ): string {
 
 		// Strip any trailing slash from url.
 		$url = untrailingslashit( $url );
@@ -121,17 +127,40 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$base_url = 'https://web.archive.org/save/';
 
 		// Base url.
-		$snapshot_url = apply_filters( 'wlf_create_snapshot_url', esc_url( $base_url . $url ), $base_url, $url );
+		$snapshot_url = apply_filters( 'wlf_create_snapshot_url', $base_url );
 
-		// Trigger a none blocking wp_get request.
-		wp_remote_get(
-			esc_url( $snapshot_url ?? '' ),
+		// Trigger a post request with URL as a body param.
+		$response = wp_remote_post(
+			esc_url( $snapshot_url ),
 			array(
-				'timeout'   => 100,
-				'blocking'  => false,
+				'timeout'   => 10000,
+				'body'      => array( 'url' => $url ),
 				'sslverify' => false,
 			)
 		);
+
+		// If we have a wp error, throw invalid response exception.
+		if ( is_wp_error( $response ) ) {
+			throw Invalid_Response_Exception::create();
+		}
+
+		// if we dont have a 200 response, throw an exception.
+		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			throw Service_Offline_Exception::create( 'Response:' . wp_remote_retrieve_response_code( $response ) );
+		}
+
+		// Attempt to get the job id from body.
+		$response_body = wp_remote_retrieve_body( $response );
+
+		// using regex attempt to get the id from spn.watchJob("{THIS}", "https://web-static.archive.org/_static/","
+		preg_match( '/spn.watchJob\("(.+?)"/', $response_body, $matches );
+
+		// If we have no matches, throw an exception.
+		if ( empty( $matches ) ) {
+			throw new \Exception( 'Failed to find job id.' );
+		}
+
+		return esc_attr( $matches[1] );
 	}
 
 	/**
@@ -187,6 +216,63 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 			'available' => $response_body['archived_snapshots']['closest']['available'],
 			'url'       => $response_body['archived_snapshots']['closest']['url'],
 			'timestamp' => $response_body['archived_snapshots']['closest']['timestamp'],
+		);
+	}
+
+
+	/**
+	 * Get snapshot creation status.
+	 *
+	 * @since 1.2.1
+	 *
+	 * @param string $job_id The job id to check.
+	 *
+	 * @return array{job_id:string, status:'pending'|'success'|'failure', message:string}
+	 *
+	 * @throws Exception If the service is offline or the response is invalid.
+	 */
+	public function get_snapshot_status( string $job_id ): array {
+
+		// Strip any trailing slash from url.
+		$job_id = trim( $job_id );
+
+		// If we dont have a ref code, throw an exception.
+		if ( empty( $job_id ) ) {
+			throw new \Exception( 'Invalid snapshot job id' );
+		}
+
+		$query_url = 'https://web.archive.org/save/status/' . $job_id;
+
+		// Get the status of the job.
+		$response = wp_remote_get( $query_url );
+
+		// If we have a wp error, throw invalid response exception.
+		if ( is_wp_error( $response ) ) {
+			throw Invalid_Response_Exception::create();
+		}
+
+		// if we dont have a 200 response, throw an exception.
+		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			throw Service_Offline_Exception::create( 'Response:' . wp_remote_retrieve_response_code( $response ) );
+		}
+
+		// Get the response body.
+		$response_body = wp_remote_retrieve_body( $response );
+
+		// Attempt to decode the response.
+		$response_body = json_decode( $response_body, true );
+
+		// if any errors, throw an exception.
+		if ( ! is_array( $response_body ) ) {
+			throw Invalid_Response_Exception::create();
+		}
+
+		return array(
+			'job_id'  => $job_id,
+			'status'  => esc_attr( $response_body['status'] ),
+			'message' => 'error' === $response_body['status'] && array_key_exists( 'message', $response_body )
+				? esc_attr( $response_body['message'] )
+				: '',
 		);
 	}
 }

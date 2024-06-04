@@ -12,7 +12,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Handler;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Archive_Link_Event;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
 
 /**
  * Link Response class.
@@ -246,7 +246,7 @@ class Link_Repository {
 			$link = $this->upsert( new Link( $url ) );
 
 			// Trigger the event to get the archived link.
-			Archive_Link_Event::add_to_queue( $link->get_id() );
+			Create_New_Snapshot_Event::add_to_queue( $link->get_id() );
 		}
 
 		return $link;
@@ -264,7 +264,8 @@ class Link_Repository {
 		$link
 			->set_id( (int) $row->id )
 			->set_archived_href( esc_url( $row->archived ?? '' ) )
-			->set_redirect_href( esc_url( $row->redirect_url ?? '' ) );
+			->set_redirect_href( esc_url( $row->redirect_url ?? '' ) )
+			->set_message( esc_attr( $row->message ?? '' ) );
 
 		// Iterate through the checks and add them to the link.
 		$checks = json_decode( $row->checks, true );

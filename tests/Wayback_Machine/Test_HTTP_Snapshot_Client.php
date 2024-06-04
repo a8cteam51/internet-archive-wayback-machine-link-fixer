@@ -278,8 +278,17 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		add_filter(
 			'pre_http_request',
 			function ( $response, $args, $url ) {
-				$this->assertStringStartsWith( 'https://web.archive.org/save/http://example.com', $url );
-				return new \WP_Error( 'http_request_failed', 'Error' );
+				$this->assertStringStartsWith( 'https://web.archive.org/save', $url );
+				$this->assertArrayHasKey( 'body', $args );
+				$this->assertArrayHasKey( 'url', $args['body'] );
+				$this->assertEquals( 'http://example.com', $args['body']['url'] );
+
+				// Mock a valid response.
+				return array(
+					'body'     => 'spn.watchJob("some id")',
+					'response' => array( 'code' => 200 ),
+				);
+
 			},
 			10,
 			3
@@ -298,8 +307,12 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		add_filter(
 			'pre_http_request',
 			function ( $response, $args, $url ) {
-				$this->assertEquals( 'http://custom-snapshot.com/http://example.com', $url );
-				return new \WP_Error( 'http_request_failed', 'Error' );
+				$this->assertEquals( 'http://custom-snapshot.com/', $url );
+				// Mock a valid response.
+				return array(
+					'body'     => 'spn.watchJob("some id")',
+					'response' => array( 'code' => 200 ),
+				);
 			},
 			10,
 			3
@@ -307,11 +320,9 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 
 		add_filter(
 			'wlf_create_snapshot_url',
-			function ( $url, $base_url, $queried_url ) {
-				return 'http://custom-snapshot.com/' . $queried_url;
-			},
-			10,
-			3
+			function ( $queried_url ) {
+				return 'http://custom-snapshot.com/';
+			}
 		);
 
 		$client = new HTTP_Snapshot_Client();
