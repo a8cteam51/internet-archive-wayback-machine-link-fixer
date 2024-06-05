@@ -34,6 +34,7 @@ class ComposerStaticInit4306a6418d6b9eb38703d40c88c8d2a0
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Snapshot_Status_Event' => __DIR__ . '/../..' . '/src/Event/Check_Snapshot_Status_Event.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Create_New_Snapshot_Event' => __DIR__ . '/../..' . '/src/Event/Create_New_Snapshot_Event.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Event_Controller' => __DIR__ . '/../..' . '/src/Event/Event_Controller.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Find_Or_Create_Snapshot_Event' => __DIR__ . '/../..' . '/src/Event/Find_Or_Create_Snapshot_Event.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Scan_Posts_Event' => __DIR__ . '/../..' . '/src/Event/Scan_Posts_Event.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Update_Archive_URL_Event' => __DIR__ . '/../..' . '/src/Event/Update_Archive_URL_Event.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Integrations' => __DIR__ . '/../..' . '/src/Integrations.php',
