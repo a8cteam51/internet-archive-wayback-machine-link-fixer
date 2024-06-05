@@ -14,6 +14,7 @@ return array(
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Snapshot_Status_Event' => $baseDir . '/src/Event/Check_Snapshot_Status_Event.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Create_New_Snapshot_Event' => $baseDir . '/src/Event/Create_New_Snapshot_Event.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Event_Controller' => $baseDir . '/src/Event/Event_Controller.php',
+    'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Find_Or_Create_Snapshot_Event' => $baseDir . '/src/Event/Find_Or_Create_Snapshot_Event.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Scan_Posts_Event' => $baseDir . '/src/Event/Scan_Posts_Event.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Update_Archive_URL_Event' => $baseDir . '/src/Event/Update_Archive_URL_Event.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Integrations' => $baseDir . '/src/Integrations.php',

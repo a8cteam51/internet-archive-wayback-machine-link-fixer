@@ -27,13 +27,9 @@ class Event_Controller {
 		add_action( Update_Archive_URL_Event::HANDLE, new Update_Archive_URL_Event(), 10, 2 );
 		add_action( Scan_Posts_Event::HANDLE, new Scan_Posts_Event(), 10, 1 );
 		add_action( Check_Snapshot_Status_Event::HANDLE, new Check_Snapshot_Status_Event(), 10, 3 );
+		add_action( Find_Or_Create_Snapshot_Event::HANDLE, new Find_Or_Create_Snapshot_Event(), 10, 1 );
 
 		// Ensure the post scan event is added to the action scheduler.
-		add_action(
-			'init',
-			function () {
-				Scan_Posts_Event::add_to_action_scheduler();
-			}
-		);
+		add_action( 'init', array( Scan_Posts_Event::class, 'add_to_action_scheduler' ) );
 	}
 }

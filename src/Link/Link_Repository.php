@@ -12,7 +12,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Handler;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Find_Or_Create_Snapshot_Event;
 
 /**
  * Link Response class.
@@ -252,7 +252,7 @@ class Link_Repository {
 			$link = $this->upsert( new Link( $url ) );
 
 			// Trigger the event to get the archived link.
-			Create_New_Snapshot_Event::add_to_queue( $link->get_id() );
+			Find_Or_Create_Snapshot_Event::add_to_queue( $link->get_id() );
 		}
 
 		return $link;
