@@ -404,7 +404,7 @@ class Link_Repository {
 		// If we have archive statuses, add to the query.
 		if ( ! empty( $archive_status ) ) {
 			$query .= true === $where ? ' AND' : ' WHERE';
-			$query .= boolval( $archive_status[0] ) ? ' archived != ""' : ' archived = ""';
+			$query .= boolval( $archive_status[0] ) ? ' archived != "" or archived IS NOT NULL' : ' archived = "" OR archived IS NULL';
 			$where  = true;
 		}
 
