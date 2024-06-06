@@ -25,6 +25,7 @@
  * Domain Path:             /languages
  **/
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -96,3 +97,17 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
+
+add_action(
+	'init',
+	function () {
+		// url doent contain glynn=2, bail
+		if ( strpos( $_SERVER['REQUEST_URI'], 'ff=2' ) === false ) {
+			return;
+		}
+		$event = new Create_New_Snapshot_Event();
+
+		$event( 134 );
+		dd( 1 );
+	}
+);

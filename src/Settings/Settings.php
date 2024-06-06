@@ -28,16 +28,16 @@ class Settings {
 	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
 	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
 	public const SCAN_EXISTING_POSTS          = self::SETTINGS_PREFIX . 'scan_existing_posts';
-
+	public const ARCHIVE_ORG_SECRET_KEY       = self::SETTINGS_PREFIX . 'archive_api_key';
+	public const ARCHIVE_ORG_ACCESS_KEY       = self::SETTINGS_PREFIX . 'archive_api_secret';
 
 	// Table names.
+	public const LINK_TABLE = self::SETTINGS_PREFIX . 'link_archive';
+
+	// LEGACY TABLE NAME, TO REMOVE.
 	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
 	public const SCAN_REPORT_TABLE_NAME = self::SETTINGS_PREFIX . 'scan_report';
 	public const SCAN_LINK_CACHE_TABLE  = self::SETTINGS_PREFIX . 'scan_link_cache';
-	public const LINK_TABLE             = self::SETTINGS_PREFIX . 'link_archive';
-
-	// Events
-	public const RUNNER_EVENT = self::SETTINGS_PREFIX . 'event_runner';
 
 	// Meta Keys
 	public const LINK_META_KEY = self::SETTINGS_PREFIX . 'links';
@@ -108,12 +108,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_checker_timeout(): int {
-		return absint(
-			apply_filters(
-				'wlf_link_checker_timeout',
-				5000
-			)
-		);
+		return absint( apply_filters( 'wlf_link_checker_timeout', 5000 ) );
 	}
 
 	/**
@@ -151,12 +146,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_check_duration(): int {
-		return absint(
-			apply_filters(
-				'wlf_link_check_duration_in_days',
-				7
-			)
-		);
+		return absint( apply_filters( 'wlf_link_check_duration_in_days', 7 ) );
 	}
 
 	/**
@@ -190,11 +180,39 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_failed_count(): int {
-		return absint(
-			apply_filters(
-				'wlf_failed_count',
-				5
-			)
-		);
+		return absint( apply_filters( 'wlf_failed_count', 5 ) );
+	}
+
+	/**
+	 * Get the archive.org API key.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string
+	 */
+	public static function get_archive_api_key(): string {
+		return esc_attr( get_option( self::ARCHIVE_ORG_SECRET_KEY, '' ) );
+	}
+
+	/**
+	 * Get the archive.org API secret.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string
+	 */
+	public static function get_archive_access_key(): string {
+		return esc_attr( get_option( self::ARCHIVE_ORG_ACCESS_KEY, '' ) );
+	}
+
+	/**
+	 * Checks if the archive.org API is configured.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function is_archive_api_configured(): bool {
+		return '' !== self::get_archive_api_key() && '' !== self::get_archive_access_key();
 	}
 }

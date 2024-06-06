@@ -13,6 +13,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Snapshot_Status_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
 
 /**
  * Archive Link Event class.
@@ -111,8 +112,21 @@ class Create_New_Snapshot_Event {
 			throw new \Exception( esc_html( 'Max attempts reached for link ' . $link_id ) );
 		}
 
-		// Look for the link.
-		$link = $this->link_repository->find_by_id( $link_id );
+		try {
+			// Find the link based on its id.
+			$link = $this->link_repository->find_by_id( $link_id );
+		} catch ( \Throwable $th ) {
+			self::add_to_queue( $link_id, $attempt + 1 );
+			throw new \Exception(
+				esc_html(
+					sprintf(
+						'Error finding link id: %d, error: %s',
+						absint( $link_id ),
+						esc_html( $th->getMessage() )
+					)
+				)
+			);
+		}
 
 		// If we have no link, throw an error.
 		if ( null === $link ) {
@@ -125,7 +139,20 @@ class Create_New_Snapshot_Event {
 		}
 
 		// Ensure we are working with the final link, incase its been redirected.
-		$link_url = $this->wayback_machine->get_final_url( $link->get_href() );
+		try {
+			$link_url = $this->wayback_machine->get_final_url( $link->get_href() );
+		} catch ( \Throwable $th ) {
+			self::add_delayed_to_queue( $link_id, $attempt + 1 );
+			throw new \Exception(
+				esc_html(
+					sprintf(
+						'Error getting final URL for link id: %d, error: %s',
+						absint( $link_id ),
+						esc_html( $th->getMessage() )
+					)
+				)
+			);
+		}
 
 		// If the link url is different to the href, update the link.
 		if ( $link_url !== $link->get_href() ) {
@@ -135,7 +162,20 @@ class Create_New_Snapshot_Event {
 		}
 
 		// Attempt to get the archived link
-		$archive_url = $this->get_archived_link( $link_url );
+		try {
+			$archive_url = $this->get_archived_link( $link_url );
+		} catch ( \Throwable $th ) {
+			self::add_delayed_to_queue( $link_id, $attempt + 1 );
+			throw new \Exception(
+				esc_html(
+					sprintf(
+						'Error getting archive URL for link id: %d, error: %s',
+						absint( $link_id ),
+						esc_html( $th->getMessage() )
+					)
+				)
+			);
+		}
 
 		// If we don't have an archived link, create a snapshot
 		if ( null === $archive_url ) {
@@ -145,7 +185,9 @@ class Create_New_Snapshot_Event {
 				$job_id = $this->wayback_machine->create_snapshot( $link_url );
 			} catch ( \Throwable $th ) {
 				// If this is the last attempt, re throw the error.
-				if ( $attempt >= $this->attempt ) {
+				if ( $th instanceof Exceeded_Snapshot_Limit_Exception
+				|| $attempt >= $this->attempt
+				) {
 					throw $th;
 				}
 
@@ -186,6 +228,6 @@ class Create_New_Snapshot_Event {
 		}
 
 		// return the archive url
-		return esc_url( $archive_url['url'] ?? '' );
+		return $archive_url['url'] ?? '';
 	}
 }

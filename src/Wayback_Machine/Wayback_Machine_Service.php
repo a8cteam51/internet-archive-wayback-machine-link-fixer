@@ -76,6 +76,7 @@ class Wayback_Machine_Service {
 	 *
 	 * @throws Service_Offline_Exception If the service is offline.
 	 * @throws Exception If the response is invalid.
+	 * @throws Exceeded_Snapshot_Limit_Exception If the snapshot limit has been exceeded.
 	 */
 	public function create_snapshot( string $url ): string {
 		return $this->snapshot_client->create_snapshot( $url );
@@ -97,7 +98,7 @@ class Wayback_Machine_Service {
 			return null;
 		}
 
-		return esc_url( $latest_snapshot['url'] ?? '' );
+		return $latest_snapshot['url'] ?? '';
 	}
 
 	/**

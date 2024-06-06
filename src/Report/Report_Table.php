@@ -15,8 +15,9 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Check_Action;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Rescan_Action;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_New_Snapshot_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Latest_Snapshot_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Util\List_Table_Action_Notification_Cache;
 
 /**
@@ -166,7 +167,7 @@ class Report_Table extends \WP_List_Table {
 
 		$current_action = $this->current_action();
 
-		if ( ! in_array( $current_action, array( 'rescan', 'update', 'check' ), true ) ) {
+		if ( ! in_array( $current_action, array( 'updated_snapshot', 'new_snapshot', 'check' ), true ) ) {
 			return;
 		}
 
@@ -188,13 +189,13 @@ class Report_Table extends \WP_List_Table {
 				$this->redirect_after_action();
 				break;
 
-			case 'rescan':
-				$this->process_rescan_action( $links );
+			case 'updated_snapshot':
+				$this->process_update_latest_snapshot( $links );
 				$this->redirect_after_action();
 				break;
 
-			case 'update':
-				$this->process_update_action( $links );
+			case 'new_snapshot':
+				$this->process_new_snapshot( $links );
 				$this->redirect_after_action();
 				break;
 
@@ -305,14 +306,14 @@ class Report_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Process the Link Rescan action.
+	 * Process the Snapshot Update action.
 	 *
-	 * @param integer[] $links The links to rescan.
+	 * @param integer[] $links The links to be updated to the latest snapshot.
 	 *
 	 * @return void
 	 */
-	private function process_rescan_action( array $links ): void {
-		$action = new Link_Rescan_Action();
+	private function process_update_latest_snapshot( array $links ): void {
+		$action = new Link_Latest_Snapshot_Action();
 
 		// Itrerates over the links and rescan them.
 		foreach ( $links as $link_id ) {
@@ -376,14 +377,14 @@ class Report_Table extends \WP_List_Table {
 	 *
 	 * @return void
 	 */
-	private function process_update_action( array $links ): void {
+	private function process_new_snapshot( array $links ): void {
+		$action = new Link_New_Snapshot_Action();
 		//Iterate over the links and update them.
 		foreach ( $links as $link_id ) {
-			// Attempt to get the link.
-			$link = $this->links->find_by_id( absint( $link_id ) );
+			$result = $action->create_new_snapshot( absint( $link_id ) );
 
 			// If we have no link, add a notice.
-			if ( ! $link ) {
+			if ( null === $result['link'] ) {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %d is the link id.
@@ -395,33 +396,31 @@ class Report_Table extends \WP_List_Table {
 				continue;
 			}
 
-			$event_id = Create_New_Snapshot_Event::add_to_queue( absint( $link_id ) );
-
-			// If we have an event id, add a success notice.
-			if ( $event_id ) {
+			// If we dont have a job id, add error and include the  mesage.
+			if ( ! $result['job_id'] ) {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
-						__( 'Link %s added to the queue for updating, please wait.', 'wpcomsp_wayback_link_fixer' ),
-						wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
-					),
-					'type'    => 'success',
-				);
-				continue;
-			} else {
-				// Add an error notice.
-				$this->notices[] = array(
-					'message' => sprintf(
-						// translators: %s is the link url.
-						__( 'Link %s could not be added to the queue for updating.', 'wpcomsp_wayback_link_fixer' ),
-						wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+						__( 'Link %1$s could not have a new snapshot created: %2$s', 'wpcomsp_wayback_link_fixer' ),
+						wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ),
+						esc_html( $result['message'] )
 					),
 					'type'    => 'error',
 				);
+				continue;
 			}
+
+			// Show a success notice.
+			$this->notices[] = array(
+				'message' => sprintf(
+					// translators: %s is the link url.
+					__( 'Link %s added to the queue for updating, please wait.', 'wpcomsp_wayback_link_fixer' ),
+					wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 )
+				),
+				'type'    => 'success',
+			);
 		}
 	}
-
 
 	/**
 	 * Sets the pagination args.
@@ -637,9 +636,9 @@ class Report_Table extends \WP_List_Table {
 	 */
 	protected function get_bulk_actions(): array {
 		return array(
-			'rescan' => __( 'Rescan', 'wpcomsp_wayback_link_fixer' ),
-			'update' => __( 'Update Archived', 'wpcomsp_wayback_link_fixer' ),
-			'check'  => __( 'Check Link', 'wpcomsp_wayback_link_fixer' ),
+			'updated_snapshot' => __( 'Update Latest Snapshot', 'wpcomsp_wayback_link_fixer' ),
+			'new_snapshot'     => __( 'Create New Snapshot', 'wpcomsp_wayback_link_fixer' ),
+			'check'            => __( 'Check Link', 'wpcomsp_wayback_link_fixer' ),
 		);
 	}
 
@@ -748,7 +747,7 @@ class Report_Table extends \WP_List_Table {
 				return $item->has_archived_href()
 					? sprintf(
 						'<a href="%s" target="_blank"><span class="dashicons dashicons-yes-alt"></span></a>',
-						esc_url( $item->get_archived_href() )
+						$item->get_archived_href()
 					)
 					: '<span class="dashicons dashicons-dismiss"></span>';
 			case self::COLUMN_LINK_HEALTH:

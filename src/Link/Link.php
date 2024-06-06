@@ -318,16 +318,16 @@ class Link implements \JsonSerializable {
 	public static function from_json( string $json ): self {
 		$data = json_decode( $json, true );
 
-		$link = new self( esc_url( $data['href'] ?? '' ) );
+		$link = new self( $data['href'] ?? '' );
 
 		// If contains archived href, set it.
 		if ( isset( $data['archived_href'] ) ) {
-			$link->set_archived_href( esc_url( $data['archived_href'] ?? '' ) );
+			$link->set_archived_href( $data['archived_href'] ?? '' );
 		}
 
 		// If contains redirect href, set it.
 		if ( isset( $data['redirect_href'] ) ) {
-			$link->set_redirect_href( esc_url( $data['redirect_href'] ?? '' ) );
+			$link->set_redirect_href( $data['redirect_href'] ?? '' );
 		}
 
 		// Set the id.

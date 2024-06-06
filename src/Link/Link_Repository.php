@@ -266,11 +266,11 @@ class Link_Repository {
 	 * @return Link
 	 */
 	private function map_link( object $row ): Link {
-		$link = new Link( esc_url( $row->url ?? '' ) );
+		$link = new Link( $row->url ?? '' );
 		$link
 			->set_id( (int) $row->id )
-			->set_archived_href( esc_url( $row->archived ?? '' ) )
-			->set_redirect_href( esc_url( $row->redirect_url ?? '' ) )
+			->set_archived_href( $row->archived ?? '' )
+			->set_redirect_href( $row->redirect_url ?? '' )
 			->set_message( esc_attr( $row->message ?? '' ) );
 
 		// Iterate through the checks and add them to the link.

@@ -130,10 +130,13 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_page(): void {
+		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
 		echo '<form action="options.php" method="post">';
 
 		\do_settings_sections( self::PAGE_SLUG );
 		\settings_fields( self::PAGE_SLUG );
+
+		echo "To get your API key and secret, please visit the <a href='https://archive.org/account/s3.php'>Internet Archive</a> and create a new S3 access key.";
 
 		\submit_button( __( 'Save Changes', 'wpcomsp_wayback_link_fixer' ) );
 
@@ -217,6 +220,28 @@ class Settings_Page {
 				),
 			)
 		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::ARCHIVE_ORG_SECRET_KEY,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
+				'show_in_rest'      => false,
+			),
+		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::ARCHIVE_ORG_ACCESS_KEY,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
+				'show_in_rest'      => false,
+			)
+		);
 	}
 
 	/**
@@ -262,6 +287,22 @@ class Settings_Page {
 			Settings::LINK_EXCLUSIONS,
 			__( 'Link Exclusions', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_link_exclusions_field' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::ARCHIVE_ORG_SECRET_KEY,
+			__( 'Archive.org Secret Key', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_archive_api_secret_key' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::ARCHIVE_ORG_ACCESS_KEY,
+			__( 'Archive.org Access Key', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_archive_api_access_key' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
@@ -445,6 +486,50 @@ class Settings_Page {
 			esc_attr( $index ),
 			esc_html__( 'Remove', 'wpcomsp_wayback_link_fixer' )
 		);
+	}
+
+	/**
+	 * Render the archive api key field.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return  void
+	 */
+	public function render_archive_api_secret_key(): void {
+		?>
+		<input
+			type="password"
+			id="<?php echo esc_attr( Settings::ARCHIVE_ORG_SECRET_KEY ); ?>"
+			name="<?php echo esc_attr( Settings::ARCHIVE_ORG_SECRET_KEY ); ?>"
+			value="<?php echo esc_attr( Settings::get_archive_api_key() ); ?>"
+			style="width:80%;"
+		/>
+		<p class="description">
+			<?php esc_html_e( 'Archive.org S3 Secret Key', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Render the archive api secret field.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return  void
+	 */
+	public function render_archive_api_access_key(): void {
+		?>
+		<input
+			type="password"
+			id="<?php echo esc_attr( Settings::ARCHIVE_ORG_ACCESS_KEY ); ?>"
+			name="<?php echo esc_attr( Settings::ARCHIVE_ORG_ACCESS_KEY ); ?>"
+			value="<?php echo esc_attr( Settings::get_archive_access_key() ); ?>"
+			style="width:80%;"
+		/>
+		<p class="description">
+			<?php esc_html_e( 'Archive.org S3 Access Key', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
+		<?php
 	}
 }
 

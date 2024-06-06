@@ -1,0 +1,77 @@
+name: Update i18n schemas
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - "features/**"
+      - "README.md"
+
+
+# Cancels all previous workflow runs for the same branch that have not yet completed.
+concurrency:
+  # The concurrency group contains the workflow name and the branch name.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  update-schemas: #----------------------------------------------------------
+    name: Update i18n schema fallback files
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out source code
+      uses: actions/checkout@v4
+
+    - name: Configure git user
+      run: |
+        git config --global user.email "info@wp-cli.org"
+        git config --global user.name "wp-make-coffee"
+
+    - name: Check if remote branch exists
+      run: echo "REMOTE_BRANCH_EXISTS=$([[ -z $(git ls-remote --heads origin update-schemas) ]] && echo "0" || echo "1")" >> $GITHUB_ENV
+
+    - name: Create branch to base pull request on
+      if: env.REMOTE_BRANCH_EXISTS == 0
+      run: |
+        git checkout -b update-schemas
+
+    - name: Fetch existing branch to add commits to
+      if: env.REMOTE_BRANCH_EXISTS == 1
+      run: |
+        git fetch --all --prune
+        git checkout update-schemas
+        git pull --no-rebase
+
+    - name: Download latest schema files
+      run: |
+        curl -s https://develop.svn.wordpress.org/trunk/src/wp-includes/theme-i18n.json -o assets/theme-i18n.json
+        curl -s https://develop.svn.wordpress.org/trunk/src/wp-includes/block-i18n.json -o assets/block-i18n.json
+
+    - name: Check if there are changes
+      run: echo "CHANGES_DETECTED=$([[ -z $(git status --porcelain) ]] && echo "0" || echo "1")" >> $GITHUB_ENV
+
+    - name: Commit changes
+      if: env.CHANGES_DETECTED == 1
+      run: |
+        git add assets/theme-i18n.json
+        git add assets/block-i18n.json
+        git commit -m "Update schema fallback files - $(date +'%Y-%m-%d')"
+        git push origin update-schemas
+
+    - name: Create pull request
+      if: |
+        env.CHANGES_DETECTED == 1 &&
+        env.REMOTE_BRANCH_EXISTS == 0
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: update-schemas
+        destination_branch: ${{ github.event.repository.default_branch }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        pr_title: Update schema fallback files
+        pr_body: "**This is an automated pull-request**\n\nRefreshes the i18n schema files with the latest changes from core.\n\nThese are only used as a fallback if they can't be accessed directly."
+        pr_reviewer: swissspidy
+        pr_label: scope:distribution

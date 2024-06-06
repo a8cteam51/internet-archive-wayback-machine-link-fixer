@@ -49,7 +49,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 
 		// Return the location if it exists, otherwise return the original url.
 		return isset( $response['location'] )
-			? esc_url( $response['location'] ?? '' )
+			? $response['location'] ?? ''
 			: $url;
 	}
 
@@ -65,7 +65,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 
 		// Compile the url for the live web check service.
 		$url_params = array(
-			'url'         => esc_url( $url ?? '' ),
+			'url'         => $url ?? '',
 			'impersonate' => 1,
 		);
 

@@ -13,9 +13,11 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client;
 
 use Exception;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
 
 /**
  * The Wayback Machine Rest Client.
@@ -48,6 +50,24 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 				apply_filters( 'wlf_find_snapshot_base_url', 'https://archive.org/wayback/available/' )
 			)
 		);
+	}
+
+	/**
+	 * Compiles the header with auth credentials if they are set.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array<string, string> The headers.
+	 */
+	private function get_headers(): array {
+		$headers = array();
+
+		// Add the auth header if set.
+		if ( Settings::is_archive_api_configured() ) {
+			$headers['Authorization'] = sprintf( 'LOW %s:%s', Settings::get_archive_access_key(), Settings::get_archive_api_key() );
+		}
+
+		return $headers;
 	}
 
 	/**
@@ -118,6 +138,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	 *
 	 * @throws Service_Offline_Exception If the service is offline.
 	 * @throws Exception If the response is invalid.
+	 * @throws Exceeded_Snapshot_Limit_Exception If the snapshot limit is exceeded.
 	 */
 	public function create_snapshot( string $url ): string {
 
@@ -136,12 +157,13 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 				'timeout'   => 10000,
 				'body'      => array( 'url' => $url ),
 				'sslverify' => false,
+				'headers'   => $this->get_headers(),
 			)
 		);
 
 		// If we have a wp error, throw invalid response exception.
 		if ( is_wp_error( $response ) ) {
-			throw Invalid_Response_Exception::create();
+			throw Invalid_Response_Exception::create( esc_html( $response->get_error_message() ) );
 		}
 
 		// if we dont have a 200 response, throw an exception.
@@ -152,6 +174,11 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		// Attempt to get the job id from body.
 		$response_body = wp_remote_retrieve_body( $response );
 
+		// If the body contains exceeded snapshot limit, throw an exception.
+		if ( $this->is_exceeded_snapshot_limit( $response_body ) ) {
+			throw Exceeded_Snapshot_Limit_Exception::create();
+		}
+
 		// using regex attempt to get the id from spn.watchJob("{THIS}", "https://web-static.archive.org/_static/","
 		preg_match( '/spn.watchJob\("(.+?)"/', $response_body, $matches );
 
@@ -161,6 +188,20 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		}
 
 		return esc_attr( $matches[1] );
+	}
+
+	/**
+	 * Checks if the response contains exceeded snapshot limit.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param string $response_body The response body.
+	 *
+	 * @return boolean True if the response contains exceeded snapshot limit, false otherwise.
+	 */
+	private function is_exceeded_snapshot_limit( string $response_body ): bool {
+		// Check if the body contains "You cannot make more than (200,) captures per day." (or any number)
+		return preg_match( '/You cannot make more than \(\d+,\) captures per day\./', $response_body ) === 1;
 	}
 
 	/**
@@ -248,7 +289,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 
 		// If we have a wp error, throw invalid response exception.
 		if ( is_wp_error( $response ) ) {
-			throw Invalid_Response_Exception::create();
+			throw Invalid_Response_Exception::create( esc_html( $response->get_error_message() ) );
 		}
 
 		// if we dont have a 200 response, throw an exception.
@@ -264,7 +305,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 
 		// if any errors, throw an exception.
 		if ( ! is_array( $response_body ) ) {
-			throw Invalid_Response_Exception::create();
+			throw Invalid_Response_Exception::create( 'Response body is not valid JSON' );
 		}
 
 		return array(

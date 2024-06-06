@@ -152,11 +152,12 @@ class Report_Page {
 
 		// Render any notices.
 		$table->render_notices();
+		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
 
 		echo '<div class="wrap">';
 		printf(
 			'<h1 class="wp-heading-inline">%s</h1>',
-			esc_html__( 'Link', 'wpcomsp_wayback_link_fixer' ),
+			esc_html__( 'Wayback Link Fixer :: Links', 'wpcomsp_wayback_link_fixer' ),
 		);
 
 		echo '<hr class="wp-header-end">';

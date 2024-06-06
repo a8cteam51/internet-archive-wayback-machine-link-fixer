@@ -3,6 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Plugin;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
@@ -227,6 +228,28 @@ function wpcomsp_wayback_link_fixer_trim_string( string $text, int $length, stri
  */
 function wpcomsp_wayback_link_fixer_get_date_format(): string {
 	return get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+}
+
+/**
+ * Renders the notice about not authenticated with the Wayback Machine.
+ *
+ * @since 1.3.0
+ *
+ * @return void
+ */
+function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
+	// If we have authentication details for the Wayback Machine, bail.
+	if ( Settings::is_archive_api_configured() ) {
+		return;
+	}
+
+	?>
+	<div class="notice notice-error">
+		<p>
+			<?php esc_html_e( 'You are using Link Fixer in unauthenticated mode, which restricts you to 200 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
+	</div>
+	<?php
 }
 
 // endregion

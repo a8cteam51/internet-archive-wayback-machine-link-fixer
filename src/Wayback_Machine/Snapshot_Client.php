@@ -57,6 +57,7 @@ interface Snapshot_Client {
 	 *
 	 * @throws Service_Offline_Exception If the service is offline.
 	 * @throws Exception If the response is invalid.
+	 * @throws Exceeded_Snapshot_Limit_Exception If the snapshot limit has been exceeded.
 	 */
 	public function create_snapshot( string $url ): string;
 
