@@ -103,7 +103,7 @@ class Check_Snapshot_Status_Event {
 	 *
 	 * @return void
 	 */
-	public function __invoke( int $link_id, string $job_id, int $attempt ): void {
+	public function __invoke( int $link_id, string $job_id, int $attempt = 0 ): void {
 		$this->setup();
 
 		// If the attempt is equal to or greater than the max attempts, return early.
@@ -111,16 +111,42 @@ class Check_Snapshot_Status_Event {
 			throw new \Exception( esc_html( "Max attempts reached for id:{$link_id}" ) );
 		}
 
-		// Find the link based on its id.
-		$link = $this->link_repository->find_by_id( $link_id );
+		try {
+			// Find the link based on its id.
+			$link = $this->link_repository->find_by_id( $link_id );
+		} catch ( \Throwable $th ) {
+			self::add_to_queue( $link_id, $job_id, $attempt + 1 );
+			throw new \Exception(
+				esc_html(
+					sprintf(
+						'Error finding link id: %d, error: %s',
+						absint( $link_id ),
+						esc_html( $th->getMessage() )
+					)
+				)
+			);
+		}
 
 		// If we dont have a link, throw an exception.
 		if ( ! $link ) {
 			throw new \Exception( esc_html( "Link not found for id:{$link_id}" ) );
 		}
 
-		// Get the status of the archive.
-		$status = $this->wayback_machine->get_snapshot_status( $job_id );
+		try {
+			// Get the status of the archive.
+			$status = $this->wayback_machine->get_snapshot_status( $job_id );
+		} catch ( \Throwable $th ) {
+			self::add_to_queue( $link_id, $job_id, $attempt + 1 );
+			throw new \Exception(
+				esc_html(
+					sprintf(
+						'Error getting status for link id: %d, error: %s',
+						absint( $link_id ),
+						esc_html( $th->getMessage() )
+					)
+				)
+			);
+		}
 
 		// If status is error, throw exception with error code.
 		if ( 'error' === $status['status'] ) {

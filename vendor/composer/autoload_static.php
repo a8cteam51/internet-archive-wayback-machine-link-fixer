@@ -28,7 +28,8 @@ class ComposerStaticInit4306a6418d6b9eb38703d40c88c8d2a0
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Link_Check_Action' => __DIR__ . '/../..' . '/src/Action/Link_Check_Action.php',
-        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Link_Rescan_Action' => __DIR__ . '/../..' . '/src/Action/Link_Rescan_Action.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Link_Latest_Snapshot_Action' => __DIR__ . '/../..' . '/src/Action/Link_Latest_Snapshot_Action.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Link_New_Snapshot_Action' => __DIR__ . '/../..' . '/src/Action/Link_New_Snapshot_Action.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Ajax\\Ajax_Controller' => __DIR__ . '/../..' . '/src/Ajax/Ajax_Controller.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Ajax\\Link_Check_Ajax' => __DIR__ . '/../..' . '/src/Ajax/Link_Check_Ajax.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Snapshot_Status_Event' => __DIR__ . '/../..' . '/src/Event/Check_Snapshot_Status_Event.php',
@@ -53,6 +54,7 @@ class ComposerStaticInit4306a6418d6b9eb38703d40c88c8d2a0
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Util\\List_Table_Action_Notification_Cache' => __DIR__ . '/../..' . '/src/Util/List_Table_Action_Notification_Cache.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\WP_Post\\WP_Post_Controller' => __DIR__ . '/../..' . '/src/WP_Post/WP_Post_Controller.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\WP_Post\\WP_Post_Table_Controller' => __DIR__ . '/../..' . '/src/WP_Post/WP_Post_Table_Controller.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Exception\\Exceeded_Snapshot_Limit_Exception' => __DIR__ . '/../..' . '/src/Wayback_Machine/Exception/Exceeded_Snapshot_Limit_Exception.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Exception\\Invalid_Response_Exception' => __DIR__ . '/../..' . '/src/Wayback_Machine/Exception/Invalid_Response_Exception.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Exception\\Service_Offline_Exception' => __DIR__ . '/../..' . '/src/Wayback_Machine/Exception/Service_Offline_Exception.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\HTTP_Client\\HTTP_Link_Checker_Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/HTTP_Client/HTTP_Link_Checker_Client.php',

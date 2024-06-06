@@ -97,13 +97,26 @@ class Update_Archive_URL_Event {
 	 *
 	 * @return void
 	 */
-	public function __invoke( int $link_id, int $attempt = 1 ): void {
+	public function __invoke( int $link_id, int $attempt = 0 ): void {
 
 		// Setup
 		$this->setup();
 
-		// Find the link
-		$link = $this->repository->find_by_id( $link_id );
+		try {
+			// Find the link based on its id.
+			$link = $this->repository->find_by_id( $link_id );
+		} catch ( \Throwable $th ) {
+			self::add_to_queue( $link_id, $attempt + 1, 15 * \MINUTE_IN_SECONDS );
+			throw new \Exception(
+				esc_html(
+					sprintf(
+						'Error finding link id: %d, error: %s',
+						absint( $link_id ),
+						esc_html( $th->getMessage() )
+					)
+				)
+			);
+		}
 
 		// If we dont have a link, then we can't do anything.
 		if ( null === $link ) {
@@ -115,8 +128,21 @@ class Update_Archive_URL_Event {
 			throw new \Exception( esc_attr( "Reached maximum number of attempts for link with ID {$link_id}" ), 1 );
 		}
 
-		// Attempt to get the snapshot url.
-		$archive_url = $this->wayback_machine->find_archive( $link->get_href() );
+		// Attempt to get the archived link
+		try {
+			$archive_url = $this->wayback_machine->find_archive( $link->get_href() );
+		} catch ( \Throwable $th ) {
+			self::add_to_queue( $link_id, $attempt + 1, 15 * \MINUTE_IN_SECONDS );
+			throw new \Exception(
+				esc_html(
+					sprintf(
+						'Error getting archive URL for link id: %d, error: %s',
+						absint( $link_id ),
+						esc_html( $th->getMessage() )
+					)
+				)
+			);
+		}
 
 		// If we have an archive URL, then update the link and return.
 		if ( null !== $archive_url ) {

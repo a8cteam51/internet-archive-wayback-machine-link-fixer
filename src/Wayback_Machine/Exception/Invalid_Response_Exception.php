@@ -21,9 +21,11 @@ class Invalid_Response_Exception extends Exception {
 	/**
 	 * Static creator for the exception.
 	 *
+	 * @param string $message The exception message.
+	 *
 	 * @return Invalid_Response_Exception
 	 */
-	public static function create(): Invalid_Response_Exception {
-		return new Invalid_Response_Exception( __( 'The response is invalid.', 'wpcomsp_wayback_link_fixer' ) );
+	public static function create( string $message = ' ' ): Invalid_Response_Exception {
+		return new Invalid_Response_Exception( esc_html( __( 'The response is invalid.', 'wpcomsp_wayback_link_fixer' ) . $message ) );
 	}
 }

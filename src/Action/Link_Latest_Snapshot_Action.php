@@ -19,9 +19,9 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 /**
- * Link_Rescan_Action
+ * Link_Latest_Snapshot_Action
  */
-class Link_Rescan_Action {
+class Link_Latest_Snapshot_Action {
 
 	/**
 	 * Link Repository.

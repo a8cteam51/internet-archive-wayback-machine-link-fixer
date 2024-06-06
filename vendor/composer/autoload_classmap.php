@@ -8,7 +8,8 @@ $baseDir = dirname($vendorDir);
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Link_Check_Action' => $baseDir . '/src/Action/Link_Check_Action.php',
-    'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Link_Rescan_Action' => $baseDir . '/src/Action/Link_Rescan_Action.php',
+    'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Link_Latest_Snapshot_Action' => $baseDir . '/src/Action/Link_Latest_Snapshot_Action.php',
+    'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Link_New_Snapshot_Action' => $baseDir . '/src/Action/Link_New_Snapshot_Action.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Ajax\\Ajax_Controller' => $baseDir . '/src/Ajax/Ajax_Controller.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Ajax\\Link_Check_Ajax' => $baseDir . '/src/Ajax/Link_Check_Ajax.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Snapshot_Status_Event' => $baseDir . '/src/Event/Check_Snapshot_Status_Event.php',
@@ -33,6 +34,7 @@ return array(
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Util\\List_Table_Action_Notification_Cache' => $baseDir . '/src/Util/List_Table_Action_Notification_Cache.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\WP_Post\\WP_Post_Controller' => $baseDir . '/src/WP_Post/WP_Post_Controller.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\WP_Post\\WP_Post_Table_Controller' => $baseDir . '/src/WP_Post/WP_Post_Table_Controller.php',
+    'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Exception\\Exceeded_Snapshot_Limit_Exception' => $baseDir . '/src/Wayback_Machine/Exception/Exceeded_Snapshot_Limit_Exception.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Exception\\Invalid_Response_Exception' => $baseDir . '/src/Wayback_Machine/Exception/Invalid_Response_Exception.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Exception\\Service_Offline_Exception' => $baseDir . '/src/Wayback_Machine/Exception/Service_Offline_Exception.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\HTTP_Client\\HTTP_Link_Checker_Client' => $baseDir . '/src/Wayback_Machine/HTTP_Client/HTTP_Link_Checker_Client.php',
