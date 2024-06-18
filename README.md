@@ -173,7 +173,7 @@ If we need to create a new snapshot, we attempt to create one. If we are success
 
 > We attempt to do this 3 times, with a 15 minuete pause betweeen attempts. If we fail we store the error message.
 
-Action: `wlf_create_new_snapshot`
+Action: `wlf_create_new_snapshot`  
 Args: [Link ID, Attempt Number]
 
 
