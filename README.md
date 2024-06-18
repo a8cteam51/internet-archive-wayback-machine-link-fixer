@@ -157,6 +157,32 @@ The link count is clickable, this will access a filtered link list for that post
 
 ## Developer Documentation
 
+### Process
+
+Almost all operations are carried out using the Action Scheduler, this allows for the plugin to be more performant and not cause issues with timeouts.
+
+#### Find or Create Link
+When a new link is encountered, we check if the `Wayback Link` already has a snapshot, if it does we grab the latest snapshot and store it. If it doesn't we create a new snapshot.
+
+```php
+do_action('wlf_find_or_create_snapshot', $link_id);
+```
+
+#### Create New Snapshot
+If we need to create a new snapshot, we attempt to create one. If we are successful we get a snapshot event id from the "Wayback Machine" and store it.
+
+> We attempt to do this 3 times, with a 15 minuete pause betweeen attempts. If we fail we store the error message.
+
+```php
+do_action('wlf_create_new_snapshot', $link_id, $attempt);
+```
+> The number of retires can be changed by using the `wlf_create_new_snapshot_attempts` filter.
+
+#### Check Snapshot Status
+
+Once we have a snapshot event id, we check the status of the snapshot. If it is successful we update the link with the new snapshot URL.
+
+```php
 ### Hooks
 
 The plugin is designed to be extensible, with a number of hooks and filters available for developers to use.
