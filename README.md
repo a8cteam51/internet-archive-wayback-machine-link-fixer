@@ -173,9 +173,10 @@ If we need to create a new snapshot, we attempt to create one. If we are success
 
 > We attempt to do this 3 times, with a 15 minuete pause betweeen attempts. If we fail we store the error message.
 
-```php
-do_action('wlf_create_new_snapshot', $link_id, $attempt);
-```
+Action: `wlf_create_new_snapshot`
+Args: [Link ID, Attempt Number]
+
+
 > The number of retires can be changed by using the `wlf_create_new_snapshot_attempts` filter.
 
 #### Check Snapshot Status
