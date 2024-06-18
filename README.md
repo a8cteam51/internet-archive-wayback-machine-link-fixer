@@ -107,6 +107,8 @@ Displays the date and time of the last check.
 
 ## Actions
 
+![image](./_docs/links--actions.png)
+
 You can select which links you wish to apply the bulk actions to by checking the box next to the URL.
 
 ### Update Latest Snapshot
