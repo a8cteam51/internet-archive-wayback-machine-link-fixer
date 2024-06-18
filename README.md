@@ -122,3 +122,41 @@ This will setup an event using the action scheduler to create a new snapshot of 
 ### Check Link
 
 This will trigger a check of the link to see if it is still active.
+
+## Link Report
+![Alt text](./_docs/link--details.png)
+
+Each link has a details page which gives more information about the link.
+
+### Link Details
+
+#### URL 
+The URL of the link.
+
+#### Archived URL
+The archived URL if one exists.
+
+#### Message 
+If there are any issues in creating or finding a snapshot, this will be displayed here.
+
+### Link Checks
+
+This lists all checks, with the date/time plus the resulting http status code. It will also show if the link is broken or not.
+
+### Posts Link Used In
+
+This list all posts which the link appears.
+
+## Post/Page List Table
+
+The number of links and how many are broken is shown on the post list table. 
+![image](./_docs/post-list-table.png)
+
+The link count is clickable, this will access a filtered link list for that post.
+![Alt text](./_docs/links--for-post.png)
+
+## Developer Documentation
+
+### Hooks
+
+The plugin is designed to be extensible, with a number of hooks and filters available for developers to use.
