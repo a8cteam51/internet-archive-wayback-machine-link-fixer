@@ -104,3 +104,19 @@ Denotes the number of the times we have checked if the link is still active.
 ### Last Check
 
 Displays the date and time of the last check.
+
+## Actions
+
+You can select which links you wish to apply the bulk actions to by checking the box next to the URL.
+
+### Update Latest Snapshot
+
+This will update the link to the latest snapshot that exists on the Wayback Machine. *This will not create a new snapshot!*
+
+### Create New Snapshot
+
+This will setup an event using the action scheduler to create a new snapshot of the link. If a new snapshot can be created, the links archived link will be updated to the new snapshot.
+
+### Check Link
+
+This will trigger a check of the link to see if it is still active.
