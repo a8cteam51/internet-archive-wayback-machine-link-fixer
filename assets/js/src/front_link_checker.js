@@ -139,7 +139,20 @@ const getArchivedLink = (link) => {
  * @param {string} str The string to check
  * @returns {string} The string without the trailing slash
  */
-const removeTrailingSlash = (str) => str.replace(/\/$/, '');
+const removeTrailingSlash = (str) => {
+	// If we have no string, return it
+	if (str === null || str === '') {
+		return str;
+	}
+
+	// If str does not have a trailing slash, return it
+	if (str.slice(-1) !== '/') {
+		return str;
+	}
+
+	// Remove the trailing slash
+	return str.replace(/\/$/, '');
+};
 
 
 /**
@@ -149,7 +162,6 @@ const removeTrailingSlash = (str) => str.replace(/\/$/, '');
  * @returns {void}
  */
 const addDataAttributes = (link) => {
-
 	// Get the href.
 	const href = removeTrailingSlash(link.href);
 
@@ -166,7 +178,7 @@ const addDataAttributes = (link) => {
 			currentLink.setAttribute('data-wlf-current-url', href);
 			currentLink.setAttribute('data-wlf-archived-broken', link.broken);
 			// If we have a last checked date, add it
-			if(link.last_checked !== null && link.last_checked.date !== null){
+			if (link.last_checked !== null && link.last_checked.date !== null) {
 				currentLink.setAttribute('data-wlf-archived-last-checked', link.last_checked.date);
 			}
 
@@ -205,10 +217,10 @@ const checkLink = (link) => {
 		return;
 	}
 
+
 	// If the link is already marked as broken, add the data attributes
 	if (archived.broken) {
 		addDataAttributes(archived);
-		return;
 	}
 
 	// If there is no archived link, return
@@ -220,6 +232,12 @@ const checkLink = (link) => {
 	if (archived.last_checked === null || daysSince(archived.last_checked.date) > linkDelay) {
 		// Check the link
 		verifyLink(link).then((result) => {
+
+			// If the link can not be found, skip.
+			if (result.success === false || result.data || result.data.link) {
+				return;
+			}
+
 			addDataAttributes(result.data.link);
 		});
 	}
