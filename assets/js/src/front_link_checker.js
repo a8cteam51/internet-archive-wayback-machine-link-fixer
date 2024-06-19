@@ -221,6 +221,7 @@ const checkLink = (link) => {
 	// If the link is already marked as broken, add the data attributes
 	if (archived.broken) {
 		addDataAttributes(archived);
+		return;
 	}
 
 	// If there is no archived link, return
