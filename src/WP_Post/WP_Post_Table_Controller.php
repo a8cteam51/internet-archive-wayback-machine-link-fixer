@@ -51,6 +51,10 @@ class WP_Post_Table_Controller {
 	 * @return void
 	 */
 	private function register_hooks(): void {
+		// Do not activate the settings page if the users can not activate the plugin.
+		if ( wpcomsp_wayback_link_fixer_can_activate() === false ) {
+			return;
+		}
 		add_filter( 'manage_posts_columns', array( $this, 'add_column' ) );
 		add_filter( 'manage_pages_columns', array( $this, 'add_column' ) );
 		add_action( 'manage_pages_custom_column', array( $this, 'render_link_column' ), 10, 2 );

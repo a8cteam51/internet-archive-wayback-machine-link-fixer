@@ -60,6 +60,10 @@ class Report_Page {
 	 * @return void
 	 */
 	public function initialize(): void {
+		// Do not activate the settings page if the users can not activate the plugin.
+		if ( wpcomsp_wayback_link_fixer_can_activate() === false ) {
+			return;
+		}
 
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 

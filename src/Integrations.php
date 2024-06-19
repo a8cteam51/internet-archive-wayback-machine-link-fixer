@@ -2,9 +2,9 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Ajax_Controller;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event_Controller;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Handler;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Table_Controller;
@@ -35,7 +35,7 @@ final class Integrations {
 		$this->event_controller         = new Event_Controller();
 		$this->ajax_controller          = new Ajax_Controller();
 		$this->wp_post_table_controller = new WP_Post_Table_Controller();
-		$this->report_page              = new Report\Report_Page();
+		$this->report_page              = new Report_Page();
 	}
 
 

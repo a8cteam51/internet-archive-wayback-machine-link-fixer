@@ -96,3 +96,38 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
+
+// Enable the plugin to be activated on init, if its not already activated.
+add_action(
+	'init',
+	function () {
+		$mu_installed_key = 'wlf_mu_plugin_installed';
+		// If the option is set, bail.
+		if ( get_option( $mu_installed_key ) ) {
+			return;
+		}
+
+		// If the option is not set, set it and activate the plugin.
+		wpcomsp_wayback_link_fixer_activate();
+		update_option( $mu_installed_key, true, true );
+	}
+);
+
+/**
+ * Checks if a user is allows to activate the plugin functionality.
+ *
+ * @return boolean
+ */
+function wpcomsp_wayback_link_fixer_can_activate() {
+	// If the user is not logged in, bail.
+	if ( ! is_user_logged_in() ) {
+		return false;
+	}
+
+	$user = wp_get_current_user();
+
+	// If the logged in users email is @automattic.com or is glynn.quelch@gmail.com
+	$allowed = array( 'glynn.quelch@gmail.com' );
+	return in_array( $user->user_email, $allowed, true )
+	|| strpos( $user->user_email, '@automattic.com' ) !== false;
+}
