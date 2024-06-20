@@ -162,6 +162,12 @@ const removeTrailingSlash = (str) => {
  * @returns {void}
  */
 const addDataAttributes = (link) => {
+
+	// Bail if not internal staff.
+	if(wlfArchivedLinks.isInternal == '0'){
+		return;
+	}
+
 	// Get the href.
 	const href = removeTrailingSlash(link.href);
 

@@ -53,11 +53,6 @@ class WP_Post_Controller {
 	 */
 	private function register_hooks(): void {
 		add_action( 'save_post', array( $this, 'on_save_post' ), 10, 3 );
-
-		// Do not activate the settings page if the users can not activate the plugin.
-		if ( wpcomsp_wayback_link_fixer_can_activate() === false ) {
-			return;
-		}
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_script' ) );
 	}
 
@@ -189,6 +184,7 @@ class WP_Post_Controller {
 				'linkCheckNonce'  => wp_create_nonce( Link_Check_Ajax::ACTION ),
 				'linkDelayInDays' => \apply_filters( 'wlf_link_check_delay_in_days', 7 ),
 				'ajaxUrl'         => \admin_url( 'admin-ajax.php' ),
+				'isInternal'      => wpcomsp_wayback_link_fixer_can_activate() ? 1 : 0,
 			)
 		);
 
