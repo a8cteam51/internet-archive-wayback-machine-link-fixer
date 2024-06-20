@@ -71,6 +71,11 @@ class Content_Scanner {
 		foreach ( $anchors as $anchor ) {
 			$href = $anchor->getAttribute( 'href' );
 
+			// If href doesnt start with http or https, skip.
+			if ( ! preg_match( '/^https?:\/\//', $href ) ) {
+				continue;
+			}
+
 			// If this is a valid url, add it to the collection.
 			if ( filter_var( $href, FILTER_VALIDATE_URL ) ) {
 				$this->links[] = $href;
