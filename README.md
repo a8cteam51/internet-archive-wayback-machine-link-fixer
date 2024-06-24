@@ -234,7 +234,18 @@ The plugin is designed to be extensible, with a number of hooks and filters avai
 This is used to determine how long we should wait when checking if a link is still valid. The default is 5000ms (5 seconds).
 
 ```php
-add_filter('wlf_link_checker_timeout', function($timeout) {
-	return 10000; // 10 seconds
+add_filter('wlf_link_checker_timeout', function( int $timeout ): int {
+   return 10000; // 10 seconds
+});
+```
+
+#### 'wlf_link_exclusions'
+
+This is used to add additional exclusions to the link checker. This is fired with the defined exclusions from settings.
+
+```php
+add_filter('wlf_link_exclusions', function( array $exclusions ): array {
+   $exclusions[] = 'https://example.com/*';
+   return $exclusions;
 });
 ```
