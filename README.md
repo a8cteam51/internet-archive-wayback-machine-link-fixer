@@ -359,8 +359,10 @@ add_filter( 'wlf_is_valid_check', function( bool $is_valid, array $check, Link $
 ### Internet Archive / Wayback Link Fixer Instances.
 
 Both the Link Checker and Snapshot clients are all extended from the following interfaces:  
-	* WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client  
-	* WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client  
+
+* WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client  
+* WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client  
+
 Both of these classes return documented arrays of data, so can be overridden to use a different service if needed.
 
 To change which class is used, you can use the following filters:
