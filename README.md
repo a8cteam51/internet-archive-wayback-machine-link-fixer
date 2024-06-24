@@ -221,7 +221,7 @@ Args: [Link ID, Attempt Number]
 
 When the plugin is activated, we check all existing posts for links. This is done using the `wlf_scan_existing_posts` action. Every 10 minutes we check if there are any posts which has not been scanned. If we find any, 10 will processed at 1 time.
 
-> You can control how many posts are processed per batch using the `wlf_posts_per_batch` filter (defaults to 10)
+> You can control how many posts are processed per batch using the [`wlf_posts_per_batch`](#wlf_posts_per_batch) filter (defaults to 10)
 
 > You can control how often the scan is run using the `wlf_scan_existing_posts_interval` filter (defaults to 10 minutes)
 
