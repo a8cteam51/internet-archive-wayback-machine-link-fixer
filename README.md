@@ -192,7 +192,7 @@ Action: `wlf_create_new_snapshot`
 
 Args: [Link ID, Attempt Number]
 
-> The number of retires can be changed by using the `wlf_create_new_snapshot_attempts` filter.
+> The number of retires can be changed by using the [`wlf_create_new_snapshot_attempts`](#wlf_create_new_snapshot_attempts) filter.
 
 #### Check Snapshot Status
 
@@ -202,9 +202,9 @@ Action: `wlf_check_snapshot_status`
 
 Args [Link ID, Wayback Event ID, Attempt Number]
 
-> The number of retires can be changed by using the `wlf_check_snapshot_status_attempts` filter.
+> The number of retires can be changed by using the [`wlf_check_snapshot_status_attempts`](#wlf_check_snapshot_status_attempts) filter.
 
-> The time between retries can be changed by using the `wlf_check_snapshot_status_interval` filter. (Time in seconds)
+> The time between retries can be changed by using the [`wlf_check_snapshot_status_interval`](#wlf_check_snapshot_status_interval) filter. (Time in seconds)
 
 #### Update Archive URL
 
@@ -214,7 +214,7 @@ Hook: `wlf_update_archive_url`
 
 Args: [Link ID, Attempt Number]
 
-> The number of retires can be changed by using the `wlf_update_archive_url_attempts` filter (3 by default)
+> The number of retires can be changed by using the [`wlf_update_archive_url_attempts`](#wlf_update_archive_url_attempts) filter (3 by default)
 
 
 #### Scan Existing Posts
@@ -223,7 +223,7 @@ When the plugin is activated, we check all existing posts for links. This is don
 
 > You can control how many posts are processed per batch using the [`wlf_posts_per_batch`](#wlf_posts_per_batch) filter (defaults to 10)
 
-> You can control how often the scan is run using the `wlf_scan_existing_posts_interval` filter (defaults to 10 minutes)
+> You can control how often the scan is run using the [`wlf_scan_existing_posts_interval`](#wlf_scan_existing_posts_interval) filter (defaults to 10 minutes)
 
 ### Hooks
 
@@ -291,5 +291,51 @@ add_filter( 'wlf_failed_checks', function( int $checks ): int {
 });
 ```
 
+#### `wlf_create_new_snapshot_attempts`
 
+This is used to define how many times we should attempt to create a new snapshot. The default is 3.
 
+```php
+add_filter( 'wlf_create_new_snapshot_attempts', function( int $attempts ): int {
+   return 5;
+});
+```
+#### `wlf_check_snapshot_status_attempts`
+
+This is used to define how many times we should attempt to check the status of a snapshot. The default is 3.
+
+```php
+add_filter( 'wlf_check_snapshot_status_attempts', function( int $attempts ): int {
+   return 5;
+});
+```
+
+#### `wlf_check_snapshot_status_interval`
+
+This is used to define how long we should wait between checking the status of a snapshot. The default is 300 seconds (5 minutes).
+
+```php
+add_filter( 'wlf_check_snapshot_status_interval', function( int $interval ): int {
+   return 10 * \MINUTE_IN_SECONDS; // 10 minutes
+});
+```
+
+#### `wlf_update_archive_url_attempts`
+
+This is used to define how many times we should attempt to update the archive URL. The default is 3.
+
+```php
+add_filter( 'wlf_update_archive_url_attempts', function( int $attempts ): int {
+   return 5;
+});
+```
+
+##### `wlf_scan_existing_posts_interval`
+
+This is used to define how often we should check for posts which have not been scanned. The default is 10 minutes.
+
+```php
+add_filter( 'wlf_scan_existing_posts_interval', function( int $interval ): int {
+   return 5 * \MINUTE_IN_SECONDS; // 5 minutes
+});
+```
