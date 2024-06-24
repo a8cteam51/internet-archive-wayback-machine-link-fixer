@@ -170,6 +170,11 @@ The link count is clickable, this will access a filtered link list for that post
 
 ## Developer Documentation
 
+### Dependencies
+
+The plugin uses the following dependencies:
+* Action Scheduler - This is added using the defined loader, so any later version will be used in its place gracefully.
+
 ### Process (Action Scheduler Events)
 
 Almost all operations are carried out using the Action Scheduler, this allows for the plugin to be more performant and not cause issues with timeouts.
@@ -356,6 +361,80 @@ add_filter( 'wlf_is_valid_check', function( bool $is_valid, array $check, Link $
 > The `$check` array contains the following keys: `status_code (string)`, `date (Y-m-d H:i:s)`.
 > For all public methods of the `Link` model, see the codebase (src/Link/Link.php)
 
+#### `wlf_link_checker_url_params`
+
+This is the array of parameters which are passed to the `wp_remote_get` function when checking if a link is still valid.
+
+> Please note url=https://the-url-to-check.com should always passed.
+
+```php
+add_filter( 'wlf_link_checker_url_params', function( array $params ): array {
+   $params['skip_cache'] = 10; // Skip the IA cache (5 mins by default)
+   return $params; 
+});
+```
+
+Additional args
+* `impersonate=1`: use https://github.com/yifeikong/curl_cffi
+to impersonate Chrome 110 and potentially avoid TLS fingerprinting blockers.
+* `skip_adblocker=1`: The service uses an Adblocker by default https://pypi.org/project/braveblock/
+* `skip_cache=1`: The service caches results for 5 minutes. Use this param to skip the cache.
+* `kip_wbm_blocker=1`: The service blocks Wayback Machine URLs by default. Use this parameter to skip it
+* `user_agent=<str>`: Use a custom `user-agent` HTTP header
+
+
+#### `wlf_link_checker_url_base`
+
+This is the base url of the link checker and doesnt really need changing unless you are running tests or your own custom endpoint for addtional caching.
+
+```php
+add_filter( 'wlf_link_checker_url_base', function( string $url ): string {
+   return 'https://my-custom-link-checker.com';
+});
+```
+
+#### `wlf_find_snapshot_base_url`
+
+This is the url which is used when looking for a snapshot of a link. This should not need changing unless you are running tests or have your own custom endpoint.
+
+```php
+add_filter( 'wlf_find_snapshot_base_url', function( string $url ): string {
+	   return 'https://my-custom-snapshot-finder.com';
+});
+```
+
+> Please note these only apply when using the default `Link_Checker_Client` class.
+
+#### `wlf_get_latest_snapshot_url`
+
+This is the url which is called to get the latest snapshot of a link.
+
+```php
+add_filter( 'wlf_get_latest_snapshot_url', function( string $base_url, string $url ): string {
+	return sprintf( '%s?url=%s', $base_url, urlencode( $url ) );
+});
+```
+
+#### `wlf_get_closest_snapshot_url`
+
+This is the url which is called to get the snapshot closest to a defined date.
+
+```php
+add_filter( 'wlf_get_closest_snapshot_url', function( string $base_url, string $url, DateTime $date ): string {
+	return sprintf( '%s?url=%s&timestamp=%s', $base_url, urlencode( $url ), $date->getTimestamp() );
+});
+```
+
+#### `wlf_create_snapshot_url`
+
+This is the base url used when creating a snapshot of a link. This is done as a POST request, with the URL passed as a body parameter.
+
+```php
+add_filter( 'wlf_create_snapshot_url', function( string $url ): string {
+	return 'https://my-custom-snapshot-creator.com';
+});
+```
+
 ### Internet Archive / Wayback Link Fixer Instances.
 
 Both the Link Checker and Snapshot clients are all extended from the following interfaces:  
@@ -390,3 +469,25 @@ add_filter( 'wlf_snapshot_client', function( Snapshot_Client $client ): Snapshot
    return new My_Custom_Snapshot_Client();
 });
 ```
+### Contribute
+
+If you would like to contribute to the this plugin, feel free to do so. There are a number of tools which can be used to help in your development.
+
+#### PHPCS\PHPCBF
+
+This project is setup to use a customised version of the WordPress Extra ruleset. This is to ensure that the code is following the WordPress coding standards. To run the checks, you can use the following command:
+
+```bash
+composer lint:php # This will run the code through phpcs
+composer format:php # This will run the code through phpcbf
+```
+
+#### PHPUnit
+
+The plugin comes with a small set of unit tests, these must all pass before a PR can be merged. To run the tests, you can use the following command:
+
+```bash
+composer test:php
+```
+
+> You can run the full set of linting and tests with `composer run:php`, this will install dev dependencies and run the tests and then optimize the autoloader with a production ready version.
