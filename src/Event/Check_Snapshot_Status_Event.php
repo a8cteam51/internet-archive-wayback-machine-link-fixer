@@ -47,7 +47,7 @@ class Check_Snapshot_Status_Event {
 	 * Create instance of the class.
 	 */
 	public function __construct() {
-		$this->attempts = \apply_filters( 'wlf_archive_status_max_attempts', 3 );
+		$this->attempts = \apply_filters( 'wlf_check_snapshot_status_attempts', 3 );
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Check_Snapshot_Status_Event {
 	 * @return integer
 	 */
 	public static function get_interval(): int {
-		return absint( \apply_filters( 'wlf_archive_status_check_interval', 1 * \MINUTE_IN_SECONDS ) );
+		return absint( \apply_filters( 'wlf_check_snapshot_status_interval', 1 * \MINUTE_IN_SECONDS ) );
 	}
 
 	/**
