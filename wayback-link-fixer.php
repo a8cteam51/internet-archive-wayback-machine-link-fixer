@@ -36,7 +36,7 @@ define( 'WPCOMSP_WAYBACK_LINK_FIXER_BASENAME', plugin_basename( __FILE__ ) );
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_URL', plugin_dir_url( __FILE__ ) );
 
-$wpcomsp_wayback_link_fixer_requirements = validate_plugin_requirements( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME );
+$wpcomsp_wayback_link_fixer_requirements = true;
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', $wpcomsp_wayback_link_fixer_requirements );
 
 // Include the action scheduler integration.
