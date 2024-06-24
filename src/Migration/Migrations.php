@@ -78,5 +78,10 @@ class Migrations {
 
 		// Update the list of migrations that have been run.
 		Settings::update_migrations( $previously_run_migrations );
+
+		// Clear all meta fields.
+		foreach ( Settings::get_allowed_post_types() as $type ) {
+			delete_metadata( $type, 0, Settings::LINK_META_KEY, false, true );
+		}
 	}
 }
