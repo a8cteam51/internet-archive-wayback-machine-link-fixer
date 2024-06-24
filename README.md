@@ -330,12 +330,61 @@ add_filter( 'wlf_update_archive_url_attempts', function( int $attempts ): int {
 });
 ```
 
-##### `wlf_scan_existing_posts_interval`
+#### `wlf_scan_existing_posts_interval`
 
 This is used to define how often we should check for posts which have not been scanned. The default is 10 minutes.
 
 ```php
 add_filter( 'wlf_scan_existing_posts_interval', function( int $interval ): int {
    return 5 * \MINUTE_IN_SECONDS; // 5 minutes
+});
+```
+
+#### `wlf_is_valid_check`
+
+This filter is used when a url is checked and we are returning if the link is valid or not. The default is to check if the status code is in the `wlf_valid_http_status_codes` array.
+
+```php
+add_filter( 'wlf_is_valid_check', function( bool $is_valid, array $check, Link $link ): bool {
+   // If the link is from foo.com and the status code is 301 or 302, treate as valid
+   if ( strpos( $link->get_href, 'foo.com' ) !== false && in_array( $check['status_code'], [ 301, 302 ] ) ) {
+	  return true;
+   }
+});
+```
+
+> The `$check` array contains the following keys: `status_code (string)`, `date (Y-m-d H:i:s)`.
+> For all public methods of the `Link` model, see the codebase (src/Link/Link.php)
+
+### Internet Archive / Wayback Link Fixer Instances.
+
+Both the Link Checker and Snapshot clients are all extended from the following interfaces: 
+	* WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client
+	* WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client
+Both of these classes return documented arrays of data, so can be overridden to use a different service if needed.
+
+To change which class is used, you can use the following filters:
+
+#### Link Checker Client.
+
+```php
+class My_Custom_Link_Checker_Client implements Link_Checker_Client {
+   ....
+}
+
+add_filter( 'wlf_link_checker_client', function( Link_Checker_Client $client ): Link_Checker_Client {
+   return new My_Custom_Link_Checker_Client();
+});
+```
+
+#### Snapshot Client.
+
+```php
+class My_Custom_Snapshot_Client implements Snapshot_Client {
+   ....
+}
+
+add_filter( 'wlf_snapshot_client', function( Snapshot_Client $client ): Snapshot_Client {
+   return new My_Custom_Snapshot_Client();
 });
 ```
