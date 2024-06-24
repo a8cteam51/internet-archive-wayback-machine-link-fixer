@@ -239,7 +239,7 @@ add_filter( 'wlf_link_checker_timeout', function( int $timeout ): int {
 });
 ```
 
-#### 'wlf_link_exclusions'
+#### `wlf_link_exclusions`
 
 This is used to add additional exclusions to the link checker. This is fired with the defined exclusions from settings.
 
@@ -249,3 +249,47 @@ add_filter( 'wlf_link_exclusions', function( array $exclusions ): array {
    return $exclusions;
 });
 ```
+
+#### `wlf_posts_per_batch`
+
+This is used to define how many posts should be checked, when the plugin is scanning existing posts.
+
+```php
+add_filter( 'wlf_posts_per_batch', function( int $posts_per_batch ): int {
+   return 20;
+});
+```
+
+##### `wlf_link_check_duration_in_days`
+
+This is used to define how many days should be between checking if a link is still valid. The default is 7 days.
+
+```php
+add_filter( 'wlf_link_check_duration_in_days', function( int $days ): int {
+   return 14; // 14 days
+});
+```
+
+#### `wlf_valid_http_status_codes`
+
+This return array is used to determine what http status codes are considered valid. The default is `200` and `206`.
+
+```php
+add_filter( 'wlf_valid_http_status_codes', function( array $codes ): array {
+   $codes[] = 301;
+   return $codes;
+});
+```
+
+#### `wlf_failed_checks`
+
+This is used to define how many checks with non valid status codes are encountered before marking a link as broken. The default is 5.
+
+```php
+add_filter( 'wlf_failed_checks', function( int $checks ): int {
+   return 3;
+});
+```
+
+
+
