@@ -624,4 +624,43 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 
 		$this->assertCount( 0, $link_collection->get_links() );
 	}
+
+	/**
+	 * @testdox The totals of links with or without archives should add up to the same as without the constraint.
+	 * @see https://github.com/a8cteam51/wayback-link-fixer/issues/73
+	 *
+	 * @return void
+	 */
+	public function test_totals_with_and_without_archives(): void {
+		global $wpdb;
+
+		$links = [
+			['url' => 'https://wlf1.com', 'checks' => '[]'],
+			['url' => 'https://wlf2.com', 'checks' => '[]'],
+			['url' => 'https://wlf3.com', 'checks' => '[]'],
+			['url' => 'https://wlf4.com', 'checks' => '[]'],
+			['url' => 'https://wlf5.com', 'archived' => '', 'checks' => '[]'],
+			['url' => 'https://wlf6.com', 'archived' => '', 'checks' => '[]'],
+			['url' => 'https://wlf7.com', 'archived' => '', 'checks' => '[]'],
+			['url' => 'https://wlf8.com', 'archived' => '', 'checks' => '[]'],
+			['url' => 'https://wlf9.com', 'archived' => 'https://arch9.com', 'checks' => '[]'],
+			['url' => 'https://wlf10.com', 'archived' => 'https://arch10.com', 'checks' => '[]'],
+			['url' => 'https://wlf11.com', 'archived' => 'https://arch11.com', 'checks' => '[]'],
+			['url' => 'https://wlf12.com', 'archived' => 'https://arch12.com', 'checks' => '[]'],
+		];
+
+		foreach ( $links as $link ) {
+			$wpdb->insert( Settings::get_link_table_name(), $link );
+		}
+
+		// Check the total links.
+		$this->assertCount( 12, $this->link_repository->query_links( 100, 1) );
+
+		// Check without archives.
+		$this->assertCount( 8, $this->link_repository->query_links( 100, 1, array(), array(), array(Link_Repository::LINK_NO_ARCHIVE)) );
+
+		// Check with archives.
+		$this->assertCount( 4, $this->link_repository->query_links( 100, 1, array(), array(), array(Link_Repository::LINK_HAS_ARCHIVE)) );
+
+	}
 }
