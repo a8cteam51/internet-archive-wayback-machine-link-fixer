@@ -9,441 +9,485 @@
 **License:** GPLv3 or later \
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html
 
-
-
 ## Description
 
-A plugin which can be used to both find and fix broken links within post_content fields. This uses the WayBack Machine to look for older versions of the defined post and replace any broken links.
-
-```html
-<!-- Old HTML on WayBack Machine -->
-<a href="https://www.correct.com/the-link.html">Read more</a>
-
-<!-- Broken Link in Current Post -->
-<a href="https://www.broken.com/the-link.html">Read more</a>
-```
-> Running the fixer on the above example would replace the broken link with the correct one.
-
-### Caveats
-
-IF the WayBack Machine finds multiple links with the same content (`Read More`). It will not fix these, but list them as suggestions on the generated report.
+Welcome to **WayBack Link Fixer**, a powerful tool designed to enhance your WordPress site by automatically scanning posts for links, retrieving the latest snapshots from the Wayback Machine, and seamlessly replacing broken links with archived versions. This innovative solution ensures that your posts remain resilient against `BITROT` , preserving the integrity of linked content over time.
 
 ## Installation
 
-To install this plugin, you should donwload the latest version from the [releases page](https://github.com/a8cteam51/wayback-link-fixer/releases) and upload the zip file to your WordPress site.
+### Via WP Admin Dashboard
 
-> This can be added as a git sub module to your project, but this is not recommended as its easier to control the version of the plugin if you download the zip file.
+1. Upload the archive using the WordPress plugin uploader.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Configure the plugin settings by navigating to the 'WayBack Link Fixer' menu in the WordPress admin dashboard.
 
-### AFTER ACTIVATION
+### Via FTP
 
-During Activation the plugin will create 3 tables in the database. These are used to store the data from the WayBack Machine and the results of the fixer. 
-> Please note these tables are not prefixed to allow for use on multisites.
+1. Extract the archive and upload the plugin folder to the `/wp-content/plugins/` directory.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Configure the plugin settings by navigating to the 'WayBack Link Fixer' menu in the WordPress admin dashboard.
 
-### On Uninstall
+Certainly! Here’s a more polished version for a WordPress plugin readme:
 
-When the plugin is uninstalled, it will remove the 3 tables from the database. **IF** you have selected the option to drop tables.
+## Configuration
 
-## Usage (Single Site)
+### Post Types
 
-Once the plugin has been installed, it is worth heading to the setting page and configuring the plugin to your needs.
+![image](./_docs/settings--post-types.png)
 
-### Settings
+Choose which post types should be checked whenever a post is saved, updated, or when existing posts are scanned.
 
-You can find the settings under `Link Fixer` in the admin menu.
+> By default, `post` and `page` are selected.
 
-![Settings](_docs/settings-page.png "Settings Page")
+### Remove Data on Uninstall
 
-#### Post Types
-This allows you to select the Post Types that can be checked/fixed. By default this is set to `post` and `page`. Whatever post types are selected here will be the only options you have when running a new report/check. 
-> **Please note** the CLI command will allow you to ignore this and check any post type.
+![image](./_docs/settings--drop-tables.png)
 
-#### Drop Tables on Uninstall
-Checking this option will see all the tables dropped from the database when the plugin is uninstalled. 
-> **Please note** this will remove all data from the tables and cannot be undone.
+Enable this option to remove all plugin data from the database when the plugin is uninstalled.
 
-#### Link Checker Timeout
-This allows you to set how long (in Milliseconds) the plugin will wait for a response. This is used for checking if links are valid or following redirection chains. 
-> You can increase this value if you are not getting valid results from the link checker.
+> Enabled by default.
 
-#### HTTP Status Codes
-This allows you to select which HTTP Status codes will be reported on. 
-> **Please note** malformed links will be reported, such as (`<a>No href</a>`).
+### Scan Existing Posts
 
-#### Link Cache Expiration
-When a link is checked, it is cached to avoid running the same check multiple times. This allows you to set how long (in seconds) the link will be cached for. 
-> **Please note** This can ignored on all runners.
+![image](./_docs/settings--scan-existing.png)
 
-#### Link Exclusions
-You can add as many links patterns as you wish that should be ignored by the link checker. These can be entered using wildecards (`*`) making it possible to ignore all links from a domain.
-> `*.twitter.com*` would ignore all links from any twitter subdomain and with any sub route.
+Enable this option to scan all existing posts for broken links. Only posts that haven't been previously scanned will be checked.
 
-#### Posts per Batch
-This allows you to set how many posts will be checked per batch. This used for both the Queue Runner and the CLI Runner.
-> **Please note** this is can be overridden by the CLI Runner.
+> Enabled by default.
 
-### Run from Single Post
-It is possible to run a report for a single post. This can be done from the editor screen for the post. 
-> **Please note** this will only run the report and WILL NOT fix any links.
+### Link Exclusions
 
-![Single Post](_docs/single-post-trigger.png "Single Post")
+![image](./_docs/settings--link-exclusions.png)
 
-It is possible to choose to ignore the link cache and specify which HTTP Codes to look for (these are pre populated with the settings from the settings page).
+Specify links to exclude from being checked. This is useful for links known to be broken or irrelevant. The `*` wildcard can be used to match any character.
 
-![Single Post](_docs/single-post-result.png "Single Post Settings")
+* `https://example.com/*` - Excludes all links starting with `https://example.com/`
+* `*.twitter.*` - Excludes all links containing `twitter` in the domain name
 
-Once it has been run, a link to the report will be added below the trigger, with some basic information about the report.
+### Archive.org API Key
 
-### Run using Action Scheduler
+![image](./_docs/settings--archive-api-key.png)
 
-It is possible to run the report using the Action Scheduler. This will allow you to run the report in the background for as many posts and posts types as you wish. 
+You can use this plugin without an API key, but you will be limited to 200 new snapshots per day. Any new snapshots which need to created after this limit is reached will fail.
 
-> **Please note** The plugin includes the Action Scheduler, so you do not need to install WooCommerce or the Action Scheduler directly.
+> Visit [https://archive.org/account/s3.php](https://archive.org/account/s3.php) to get your API key.
 
-To trigger the creation of a new report, you can addess the `New Report` page under the `Link Fixer` menu.
+## Links 
 
-![New Report](_docs/as-new-report-single-site.png "New Report")
+Every link which is scanned, is added to the Link Table, this can be accessed under `Links` in the `Tools` menu.
 
-#### HTTP Status Codes
+![image](./_docs/links--table.png)
 
-This allows you to select which HTTP Status codes will be reported on.
-> **Please note** malformed links will be reported, such as (`<a>No href</a>`).
+Here you can see the status of each link, the number of snapshots available, and the date of the last snapshot.
 
-#### Ignore Link Cache
+### URL
 
-This allows you to ignore the link cache and check all links again.
+The URL of the link, clicking it will show more details about the link.
 
-#### Auto Fix Broken Links
+### Has Archived Link
 
-This allows you to set that links should be replaced automatically. 
-> **Please note** this will only replace links that have been found on the WayBack Machine. See [Auto Fix Links](#auto-fix-links) for more information.
+![image](./_docs/check-icon.png)
 
+ A checkmark indicates that we have a defined archived link for this URL. Clicking this will access the archived snapshot.
 
-#### Post Types
+![image](./_docs/cross-icon.png)
 
-You can select which post types you would like to check.
-> **Please note** this will only show post types that have been selected on the settings page.
+ A cross indicates that we do not have an archived link for this URL.
 
-#### Posts to Ignore
-You can select which posts you would like to ignore. These can be searched via the title and will reflect the chosen post types.
+### Link Health
 
-Once the report has been created, it will be added to the queue and will be processed as soon as possible. Once the process has been completed the report will be marked as completed.
+![image](./_docs/heart-icon.png)
 
-![Report](_docs/as-new-report-single-site-running.png "Report")
+ A heart implies that the link is still pointing to a valid target.
 
-> The report will processed in batches of posts, the amount of posts per batch will be controlled by the setting `Posts per Batch`.
+![image](./_docs/error-icon.png)
 
-All Scheduled Actions are run under the `wpcomsp_wlf` group with the hook `t51_wlf_event_runner`.
+ A broken heart indicates that the link is broken.
 
-### Run Via CLI
+### Check Count
 
-You can generate a report using the WP-CLI. This is run synchronously with output in the terminal.
+Denotes the number of the times we have checked if the link is still active.
 
-> **Please note** The CLI command will generate reports with a user ID of 0, this will give "Unknown" as the user on the report.
+### Last Check
 
-```bash
-$ wp wlf_scan
-```
-When run with no additional arguments, this will run the report based on the settings from the settings page. You can override these settings by using the following arguments.
+Displays the date and time of the last check.
 
-![CLI](_docs/cli-no-args.png "CLI")
+## Actions
 
-#### Dry Run
+![image](./_docs/links--actions.png)
 
-```bash
-$ wp wlf_scan --dry-run
-```
-> This will output the settings based on the settings page and exit.
+You can select which links you wish to apply the bulk actions to by checking the box next to the URL.
 
-![Dry Run](_docs/cli-dry-run.png "Dry Run")
+### Update Latest Snapshot
 
-#### Post Types
+This will update the link to the latest snapshot that exists on the Wayback Machine. *This will not create a new snapshot!*
 
-```bash
-$ wp wlf_scan --post-types=post,product
-```
-> These can be passed as a comma separated list.
+### Create New Snapshot
 
-![Post Types](_docs/cli-post-types.png "Post Types")
+This will setup an event using the action scheduler to create a new snapshot of the link. If a new snapshot can be created, the links archived link will be updated to the new snapshot.
 
-#### Ignore Link Cache
+### Check Link
 
-```bash
-$ wp wlf_scan --ignore-cache
-```
-> Passing this param as either `--ignore-cache` or `--ignore-cache=true` will ignore the link cache
+This will trigger a check of the link to see if it is still active.
 
-![Ignore Cache](_docs/cli-ignore-cache.png "Ignore Cache")
+## Link Report
 
-> Took 1.3seconds with cache and 13 seconds ignoring cache
+![Alt text](./_docs/link--details.png)
 
-#### Ignore Posts
+Each link has a details page which gives more information about the link.
 
-```bash
-$ wp wlf_scan --ignore-posts=1,2,3
-```
+### Link Details
 
-You can pass a comma seperated list of post IDs to ignore. These will be ignored regardless of the post type.
+#### URL 
 
-![Ignore Posts](_docs/cli-ignore-posts.png "Ignore Posts")
-> There was 11 without and now 7 with (ignored 4 posts)
+The URL of the link.
 
-#### Create CSV
+#### Archived URL
 
-```bash
-$ wp wlf_scan --create-csv
-```
+The archived URL if one exists.
 
-Passing this argument will create a CSV file with the results of the report. This will be saved in the `wp-content/uploads` directory. The file will be named `wlf-report-{reportID}.csv`.
+#### Message 
 
-![Create CSV](_docs/cli-create-csv.png "Create CSV")
+If there are any issues in creating or finding a snapshot, this will be displayed here.
 
-> **Please note** The URL of the CSV will be output to the terminal, this allows for quick download of the file.
+### Link Checks
 
-#### Auto Fix Links
+This lists all checks, with the date/time plus the resulting http status code. It will also show if the link is broken or not.
 
-```bash
-$ wp wlf_scan --fix-links
-```
+### Posts Link Used In
 
-Passing this parameter will attempt to auto fix any links that have been found on the WayBack Machine. See [Auto Fix Links](#auto-fix-links) for more information.
+This list all posts which the link appears.
 
-#### HTTP Status Codes
+## Post/Page List Table
 
-```bash
-$ wp wlf_scan --http-status=200,301,302
-```
+The number of links and how many are broken is shown on the post list table. 
 
-Passing this parameter will allow you to select which HTTP Status codes will be reported on. These can be passed as a comma separated list.
+![image](./_docs/post-list-table.png)
 
-![HTTP Status Codes](_docs/cli-http-codes.png "HTTP Status Codes")
+The link count is clickable, this will access a filtered link list for that post.
 
-#### Batch Size
+![Alt text](./_docs/links--for-post.png)
 
-```bash
-$ wp wlf_scan --batch-size=10
-```
-This allows you to set how many posts will be checked per batch.  
+## Developer Documentation
 
-![Batch Size](_docs/cli-batch-size.png "Batch Size")
+### Dependencies
 
-> **Please note** This only really effects the progress bar.
+The plugin uses the following dependencies:
+* Action Scheduler - This is added using the defined loader, so any later version will be used in its place gracefully.
 
-## Usage (Multi Site)
+### Process (Action Scheduler Events)
 
-This plugin can be used on multisites, there are a few changes to how the plugin works for both WP-Admin and the CLI.
+Almost all operations are carried out using the Action Scheduler, this allows for the plugin to be more performant and not cause issues with timeouts.
 
-### WP-Admin
+#### Find or Create Snapshot
 
-Each sub site now has its own Report and New Report pages, these are configured so they are only relate to the current site.
+When a new link is encountered in the content, we check if `Wayback Machine` has a snapshot of the link. If it does we store the snapshot URL. If it does not we attempt to create a new snapshot.
 
-![Report](_docs/ms-sub-site-menu.png "Report Page")
+Action : `wlf_find_or_create_snapshot`
 
-Settings can only be access on the Network Admin, these will be the same for all sites. 
+Args: [Link ID]
 
-All Super Admins are able to run and access any reports for any site on the network.
-![Settings](_docs/ms-settings-menu.png "Settings Page")
+#### Create New Snapshot
 
-> **Please note** The single post functionality remains the same.
+If we need to create a new snapshot, we attempt to create one. If we are successful we get a snapshot event id from the "Wayback Machine" and store it.
 
-### Run using Action Scheduler
+> We attempt to do this 3 times, with a 15 minute pause between attempts. If we fail we store the error message.
 
-When accessed from a sub site, the process remains exactly the same as single site mode. However if access from the network admin, you will be able to select which sites you would like to run the report on.
+Action: `wlf_create_new_snapshot`
 
-![New Report](_docs/ms-as-new-report.png "New Report")
+Args: [Link ID, Attempt Number]
 
-> **Please note** If multiple sites are chosen, it will create a separate report for each site.
+> The number of retires can be changed by using the [`wlf_create_new_snapshot_attempts`](#wlf_create_new_snapshot_attempts) filter.
 
-![Report](_docs/as-running-report-single-site-running.png "Report")
+#### Check Snapshot Status
 
-### Run using CLI
+Once we have a snapshot event id, we check the status of the snapshot. If it is successful we update the link with the new snapshot URL.
 
-When running the CLI command, you will be able to select which site you would like to run the report on. If the blog ID is not passed, it will run the report for all sub sites.
+Action: `wlf_check_snapshot_status`
 
-![CLI](_docs/ms-cli-all-sites.png "CLI")
+Args [Link ID, Wayback Event ID, Attempt Number]
 
-#### Single Site
+> The number of retires can be changed by using the [`wlf_check_snapshot_status_attempts`](#wlf_check_snapshot_status_attempts) filter.
 
-```bash
-$ wp wlf_scan --blog-id=2
-```
+> The time between retries can be changed by using the [`wlf_check_snapshot_status_interval`](#wlf_check_snapshot_status_interval) filter. (Time in seconds)
 
-![CLI](_docs/ms-cli-valid-site.png "CLI")
+#### Update Archive URL
 
-All other arguments remain the same as single site mode.
+Once a snapshot has been created, we attempt to update the link with the new snapshot URL. As it can sometimes take some time for the archives to appear this is checked with a delay between attempts.
 
-## Reports
+Hook: `wlf_update_archive_url`
 
-When a scan is run as report is generated. This holds information on all the posts scanned and all links which has been found (that match the HTTP codes or are malformed).
+Args: [Link ID, Attempt Number]
 
-### Report Page
+> The number of retires can be changed by using the [`wlf_update_archive_url_attempts`](#wlf_update_archive_url_attempts) filter (3 by default)
 
-The report page will list all reports that have been generated. These can be filtered by the status of the report, who crated them and the date range.
 
-![Report](_docs/single-report-list.png "Report Page")
+#### Scan Existing Posts
 
-#### Multisite
+When the plugin is activated, we check all existing posts for links. This is done using the `wlf_scan_existing_posts` action. Every 10 minutes we check if there are any posts which has not been scanned. If we find any, 10 will processed at 1 time.
 
-When installed on a multisite, the report page for each sub site will only show reports for that site, whereas the network admin will show all reports for all sites. You can also filter based on sub site (network admin only).
+> You can control how many posts are processed per batch using the [`wlf_posts_per_batch`](#wlf_posts_per_batch) filter (defaults to 10)
 
-![Report](_docs/ms-report-list.png "Report Page")
+> You can control how often the scan is run using the [`wlf_scan_existing_posts_interval`](#wlf_scan_existing_posts_interval) filter (defaults to 10 minutes)
 
-#### Actions
-| Action | Description | |
-| --- | --- | --- |
-| View | This will take you to the report page for the selected report. | ![View](_docs/view-report.png "View") |
-| Delete | This will delete the report and all data associated with it. | ![Delete](_docs/delete-report.png "Delete") |
-| Download CSV | This will download a CSV file with the results of the report. | ![Download CSV](_docs/download-csv.png "Download CSV") |
-> **Please note** The CSV can only be downloaded when the report is completed.
+### Hooks
 
-### Report
+The plugin is designed to be extensible, with a number of hooks and filters available for developers to use.
 
-When you access a single report, you can see all the posts checked and the details of the scan configuration.
+#### `wlf_link_checker_timeout`
 
-![Report](_docs/report-view.png "Report")
-
-#### Description
-This lists all the configuration options that were used when the report was created.
-`Description : CLI Runner:: HTTP Status: 404,410,500,502,300,301,303,200, Post Types: post,page, Ignore Cache: No, Ignore Posts: , Create CSV: No, Blog ID: 2`
-This tells us 
-* It was run via the CLI Runner
-* `404,410,500,502,300,301,303,200` are the HTTP Status codes that were checked
-* `post`,`page` are the post types that were checked
-* The cache was not ignored `Ignore Cache: No`
-* No posts were ignored `Ignore Posts:`
-* No CSV was created `Create CSV: No`
-* It was run on blog ID 2 `Blog ID: 2`
-
-#### Author 
-This lists the user who created the report and the date it was created. (will often be unknown if run via CLI in single site mode)
-
-#### Date Created/Completed
-
-This lists the date and time that the report was started and when it completed. For small reports, these times will be the same, but when using the action scheduler, the report will be run in batches and the time will be different.
-
-#### Status
-This tells us the status of the report. This can be one of the following
-* `Pending` - The report has not yet been started (only used for action scheduler)
-* `In Progress` - The report is currently being processed
-* `Completed` - The report has been completed
-
-#### Download CSV
-If the report has been completed, there will be a button to download the CSV file.
-
-> When the CSV Download button is clicked, the CSV will be auto downloaded and will also show a link to the file in the browser.
-
-![Report](_docs/report-download-csv.png "Report")
-
-#### Posts
-The list of posts will show an icon to view post details, its title (clickable to edit the post), the number of links found and the number of broken links found.
-
-![Report](_docs/report-post-list.png "Report")
-
-Clicking the view icon will show the details of the post. This will show the post title, the number of links found and the number of broken links found.
-
-![Report](_docs/report-post-details.png "Report")
-
-The found url is listed as the links header, along with an icon to denote if the link is broken or not. The HTTP Status code is listed on the right hand side.
-
-![Report](_docs/report-link-ok.png "Report")
-
-The `Link Contents` is what is found between the opening and closing tags. This is used to help identify which link is which. `<a href="https://www.correct.com/the-link.html">Read more</a>` would have `Read more` as the link contents.
-
-If the link was broken and a link with the same contents was found on the WayBack Machine, these will be shown under the `Replacement Options`.
-
-Comments will be added to give some additional information. If the link has a `3**` error code, the redirection chain will be shown here
-`https://bitly.ws/ZDwh >> https://bitly.ws/?redirect=ZDwh >> https://www.amazon.co.uk/dp/B000R5I83O` along with the final HTTP Status code.
-
-![Report](_docs/report-link-redirect.png "Report")
-
-Any links which are malformed, such as no `<a>` attributes will be listed with a comment to denote this.
-![Report](_docs/report-link-malformed.png "Report")
-> Example `<a>Foo</a>` 
-
-If a link is fixed (only has 1 replacement option) it will be listed with a comment to denote this.
-
-![Report](_docs/report-link-fixed.png "Report")
-
-## CSV
-
-When a reports CSV is generated it is created into the current WP Uploads directory. This will be named `wlf-report-{reportID}.csv`. The following columns will be included in the CSV.
-
-| Column | Description |
-| --- | --- |
-| Report ID | The ID of the report |
-| Blog ID | The ID of the blog/site |
-| User ID | The ID of the user who created the report |
-| Log ID | The ID of the log entry (post) |
-| Post ID | The ID of the post |
-| Href | The URL of the link |
-| Contents | The contents of the link |
-|Redirection Target| The final URL of the link (if redirected) |
-| HTTP Code | The HTTP Status Code of the link |
-| Replacement Options | The URLs of the links found on the WayBack Machine (comma separated list) |
-| Comment | Any comments that have been added to the link |
-| Fixed | Denotes if the link has been fixed or not |
-
-The CSV file is created every time that someone hits the download button. This will overwrite any existing file with the same name.
-
-## Auto Fix Links
-
-There are a number of caveats to the auto fixer. These are listed below.
-
-1. If the link has multiple replacement options, it will not be fixed automatically, but the options will be shown.
-2. If the link has a common `Contents` such as `Read More`, it will possibly not be fixed automatically, but the options will be shown.
-3. All links will have the trailing slash added, this avoids duplicates such as `https://www.correct.com/the-link.html` and `https://www.correct.com/the-link.html/`
-4. Malformed links will not be automatically fixed. 
-
-## Developer Notes.
-
-Here are a few notes to help any future developers working on the plugin. Please feel free to open a PR if you have any suggestions or need additional information.
-
-### Actions
-
-#### wlf_link_exclusions
-This FILTER allows you to define some hard exclusion links, which can not be removed in the settings.
+This is used to determine how long we should wait when checking if a link is still valid. The default is 5000ms (5 seconds).
 
 ```php
-add_filter( 'wlf_link_exclusions', function( $exclusions ) {
-	$exclusions[] = '*.twitter.com*';
-	return $exclusions;
-} );
+add_filter( 'wlf_link_checker_timeout', function( int $timeout ): int {
+   return 10000; // 10 seconds
+});
 ```
 
-#### wlf_get_latest_snapshot_url
-This FILTER allows you to filter the URL used when a snapshot is requested from the WayBack Machine. This is mostly used while testing as it allow the plugin to be run a local site, where only the live version of the site is available on the WayBack Machine.
+#### `wlf_link_exclusions`
+
+This is used to add additional exclusions to the link checker. This is fired with the defined exclusions from settings.
 
 ```php
-add_filter( 'wlf_get_latest_snapshot_url', function( $url ) {
-	return str_replace( 'https://www.correct.com', 'http://localhost:8080', $url );
-} );
+add_filter( 'wlf_link_exclusions', function( array $exclusions ): array {
+   $exclusions[] = 'https://example.com/*';
+   return $exclusions;
+});
 ```
 
-### Database
+#### `wlf_posts_per_batch`
 
-This plugin makes use of 3 tables 
-1. 	t51_wlf_scan_link_cache
-2. 	t51_wlf_scan_log
-3. 	t51_wlf_scan_report
+This is used to define how many posts should be checked, when the plugin is scanning existing posts.
 
-> These tables ARE NOT prefixed to allow multistites to use a single table
+```php
+add_filter( 'wlf_posts_per_batch', function( int $posts_per_batch ): int {
+   return 20;
+});
+```
 
-If you need to make changes, there is a built in migrations interface. To add a new migration, please see `/migrations/*`. Once you have created your new file, it can be added to the migration queue by adding the class name to `\WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations::$migrations[]` array on the main plugin file. These are then run in the order they are added, so changes can be made. 
+##### `wlf_link_check_duration_in_days`
 
-When the plugin is activated, it checks what migrations had already been run and any additional migrations will be added to the queue. These will be run when the plugin is activated.
+This is used to define how many days should be between checking if a link is still valid. The default is 7 days.
 
-## Frequently Asked Questions
+```php
+add_filter( 'wlf_link_check_duration_in_days', function( int $days ): int {
+   return 14; // 14 days
+});
+```
 
-### How can I get help if I'm stuck?
+#### `wlf_valid_http_status_codes`
 
-Please reach out to [Glynn](https://github.com/gin0115)
+This return array is used to determine what http status codes are considered valid. The default is `200` and `206`.
 
-### I have a question that is not listed here
+```php
+add_filter( 'wlf_valid_http_status_codes', function( array $codes ): array {
+   $codes[] = 301;
+   return $codes;
+});
+```
 
-Please leave an [issue](https://github.com/a8cteam51/wayback-link-fixer/issues/new/choose) on the repo and someone will respond as soon as possible and add it this README.
+#### `wlf_failed_checks`
+
+This is used to define how many checks with non valid status codes are encountered before marking a link as broken. The default is 5.
+
+```php
+add_filter( 'wlf_failed_checks', function( int $checks ): int {
+   return 3;
+});
+```
+
+#### `wlf_create_new_snapshot_attempts`
+
+This is used to define how many times we should attempt to create a new snapshot. The default is 3.
+
+```php
+add_filter( 'wlf_create_new_snapshot_attempts', function( int $attempts ): int {
+   return 5;
+});
+```
+#### `wlf_check_snapshot_status_attempts`
+
+This is used to define how many times we should attempt to check the status of a snapshot. The default is 3.
+
+```php
+add_filter( 'wlf_check_snapshot_status_attempts', function( int $attempts ): int {
+   return 5;
+});
+```
+
+#### `wlf_check_snapshot_status_interval`
+
+This is used to define how long we should wait between checking the status of a snapshot. The default is 300 seconds (5 minutes).
+
+```php
+add_filter( 'wlf_check_snapshot_status_interval', function( int $interval ): int {
+   return 10 * \MINUTE_IN_SECONDS; // 10 minutes
+});
+```
+
+#### `wlf_update_archive_url_attempts`
+
+This is used to define how many times we should attempt to update the archive URL. The default is 3.
+
+```php
+add_filter( 'wlf_update_archive_url_attempts', function( int $attempts ): int {
+   return 5;
+});
+```
+
+#### `wlf_scan_existing_posts_interval`
+
+This is used to define how often we should check for posts which have not been scanned. The default is 10 minutes.
+
+```php
+add_filter( 'wlf_scan_existing_posts_interval', function( int $interval ): int {
+   return 5 * \MINUTE_IN_SECONDS; // 5 minutes
+});
+```
+
+#### `wlf_is_valid_check`
+
+This filter is used when a url is checked and we are returning if the link is valid or not. The default is to check if the status code is in the `wlf_valid_http_status_codes` array.
+
+```php
+add_filter( 'wlf_is_valid_check', function( bool $is_valid, array $check, Link $link ): bool {
+   // If the link is from foo.com and the status code is 301 or 302, treate as valid
+   if ( strpos( $link->get_href, 'foo.com' ) !== false && in_array( $check['status_code'], [ 301, 302 ] ) ) {
+	  return true;
+   }
+});
+```
+
+> The `$check` array contains the following keys: `status_code (string)`, `date (Y-m-d H:i:s)`.
+> For all public methods of the `Link` model, see the codebase (src/Link/Link.php)
+
+#### `wlf_link_checker_url_params`
+
+This is the array of parameters which are passed to the `wp_remote_get` function when checking if a link is still valid.
+
+> Please note url=https://the-url-to-check.com should always passed.
+
+```php
+add_filter( 'wlf_link_checker_url_params', function( array $params ): array {
+   $params['skip_cache'] = 10; // Skip the IA cache (5 mins by default)
+   return $params; 
+});
+```
+
+Additional args
+* `impersonate=1`: use https://github.com/yifeikong/curl_cffi
+to impersonate Chrome 110 and potentially avoid TLS fingerprinting blockers.
+* `skip_adblocker=1`: The service uses an Adblocker by default https://pypi.org/project/braveblock/
+* `skip_cache=1`: The service caches results for 5 minutes. Use this param to skip the cache.
+* `kip_wbm_blocker=1`: The service blocks Wayback Machine URLs by default. Use this parameter to skip it
+* `user_agent=<str>`: Use a custom `user-agent` HTTP header
 
 
-## Changelog
+#### `wlf_link_checker_url_base`
 
-### 1.0.0 (FIRST RELEASE DATE)
+This is the base url of the link checker and doesnt really need changing unless you are running tests or your own custom endpoint for addtional caching.
 
-* First official release.
+```php
+add_filter( 'wlf_link_checker_url_base', function( string $url ): string {
+   return 'https://my-custom-link-checker.com';
+});
+```
+
+#### `wlf_find_snapshot_base_url`
+
+This is the url which is used when looking for a snapshot of a link. This should not need changing unless you are running tests or have your own custom endpoint.
+
+```php
+add_filter( 'wlf_find_snapshot_base_url', function( string $url ): string {
+	   return 'https://my-custom-snapshot-finder.com';
+});
+```
+
+> Please note these only apply when using the default `Link_Checker_Client` class.
+
+#### `wlf_get_latest_snapshot_url`
+
+This is the url which is called to get the latest snapshot of a link.
+
+```php
+add_filter( 'wlf_get_latest_snapshot_url', function( string $base_url, string $url ): string {
+	return sprintf( '%s?url=%s', $base_url, urlencode( $url ) );
+});
+```
+
+#### `wlf_get_closest_snapshot_url`
+
+This is the url which is called to get the snapshot closest to a defined date.
+
+```php
+add_filter( 'wlf_get_closest_snapshot_url', function( string $base_url, string $url, DateTime $date ): string {
+	return sprintf( '%s?url=%s&timestamp=%s', $base_url, urlencode( $url ), $date->getTimestamp() );
+});
+```
+
+#### `wlf_create_snapshot_url`
+
+This is the base url used when creating a snapshot of a link. This is done as a POST request, with the URL passed as a body parameter.
+
+```php
+add_filter( 'wlf_create_snapshot_url', function( string $url ): string {
+	return 'https://my-custom-snapshot-creator.com';
+});
+```
+
+### Internet Archive / Wayback Link Fixer Instances.
+
+Both the Link Checker and Snapshot clients are all extended from the following interfaces:  
+
+* WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client  
+* WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client  
+
+Both of these classes return documented arrays of data, so can be overridden to use a different service if needed.
+
+To change which class is used, you can use the following filters:
+
+#### Link Checker Client.
+
+```php
+class My_Custom_Link_Checker_Client implements Link_Checker_Client {
+   ....
+}
+
+add_filter( 'wlf_link_checker_client', function( Link_Checker_Client $client ): Link_Checker_Client {
+   return new My_Custom_Link_Checker_Client();
+});
+```
+
+#### Snapshot Client.
+
+```php
+class My_Custom_Snapshot_Client implements Snapshot_Client {
+   ....
+}
+
+add_filter( 'wlf_snapshot_client', function( Snapshot_Client $client ): Snapshot_Client {
+   return new My_Custom_Snapshot_Client();
+});
+```
+### Contribute
+
+If you would like to contribute to the this plugin, feel free to do so. There are a number of tools which can be used to help in your development.
+
+#### PHPCS\PHPCBF
+
+This project is setup to use a customised version of the WordPress Extra ruleset. This is to ensure that the code is following the WordPress coding standards. To run the checks, you can use the following command:
+
+```bash
+composer lint:php # This will run the code through phpcs
+composer format:php # This will run the code through phpcbf
+```
+
+#### PHPUnit
+
+The plugin comes with a small set of unit tests, these must all pass before a PR can be merged. To run the tests, you can use the following command:
+
+```bash
+composer test:php
+```
+
+> You can run the full set of linting and tests with `composer run:php`, this will install dev dependencies and run the tests and then optimize the autoloader with a production ready version.

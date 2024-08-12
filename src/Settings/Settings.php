@@ -131,7 +131,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_posts_per_batch(): int {
-		$per_batch = apply_filters( 'wlf_posts_per_batch', 10 );
+		$per_batch = absint( apply_filters( 'wlf_posts_per_batch', 10 ) );
 
 		// If value is less than or equal to 1, set as 2.
 		return $per_batch <= 1 ? 2 : $per_batch;
