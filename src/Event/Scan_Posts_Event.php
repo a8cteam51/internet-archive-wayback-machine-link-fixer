@@ -106,12 +106,20 @@ class Scan_Posts_Event {
 		// Look for more posts, which do not have the meta data.
 		$query = new \WP_Query(
 			array(
-				'post_type'      => $this->allowed_post_types,
-				'posts_per_page' => $this->posts_per_call,
-				'meta_query'     => array(
+				'post_type'              => $this->allowed_post_types,
+				'posts_per_page'         => $this->posts_per_call,
+				'cache_results'          => false,
+				'update_post_meta_cache' => false,
+				'meta_query'             => array(
+					'relation' => 'OR',
 					array(
 						'key'     => Settings::LINK_META_KEY,
 						'compare' => 'NOT EXISTS',
+					),
+					array(
+						'key'     => Settings::LINK_META_KEY,
+						'value'   => \time(),
+						'compare' => '=',
 					),
 				),
 			)
