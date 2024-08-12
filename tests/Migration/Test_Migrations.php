@@ -55,7 +55,7 @@ class Test_Migrations extends \WP_UnitTestCase {
 		$this->assertNotNull( $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'is_broken' ) ) );
 		$this->assertNotNull( $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'checks' ) ) );
 		$this->assertNotNull( $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'redirect_url' ) ) );
-		$this->assertNotNull( $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'messages' ) ) );
+		$this->assertNotNull( $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'message' ) ) );
 
 		// Trigger the down process.
 		( new Migration_1() )->down();
