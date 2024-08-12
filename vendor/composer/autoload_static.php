@@ -63,9 +63,6 @@ class ComposerStaticInitb57c7e2cae7cf2fdb5357c49c51d45f5
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Snapshot_Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/Snapshot_Client.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Wayback_Machine_Service' => __DIR__ . '/../..' . '/src/Wayback_Machine/Wayback_Machine_Service.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_1' => __DIR__ . '/../..' . '/migrations/Migration_1.php',
-        'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_2' => __DIR__ . '/../..' . '/migrations/Migration_2.php',
-        'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_3' => __DIR__ . '/../..' . '/migrations/Migration_3.php',
-        'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_4' => __DIR__ . '/../..' . '/migrations/Migration_4.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

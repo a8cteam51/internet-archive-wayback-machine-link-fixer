@@ -43,7 +43,4 @@ return array(
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Snapshot_Client' => $baseDir . '/src/Wayback_Machine/Snapshot_Client.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Wayback_Machine_Service' => $baseDir . '/src/Wayback_Machine/Wayback_Machine_Service.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_1' => $baseDir . '/migrations/Migration_1.php',
-    'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_2' => $baseDir . '/migrations/Migration_2.php',
-    'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_3' => $baseDir . '/migrations/Migration_3.php',
-    'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_4' => $baseDir . '/migrations/Migration_4.php',
 );
