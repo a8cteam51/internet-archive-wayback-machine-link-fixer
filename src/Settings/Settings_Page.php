@@ -136,7 +136,19 @@ class Settings_Page {
 		\do_settings_sections( self::PAGE_SLUG );
 		\settings_fields( self::PAGE_SLUG );
 
-		echo "To get your API key and secret, please visit the <a href='https://archive.org/account/s3.php'>Internet Archive</a> and create a new S3 access key.";
+		echo wp_kses(
+			sprintf(
+				// Translators: %s is the link to the Internet account setup.
+				__( "To get your API key and secret, please visit the <a href='%s' target='_blank'>Internet Archive</a> and create a new S3 access key.", 'wpcomsp_wayback_link_fixer' ),
+				esc_url( 'https://archive.org/account/s3.php' )
+			),
+			array(
+				'a' => array(
+					'href'   => array(),
+					'target' => array(),
+				),
+			)
+		);
 
 		\submit_button( __( 'Save Changes', 'wpcomsp_wayback_link_fixer' ) );
 
