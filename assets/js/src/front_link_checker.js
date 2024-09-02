@@ -187,11 +187,7 @@ const addDataAttributes = (link) => {
 			if (link.broken && linkCheckSettings.fixerOption !== 'do_nothing') {
 				currentLink.classList.add('wlf-broken-link');
 				currentLink.href = '' !== link.archived_href ? link.archived_href : href;
-
-				console.log('Link is broken');
 			}
-
-			console.log(linkCheckSettings.fixerOption);
 		}
 	}
 }
