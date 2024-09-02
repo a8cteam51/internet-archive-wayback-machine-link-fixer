@@ -20,7 +20,8 @@ const linkDelay = wlfArchivedLinks.linkDelayInDays;
 const linkCheckSettings = {
 	'action': wlfArchivedLinks.linkCheckAjax,
 	'nonce': wlfArchivedLinks.linkCheckNonce,
-	'url': wlfArchivedLinks.ajaxUrl
+	'url': wlfArchivedLinks.ajaxUrl,
+	'fixerOption': wlfArchivedLinks.fixerOption
 };
 
 /**
@@ -183,10 +184,14 @@ const addDataAttributes = (link) => {
 			}
 
 			// If the link is broken, add a class and change the href
-			if (link.broken) {
+			if (link.broken && linkCheckSettings.fixerOption !== 'do_nothing') {
 				currentLink.classList.add('wlf-broken-link');
 				currentLink.href = '' !== link.archived_href ? link.archived_href : href;
+
+				console.log('Link is broken');
 			}
+
+			console.log(linkCheckSettings.fixerOption);
 		}
 	}
 }
