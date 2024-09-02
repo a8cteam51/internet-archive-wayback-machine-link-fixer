@@ -72,6 +72,12 @@ You can use this plugin without an API key, but you will be limited to 200 new s
 
 > Visit [https://archive.org/account/s3.php](https://archive.org/account/s3.php) to get your API key.
 
+### Fixer Option
+
+![image](./_docs/settings--fixer-option.png)
+
+You can use this setting to choose how the plugin should handle broken links. Either do nothing or replace the broken link with the archived version (if available).
+
 ## Links 
 
 Every link which is scanned, is added to the Link Table, this can be accessed under `Links` in the `Tools` menu.
