@@ -249,6 +249,7 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$this->assertArrayHasKey( 'linkCheckAjax', $data );
 		$this->assertArrayHasKey( 'links', $data );
 		$this->assertArrayHasKey( 'ajaxUrl', $data );
+		$this->assertArrayHasKey( 'fixerOption', $data );
 
 		// Check we have 0 links
 		$this->assertEmpty( json_decode( $data['links'], true ) );

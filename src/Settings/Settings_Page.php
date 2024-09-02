@@ -254,6 +254,17 @@ class Settings_Page {
 				'show_in_rest'      => false,
 			)
 		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::FIXER_OPTION,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => Settings::FIXER_OPTION_REPLACE_LINK,
+				'show_in_rest'      => false,
+			)
+		);
 	}
 
 	/**
@@ -291,6 +302,14 @@ class Settings_Page {
 			Settings::SCAN_EXISTING_POSTS,
 			__( 'Should existing posts be checked', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_check_existing_posts' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::FIXER_OPTION,
+			__( 'Fixer Option', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_fixer_option' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
@@ -540,6 +559,32 @@ class Settings_Page {
 		/>
 		<p class="description">
 			<?php esc_html_e( 'Archive.org S3 Access Key', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Render the fixer option field.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return  void
+	 */
+	public function render_fixer_option(): void {
+		?>
+		<select
+			id="<?php echo esc_attr( Settings::FIXER_OPTION ); ?>"
+			name="<?php echo esc_attr( Settings::FIXER_OPTION ); ?>"
+		>
+			<option value="<?php echo esc_attr( Settings::FIXER_OPTION_REPLACE_LINK ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_REPLACE_LINK ); ?>>
+				<?php esc_html_e( 'Replace Link (No Notification)', 'wpcomsp_wayback_link_fixer' ); ?>
+			</option>
+			<option value="<?php echo esc_attr( Settings::FIXER_OPTION_DO_NOTHING ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_DO_NOTHING ); ?>>
+				<?php esc_html_e( 'Do Nothing', 'wpcomsp_wayback_link_fixer' ); ?>
+			</option>
+		</select>
+		<p class="description">
+			<?php esc_html_e( 'Choose how to handle broken links.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</p>
 		<?php
 	}

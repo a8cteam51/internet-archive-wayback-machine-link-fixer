@@ -29,6 +29,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		delete_option( Settings::MIGRATIONS_KEY );
 		delete_option( Settings::LINK_EXCLUSIONS );
 		delete_option( Settings::SCAN_EXISTING_POSTS );
+		delete_option( Settings::FIXER_OPTION );
 	}
 
 	/**
@@ -219,5 +220,19 @@ class Test_Settings extends \WP_UnitTestCase {
 		\update_option( Settings::SCAN_EXISTING_POSTS, true );
 
 		$this->assertTrue( Settings::should_scan_existing_posts() );
+	}
+
+	/**
+	 * @testdox It should be possible to change what happens when a broken link is encountered and it should replace by default.
+	 *
+	 * @return void
+	 */
+	public function test_can_change_fixer_option(): void {
+		// By default, the fixer option is replace.
+		$this->assertEquals( Settings::FIXER_OPTION_REPLACE_LINK, Settings::get_fixer_option() );
+
+		\update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_DO_NOTHING );
+
+		$this->assertEquals( Settings::FIXER_OPTION_DO_NOTHING, Settings::get_fixer_option() );
 	}
 }

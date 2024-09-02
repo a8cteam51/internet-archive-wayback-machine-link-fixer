@@ -30,6 +30,7 @@ class Settings {
 	public const SCAN_EXISTING_POSTS          = self::SETTINGS_PREFIX . 'scan_existing_posts';
 	public const ARCHIVE_ORG_SECRET_KEY       = self::SETTINGS_PREFIX . 'archive_api_key';
 	public const ARCHIVE_ORG_ACCESS_KEY       = self::SETTINGS_PREFIX . 'archive_api_secret';
+	public const FIXER_OPTION                 = self::SETTINGS_PREFIX . 'fixer_option';
 
 	// Table names.
 	public const LINK_TABLE = self::SETTINGS_PREFIX . 'link_archive';
@@ -41,6 +42,10 @@ class Settings {
 
 	// Meta Keys
 	public const LINK_META_KEY = self::SETTINGS_PREFIX . 'links';
+
+	// Fixer Options
+	public const FIXER_OPTION_DO_NOTHING   = 'do_nothing';
+	public const FIXER_OPTION_REPLACE_LINK = 'replace_link';
 
 	/**
 	 * Gets the link table name.
@@ -214,5 +219,16 @@ class Settings {
 	 */
 	public static function is_archive_api_configured(): bool {
 		return '' !== self::get_archive_api_key() && '' !== self::get_archive_access_key();
+	}
+
+	/**
+	 * Gets the current fixer option.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string
+	 */
+	public static function get_fixer_option(): string {
+		return esc_attr( get_option( self::FIXER_OPTION, self::FIXER_OPTION_REPLACE_LINK ) );
 	}
 }
