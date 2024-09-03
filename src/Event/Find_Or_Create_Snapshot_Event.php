@@ -80,9 +80,9 @@ class Find_Or_Create_Snapshot_Event {
 
 		// If the link is an archive.org link, add message and throw error.
 		if ( 0 === strpos( $link->get_href(), 'https://web.archive.org/web/' ) ) {
-			$link->set_message( esc_html( 'Link is already an archive.org link.' ) );
+			$link->set_message( esc_html( 'Already an Internet Archive Snapshot.' ) );
 			$this->link_repository->upsert( $link );
-			throw new \Exception( esc_html( 'Link is already an archive.org link.' ) );
+			throw new \Exception( esc_html( 'Already an Internet Archive Snapshot.' ) );
 		}
 
 		// Get the links latest snapshot.

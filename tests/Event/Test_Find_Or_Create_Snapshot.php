@@ -57,14 +57,14 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		try {
 			$event( $link->get_id() );
 		} catch ( \Exception $e ) {
-			$this->assertEquals( 'Link is already an archive.org link.', $e->getMessage() );
+			$this->assertEquals( 'Already an Internet Archive Snapshot.', $e->getMessage() );
 		}
 
 		// Get the link from the repository.
 		$link = $repo->find_by_id( $link->get_id() );
 
 		// The link should have a message.
-		$this->assertEquals( 'Link is already an archive.org link.', $link->get_message() );
+		$this->assertEquals( 'Already an Internet Archive Snapshot.', $link->get_message() );
 	}
 
 	/**
