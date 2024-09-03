@@ -36,11 +36,11 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox When a link is added to the queue and its url is already an archive.org url, it should not be added to the queue and a message added to the link object.
+	 * @testdox When a link is added to the queue and its url is already an archive.org url (HTTPS), it should not be added to the queue and a message added to the link object.
 	 *
 	 * @return void
 	 */
-	public function test_archive_org_links_are_not_added_to_queue(): void {
+	public function test_archive_org_links_are_not_added_to_queue_https(): void {
 		$link = new Link(
 			'https://web.archive.org/web/20210101000000/https://example.com',
 		);
@@ -66,6 +66,41 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		// The link should have a message.
 		$this->assertEquals( 'Already an Internet Archive Snapshot.', $link->get_message() );
 	}
+
+		/**
+	 * @testdox When a link is added to the queue and its url is already an archive.org url (HTTP), it should not be added to the queue and a message added to the link object.
+	 *
+	 * @return void
+	 */
+	public function test_archive_org_links_are_not_added_to_queue_http(): void {
+		$link = new Link(
+			'http://web.archive.org/web/20210101000000/https://example.com',
+		);
+
+		// Add the link to the database.
+		$repo = new Link_Repository();
+		$link = $repo->upsert( $link );
+
+		// Create the event.
+		$event = new Find_Or_Create_Snapshot_Event();
+
+		$event->setup();
+
+		try {
+			$event( $link->get_id() );
+		} catch ( \Exception $e ) {
+			$this->assertEquals( 'Already an Internet Archive Snapshot.', $e->getMessage() );
+		}
+
+		// Get the link from the repository.
+		$link = $repo->find_by_id( $link->get_id() );
+
+		// The link should have a message.
+		$this->assertEquals( 'Already an Internet Archive Snapshot.', $link->get_message() );
+	}
+
+
+	/** */
 
 	/**
 	 * @testdox When a link is found on wayback machine, it should have its snapshot url added and not added to the queue to create.
