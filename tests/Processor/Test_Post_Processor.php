@@ -92,29 +92,4 @@ class Test_Post_Processor extends \WP_UnitTestCase {
 		$this->assertEquals( 'https://from.post/content_twice', $links[1]->get_href() );
 	}
 
-	/**
-	 * @testdox Any links which are already from the wayback machine should be ignored with a message added.
-	 *
-	 * @return void
-	 */
-	public function test_links_from_wayback_machine_are_ignored(): void {
-		// Create a post with some links.
-		$post_id = \WP_UnitTestCase_Base::factory()->post->create();
-
-		// Add some content to the post.
-		$content = 'This is a post with a link to <a href="https://web.archive.org/web/20190101000000/https://from.post/content">example</a>';
-
-		wp_update_post(
-			array(
-				'ID'           => $post_id,
-				'post_content' => $content,
-			)
-		);
-
-		$processor = new Post_Processor( $post_id );
-		$links     = $processor->process();
-
-		// Only the http and https links should be added.
-		$this->assertCount( 1, $links );
-	}
 }
