@@ -292,12 +292,12 @@ add_filter( 'wlf_valid_http_status_codes', function( array $codes ): array {
 });
 ```
 
-#### `wlf_failed_checks`
+#### `wlf_failed_count`
 
 This is used to define how many checks with non valid status codes are encountered before marking a link as broken. The default is 5.
 
 ```php
-add_filter( 'wlf_failed_checks', function( int $checks ): int {
+add_filter( 'wlf_failed_count', function( int $checks ): int {
    return 3;
 });
 ```
