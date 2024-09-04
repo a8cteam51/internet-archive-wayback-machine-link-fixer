@@ -182,7 +182,7 @@ class WP_Post_Controller {
 				'links'           => wp_json_encode( $links ),
 				'linkCheckAjax'   => Link_Check_Ajax::ACTION,
 				'linkCheckNonce'  => wp_create_nonce( Link_Check_Ajax::ACTION ),
-				'linkDelayInDays' => \apply_filters( 'wlf_link_check_delay_in_days', 7 ),
+				'linkDelayInDays' => Settings::get_link_check_duration(),
 				'fixerOption'     => Settings::get_fixer_option(),
 				'ajaxUrl'         => \admin_url( 'admin-ajax.php' ),
 
