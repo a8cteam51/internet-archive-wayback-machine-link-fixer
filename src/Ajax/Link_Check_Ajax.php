@@ -132,7 +132,7 @@ class Link_Check_Ajax {
 		$diff = $now->diff( $last_check );
 
 		// If the last check was more than the duration set in the settings, return true.
-		return $diff->days > $duration;
+		return $diff->days >= $duration;
 	}
 
 	/**
