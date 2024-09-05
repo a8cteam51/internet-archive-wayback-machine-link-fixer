@@ -121,6 +121,11 @@ class Link_Check_Ajax {
 			return true;
 		}
 
+		// If the link is an archive link, return false.
+		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+			return false;
+		}
+
 		// Check if the last check was more than the duration ago.
 		$duration   = Settings::get_link_check_duration();
 		$last_check = new \DateTime( $last_check['date'] );
