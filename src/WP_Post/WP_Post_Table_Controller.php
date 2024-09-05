@@ -214,9 +214,6 @@ class WP_Post_Table_Controller {
 		// Add the initial post id.
 		$url = \add_query_arg( 'wlf_filtered_post_id', $post_id, $url );
 
-		// Add the link ids as a query arg.
-		// $url = \add_query_arg( 'wlf_links', join( ',', $ids ), $url );
-
 		return $url;
 	}
 }
