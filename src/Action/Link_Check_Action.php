@@ -60,6 +60,15 @@ class Link_Check_Action {
 			);
 		}
 
+		// If the link is an internet archive link, we don't need to check it.
+		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+			return array(
+				'link'    => $link,
+				'checked' => false,
+				'valid'   => $link->is_valid(),
+			);
+		}
+
 		// Get the current status.
 		try {
 			$status = $this->link_checker->check_single( $link->get_href() );

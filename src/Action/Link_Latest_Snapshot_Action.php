@@ -63,6 +63,15 @@ class Link_Latest_Snapshot_Action {
 				'message' => __( 'Link not found.', 'wpcomsp_wayback_link_fixer' ),
 			);
 		}
+		// If the lik is an internet archive link, we don't need to check it.
+		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+			return array(
+				'link'    => $link,
+				'found'   => true,
+				'updated' => false,
+				'message' => __( 'Link is already an archived link.', 'wpcomsp_wayback_link_fixer' ),
+			);
+		}
 
 		$archive_url = $this->wayback_machine->find_archive( $link->get_href() );
 

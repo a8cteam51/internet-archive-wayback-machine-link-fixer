@@ -65,6 +65,15 @@ class Link_New_Snapshot_Action {
 			);
 		}
 
+		// If we have an internet archive link, we don't need to check it.
+		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+			return array(
+				'link'    => $link,
+				'job_id'  => null,
+				'message' => __( 'Link is an archive link already', 'wpcomsp_wayback_link_fixer' ),
+			);
+		}
+
 		// Attempt to create a new snapshot.
 		try {
 			$job_id = $this->wayback_machine->create_snapshot( $link->get_href() );
