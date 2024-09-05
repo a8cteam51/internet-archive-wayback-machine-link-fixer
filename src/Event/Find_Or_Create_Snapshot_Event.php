@@ -79,7 +79,7 @@ class Find_Or_Create_Snapshot_Event {
 		}
 
 		// If the link is an archive.org link, add message and throw error.
-		if ( $this->is_archive_url( $link->get_href() ) ) {
+		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
 			$link->set_message( esc_html( 'Already an Internet Archive Snapshot.' ) );
 			$this->link_repository->upsert( $link );
 			throw new \Exception( esc_html( 'Already an Internet Archive Snapshot.' ) );
@@ -96,26 +96,5 @@ class Find_Or_Create_Snapshot_Event {
 
 		$link->set_archived_href( $snapshot['url'] );
 		$this->link_repository->upsert( $link );
-	}
-
-	/**
-	 * Checks if a given url is an archive.org url.
-	 *
-	 * @param string $url The url to check.
-	 *
-	 * @return boolean
-	 */
-	public function is_archive_url( string $url ): bool {
-		$urls = array(
-			'https://web.archive.org/web/',
-			'http://web.archive.org/web/',
-		);
-
-		foreach ( $urls as $archive_url ) {
-			if ( 0 === strpos( $url, $archive_url ) ) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

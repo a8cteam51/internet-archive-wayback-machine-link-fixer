@@ -16,7 +16,6 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Check_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_New_Snapshot_Action;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Latest_Snapshot_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Util\List_Table_Action_Notification_Cache;
 
@@ -225,8 +224,17 @@ class Report_Table extends \WP_List_Table {
 
 		// Redirect to the same page with all actions removed.
 		$redirect = remove_query_arg( array( 'action', 'action2', 'wlf_link_action', 'wlf_links', '_wpnonce', '_wp_http_referer' ) );
+
 		$redirect = add_query_arg( 'wlf_notification', $cache_key, $redirect );
 		$redirect = add_query_arg( 'wlf_completed_action', esc_attr( $this->current_action() ), $redirect );
+
+		// Get the previous url params.
+		$params = $this->get_previous_url_params();
+
+		// If we have a post id, add it and its links to the redirect.
+		if ( array_key_exists( 'wlf_filtered_post_id', $params ) ) {
+			$redirect = add_query_arg( 'wlf_filtered_post_id', absint( $params['wlf_filtered_post_id'] ), $redirect );
+		}
 
 		// Add to the redirect the current page.
 		$url = \home_url() . $redirect;
@@ -234,6 +242,19 @@ class Report_Table extends \WP_List_Table {
 		// Redirect to the page using JS as page already loaded headers.
 		echo "<script>window.location = '$url';</script>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, this is just a redirect.
 		exit;
+	}
+
+	/**
+	 * Get the previous url params, from the referrer.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_previous_url_params(): array {
+		$referrer = wp_get_referer();
+		$referrer = wp_parse_url( $referrer );
+		$query    = $referrer['query'] ?? '';
+		parse_str( $query, $params );
+		return $params;
 	}
 
 	/**
@@ -328,6 +349,19 @@ class Report_Table extends \WP_List_Table {
 						absint( $link_id )
 					),
 					'type'    => 'error',
+				);
+				continue;
+			}
+
+			// If an internet archived link, show the message.
+			if ( wpcomsp_wayback_link_fixer_is_archive_link( $result['link']->get_href() ) ) {
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: %s is the link url.
+						__( 'Link %s is already an archived link.', 'wpcomsp_wayback_link_fixer' ),
+						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+					),
+					'type'    => 'notice',
 				);
 				continue;
 			}
@@ -531,9 +565,9 @@ class Report_Table extends \WP_List_Table {
 			?>
 		</select>
 
-		<?php foreach ( $this->get_link_ids_from_url() as $link_id ) : ?>
-			<input type="hidden" name="wlf_links[]" value="<?php echo esc_attr( $link_id ); ?>" />
-		<?php endforeach; ?>
+		<?php if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>
+			<input type="hidden" name="wlf_filtered_post_id" value="<?php echo esc_attr( $_GET['wlf_filtered_post_id'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>" />
+		<?php endif; ?>
 
 		<input type="submit" class="button" value="<?php esc_attr_e( 'Filter', 'wpcomsp_wayback_link_fixer' ); ?>"  />
 
@@ -650,16 +684,22 @@ class Report_Table extends \WP_List_Table {
 	 * @return int[]
 	 */
 	private function get_link_ids_from_url(): array {
-		return \array_key_exists( 'wlf_links', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? array_map(
-				function ( $id ): int {
-					return absint( $id );
-				},
-				\is_array( $_GET['wlf_links'] )   // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-					? $_GET['wlf_links']          // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-					: array( $_GET['wlf_links'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			)
-			: array();
+
+		// If we have the post id in the url, return the links ids.
+		if ( ! \array_key_exists( 'wlf_filtered_post_id', $_GET ) ) { // phpcs:ignore
+			return array();
+		}
+
+		$post_id = absint( $_GET['wlf_filtered_post_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+
+		$links = $this->links->get_links_for_post( $post_id );
+
+		return array_map(
+			function ( $link ): int {
+				return absint( $link->get_id() );
+			},
+			$links->get_links()
+		);
 	}
 
 

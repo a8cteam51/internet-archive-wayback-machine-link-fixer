@@ -252,4 +252,27 @@ function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
 	<?php
 }
 
+/**
+ * Checks if a link is already an internet archive link.
+ *
+ * @since 1.3.0
+ *
+ * @param string $url The URL to check.
+ *
+ * @return boolean
+ */
+function wpcomsp_wayback_link_fixer_is_archive_link( string $url ): bool {
+	$urls = array(
+		'https://web.archive.org/web/',
+		'http://web.archive.org/web/',
+	);
+
+	foreach ( $urls as $archive_url ) {
+		if ( 0 === strpos( $url, $archive_url ) ) {
+			return true;
+		}
+	}
+		return false;
+}
+
 // endregion
