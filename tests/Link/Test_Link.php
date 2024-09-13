@@ -381,4 +381,19 @@ class Test_Link extends \WP_UnitTestCase {
 
 		$this->assertFalse( $link->is_valid() );
 	}
+
+	/**
+	 * @testdox You should be able to set if a link is excluded.
+	 *
+	 * @return void
+	 */
+	public function test_can_set_excluded(): void {
+		$link = new Link( 'https://example.com' );
+
+		// Should return false if not set.
+		$this->assertFalse( $link->is_excluded() );
+
+		$link->set_excluded();
+		$this->assertTrue( $link->is_excluded() );
+	}
 }

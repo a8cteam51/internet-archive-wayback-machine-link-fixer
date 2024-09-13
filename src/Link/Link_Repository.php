@@ -140,6 +140,7 @@ class Link_Repository {
 		$redirect_href = $link->get_redirect_href();
 		$is_broken     = $link->is_broken();
 		$message       = $link->get_message();
+		$is_excluded  = $link->is_excluded();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -154,6 +155,7 @@ class Link_Repository {
 				'redirect_url' => $redirect_href,
 				'is_broken'    => $is_broken,
 				'message'      => $message,
+				'excluded'     => $is_excluded ? 1 : 0,
 			),
 			array(
 				'%s',
@@ -162,6 +164,7 @@ class Link_Repository {
 				'%s',
 				'%d',
 				'%s',
+				'%d',
 			)
 		);
 
@@ -195,6 +198,7 @@ class Link_Repository {
 		$redirect_href = $link->get_redirect_href();
 		$is_broken     = $link->is_broken();
 		$message       = $link->get_message();
+		$is_excluded   = $link->is_excluded();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -209,6 +213,7 @@ class Link_Repository {
 				'redirect_url' => $redirect_href,
 				'is_broken'    => $is_broken,
 				'message'      => $message,
+				'excluded'     => $is_excluded ? 1 : 0,
 			),
 			array(
 				'id' => $id,
@@ -220,6 +225,7 @@ class Link_Repository {
 				'%s',
 				'%d',
 				'%s',
+				'%d',
 			),
 			array(
 				'%d',
@@ -271,7 +277,8 @@ class Link_Repository {
 			->set_id( (int) $row->id )
 			->set_archived_href( $row->archived ?? '' )
 			->set_redirect_href( $row->redirect_url ?? '' )
-			->set_message( esc_attr( $row->message ?? '' ) );
+			->set_message( esc_attr( $row->message ?? '' ) )
+			->set_excluded( (bool) $row->excluded );
 
 		// Iterate through the checks and add them to the link.
 		$checks = json_decode( $row->checks, true );
@@ -353,7 +360,8 @@ class Link_Repository {
 		array $archive_status = array(),
 		string $order_by = self::ORDER_DATE_DESC,
 		?string $search_term = null,
-		?string $date = null
+		?string $date = null,
+		?bool $excluded = null
 	): array {
 		// Remove any invalid statuses.
 		$status = array_filter(
@@ -432,6 +440,12 @@ class Link_Repository {
 			$query      .= ' url LIKE %s';
 			$query       = $this->wpdb->prepare( $query, '%' . $search_term . '%' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
 			$where       = true;
+		}
+
+		// If we have excluded, add to the query.
+		if ( null !== $excluded ) {
+			$query .= true === $where ? ' AND' : ' WHERE';
+			$query .= $excluded ? ' excluded = 1' : ' excluded = 0';
 		}
 
 		// Add the order by.

@@ -196,8 +196,6 @@ class Test_Migrations extends \WP_UnitTestCase {
 		$this->assertEquals( 'NO', $details[0]->Null );
 		$this->assertEquals( '0', $details[0]->Default );
 		$this->assertEquals( 'tinyint(1)', $details[0]->Type );
-
-
 	}
 
 }
