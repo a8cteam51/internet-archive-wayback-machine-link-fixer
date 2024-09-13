@@ -242,7 +242,6 @@ const checkLink = (link) => {
 
 	// If link has not needed to be checked and is broken, add the data attributes
 	if (archived.broken) {
-		console.log('Broken link found', archived );
 		addDataAttributes(archived);
 		return;
 	}
