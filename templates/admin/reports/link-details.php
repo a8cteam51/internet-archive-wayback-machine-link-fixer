@@ -33,7 +33,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 						<div class="inside">
 							<p class="wlf_link_url"><strong><?php esc_html_e( 'Url', 'wpcomsp_wayback_link_fixer' ); ?></strong> : <?php echo esc_html( $wlf_link->get_href() ); ?></p>
 
-							<?php if ( '' !== $wlf_link->get_archived_href() ) : ?>
+							<?php if ( '' !== $wlf_link->get_archived_href() && ! $wlf_link->is_excluded() ) : ?>
 								<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archived Url', 'wpcomsp_wayback_link_fixer' ); ?></strong> : <?php echo esc_html( $wlf_link->get_archived_href() ); ?></p>
 							<?php else : ?>
 								<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archived Url', 'wpcomsp_wayback_link_fixer' ); ?></strong> : <?php esc_html_e( 'No Archived Link Found', 'wpcomsp_wayback_link_fixer' ); ?></p>
@@ -45,6 +45,10 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 
 							<?php if ( '' !== $wlf_link->get_message() ) : ?>
 								<p class="wlf_link_message"><strong><?php esc_html_e( 'Message', 'wpcomsp_wayback_link_fixer' ); ?></strong> : <?php echo esc_html( $wlf_link->get_message() ); ?></p>
+							<?php endif; ?>
+
+							<?php if ( $wlf_link->is_excluded() ) : ?>
+								<p class="wlf_link_excluded"><strong><?php esc_html_e( 'Excluded', 'wpcomsp_wayback_link_fixer' ); ?></strong> : <?php esc_html_e( 'This link does not allow indexing', 'wpcomsp_wayback_link_fixer' ); ?></p>
 							<?php endif; ?>
 						</div>
 					</div>
@@ -73,7 +77,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 											<td colspan="2"><?php esc_html_e( 'No checks found for this link.', 'wpcomsp_wayback_link_fixer' ); ?></td>
 										</tr>
 									<?php endif; ?>
-									
+
 									<?php if ( $wlf_hide_check_count > 0 ) : ?>
 										<tr id="wlf_reveal_hidden_checks">
 											<td colspan="2">
@@ -83,7 +87,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 											</td>
 										</tr>
 									<?php endif; ?>
-									
+
 									<?php foreach ( $wlf_link->get_checks() as $wlf_index => $wlf_check ) : ?>
 										<?php // Hide the first n posts to the value of $wlf_hide_check_count. ?>
 										<?php if ( $wlf_index < $wlf_hide_check_count ) : ?>
@@ -158,7 +162,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 													<a href="<?php echo esc_url( get_edit_post_link( $wlf_post->ID ) ); ?>">
 														<?php esc_html_e( 'Edit', 'wpcomsp_wayback_link_fixer' ); ?>
 													</a>
-													| 
+													|
 													<a href="<?php echo esc_url( get_permalink( $wlf_post->ID ) ); ?>">
 														<?php esc_html_e( 'View', 'wpcomsp_wayback_link_fixer' ); ?>
 													</a>
@@ -170,7 +174,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 							<?php endif; ?>
 						</div>
 					</div>
-				</div>				
+				</div>
 			</div>
 		</div>
 	</div>

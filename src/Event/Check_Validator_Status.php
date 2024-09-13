@@ -148,7 +148,6 @@ class Check_Validator_Status {
 			);
 		}
 
-
 		// If status is error, throw exception with error code.
 		if ( 'error' === $status['status'] ) {
 			// Update the link with the error message.
@@ -156,7 +155,7 @@ class Check_Validator_Status {
 
 			// If the status has a 'status_ext' key, set the link as excluded.
 			if ( isset( $status['status_ext'] ) && 'error:no-access' === $status['status_ext'] ) {
-				$link = $link->set_excluded();
+				$link = $link->set_excluded()->set_broken( false );
 			}
 
 			$this->link_repository->upsert( $link );
@@ -170,6 +169,14 @@ class Check_Validator_Status {
 					)
 				)
 			);
+		}
+
+		// If status is success, set the link as not broken.
+		if ( 'success' === $status['status'] ) {
+			$link = $link->set_excluded( false )->set_broken( false );
+			$this->link_repository->upsert( $link );
+
+			return;
 		}
 
 		// Assume pendning if not success or error

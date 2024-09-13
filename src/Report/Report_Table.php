@@ -15,6 +15,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Check_Action;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Validate_Link_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_New_Snapshot_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Latest_Snapshot_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Util\List_Table_Action_Notification_Cache;
@@ -32,6 +33,7 @@ class Report_Table extends \WP_List_Table {
 	public const COLUMN_LINK_ARCHIVE     = 'report-link-archive';
 	public const COLUMN_LINK_CHECKS      = 'report-link-checks';
 	public const COLUMN_LINK_CHECKS_LAST = 'report-link-checks-last';
+	public const COLUMN_LINK_EXCLUDE     = 'report-link-exclude';
 
 
 
@@ -166,7 +168,7 @@ class Report_Table extends \WP_List_Table {
 
 		$current_action = $this->current_action();
 
-		if ( ! in_array( $current_action, array( 'updated_snapshot', 'new_snapshot', 'check' ), true ) ) {
+		if ( ! in_array( $current_action, array( 'updated_snapshot', 'new_snapshot','validate', 'check' ), true ) ) {
 			return;
 		}
 
@@ -195,6 +197,11 @@ class Report_Table extends \WP_List_Table {
 
 			case 'new_snapshot':
 				$this->process_new_snapshot( $links );
+				$this->redirect_after_action();
+				break;
+
+			case 'validate':
+				$this->process_excluded_links( $links );
 				$this->redirect_after_action();
 				break;
 
@@ -457,6 +464,44 @@ class Report_Table extends \WP_List_Table {
 	}
 
 	/**
+	 * Process the Link Exclusion action.
+	 *
+	 * @param integer[] $links The links to exclude.
+	 *
+	 * @return void
+	 */
+	private function process_excluded_links( array $links ): void {
+		$action = new Validate_Link_Action();
+
+		foreach( $links as $link_id ) {
+			$result = $action->validate_link( absint( $link_id ) );
+
+			// If we have no link, add a notice.
+			if ( null === $result['link'] ) {
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: %d is the link id.
+						__( 'Link not found with id:%d', 'wpcomsp_wayback_link_fixer' ),
+						absint( $link_id )
+					),
+					'type'    => 'error',
+				);
+				continue;
+			}
+
+			// Add a success notice.
+			$this->notices[] = array(
+				'message' => sprintf(
+					// translators: %s is the link url.
+					__( 'Validating %s to ensure we can check its current status', 'wpcomsp_wayback_link_fixer' ),
+					esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+				),
+				'type'    => 'success',
+			);
+		}
+	}
+
+	/**
 	 * Sets the pagination args.
 	 *
 	 * @since 1.1.0
@@ -509,6 +554,7 @@ class Report_Table extends \WP_List_Table {
 			self::COLUMN_LINK_HEALTH      => __( 'Link Health', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS      => __( 'Check Count', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_EXCLUDE     => __( 'Link Excluded', 'wpcomsp_wayback_link_fixer' ),
 		);
 	}
 
@@ -673,6 +719,7 @@ class Report_Table extends \WP_List_Table {
 			'updated_snapshot' => __( 'Update Latest Snapshot', 'wpcomsp_wayback_link_fixer' ),
 			'new_snapshot'     => __( 'Create New Snapshot', 'wpcomsp_wayback_link_fixer' ),
 			'check'            => __( 'Check Link', 'wpcomsp_wayback_link_fixer' ),
+			'validate'         => __( 'Validate Link', 'wpcomsp_wayback_link_fixer' ),
 		);
 	}
 
@@ -802,6 +849,10 @@ class Report_Table extends \WP_List_Table {
 
 			case self::COLUMN_LINK_CHECKS_LAST:
 				return $this->compile_details_cell( $item );
+			case self::COLUMN_LINK_EXCLUDE:
+				return $item->is_excluded()
+					? '<span class="dashicons dashicons-yes-alt"></span>'
+					: '<span class="dashicons dashicons-dismiss"></span>';
 			case 'cb':
 				return sprintf(
 					'<input type="checkbox" name="wlf_links[]" value="%d" />',
