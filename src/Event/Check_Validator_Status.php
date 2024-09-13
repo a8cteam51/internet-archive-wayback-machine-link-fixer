@@ -173,7 +173,7 @@ class Check_Validator_Status {
 
 		// If status is success, set the link as not broken.
 		if ( 'success' === $status['status'] ) {
-			$link = $link->set_excluded( false )->set_broken( false );
+			$link = $link->set_excluded( false );
 			$this->link_repository->upsert( $link );
 
 			return;

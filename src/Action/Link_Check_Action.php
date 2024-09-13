@@ -69,6 +69,15 @@ class Link_Check_Action {
 			);
 		}
 
+		// If a link is set as excluded, it cant be checked.
+		if ( $link->is_excluded() ) {
+			return array(
+				'link'    => $link,
+				'checked' => false,
+				'valid'   => true,
+			);
+		}
+
 		// Get the current status.
 		try {
 			$status = $this->link_checker->check_single( $link->get_href() );

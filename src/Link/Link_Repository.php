@@ -304,10 +304,11 @@ class Link_Repository {
 	 * Get all links for a given post id.
 	 *
 	 * @param integer $post_id The post id.
+	 * @param boolean $exclude_excluded Whether to exclude excluded links.
 	 *
 	 * @return Link_Collection
 	 */
-	public function get_links_for_post( int $post_id ): Link_Collection {
+	public function get_links_for_post( int $post_id, bool $exclude_excluded = false ): Link_Collection {
 		$collection = new Link_Collection( $post_id );
 
 		// Get from post meta.
@@ -330,6 +331,11 @@ class Link_Repository {
 		$links = array_filter( $links );
 
 		foreach ( $links as $link ) {
+			// If we are exluding excluded links and the link is excluded, skip.
+			if ( $exclude_excluded && $link->is_excluded() ) {
+				continue;
+			}
+
 			$collection->add( $link );
 		}
 
