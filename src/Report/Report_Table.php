@@ -168,7 +168,7 @@ class Report_Table extends \WP_List_Table {
 
 		$current_action = $this->current_action();
 
-		if ( ! in_array( $current_action, array( 'updated_snapshot', 'new_snapshot','validate', 'check' ), true ) ) {
+		if ( ! in_array( $current_action, array( 'updated_snapshot', 'new_snapshot', 'validate', 'check' ), true ) ) {
 			return;
 		}
 
@@ -473,7 +473,7 @@ class Report_Table extends \WP_List_Table {
 	private function process_excluded_links( array $links ): void {
 		$action = new Validate_Link_Action();
 
-		foreach( $links as $link_id ) {
+		foreach ( $links as $link_id ) {
 			$result = $action->validate_link( absint( $link_id ) );
 
 			// If we have no link, add a notice.

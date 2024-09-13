@@ -140,7 +140,7 @@ class Link_Repository {
 		$redirect_href = $link->get_redirect_href();
 		$is_broken     = $link->is_broken();
 		$message       = $link->get_message();
-		$is_excluded  = $link->is_excluded();
+		$is_excluded   = $link->is_excluded();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -303,7 +303,7 @@ class Link_Repository {
 	/**
 	 * Get all links for a given post id.
 	 *
-	 * @param integer $post_id The post id.
+	 * @param integer $post_id          The post id.
 	 * @param boolean $exclude_excluded Whether to exclude excluded links.
 	 *
 	 * @return Link_Collection
@@ -347,14 +347,15 @@ class Link_Repository {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param integer     $limit          The limit of links to return.
-	 * @param integer     $page           The page of links to return.
-	 * @param array       $status         The status of the links to return.
-	 * @param array       $link_ids       The link ids to query.
-	 * @param array       $archive_status The archive status of the links to return.
-	 * @param string      $order_by       The order by.
-	 * @param string|NULL $search_term    The search term to query.
-	 * @param string|NULL $date           The date of the links to return (yy-mm).
+	 * @param integer      $limit          The limit of links to return.
+	 * @param integer      $page           The page of links to return.
+	 * @param array        $status         The status of the links to return.
+	 * @param array        $link_ids       The link ids to query.
+	 * @param array        $archive_status The archive status of the links to return.
+	 * @param string       $order_by       The order by.
+	 * @param string|NULL  $search_term    The search term to query.
+	 * @param string|NULL  $date           The date of the links to return (yy-mm).
+	 * @param boolean|NULL $excluded       Whether to return excluded links.
 	 *
 	 * @return Link[]
 	 */

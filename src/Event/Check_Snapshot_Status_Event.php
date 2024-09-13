@@ -115,7 +115,7 @@ class Check_Snapshot_Status_Event {
 			// Find the link based on its id.
 			$link = $this->link_repository->find_by_id( $link_id );
 		} catch ( \Throwable $th ) {
-			dump(123);
+			dump( 123 );
 			self::add_to_queue( $link_id, $job_id, $attempt + 1 );
 			throw new \Exception(
 				esc_html(
