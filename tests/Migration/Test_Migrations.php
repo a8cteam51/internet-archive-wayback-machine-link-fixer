@@ -176,4 +176,28 @@ class Test_Migrations extends \WP_UnitTestCase {
 		$this->assertContains($migration_class, Settings::migrations());
 	}
 
+	/**
+	 * @testdox Ensure that when migrations are run, there is a column called 'excluded' and it should be not null with a default of true.
+	 *
+	 * @return void
+	 */
+	public function test_migration_2(): void {
+		global $wpdb;
+
+		$table = Settings::get_link_table_name();
+
+		// Check the column exists.
+		$this->assertNotNull( $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'excluded' ) ) );
+
+		// Get the column details.
+		$details = $wpdb->get_results( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'excluded' ));
+
+		// Check the column is not null.
+		$this->assertEquals( 'NO', $details[0]->Null );
+		$this->assertEquals( '0', $details[0]->Default );
+		$this->assertEquals( 'tinyint(1)', $details[0]->Type );
+
+
+	}
+
 }
