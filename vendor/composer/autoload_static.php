@@ -14,6 +14,15 @@ class ComposerStaticInitb57c7e2cae7cf2fdb5357c49c51d45f5
         'be01b9b16925dcb22165c40b46681ac6' => __DIR__ . '/..' . '/wp-cli/php-cli-tools/lib/cli/cli.php',
         '9b38cf48e83f5d8f60375221cd213eee' => __DIR__ . '/..' . '/phpstan/phpstan/bootstrap.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
+        '629ce17518f090b1a5498d5df81e170c' => __DIR__ . '/..' . '/pinkcrab/function-constructors/src/function-constants.php',
+        'a835bfba871fed6628182d80be55d1c9' => __DIR__ . '/..' . '/pinkcrab/function-constructors/src/constants.php',
+        '4a2a022c64ba7639d18c8d4f5c5cdde7' => __DIR__ . '/..' . '/pinkcrab/function-constructors/src/procedural.php',
+        'dd19387ac4a729c3a0925c13f277bec8' => __DIR__ . '/..' . '/pinkcrab/function-constructors/src/arrays.php',
+        'c91d7509f43537d85e7c955a95da52aa' => __DIR__ . '/..' . '/pinkcrab/function-constructors/src/comparisons.php',
+        '94da70552cd03a71dde1bb2060051435' => __DIR__ . '/..' . '/pinkcrab/function-constructors/src/general.php',
+        '3b7592d9c2e15a6153451dd14fb7eeef' => __DIR__ . '/..' . '/pinkcrab/function-constructors/src/strings.php',
+        '250a00ec246c248bd5539882144362f9' => __DIR__ . '/..' . '/pinkcrab/function-constructors/src/numbers.php',
+        '490845cdab16754217b118858b6ea3ff' => __DIR__ . '/..' . '/pinkcrab/function-constructors/src/objects.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
@@ -50,6 +59,7 @@ class ComposerStaticInitb57c7e2cae7cf2fdb5357c49c51d45f5
         ),
         'P' => 
         array (
+            'PinkCrab\\FunctionConstructors\\' => 30,
             'PhpParser\\' => 10,
             'PhpOption\\' => 10,
             'Peast\\' => 6,
@@ -62,6 +72,7 @@ class ComposerStaticInitb57c7e2cae7cf2fdb5357c49c51d45f5
         'G' => 
         array (
             'GrahamCampbell\\ResultType\\' => 26,
+            'Gin0115\\WPUnit_Helpers\\' => 23,
             'Gettext\\Languages\\' => 18,
             'Gettext\\' => 8,
         ),
@@ -126,6 +137,10 @@ class ComposerStaticInitb57c7e2cae7cf2fdb5357c49c51d45f5
         array (
             0 => __DIR__ . '/..' . '/roots/wordpress-core-installer/src',
         ),
+        'PinkCrab\\FunctionConstructors\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pinkcrab/function-constructors/src',
+        ),
         'PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
@@ -149,6 +164,10 @@ class ComposerStaticInitb57c7e2cae7cf2fdb5357c49c51d45f5
         'GrahamCampbell\\ResultType\\' => 
         array (
             0 => __DIR__ . '/..' . '/graham-campbell/result-type/src',
+        ),
+        'Gin0115\\WPUnit_Helpers\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/gin0115/wpunit-helpers/src',
         ),
         'Gettext\\Languages\\' => 
         array (
@@ -198,6 +217,7 @@ class ComposerStaticInitb57c7e2cae7cf2fdb5357c49c51d45f5
 
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'Automattic\\Jetpack\\Constants' => __DIR__ . '/..' . '/automattic/jetpack-constants/src/class-constants.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
         'PHPCSUtils\\AbstractSniffs\\AbstractArrayDeclarationSniff' => __DIR__ . '/..' . '/phpcsstandards/phpcsutils/PHPCSUtils/AbstractSniffs/AbstractArrayDeclarationSniff.php',

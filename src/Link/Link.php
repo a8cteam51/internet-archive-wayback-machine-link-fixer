@@ -220,7 +220,7 @@ class Link implements \JsonSerializable {
 	 */
 	public function add_check( int $http_code, ?string $date = null ): self {
 		$this->checks[] = array(
-			'date'      => $date,
+			'date'      => $date ?? gmdate( 'Y-m-d H:i:s' ),
 			'http_code' => $http_code,
 		);
 

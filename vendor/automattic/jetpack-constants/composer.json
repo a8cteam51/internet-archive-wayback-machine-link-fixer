@@ -1,0 +1,42 @@
+{
+	"name": "automattic/jetpack-constants",
+	"description": "A wrapper for defining constants in a more testable way.",
+	"type": "jetpack-library",
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"php": ">=7.0"
+	},
+	"require-dev": {
+		"brain/monkey": "2.6.1",
+		"yoast/phpunit-polyfills": "^1.1.1",
+		"automattic/jetpack-changelogger": "^4.2.6"
+	},
+	"suggest": {
+		"automattic/jetpack-autoloader": "Allow for better interoperability with other plugins that use this package."
+	},
+	"autoload": {
+		"classmap": [
+			"src/"
+		]
+	},
+	"scripts": {
+		"phpunit": [
+			"./vendor/phpunit/phpunit/phpunit --colors=always"
+		],
+		"test-php": [
+			"@composer phpunit"
+		]
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"extra": {
+		"autotagger": true,
+		"mirror-repo": "Automattic/jetpack-constants",
+		"changelogger": {
+			"link-template": "https://github.com/Automattic/jetpack-constants/compare/v${old}...v${new}"
+		},
+		"branch-alias": {
+			"dev-trunk": "2.0.x-dev"
+		}
+	}
+}
