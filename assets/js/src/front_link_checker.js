@@ -219,12 +219,6 @@ const checkLink = (link) => {
 	}
 
 
-	// If the link is already marked as broken, add the data attributes
-	if (archived.broken) {
-		addDataAttributes(archived);
-		return;
-	}
-
 	// If there is no archived link, return
 	if (archived.archived_href === null || archived.archived_href === '') {
 		return;
@@ -242,6 +236,15 @@ const checkLink = (link) => {
 
 			addDataAttributes(result.data.link);
 		});
+
+		return;
+	}
+
+	// If link has not needed to be checked and is broken, add the data attributes
+	if (archived.broken) {
+		console.log('Broken link found', archived );
+		addDataAttributes(archived);
+		return;
 	}
 }
 
