@@ -293,7 +293,7 @@ add_filter( 'wlf_link_check_duration_in_days', function( int $days ): int {
 
 #### `wlf_valid_http_status_codes`
 
-This return array is used to determine what http status codes are considered valid. The default is `200` and `206`.
+This return array is used to determine what http status codes are considered valid. The default is `200`, `206` and `429`.
 
 ```php
 add_filter( 'wlf_valid_http_status_codes', function( array $codes ): array {

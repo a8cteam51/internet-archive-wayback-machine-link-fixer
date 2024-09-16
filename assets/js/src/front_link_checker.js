@@ -7,7 +7,7 @@
 /**
  * Get all the links from the localized object
  */
-const linkArchives = JSON.parse(wlfArchivedLinks.links);
+let allLinks = JSON.parse(wlfArchivedLinks.links);
 
 /**
  * Delays between checking the links
@@ -32,6 +32,15 @@ const linkCheckSettings = {
 const checkedLinks = [];
 
 /**
+ * Holds all the links found on the rendered page.
+ *
+ * Updates when new links are added to the DOM.
+ *
+ * @type {Array}
+ */
+let pageLinks = [];
+
+/**
  * Initialize event listeners
  *
  * @returns {void}
@@ -45,6 +54,83 @@ const initObservers = () => {
 		linkObserver.observe(link);
 	});
 
+	pageLinks = links;
+
+	// Create a MutationObserver to watch for new links
+	const observer = new MutationObserver((mutationsList) => {
+		for (const mutation of mutationsList) {
+			if (mutation.type === 'childList') {
+				// Check if new nodes were added
+				mutation.addedNodes.forEach(node => {
+					if (node.nodeType === Node.ELEMENT_NODE) {
+						// Update the links
+						allLinks = getRenderedLinks();
+
+						// If a new link is added, observe it
+						if (node.tagName === 'A') {
+							linkObserver.observe(node);
+						}
+
+						// Check for links added inside newly added elements
+						const newLinks = node.querySelectorAll ? node.querySelectorAll('a') : [];
+						newLinks.forEach(link => {
+							linkObserver.observe(link);
+						});
+
+						// add the new links to the pageLinks
+						pageLinks = [...pageLinks, ...newLinks];
+					}
+				});
+			}
+		}
+	});
+
+	// Observe the entire document for changes
+	observer.observe(document.body, {
+		childList: true,
+		subtree: true
+	});
+}
+
+
+/**
+ * Get all links from the loop items on the page.
+ *
+ * @returns {Array}
+ */
+const getRenderedLinks = () => {
+
+	/**
+	 * Adds an array of links to the allLinks array
+	 * @param {Array} links The links to add
+	 * @returns {void}
+	 */
+	const addLinks = (links) => {
+		// If we dont have an array or its empty, return
+		if (links === null || links === undefined || links.length === 0) {
+			return;
+		}
+
+		// Iterate through all the links.
+		links.forEach((link) => {
+			// If link.id is not in the links array, add it
+			if (!allLinks.some(e => e.id === link.id)) {
+				allLinks.push(link);
+			}
+		});
+	}
+
+	// Look for all divs with '__wlf-post-loop-links' class
+	const loopLinks = document.querySelectorAll('.__wlf-post-loop-links');
+
+	// Get the links from data-wlf-post-links attribute
+	loopLinks.forEach((loopLink) => {
+		const links = JSON.parse(loopLink.getAttribute('data-wlf-post-links'));
+		addLinks(links);
+	});
+
+
+	return allLinks;
 }
 
 /**
@@ -53,6 +139,10 @@ const initObservers = () => {
  * @returns {void}
  */
 const linkObserver = new IntersectionObserver((links, observer) => {
+
+	// Update the links
+	allLinks = getRenderedLinks();
+
 	links.forEach(entry => {
 		if (entry.isIntersecting) {
 			// Check the link
@@ -119,11 +209,9 @@ const addCheckedLink = (link) => checkedLinks.push(link);
  * @returns {object} The archived link details
  */
 const getArchivedLink = (link) => {
-	const archivedLinks = linkArchives;
-
 	// Iterate through all the archived links
-	for (let i = 0; i < archivedLinks.length; i++) {
-		let archivedLink = archivedLinks[i];
+	for (let i = 0; i < allLinks.length; i++) {
+		let archivedLink = allLinks[i];
 
 		// Check if the link exists in the archived links
 		if (removeTrailingSlash(archivedLink.href) === removeTrailingSlash(link)) {
@@ -166,12 +254,9 @@ const addDataAttributes = (link) => {
 	// Get the href.
 	const href = removeTrailingSlash(link.href);
 
-	// Look for every instance of the link on the page.
-	const links = document.getElementsByTagName('a');
-
 	// Iterate through all the links
-	for (let i = 0; i < links.length; i++) {
-		let currentLink = links[i];
+	for (let i = 0; i < pageLinks.length; i++) {
+		let currentLink = pageLinks[i];
 
 		// If the link is the same as the current link, add the data attributes
 		if (removeTrailingSlash(currentLink.href) === href) {
@@ -202,6 +287,7 @@ const addDataAttributes = (link) => {
  * @return {void}
  */
 const checkLink = (link) => {
+
 	// If the link has been checked, continue
 	if (hasBeenChecked(link)) {
 		return;
@@ -229,22 +315,22 @@ const checkLink = (link) => {
 		// Check the link
 		verifyLink(link).then((result) => {
 
-			// If the link can not be found, skip.
-			if (result.success === false || result.data || result.data.link) {
+			// If the link can not be found, use the archived link data.
+			if (result.success === true && result.data && result.data.link) {
+				addDataAttributes(result.data.link);
 				return;
 			}
 
-			addDataAttributes(result.data.link);
+			// Use the default archived link data
+			addDataAttributes(archived);
 		});
 
 		return;
+	} else {
+		// If the link has been checked, add the data attributes
+		addDataAttributes(archived);
 	}
 
-	// If link has not needed to be checked and is broken, add the data attributes
-	if (archived.broken) {
-		addDataAttributes(archived);
-		return;
-	}
 }
 
 /**

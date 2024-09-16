@@ -162,7 +162,7 @@ class Settings {
 	 * @return integer[]
 	 */
 	public static function get_valid_http_status_codes(): array {
-		$codes = array( 200, 206 );
+		$codes = array( 200, 206, 429 );
 		return (array) apply_filters( 'wlf_valid_http_status_codes', $codes );
 	}
 

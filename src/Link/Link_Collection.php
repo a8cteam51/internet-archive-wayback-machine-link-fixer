@@ -69,6 +69,15 @@ class Link_Collection implements \JsonSerializable {
 	}
 
 	/**
+	 * Check if the collection is empty.
+	 *
+	 * @return boolean
+	 */
+	public function is_empty(): bool {
+		return empty( $this->links );
+	}
+
+	/**
 	 * Gets the links as JSON.
 	 *
 	 * @return string
