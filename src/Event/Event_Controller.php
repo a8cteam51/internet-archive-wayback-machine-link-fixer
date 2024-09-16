@@ -28,6 +28,8 @@ class Event_Controller {
 		add_action( Scan_Posts_Event::HANDLE, new Scan_Posts_Event(), 10, 1 );
 		add_action( Check_Snapshot_Status_Event::HANDLE, new Check_Snapshot_Status_Event(), 10, 3 );
 		add_action( Find_Or_Create_Snapshot_Event::HANDLE, new Find_Or_Create_Snapshot_Event(), 10, 1 );
+		add_action( Link_Access_Validator_Event::HANDLE, new Link_Access_Validator_Event(), 10, 1 );
+		add_action( Check_Validator_Status::HANDLE, new Check_Validator_Status(), 10, 3 );
 
 		// Ensure the post scan event is added to the action scheduler.
 		add_action( 'init', array( Scan_Posts_Event::class, 'add_to_action_scheduler' ) );

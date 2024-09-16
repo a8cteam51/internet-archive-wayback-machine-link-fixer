@@ -69,6 +69,15 @@ class Link_Check_Action {
 			);
 		}
 
+		// If a link is set as excluded, it cant be checked.
+		if ( $link->is_excluded() ) {
+			return array(
+				'link'    => $link,
+				'checked' => false,
+				'valid'   => true,
+			);
+		}
+
 		// Get the current status.
 		try {
 			$status = $this->link_checker->check_single( $link->get_href() );
@@ -85,6 +94,12 @@ class Link_Check_Action {
 
 		// Validate the link.
 		$valid = $link->is_valid();
+
+		// If the link is set to be excluded, set as valid.
+		if ( $link->is_excluded() ) {
+			$link->set_valid( true );
+			$valid = true;
+		}
 
 		// Update the link.
 		$link = $this->link_repository->upsert( $link );

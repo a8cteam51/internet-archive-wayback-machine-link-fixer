@@ -70,6 +70,13 @@ class Link implements \JsonSerializable {
 	private $message = '';
 
 	/**
+	 * Is the link allowed to be checked.
+	 *
+	 * @var boolean
+	 */
+	private $is_excluded = false;
+
+	/**
 	 * Creates a new instance of the link model.
 	 *
 	 * @param string $href The original href.
@@ -174,6 +181,27 @@ class Link implements \JsonSerializable {
 	}
 
 	/**
+	 * Sets if the link is excluded.
+	 *
+	 * @param boolean $is_excluded If the link is excluded.
+	 *
+	 * @return self
+	 */
+	public function set_excluded( bool $is_excluded = true ): self {
+		$this->is_excluded = $is_excluded;
+		return $this;
+	}
+
+	/**
+	 * Checks if the link is excluded.
+	 *
+	 * @return boolean
+	 */
+	public function is_excluded(): bool {
+		return $this->is_excluded;
+	}
+
+	/**
 	 * Gets the message for the link.
 	 *
 	 * @return string
@@ -192,7 +220,7 @@ class Link implements \JsonSerializable {
 	 */
 	public function add_check( int $http_code, ?string $date = null ): self {
 		$this->checks[] = array(
-			'date'      => $date,
+			'date'      => $date ?? gmdate( 'Y-m-d H:i:s' ),
 			'http_code' => $http_code,
 		);
 

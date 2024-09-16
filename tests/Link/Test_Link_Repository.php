@@ -546,12 +546,13 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 				200,
 				'2022-01-01 00:00:00'
 			)
-			->set_broken(),
+			->set_broken()
+			->set_excluded(),
 			( new Link( 'https://foo.com' ) )
 			->add_check(
 				404,
 				'2021-02-01 00:00:00'
-			),
+			)->set_excluded(),
 			( new Link( 'https://glynn.com' ) )
 			->add_check(
 				200,
@@ -561,7 +562,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 			->add_check(
 				500,
 				'2021-04-01 00:00:00'
-			),
+			)->set_excluded(),
 			( new Link( 'https://banana.fruit' ) )
 			->add_check(
 				200,
@@ -581,7 +582,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 			->add_check(
 				500,
 				'2023-08-01 00:00:00'
-			),
+			)->set_excluded(),
 			( new Link( 'https://acorn.retro' ) )
 			->add_check(
 				200,
@@ -662,5 +663,58 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		// Check with archives.
 		$this->assertCount( 4, $this->link_repository->query_links( 100, 1, array(), array(), array(Link_Repository::LINK_HAS_ARCHIVE)) );
 
+	}
+
+	/**
+	 * @testdox It should be possible to filter links based on if they are excluded or not.
+	 *
+	 * @return void
+	 */
+	public function test_can_filter_links_by_excluded(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links(
+			10,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_DATE_DESC,
+			null,
+			null,
+			true
+		);
+
+
+		// 4 are set as excluded
+		$this->assertCount( 4, $queried_links );
+
+		// Check the links are excluded.
+		foreach ( $queried_links as $link ) {
+			$this->assertTrue( $link->is_excluded() );
+		}
+
+		// Query the links for non-excluded.
+		$queried_links = $this->link_repository->query_links(
+			10,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_DATE_DESC,
+			null,
+			null,
+			false
+		);
+
+		// 6 are not excluded
+		$this->assertCount( 6, $queried_links );
+
+		// Check the links are not excluded.
+		foreach ( $queried_links as $link ) {
+			$this->assertFalse( $link->is_excluded() );
+		}
 	}
 }

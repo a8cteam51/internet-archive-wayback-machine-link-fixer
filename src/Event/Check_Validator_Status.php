@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Event for checking if the archive creation is still in progress.
+ * Event for checking if the validator is still in progress.
  *
  * @package Wayback_Link_Fixer
  *
@@ -17,11 +17,11 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Clie
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 /**
- * Check Archive Creation Event class.
+ * Check Validator Creation Event class.
  */
-class Check_Snapshot_Status_Event {
+class Check_Validator_Status {
 
-	public const HANDLE = 'wlf_check_snapshot_status';
+	public const HANDLE = 'wlf_check_validator_status';
 
 	/**
 	 * Link repository.
@@ -47,7 +47,7 @@ class Check_Snapshot_Status_Event {
 	 * Create instance of the class.
 	 */
 	public function __construct() {
-		$this->attempts = \apply_filters( 'wlf_check_snapshot_status_attempts', 3 );
+		$this->attempts = \apply_filters( 'wlf_check_validator_status_attempts', 3 );
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Check_Snapshot_Status_Event {
 	 * @return integer
 	 */
 	public static function get_interval(): int {
-		return absint( \apply_filters( 'wlf_check_snapshot_status_interval', 1 * \MINUTE_IN_SECONDS ) );
+		return absint( \apply_filters( 'wlf_check_validator_status_interval', 2 * \MINUTE_IN_SECONDS ) );
 	}
 
 	/**
@@ -155,7 +155,7 @@ class Check_Snapshot_Status_Event {
 
 			// If the status has a 'status_ext' key, set the link as excluded.
 			if ( isset( $status['status_ext'] ) && 'error:no-access' === $status['status_ext'] ) {
-				$link = $link->set_excluded();
+				$link = $link->set_excluded()->set_broken( false );
 			}
 
 			$this->link_repository->upsert( $link );
@@ -163,7 +163,7 @@ class Check_Snapshot_Status_Event {
 			throw new \Exception(
 				esc_html(
 					sprintf(
-						'Error getting status for link id: %d, error: %s',
+						'Link id: %d excluded due to status, error: %s',
 						absint( $link_id ),
 						esc_html( $status['message'] )
 					)
@@ -171,9 +171,11 @@ class Check_Snapshot_Status_Event {
 			);
 		}
 
-		// If the status is success, create Update_Archive_URL_Event.
+		// If status is success, set the link as not broken.
 		if ( 'success' === $status['status'] ) {
-			Update_Archive_URL_Event::add_to_queue( $link_id );
+			$link = $link->set_excluded( false );
+			$this->link_repository->upsert( $link );
+
 			return;
 		}
 

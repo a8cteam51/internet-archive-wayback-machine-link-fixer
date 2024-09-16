@@ -30,12 +30,15 @@ class ComposerStaticInitb57c7e2cae7cf2fdb5357c49c51d45f5
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Link_Check_Action' => __DIR__ . '/../..' . '/src/Action/Link_Check_Action.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Link_Latest_Snapshot_Action' => __DIR__ . '/../..' . '/src/Action/Link_Latest_Snapshot_Action.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Link_New_Snapshot_Action' => __DIR__ . '/../..' . '/src/Action/Link_New_Snapshot_Action.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Validate_Link_Action' => __DIR__ . '/../..' . '/src/Action/Validate_Link_Action.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Ajax\\Ajax_Controller' => __DIR__ . '/../..' . '/src/Ajax/Ajax_Controller.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Ajax\\Link_Check_Ajax' => __DIR__ . '/../..' . '/src/Ajax/Link_Check_Ajax.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Snapshot_Status_Event' => __DIR__ . '/../..' . '/src/Event/Check_Snapshot_Status_Event.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Validator_Status' => __DIR__ . '/../..' . '/src/Event/Check_Validator_Status.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Create_New_Snapshot_Event' => __DIR__ . '/../..' . '/src/Event/Create_New_Snapshot_Event.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Event_Controller' => __DIR__ . '/../..' . '/src/Event/Event_Controller.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Find_Or_Create_Snapshot_Event' => __DIR__ . '/../..' . '/src/Event/Find_Or_Create_Snapshot_Event.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Link_Access_Validator_Event' => __DIR__ . '/../..' . '/src/Event/Link_Access_Validator_Event.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Scan_Posts_Event' => __DIR__ . '/../..' . '/src/Event/Scan_Posts_Event.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Update_Archive_URL_Event' => __DIR__ . '/../..' . '/src/Event/Update_Archive_URL_Event.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Integrations' => __DIR__ . '/../..' . '/src/Integrations.php',
@@ -63,6 +66,7 @@ class ComposerStaticInitb57c7e2cae7cf2fdb5357c49c51d45f5
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Snapshot_Client' => __DIR__ . '/../..' . '/src/Wayback_Machine/Snapshot_Client.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Wayback_Machine\\Wayback_Machine_Service' => __DIR__ . '/../..' . '/src/Wayback_Machine/Wayback_Machine_Service.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_1' => __DIR__ . '/../..' . '/migrations/Migration_1.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\Migration_2' => __DIR__ . '/../..' . '/migrations/Migration_2.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

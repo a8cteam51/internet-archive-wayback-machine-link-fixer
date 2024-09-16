@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Handler;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Find_Or_Create_Snapshot_Event;
 
 /**
@@ -23,6 +22,8 @@ class Link_Repository {
 	public const LINK_STATUS_OK     = 0;
 	public const LINK_HAS_ARCHIVE   = 1;
 	public const LINK_NO_ARCHIVE    = 0;
+	public const LINK_IS_EXCLUDED   = 1;
+	public const LINK_NOT_EXCLUDED  = 0;
 	public const ORDER_DATE_ASC     = 'date_asc';
 	public const ORDER_DATE_DESC    = 'date_desc';
 	public const ORDER_ID_ASC       = 'id_asc';
@@ -140,6 +141,7 @@ class Link_Repository {
 		$redirect_href = $link->get_redirect_href();
 		$is_broken     = $link->is_broken();
 		$message       = $link->get_message();
+		$is_excluded   = $link->is_excluded();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -154,6 +156,7 @@ class Link_Repository {
 				'redirect_url' => $redirect_href,
 				'is_broken'    => $is_broken,
 				'message'      => $message,
+				'excluded'     => $is_excluded ? 1 : 0,
 			),
 			array(
 				'%s',
@@ -162,6 +165,7 @@ class Link_Repository {
 				'%s',
 				'%d',
 				'%s',
+				'%d',
 			)
 		);
 
@@ -195,6 +199,7 @@ class Link_Repository {
 		$redirect_href = $link->get_redirect_href();
 		$is_broken     = $link->is_broken();
 		$message       = $link->get_message();
+		$is_excluded   = $link->is_excluded();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -209,6 +214,7 @@ class Link_Repository {
 				'redirect_url' => $redirect_href,
 				'is_broken'    => $is_broken,
 				'message'      => $message,
+				'excluded'     => $is_excluded ? 1 : 0,
 			),
 			array(
 				'id' => $id,
@@ -220,6 +226,7 @@ class Link_Repository {
 				'%s',
 				'%d',
 				'%s',
+				'%d',
 			),
 			array(
 				'%d',
@@ -271,7 +278,8 @@ class Link_Repository {
 			->set_id( (int) $row->id )
 			->set_archived_href( $row->archived ?? '' )
 			->set_redirect_href( $row->redirect_url ?? '' )
-			->set_message( esc_attr( $row->message ?? '' ) );
+			->set_message( esc_attr( $row->message ?? '' ) )
+			->set_excluded( (bool) $row->excluded );
 
 		// Iterate through the checks and add them to the link.
 		$checks = json_decode( $row->checks, true );
@@ -296,11 +304,12 @@ class Link_Repository {
 	/**
 	 * Get all links for a given post id.
 	 *
-	 * @param integer $post_id The post id.
+	 * @param integer $post_id          The post id.
+	 * @param boolean $exclude_excluded Whether to exclude excluded links.
 	 *
 	 * @return Link_Collection
 	 */
-	public function get_links_for_post( int $post_id ): Link_Collection {
+	public function get_links_for_post( int $post_id, bool $exclude_excluded = false ): Link_Collection {
 		$collection = new Link_Collection( $post_id );
 
 		// Get from post meta.
@@ -323,6 +332,11 @@ class Link_Repository {
 		$links = array_filter( $links );
 
 		foreach ( $links as $link ) {
+			// If we are exluding excluded links and the link is excluded, skip.
+			if ( apply_filters( 'wlf_exclude_link_from_post', ( $exclude_excluded && $link->is_excluded() ), $link, $post_id ) ) {
+				continue;
+			}
+
 			$collection->add( $link );
 		}
 
@@ -334,14 +348,15 @@ class Link_Repository {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param integer     $limit          The limit of links to return.
-	 * @param integer     $page           The page of links to return.
-	 * @param array       $status         The status of the links to return.
-	 * @param array       $link_ids       The link ids to query.
-	 * @param array       $archive_status The archive status of the links to return.
-	 * @param string      $order_by       The order by.
-	 * @param string|NULL $search_term    The search term to query.
-	 * @param string|NULL $date           The date of the links to return (yy-mm).
+	 * @param integer      $limit          The limit of links to return.
+	 * @param integer      $page           The page of links to return.
+	 * @param array        $status         The status of the links to return.
+	 * @param array        $link_ids       The link ids to query.
+	 * @param array        $archive_status The archive status of the links to return.
+	 * @param string       $order_by       The order by.
+	 * @param string|NULL  $search_term    The search term to query.
+	 * @param string|NULL  $date           The date of the links to return (yy-mm).
+	 * @param boolean|NULL $excluded       Whether to return excluded links.
 	 *
 	 * @return Link[]
 	 */
@@ -353,7 +368,8 @@ class Link_Repository {
 		array $archive_status = array(),
 		string $order_by = self::ORDER_DATE_DESC,
 		?string $search_term = null,
-		?string $date = null
+		?string $date = null,
+		?bool $excluded = null
 	): array {
 		// Remove any invalid statuses.
 		$status = array_filter(
@@ -432,6 +448,12 @@ class Link_Repository {
 			$query      .= ' url LIKE %s';
 			$query       = $this->wpdb->prepare( $query, '%' . $search_term . '%' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
 			$where       = true;
+		}
+
+		// If we have excluded, add to the query.
+		if ( null !== $excluded ) {
+			$query .= true === $where ? ' AND' : ' WHERE';
+			$query .= $excluded ? ' excluded = 1' : ' excluded = 0';
 		}
 
 		// Add the order by.

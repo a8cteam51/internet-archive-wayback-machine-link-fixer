@@ -95,6 +95,19 @@ class Find_Or_Create_Snapshot_Event {
 		}
 
 		$link->set_archived_href( $snapshot['url'] );
+
+		// Get the current link status.
+		$status = $this->wayback_machine->check_single( $link->get_href() );
+
+		// Add to the link.
+		$link->add_check( $status );
+
+		// Update the link.
 		$this->link_repository->upsert( $link );
+
+		// If we have a 403 status, add to the validator queue.
+		if ( 403 === $status ) {
+			Link_Access_Validator_Event::add_to_queue( $link_id );
+		}
 	}
 }

@@ -152,7 +152,7 @@ class WP_Post_Controller {
 
 		// Get the links.
 		$links = is_numeric( $post_id ) && get_post_status( $post_id )
-			? $this->link_repository->get_links_for_post( $post_id )
+			? $this->link_repository->get_links_for_post( $post_id, true )
 			: array();
 
 		// Get the scripts assets file.
