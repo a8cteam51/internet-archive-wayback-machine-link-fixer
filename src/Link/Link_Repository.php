@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Handler;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Find_Or_Create_Snapshot_Event;
 
 /**
@@ -23,6 +22,8 @@ class Link_Repository {
 	public const LINK_STATUS_OK     = 0;
 	public const LINK_HAS_ARCHIVE   = 1;
 	public const LINK_NO_ARCHIVE    = 0;
+	public const LINK_IS_EXCLUDED   = 1;
+	public const LINK_NOT_EXCLUDED  = 0;
 	public const ORDER_DATE_ASC     = 'date_asc';
 	public const ORDER_DATE_DESC    = 'date_desc';
 	public const ORDER_ID_ASC       = 'id_asc';
@@ -332,7 +333,7 @@ class Link_Repository {
 
 		foreach ( $links as $link ) {
 			// If we are exluding excluded links and the link is excluded, skip.
-			if ( $exclude_excluded && $link->is_excluded() ) {
+			if ( apply_filters( 'wlf_exclude_link_from_post', ( $exclude_excluded && $link->is_excluded() ), $link, $post_id ) ) {
 				continue;
 			}
 

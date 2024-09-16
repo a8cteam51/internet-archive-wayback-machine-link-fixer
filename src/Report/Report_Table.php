@@ -611,6 +611,25 @@ class Report_Table extends \WP_List_Table {
 			?>
 		</select>
 
+
+		<label for="wlf_is_excluded" class="screen-reader-text"><?php esc_html_e( 'Filter by excluded', 'wpcomsp_wayback_link_fixer' ); ?></label>
+		<select name="wlf_is_excluded" id="wlf_is_excluded">
+			<option value=""><?php esc_html_e( 'Show with or without excluded link', 'wpcomsp_wayback_link_fixer' ); ?></option>
+			<?php
+			$has_archive = array(
+				Link_Repository::LINK_IS_EXCLUDED  => __( 'Show links that are excluded', 'wpcomsp_wayback_link_fixer' ),
+				Link_Repository::LINK_NOT_EXCLUDED => __( 'Show links that are not excluded', 'wpcomsp_wayback_link_fixer' ),
+			);
+			foreach ( $has_archive as $archive => $label ) {
+				printf(
+					'<option value="%s"%s>%s</option>',
+					esc_attr( $archive ),
+					selected( $this->get_excluded_status_from_url(), $archive, false ),
+					esc_html( $label )
+				);
+			}
+			?>
+
 		<?php if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>
 			<input type="hidden" name="wlf_filtered_post_id" value="<?php echo esc_attr( $_GET['wlf_filtered_post_id'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>" />
 		<?php endif; ?>
@@ -631,6 +650,17 @@ class Report_Table extends \WP_List_Table {
 		return array_key_exists( 'wlf_status', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			? \sanitize_text_field( $_GET['wlf_status'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: '';
+	}
+
+	/**
+	 * Get the excluded status filter values from url if set.
+	 *
+	 * @return string
+	 */
+	private function get_excluded_status_from_url(): ?string {
+		return array_key_exists( 'wlf_is_excluded', $_GET ) && '' !== $_GET['wlf_is_excluded'] // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? \sanitize_text_field( $_GET['wlf_is_excluded'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			: null;
 	}
 
 	/**
@@ -663,7 +693,9 @@ class Report_Table extends \WP_List_Table {
 			$this->get_link_ids_from_url(),
 			array( $this->get_archived_status_from_url() ),
 			$this->get_sort_order_from_url(),
-			$this->get_search_term()
+			$this->get_search_term(),
+			null,
+			is_null( $this->get_excluded_status_from_url() ) ? null : boolval( $this->get_excluded_status_from_url() )
 		);
 	}
 
@@ -716,10 +748,10 @@ class Report_Table extends \WP_List_Table {
 	 */
 	protected function get_bulk_actions(): array {
 		return array(
-			'updated_snapshot' => __( 'Update Latest Snapshot', 'wpcomsp_wayback_link_fixer' ),
+			'updated_snapshot' => __( 'Update To Latest Snapshot', 'wpcomsp_wayback_link_fixer' ),
 			'new_snapshot'     => __( 'Create New Snapshot', 'wpcomsp_wayback_link_fixer' ),
-			'check'            => __( 'Check Link', 'wpcomsp_wayback_link_fixer' ),
-			'validate'         => __( 'Validate Link', 'wpcomsp_wayback_link_fixer' ),
+			'check'            => __( 'Check Link Status', 'wpcomsp_wayback_link_fixer' ),
+			'validate'         => __( 'Verify Link Allows Checking', 'wpcomsp_wayback_link_fixer' ),
 		);
 	}
 
