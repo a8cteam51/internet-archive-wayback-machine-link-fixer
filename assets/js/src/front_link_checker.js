@@ -260,8 +260,6 @@ const addDataAttributes = (link) => {
 
 		// If the link is the same as the current link, add the data attributes
 		if (removeTrailingSlash(currentLink.href) === href) {
-			console.log('adding data attributes', currentLink);
-
 			currentLink.setAttribute('data-wlf-archived-url', link.archived_href);
 			currentLink.setAttribute('data-wlf-current-url', href);
 			currentLink.setAttribute('data-wlf-archived-broken', link.broken);

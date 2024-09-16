@@ -214,6 +214,12 @@ class WP_Post_Controller {
 		// Add the post id to the array.
 		$posts[] = $post_id;
 
+		// If not a post or a an allowed post type, return.
+		$post = \get_post( $post_id );
+		if ( ! $post || ! in_array( $post->post_type, Settings::get_allowed_post_types(), true ) ) {
+			return $block_content;
+		}
+
 		// Compile the data.
 		$links = $this->link_repository->get_links_for_post( $post_id );
 
