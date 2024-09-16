@@ -332,8 +332,7 @@ class Link_Repository {
 		$links = array_filter( $links );
 
 		foreach ( $links as $link ) {
-			// If we are exluding excluded links and the link is excluded, skip.
-			if ( apply_filters( 'wlf_exclude_link_from_post', ( $exclude_excluded && $link->is_excluded() ), $link, $post_id ) ) {
+			if ( Link_Exclusion::get_instance()->is_excluded( $link, $post_id ) ) {
 				continue;
 			}
 

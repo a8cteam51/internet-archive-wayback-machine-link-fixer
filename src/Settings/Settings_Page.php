@@ -428,7 +428,7 @@ class Settings_Page {
 		echo \wp_kses(
 			sprintf(
 				'<div><p>%s</p></div>',
-				__( 'Enter a list of URLs to exclude from the link checker. These can be added using <code>*</code> wildcards such as <code>*.twitter.com*</code> to exclude any twitter link', 'wpcomsp_wayback_link_fixer' )
+				__( 'Enter a list of URLs to exclude from the link checker. These can be added using <code>*</code> wildcards such as <code>https://x.com*</code> to exclude any x/twitter link', 'wpcomsp_wayback_link_fixer' )
 			),
 			array(
 				'code' => array(),
@@ -443,7 +443,7 @@ class Settings_Page {
 				<input
 					type="text"
 					id="wlf_excluded_links_new"
-					placeholder="<?php esc_html_e( 'Add a new exclusion (*.twitter.*)', 'wpcomsp_wayback_link_fixer' ); ?>"
+					placeholder="<?php esc_html_e( 'Add a new exclusion (https://x.com*)', 'wpcomsp_wayback_link_fixer' ); ?>"
 				/>
 				<button id="wlf_excluded_links_new_action" type="button" class="button button-secondary add-exclusion"><?php esc_html_e( 'Add', 'wpcomsp_wayback_link_fixer' ); ?></button>
 			</div>
