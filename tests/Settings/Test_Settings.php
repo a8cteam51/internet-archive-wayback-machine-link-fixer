@@ -192,8 +192,8 @@ class Test_Settings extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_change_valid_http_status_codes_via_filter(): void {
-		// By default, the valid http status codes are 200 and 206.
-		$this->assertEquals( array( 200, 206 ), Settings::get_valid_http_status_codes() );
+		// By default, the valid http status codes are 200, 206 and 429.
+		$this->assertEquals( array( 200, 206, 429 ), Settings::get_valid_http_status_codes() );
 
 		add_filter(
 			'wlf_valid_http_status_codes',

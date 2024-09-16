@@ -54,7 +54,7 @@ class WP_Post_Controller {
 	private function register_hooks(): void {
 		add_action( 'save_post', array( $this, 'on_save_post' ), 10, 3 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_script' ) );
-	}
+		add_filter( 'render_block', array( $this, 'render_block' ), 999, 2 );  }
 
 	/**
 	 * Handles the save post action.
@@ -191,5 +191,38 @@ class WP_Post_Controller {
 
 		// Enqueue the script.
 		\wp_enqueue_script( 'wpcomsp-wayback-link-fixer-front-link-checker' );
+	}
+
+	/**
+	 * Render as part of a block template.
+	 *
+	 * @param string $block_content The block content.
+	 * @param array  $block         The block.
+	 *
+	 * @return string
+	 */
+	public function render_block( string $block_content, array $block ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		static $posts = array();
+
+		$post_id = get_the_ID();
+
+		// If the ID is not set, or is in the array, return.
+		if ( ! is_numeric( $post_id ) || in_array( $post_id, $posts, true ) ) {
+			return $block_content;
+		}
+
+		// Add the post id to the array.
+		$posts[] = $post_id;
+
+		// Compile the data.
+		$links = $this->link_repository->get_links_for_post( $post_id );
+
+		if ( empty( $links ) ) {
+			return $block_content;
+		}
+		$json      = wp_json_encode( $links );
+		$html_data = "<div class='__wlf-post-loop-links' style='display:none;' data-wlf-post-links='{$json}'></div>";
+
+		return $html_data . $block_content;
 	}
 }
