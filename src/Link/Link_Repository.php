@@ -332,7 +332,7 @@ class Link_Repository {
 		$links = array_filter( $links );
 
 		foreach ( $links as $link ) {
-			if ( Link_Exclusion::get_instance()->is_excluded( $link, $post_id ) ) {
+			if ( $exclude_excluded && Link_Exclusion::get_instance()->is_excluded( $link, $post_id ) ) {
 				continue;
 			}
 

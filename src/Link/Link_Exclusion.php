@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Handles the exlcusion of links.
+ * Handles the exclusion of links.
  *
  * @since 1.2.0
  */
@@ -12,6 +12,9 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
+/**
+ * Handles the exclusion of links.
+ */
 class Link_Exclusion {
 
 	/**
