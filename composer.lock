@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4306a6418d6b9eb38703d40c88c8d2a0",
+    "content-hash": "7d9dd40b44fe681f30c7cbb7ee72b406",
     "packages": [],
     "packages-dev": [
         {
@@ -61,6 +61,57 @@
                 "issues": "https://github.com/a8cteam51/team51-configs/issues"
             },
             "time": "2023-10-10T15:57:04+00:00"
+        },
+        {
+            "name": "automattic/jetpack-constants",
+            "version": "v2.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Automattic/jetpack-constants.git",
+                "reference": "f6958c313a34c5e92171c45a57d9dc978e5975ed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Automattic/jetpack-constants/zipball/f6958c313a34c5e92171c45a57d9dc978e5975ed",
+                "reference": "f6958c313a34c5e92171c45a57d9dc978e5975ed",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "automattic/jetpack-changelogger": "^4.2.6",
+                "brain/monkey": "2.6.1",
+                "yoast/phpunit-polyfills": "^1.1.1"
+            },
+            "suggest": {
+                "automattic/jetpack-autoloader": "Allow for better interoperability with other plugins that use this package."
+            },
+            "type": "jetpack-library",
+            "extra": {
+                "autotagger": true,
+                "mirror-repo": "Automattic/jetpack-constants",
+                "changelogger": {
+                    "link-template": "https://github.com/Automattic/jetpack-constants/compare/v${old}...v${new}"
+                },
+                "branch-alias": {
+                    "dev-trunk": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "A wrapper for defining constants in a more testable way.",
+            "support": {
+                "source": "https://github.com/Automattic/jetpack-constants/tree/v2.0.4"
+            },
+            "time": "2024-08-23T14:28:14+00:00"
         },
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
@@ -422,6 +473,65 @@
                 }
             ],
             "time": "2022-10-18T15:00:10+00:00"
+        },
+        {
+            "name": "gin0115/wpunit-helpers",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gin0115/WPUnit_Helpers.git",
+                "reference": "7fe5e7d0b3a8b2949a2df3ef5daf7b7209b4748b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gin0115/WPUnit_Helpers/zipball/7fe5e7d0b3a8b2949a2df3ef5daf7b7209b4748b",
+                "reference": "7fe5e7d0b3a8b2949a2df3ef5daf7b7209b4748b",
+                "shasum": ""
+            },
+            "require": {
+                "automattic/jetpack-constants": "*",
+                "php": ">=7.1.0",
+                "pinkcrab/function-constructors": "*"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "*",
+                "php-stubs/wordpress-stubs": "^6.0 || ^5.9",
+                "phpstan/phpstan": "^1.0",
+                "phpunit/phpunit": "^7.0 || ^8.0",
+                "roots/wordpress": "^6.1",
+                "symfony/var-dumper": "*",
+                "szepeviktor/phpstan-wordpress": "^1.0",
+                "vlucas/phpdotenv": "^5.4",
+                "wp-coding-standards/wpcs": "*",
+                "wp-phpunit/wp-phpunit": "^6.1",
+                "yoast/phpunit-polyfills": "^0.2.0 || ^1.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [],
+                "psr-4": {
+                    "Gin0115\\WPUnit_Helpers\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Glynn Quelch",
+                    "email": "glynn.quelch@pinkcrab.co.uk",
+                    "homepage": "http://clappo.co.uk",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A series of helper classes, functions and traits for testing with WPUnit for WordPress",
+            "homepage": "https://pinkcrab.co.uk",
+            "support": {
+                "issues": "https://github.com/gin0115/WPUnit_Helpers/issues",
+                "source": "https://github.com/gin0115/WPUnit_Helpers/tree/1.1.1"
+            },
+            "time": "2023-02-26T14:46:18+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -1790,6 +1900,73 @@
                 }
             ],
             "time": "2024-04-05T04:35:58+00:00"
+        },
+        {
+            "name": "pinkcrab/function-constructors",
+            "version": "0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gin0115/pinkcrab_function_constructors.git",
+                "reference": "1c6e6fc9fa27fdf170af0f296237b4c88386c489"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gin0115/pinkcrab_function_constructors/zipball/1c6e6fc9fa27fdf170af0f296237b4c88386c489",
+                "reference": "1c6e6fc9fa27fdf170af0f296237b4c88386c489",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3",
+                "phpstan/phpstan": "^1.0",
+                "phpunit/phpunit": "^7.0 || ^9.0",
+                "yoast/phpunit-polyfills": "^1.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/function-constants.php",
+                    "src/constants.php",
+                    "src/procedural.php",
+                    "src/arrays.php",
+                    "src/comparisons.php",
+                    "src/general.php",
+                    "src/strings.php",
+                    "src/numbers.php",
+                    "src/objects.php"
+                ],
+                "psr-4": {
+                    "PinkCrab\\FunctionConstructors\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Glynn Quelch",
+                    "email": "glynn.quelch@pinkcrab.co.uk",
+                    "homepage": "https://github.com/gin0115",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A collection of functions to make working with the standard php library a little easier for function composition. Allows the creation of partially applied library functions, to work as close to pure fucntions as possible.",
+            "homepage": "https://pinkcrab.co.uk",
+            "keywords": [
+                "currying",
+                "fp",
+                "functional",
+                "partial application",
+                "piping"
+            ],
+            "support": {
+                "issues": "https://github.com/gin0115/pinkcrab_function_constructors/issues",
+                "source": "https://github.com/gin0115/pinkcrab_function_constructors/tree/0.2.0"
+            },
+            "time": "2023-01-28T01:15:55+00:00"
         },
         {
             "name": "roave/security-advisories",
@@ -4918,5 +5095,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }

@@ -86,29 +86,33 @@ Every link which is scanned, is added to the Link Table, this can be accessed un
 
 Here you can see the status of each link, the number of snapshots available, and the date of the last snapshot.
 
+
 ### URL
 
 The URL of the link, clicking it will show more details about the link.
 
 ### Has Archived Link
 
-![image](./_docs/check-icon.png)
+| | |
+|---|---|
+| ![image](./_docs/check-icon.png) | A checkmark indicates that we have a defined archived link for this URL. Clicking this will access the archived snapshot. |
+| ![image](./_docs/cross-icon.png) | A cross indicates that we do not have an archived link for this URL. |
 
- A checkmark indicates that we have a defined archived link for this URL. Clicking this will access the archived snapshot.
-
-![image](./_docs/cross-icon.png)
-
- A cross indicates that we do not have an archived link for this URL.
 
 ### Link Health
 
-![image](./_docs/heart-icon.png)
+| | |
+|---|---|
+| ![image](./_docs/heart-icon.png) | A heart implies that the link is still pointing to a valid target. |
+| ![image](./_docs/error-icon.png) | A broken heart indicates that the link is broken. |
 
- A heart implies that the link is still pointing to a valid target.
+### Is Excluded
 
-![image](./_docs/error-icon.png)
+| | |
+|---|---|
+| ![image](./_docs/check-icon.png) | A checkmark indicates that the link is excluded from being checked. |
+| ![image](./_docs/cross-icon.png) | A cross indicates that the link is not excluded from being checked. |
 
- A broken heart indicates that the link is broken.
 
 ### Check Count
 
@@ -124,7 +128,7 @@ Displays the date and time of the last check.
 
 You can select which links you wish to apply the bulk actions to by checking the box next to the URL.
 
-### Update Latest Snapshot
+### Update To Latest Snapshot
 
 This will update the link to the latest snapshot that exists on the Wayback Machine. *This will not create a new snapshot!*
 
@@ -132,9 +136,15 @@ This will update the link to the latest snapshot that exists on the Wayback Mach
 
 This will setup an event using the action scheduler to create a new snapshot of the link. If a new snapshot can be created, the links archived link will be updated to the new snapshot.
 
-### Check Link
+### Check Link Status
 
 This will trigger a check of the link to see if it is still active.
+
+### Verify Link Allows Checking
+
+This will verify if a link allows checking. If it does not, the link will be excluded from being checked.
+
+> Please note some urls do not allow bots to check the status of the link, this will often result in links being reported as a 403 even if still active and result in false positives.
 
 ## Link Report
 
@@ -351,6 +361,27 @@ add_filter( 'wlf_scan_existing_posts_interval', function( int $interval ): int {
 });
 ```
 
+#### `wlf_check_validator_status_interval`
+
+This is used to define how often we should check if the validator is still running. The default is 2 minutes.
+
+```php
+add_filter( 'wlf_check_validator_status_interval', function( int $interval ): int {
+	return 1 * \MINUTE_IN_SECONDS; // 1 minute
+});
+```
+
+#### `wlf_check_validator_status_attempts`
+
+This is used to define how many times we should attempt to check if the validator is still running. The default is 3.
+
+```php
+add_filter( 'wlf_check_validator_status_attempts', function( int $attempts ): int {
+	return 5;
+});
+```
+
+
 #### `wlf_is_valid_check`
 
 This filter is used when a url is checked and we are returning if the link is valid or not. The default is to check if the status code is in the `wlf_valid_http_status_codes` array.
@@ -366,6 +397,21 @@ add_filter( 'wlf_is_valid_check', function( bool $is_valid, array $check, Link $
 
 > The `$check` array contains the following keys: `status_code (string)`, `date (Y-m-d H:i:s)`.
 > For all public methods of the `Link` model, see the codebase (src/Link/Link.php)
+
+#### `wlf_exclude_link_from_post`
+
+This allows a link to be excluded from the list of links generated for a post. If a link is excluded, it will not be checked or have its link replaced when viewing the post.
+
+```php
+add_filter( 'wlf_exclude_link_from_post', function( bool $exclude, Link $link, int $post_id ): bool {
+	if ( strpos( $link->get_href(), 'example.com' ) !== false ) {
+	  return true;
+	}
+	return $exclude;
+});
+```
+
+> Please note if a link is already being excluded, this is likely due to the site blocking any uptime checking bots and allowing these links to be checked will likely result in false positives.
 
 #### `wlf_link_checker_url_params`
 
@@ -440,6 +486,7 @@ add_filter( 'wlf_create_snapshot_url', function( string $url ): string {
 	return 'https://my-custom-snapshot-creator.com';
 });
 ```
+
 
 ### Internet Archive / Wayback Link Fixer Instances.
 

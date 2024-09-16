@@ -152,6 +152,12 @@ class Check_Snapshot_Status_Event {
 		if ( 'error' === $status['status'] ) {
 			// Update the link with the error message.
 			$link = $link->set_message( esc_html( $status['message'] ) );
+
+			// If the status has a 'status_ext' key, set the link as excluded.
+			if ( isset( $status['status_ext'] ) && 'error:no-access' === $status['status_ext'] ) {
+				$link = $link->set_excluded();
+			}
+
 			$this->link_repository->upsert( $link );
 
 			throw new \Exception(
