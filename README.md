@@ -62,7 +62,7 @@ Enable this option to scan all existing posts for broken links. Only posts that 
 Specify links to exclude from being checked. This is useful for links known to be broken or irrelevant. The `*` wildcard can be used to match any character.
 
 * `https://example.com/*` - Excludes all links starting with `https://example.com/`
-* `*.twitter.*` - Excludes all links containing `twitter` in the domain name
+* `https://x.com*` - Excludes all links containing `x/twitter` in the domain name
 
 ### Archive.org API Key
 

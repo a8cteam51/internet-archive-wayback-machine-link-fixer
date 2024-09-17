@@ -44,6 +44,7 @@ class ComposerStaticInitb57c7e2cae7cf2fdb5357c49c51d45f5
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Integrations' => __DIR__ . '/../..' . '/src/Integrations.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link\\Link' => __DIR__ . '/../..' . '/src/Link/Link.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link\\Link_Collection' => __DIR__ . '/../..' . '/src/Link/Link_Collection.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link\\Link_Exclusion' => __DIR__ . '/../..' . '/src/Link/Link_Exclusion.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link\\Link_Repository' => __DIR__ . '/../..' . '/src/Link/Link_Repository.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Migration\\Abstract_Migration' => __DIR__ . '/../..' . '/src/Migration/Abstract_Migration.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Migration\\Migrations' => __DIR__ . '/../..' . '/src/Migration/Migrations.php',

@@ -24,6 +24,7 @@ return array(
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Integrations' => $baseDir . '/src/Integrations.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link\\Link' => $baseDir . '/src/Link/Link.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link\\Link_Collection' => $baseDir . '/src/Link/Link_Collection.php',
+    'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link\\Link_Exclusion' => $baseDir . '/src/Link/Link_Exclusion.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Link\\Link_Repository' => $baseDir . '/src/Link/Link_Repository.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Migration\\Abstract_Migration' => $baseDir . '/src/Migration/Abstract_Migration.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Migration\\Migrations' => $baseDir . '/src/Migration/Migrations.php',

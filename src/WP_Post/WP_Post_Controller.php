@@ -14,6 +14,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Exclusion;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Link_Check_Ajax;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Processor;
@@ -88,36 +89,10 @@ class WP_Post_Controller {
 		$links          = $post_processor->process();
 
 		// Remove any excluded links.
-		$links = $this->remove_excluded_links( $links );
+		$links = Link_Exclusion::get_instance()->filter_excluded( $links );
 
 		// Update the link meta.
 		$this->update_link_meta( $post_id, $links );
-	}
-
-
-	/**
-	 * Remove any excluded links from the links array.
-	 *
-	 * @param array<Link> $links The links.
-	 *
-	 * @return array<Link>
-	 */
-	private function remove_excluded_links( array $links ): array {
-		$excluded = Settings::get_link_exclusions();
-
-		// Filter the links using fn match on the url.
-		return array_filter(
-			$links,
-			function ( Link $link ) use ( $excluded ): bool {
-				foreach ( $excluded as $ex ) {
-					if ( fnmatch( $ex, $link->get_href() ) ) {
-						return false;
-					}
-				}
-
-				return true;
-			}
-		);
 	}
 
 	/**
