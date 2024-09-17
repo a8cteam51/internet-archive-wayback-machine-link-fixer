@@ -6,7 +6,7 @@
  * Created: 13 Sep 2024
  * Iteration: 2
  *
- * @since 1.3.1
+ * @since 1.3.0RC1
  *
  * Adds a new column to track if a link should be ignored.
  */
