@@ -26,6 +26,9 @@ tests_add_filter(
 		// Activate the plugin.
 		include_once ABSPATH . 'wp-admin/includes/plugin.php';
 		activate_plugin( 'wayback-link-fixer/wayback-link-fixer.php' );
+
+		// include the function file
+		include_once dirname( __DIR__ ) . '/functions.php';
 	}
 );
 

@@ -275,4 +275,64 @@ function wpcomsp_wayback_link_fixer_is_archive_link( string $url ): bool {
 		return false;
 }
 
+/**
+ * Normalize a URL.
+ *
+ * Will urldecode, remove trailing slashes, and lowercase the URL.
+ *
+ * @since 1.3.0
+ *
+ * @param string $url The URL to normalize.
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_normalize_url( string $url ): string {
+	$url = rtrim( $url, '/' );
+
+	// URL Encode the url parameters.
+	$url_parts = wp_parse_url( $url );
+
+	// If we have a pathm, encode it.
+	if ( isset( $url_parts['path'] ) ) {
+		// Split path by /
+		$path_parts        = explode( '/', $url_parts['path'] );
+		$path_parts        = array_map( 'rawurlencode', $path_parts );
+		$url_parts['path'] = implode( '/', $path_parts );
+	}
+
+	// If we have a query, encode it.
+	if ( isset( $url_parts['query'] ) ) {
+		$url_parts['query'] = rawurlencode( $url_parts['query'] );
+	}
+
+	// If we have a fragment, encode it.
+	if ( isset( $url_parts['fragment'] ) ) {
+		$url_parts['fragment'] = str_replace( '%21', '!', rawurlencode( $url_parts['fragment'] ) );
+	}
+
+	// Rebuild the scheme and host
+	$url  = isset( $url_parts['scheme'] ) ? $url_parts['scheme'] . '://' : '';
+	$url .= isset( $url_parts['host'] ) ? $url_parts['host'] : '';
+
+	// Add port if specified
+	if ( isset( $url_parts['port'] ) ) {
+		$url .= ':' . $url_parts['port'];
+	}
+
+	// Add the path
+	$url .= isset( $url_parts['path'] ) ? $url_parts['path'] : '';
+
+	// Add the query if present
+	if ( isset( $url_parts['query'] ) ) {
+		$url .= '?' . $url_parts['query'];
+	}
+
+	// Add the fragment if present
+	if ( isset( $url_parts['fragment'] ) ) {
+		$url .= '#' . $url_parts['fragment'];
+	}
+
+	return $url;
+}
+
 // endregion
