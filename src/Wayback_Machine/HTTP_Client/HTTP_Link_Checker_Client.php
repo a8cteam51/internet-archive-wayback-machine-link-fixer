@@ -65,7 +65,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 
 		// Compile the url for the live web check service.
 		$url_params = array(
-			'url'         => $url ?? '',
+			'url'         => wpcomsp_wayback_link_fixer_normalize_url( $url ),
 			'impersonate' => 1,
 		);
 

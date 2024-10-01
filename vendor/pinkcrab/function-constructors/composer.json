@@ -1,0 +1,66 @@
+{
+    "name": "pinkcrab/function-constructors",
+    "type": "library",
+    "description": "A collection of functions to make working with the standard php library a little easier for function composition. Allows the creation of partially applied library functions, to work as close to pure fucntions as possible.",
+    "keywords": [
+        "FP",
+        "Partial Application",
+        "Currying",
+        "Piping",
+        "Functional"
+    ],
+    "homepage": "https://pinkcrab.co.uk",
+    "license": "GPL-2.0-or-later",
+    "authors": [{
+        "name": "Glynn Quelch",
+        "email": "glynn.quelch@pinkcrab.co.uk",
+        "homepage": "https://github.com/gin0115",
+        "role": "Developer"
+    }],
+    "support": {
+        "issues": "https://github.com/gin0115/pinkcrab_function_constructors/issues"
+    },
+    "autoload": {
+        "psr-4": {
+            "PinkCrab\\FunctionConstructors\\": "src"
+        },
+        "files": [
+            "src/function-constants.php",
+            "src/constants.php",
+            "src/procedural.php",
+            "src/arrays.php",
+            "src/comparisons.php",
+            "src/general.php",
+            "src/strings.php",
+            "src/numbers.php",
+            "src/objects.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PinkCrab\\FunctionConstructors\\Tests\\": "Tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0 || ^9.0",
+        "phpstan/phpstan": "^1.0",
+        "yoast/phpunit-polyfills": "^1.0.0",
+        "friendsofphp/php-cs-fixer": "^3"
+    },
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "scripts": {
+        "test": "phpunit --coverage-clover clover.xml --testdox",
+        "coverage": "phpunit --coverage-html coverage-report --testdox",
+        "analyse": "vendor/bin/phpstan analyse src -l8",
+        "all": "composer test && composer analyse && php-cs-fixer fix --diff --dry-run --rules=@PSR12 --show-progress=dots --stop-on-violation",
+        "fixer": "php-cs-fixer fix --diff --rules=@PSR12 --show-progress=dots",
+        "lint": "php-cs-fixer fix --diff --dry-run --rules=@PSR12"
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": false
+        }
+    }
+}
