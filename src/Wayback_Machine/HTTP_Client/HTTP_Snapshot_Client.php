@@ -81,8 +81,8 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	 */
 	public function get_latest_snapshot( string $url ): ?array {
 
-		// Strip any trailing slash from url.
-		$url = untrailingslashit( $url );
+		// Normalize the url.
+		$url = wpcomsp_wayback_link_fixer_normalize_url( $url );
 
 		$api_url = $this->get_base_url();
 
@@ -91,8 +91,13 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 
 		$url = apply_filters( 'wlf_get_latest_snapshot_url', $url, $api_url );
 
-		$response = wp_remote_get( $url );
-
+		$response = wp_remote_get(
+			$url,
+			array(
+				'timeout'   => apply_filters( 'wlf_get_latest_snapshot_timeout', 10 ),
+				'sslverify' => false,
+			)
+		);
 		return $this->extract_response( $response );
 	}
 
@@ -109,7 +114,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	public function get_closest_snapshot( string $url, \DateTime $date ): ?array {
 
 		// Strip any trailing slash from url.
-		$url = untrailingslashit( $url );
+		$url = wpcomsp_wayback_link_fixer_normalize_url( $url );
 
 		$api_url = $this->get_base_url();
 
@@ -122,7 +127,13 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		// Allow the url to be filtered.
 		$api_url = apply_filters( 'wlf_get_closest_snapshot_url', $api_url, $url, $date );
 
-		$response = wp_remote_get( $api_url );
+		$response = wp_remote_get(
+			$api_url,
+			array(
+				'timeout'   => apply_filters( 'wlf_get_closest_snapshot_timeout', 10 ),
+				'sslverify' => false,
+			)
+		);
 
 		return $this->extract_response( $response );
 	}
@@ -143,7 +154,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	public function create_snapshot( string $url ): string {
 
 		// Strip any trailing slash from url.
-		$url = untrailingslashit( $url );
+		$url = wpcomsp_wayback_link_fixer_normalize_url( $url );
 
 		$base_url = 'https://web.archive.org/save/';
 
@@ -154,7 +165,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$response = wp_remote_post(
 			esc_url( $snapshot_url ),
 			array(
-				'timeout'   => 10000,
+				'timeout'   => apply_filters( 'wlf_create_snapshot_timeout', 1000 ),
 				'body'      => array( 'url' => $url ),
 				'sslverify' => false,
 				'headers'   => $this->get_headers(),
