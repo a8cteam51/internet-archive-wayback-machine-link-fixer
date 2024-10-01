@@ -86,7 +86,7 @@ class Find_Or_Create_Snapshot_Event {
 		}
 
 		// Get the links latest snapshot.
-		$snapshot = $this->wayback_machine->get_latest_snapshot( wpcomsp_wayback_link_fixer_normalize_url( $link->get_href() ) );
+		$snapshot = $this->wayback_machine->get_latest_snapshot( $link->get_href() );
 
 		// If we have no snapshot, create one.
 		if ( null === $snapshot ) {
@@ -97,7 +97,7 @@ class Find_Or_Create_Snapshot_Event {
 		$link->set_archived_href( $snapshot['url'] );
 
 		// Get the current link status.
-		$status = $this->wayback_machine->check_single( wpcomsp_wayback_link_fixer_normalize_url( $link->get_href() ) );
+		$status = $this->wayback_machine->check_single( $link->get_href() );
 
 		// Add to the link.
 		$link->add_check( $status );
