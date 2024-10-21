@@ -73,4 +73,13 @@ interface Snapshot_Client {
 	 * @throws Exception If the service is offline or the response is invalid.
 	 */
 	public function get_snapshot_status( string $ref_code ): array;
+
+	/**
+	 * Checks if the service is online.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public function is_online(): bool;
 }

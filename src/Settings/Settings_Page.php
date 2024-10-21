@@ -130,6 +130,7 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_page(): void {
+		wpcomsp_wayback_link_fixer_render_wayback_offline_notice();
 		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
 		echo '<form action="options.php" method="post">';
 

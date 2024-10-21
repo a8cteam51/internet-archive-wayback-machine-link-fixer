@@ -65,6 +65,15 @@ class Link_New_Snapshot_Action {
 			);
 		}
 
+		// If the service is offline, we can't check the link.
+		if ( ! $this->wayback_machine->is_online() ) {
+			return array(
+				'link'    => null,
+				'job_id'  => null,
+				'message' => __( 'Service is offline.', 'wpcomsp_wayback_link_fixer' ),
+			);
+		}
+
 		// If we have an internet archive link, we don't need to check it.
 		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
 			return array(

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
 /**
  * The report page.
@@ -92,6 +93,31 @@ class Report_Page {
 
 		// Add the screen options.
 		add_action( "load-$hook", array( $this, 'register_screen_options' ) );
+
+		// Toggle bulk actions.
+		add_filter( 'bulk_actions-' . $hook, array( $this, 'add_bulk_actions' ) );
+	}
+
+	/**
+	 * Add the bulk actions.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param array $actions The current actions.
+	 *
+	 * @return array
+	 */
+	public function add_bulk_actions( array $actions ): array {
+		$is_online = Settings::is_archive_api_online();
+		// If the API is not online, make all options disabled.
+		if ( ! $is_online ) {
+			$actions = array(
+				'no-op' => __( 'API Offline, options disabled', 'wpcomsp_wayback_link_fixer' ),
+			);
+			return $actions;
+		}
+
+		return $actions;
 	}
 
 	/**
@@ -152,6 +178,7 @@ class Report_Page {
 
 		// Render any notices.
 		$table->render_notices();
+		wpcomsp_wayback_link_fixer_render_wayback_offline_notice();
 		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
 
 		echo '<div class="wrap">';

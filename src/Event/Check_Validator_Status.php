@@ -72,15 +72,16 @@ class Check_Validator_Status {
 	/**
 	 * Add event to the queue.
 	 *
-	 * @param integer $link_id The link ID.
-	 * @param string  $job_id  The job ID.
-	 * @param integer $attempt The attempt number.
+	 * @param integer      $link_id The link ID.
+	 * @param string       $job_id  The job ID.
+	 * @param integer      $attempt The attempt number.
+	 * @param integer|null $delay   The delay in seconds.
 	 *
 	 * @return void
 	 */
-	public static function add_to_queue( int $link_id, string $job_id, int $attempt = 0 ): void {
+	public static function add_to_queue( int $link_id, string $job_id, int $attempt = 0, ?int $delay = null ): void {
 		// Get the time to call this.
-		$time = \time() + self::get_interval();
+		$time = \time() + $delay ?? self::get_interval();
 
 		// Add the event to the queue.
 		\as_schedule_single_action(
@@ -109,6 +110,12 @@ class Check_Validator_Status {
 		// If the attempt is equal to or greater than the max attempts, return early.
 		if ( $attempt >= $this->attempts ) {
 			throw new \Exception( esc_html( "Max attempts reached for id:{$link_id}" ) );
+		}
+
+		// If the service is offline, try again in 1 hour.
+		if ( ! $this->wayback_machine->is_online() ) {
+			self::add_to_queue( $link_id, $job_id, $attempt, \HOUR_IN_SECONDS );
+			throw new \Exception( esc_html( 'Service is offline, trying again in 1 hour.' ) );
 		}
 
 		try {

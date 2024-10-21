@@ -205,6 +205,14 @@ class Report_Table extends \WP_List_Table {
 				$this->redirect_after_action();
 				break;
 
+			case 'no-op':
+				$this->notices[] = array(
+					'message' => __( 'No action selected, are services offline?', 'wpcomsp_wayback_link_fixer' ),
+					'type'    => 'error',
+				);
+				$this->redirect_after_action();
+				break;
+
 			default:
 				// Generate an error notification unknown action.
 				$this->notices[] = array(

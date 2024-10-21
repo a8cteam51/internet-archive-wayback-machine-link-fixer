@@ -334,4 +334,38 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 
 		return $return;
 	}
+
+	/**
+	 * Checks if the service is online.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public function is_online(): bool {
+		// Call the check status endpoint.
+		try {
+			$response = wp_remote_get(
+				'https://web.archive.org/save/status/wlf-status-check',
+				array(
+					'timeout'   => apply_filters( 'wlf_is_online_timeout', 10 ),
+					'sslverify' => false,
+				)
+			);
+		} catch ( \Throwable $th ) {
+			return false;
+		}
+
+		// If we have a 503 or 404 response, the service is offline.
+		if ( 503 === wp_remote_retrieve_response_code( $response ) || 404 === wp_remote_retrieve_response_code( $response ) ) {
+			return false;
+		}
+
+		// If the response is a WP Error, the service is offline.
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+
+		return true;
+	}
 }
