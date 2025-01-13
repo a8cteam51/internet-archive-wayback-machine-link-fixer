@@ -15,6 +15,9 @@ Welcome to **WayBack Link Fixer**, a powerful tool designed to enhance your Word
 
 ## Installation
 
+**[Download the latest release](https://github.com/a8cteam51/wayback-link-fixer/releases/latest/download/wayback-link-fixer.zip)**
+
+
 ### Via WP Admin Dashboard
 
 1. Upload the archive using the WordPress plugin uploader.
