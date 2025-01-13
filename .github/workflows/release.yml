@@ -1,0 +1,56 @@
+name: Create release
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # Set up PHP environment
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2 # Specify your PHP version
+          tools: composer
+
+      # Install production dependencies
+      - name: Install Composer Dependencies
+        run: composer update --no-dev -o
+
+      # Zip the folder excluding unwanted files
+      - name: Zip Folder
+        run: |
+          zip -r ${{ github.event.repository.name }}.zip . \
+          -x "composer.json" \
+            "composer.lock" \
+            "coverage/*" \
+            "coverage-report/*" \
+            ".editorconfig" \
+            ".git/*" \
+            ".github/*" \
+            ".gitignore" \
+            "index.php" \
+            "node_modules/*" \
+            "package.json" \
+            "package-lock.json" \
+            ".phpcs.xml" \
+            ".php-scoper.inc.php" \
+            ".phpunit.result.cache" \
+            "phpunit.xml.dist" \
+            "postcss.config.js" \
+            "tests/*" \
+            ".vscode/*"
+
+      - name:  Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ${{ github.event.repository.name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
