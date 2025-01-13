@@ -21,7 +21,7 @@ jobs:
 
       # Install production dependencies
       - name: Install Composer Dependencies
-        run: composer update --no-dev -o
+        run: composer install --ignore-platform-reqs --no-interaction --no-dev -o
 
       # Zip the folder excluding unwanted files
       - name: Zip Folder
@@ -37,6 +37,7 @@ jobs:
             ".gitignore" \
             "index.php" \
             "node_modules/*" \
+            "models/*" \
             "package.json" \
             "package-lock.json" \
             ".phpcs.xml" \
