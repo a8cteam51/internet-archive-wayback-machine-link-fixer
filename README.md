@@ -78,6 +78,13 @@ You can use this plugin without an API key, but you will be limited to 200 new s
 
 You can use this setting to choose how the plugin should handle broken links. Either do nothing or replace the broken link with the archived version (if available).
 
+### Internet Archive Status
+
+Following the 2024 incident, we have added some checks that run routinely to check if the Internet Archive is still running. If it is not, the plugin will not be able to create new snapshots or check the status of existing links. Any pending checks or links to be created, will be delayed but should still run later onces things are back up an running.
+
+You can tell when things of offline with the following notice 
+![image](./_docs/ia-offline.png)
+
 ## Links 
 
 Every link which is scanned, is added to the Link Table, this can be accessed under `Links` in the `Tools` menu.
@@ -477,13 +484,13 @@ add_filter( 'wlf_get_closest_snapshot_url', function( string $base_url, string $
 });
 ```
 
-#### `wlf_create_snapshot_url`
+#### `wlf_archive_api_status_duration`
 
-This is the base url used when creating a snapshot of a link. This is done as a POST request, with the URL passed as a body parameter.
+This set how long the wait should be between checking the status of the archive API. The default is 1 hour.
 
 ```php
-add_filter( 'wlf_create_snapshot_url', function( string $url ): string {
-	return 'https://my-custom-snapshot-creator.com';
+add_filter( 'wlf_archive_api_status_duration', function( int $url ): int {
+	return 30 * \MINUTE_IN_SECONDS; // 30 minutes
 });
 ```
 
