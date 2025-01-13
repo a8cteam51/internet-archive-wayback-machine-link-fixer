@@ -13,6 +13,8 @@ return array(
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Validate_Link_Action' => $baseDir . '/src/Action/Validate_Link_Action.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Ajax\\Ajax_Controller' => $baseDir . '/src/Ajax/Ajax_Controller.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Ajax\\Link_Check_Ajax' => $baseDir . '/src/Ajax/Link_Check_Ajax.php',
+    'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Dashboard\\Dashboard_Notifications' => $baseDir . '/src/Dashboard/Dashboard_Notifications.php',
+    'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Archive_Services_Online_Event' => $baseDir . '/src/Event/Check_Archive_Services_Online_Event.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Snapshot_Status_Event' => $baseDir . '/src/Event/Check_Snapshot_Status_Event.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Validator_Status' => $baseDir . '/src/Event/Check_Validator_Status.php',
     'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Create_New_Snapshot_Event' => $baseDir . '/src/Event/Create_New_Snapshot_Event.php',

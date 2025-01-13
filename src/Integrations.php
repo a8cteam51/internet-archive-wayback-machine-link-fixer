@@ -3,8 +3,8 @@
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Ajax_Controller;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Dashboard_Notifications;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event_Controller;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Handler;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Table_Controller;
@@ -25,6 +25,7 @@ final class Integrations {
 	private $ajax_controller;
 	private $wp_post_table_controller;
 	private $report_page;
+	private $dashboard_notification;
 
 	/**
 	 * Creates a new instance of the integrations component.
@@ -36,6 +37,7 @@ final class Integrations {
 		$this->ajax_controller          = new Ajax_Controller();
 		$this->wp_post_table_controller = new WP_Post_Table_Controller();
 		$this->report_page              = new Report\Report_Page();
+		$this->dashboard_notification   = new Dashboard_Notifications();
 	}
 
 
@@ -58,6 +60,7 @@ final class Integrations {
 		$this->ajax_controller->initialize();
 		$this->wp_post_table_controller->initialize();
 		$this->report_page->initialize();
+		$this->dashboard_notification->initialize();
 	}
 
 	// endregion

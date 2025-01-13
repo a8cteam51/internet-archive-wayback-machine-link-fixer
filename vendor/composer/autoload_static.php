@@ -33,6 +33,8 @@ class ComposerStaticInitb57c7e2cae7cf2fdb5357c49c51d45f5
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Action\\Validate_Link_Action' => __DIR__ . '/../..' . '/src/Action/Validate_Link_Action.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Ajax\\Ajax_Controller' => __DIR__ . '/../..' . '/src/Ajax/Ajax_Controller.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Ajax\\Link_Check_Ajax' => __DIR__ . '/../..' . '/src/Ajax/Link_Check_Ajax.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Dashboard\\Dashboard_Notifications' => __DIR__ . '/../..' . '/src/Dashboard/Dashboard_Notifications.php',
+        'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Archive_Services_Online_Event' => __DIR__ . '/../..' . '/src/Event/Check_Archive_Services_Online_Event.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Snapshot_Status_Event' => __DIR__ . '/../..' . '/src/Event/Check_Snapshot_Status_Event.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Check_Validator_Status' => __DIR__ . '/../..' . '/src/Event/Check_Validator_Status.php',
         'WPCOMSpecialProjects\\Wayback_Link_Fixer\\Event\\Create_New_Snapshot_Event' => __DIR__ . '/../..' . '/src/Event/Create_New_Snapshot_Event.php',

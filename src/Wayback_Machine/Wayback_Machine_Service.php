@@ -142,4 +142,19 @@ class Wayback_Machine_Service {
 	public function get_snapshot_status( string $ref_code ): array {
 		return $this->snapshot_client->get_snapshot_status( $ref_code );
 	}
+
+	/**
+	 * Check if the services are online.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return array{snapshot:boolean, link_checker:boolean}
+	 */
+	public function is_online(): array {
+		// Only return true if both services are online.
+		return array(
+			'snapshot'     => $this->snapshot_client->is_online(),
+			'link_checker' => $this->link_checker_client->is_online(),
+		);
+	}
 }

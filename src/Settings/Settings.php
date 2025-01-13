@@ -9,6 +9,7 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Archive_Services_Online_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Abstract_Migration;
 
 defined( 'ABSPATH' ) || exit;
@@ -31,6 +32,7 @@ class Settings {
 	public const ARCHIVE_ORG_SECRET_KEY       = self::SETTINGS_PREFIX . 'archive_api_key';
 	public const ARCHIVE_ORG_ACCESS_KEY       = self::SETTINGS_PREFIX . 'archive_api_secret';
 	public const FIXER_OPTION                 = self::SETTINGS_PREFIX . 'fixer_option';
+	public const ARCHIVE_ORG_STATUS_KEY       = self::SETTINGS_PREFIX . 'archive_api_status';
 
 	// Table names.
 	public const LINK_TABLE = self::SETTINGS_PREFIX . 'link_archive';
@@ -230,5 +232,75 @@ class Settings {
 	 */
 	public static function get_fixer_option(): string {
 		return esc_attr( get_option( self::FIXER_OPTION, self::FIXER_OPTION_REPLACE_LINK ) );
+	}
+
+	/**
+	 * Checks if the archive.org API is online.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function is_archive_api_online(): bool {
+		// Get the transient.
+		$status = get_transient( self::ARCHIVE_ORG_STATUS_KEY );
+
+		// If not set, trigger a check.
+		if ( false === $status ) {
+			Check_Archive_Services_Online_Event::add_to_queue();
+			return false;
+		}
+
+		// If the status is not an array or doesnt have the status keu, trigger a check.
+		if ( ! is_array( $status ) || ! isset( $status['status'] ) ) {
+			Check_Archive_Services_Online_Event::add_to_queue();
+			return false;
+		}
+
+		// Return the status.
+		return 'online' === $status['status'];
+	}
+
+	/**
+	 * Update the current online status of the archive.org API.
+	 *
+	 * @param boolean $link_checker_status The status of the link checker.
+	 * @param boolean $snapshot_status     The status of the snapshot service.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return void
+	 */
+	public static function update_archive_api_status( bool $link_checker_status, bool $snapshot_status ): void {
+		$status = array(
+			'link_checker' => $link_checker_status,
+			'snapshot'     => $snapshot_status,
+			'status'       => $link_checker_status && $snapshot_status ? 'online' : 'offline',
+			'last-checked' => \gmdate( 'Y-m-d H:i:s' ),
+		);
+
+		$duration = apply_filters( 'wlf_archive_api_status_duration', \HOUR_IN_SECONDS );
+
+		// Set the transient.
+		set_transient( self::ARCHIVE_ORG_STATUS_KEY, $status, $duration );
+	}
+
+	/**
+	 * Get the archive api extended status.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return array|null
+	 */
+	public static function get_archive_api_status(): ?array {
+		$status = get_transient( self::ARCHIVE_ORG_STATUS_KEY );
+
+		// If we dont have a status, trigger a check.
+		if ( false === $status ) {
+			Check_Archive_Services_Online_Event::add_to_queue();
+			return null;
+		}
+
+		return is_array( $status ) ? $status : null;
 	}
 }
