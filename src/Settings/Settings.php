@@ -9,6 +9,7 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Archive_Services_Online_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Abstract_Migration;
 
 defined( 'ABSPATH' ) || exit;
@@ -19,39 +20,56 @@ defined( 'ABSPATH' ) || exit;
 class Settings {
 
 	// Prefix.
-	private const SETTINGS_PREFIX = 't51_wlf_';
+	public const SETTINGS_PREFIX = 't51_wlf_';
+
 
 	// Option keys
-	public const POST_TYPES_OPTION_KEY        = self::SETTINGS_PREFIX . 'post_types';
-	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
+	public const ALLOWED_POST_TYPES           = self::SETTINGS_PREFIX . 'post_types';
 	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
-	public const LINK_CHECKER_TIMEOUT         = self::SETTINGS_PREFIX . 'link_checker_timeout';
-	public const HTTP_STATUS_CODES            = self::SETTINGS_PREFIX . 'http_status_codes';
-	public const LINK_CACHE_EXPIRATION        = self::SETTINGS_PREFIX . 'link_cache_expiration';
+	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
 	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
-	public const EVENT_POSTS_PER_BATCH        = self::SETTINGS_PREFIX . 'async_posts_per_batch';
+	public const SCAN_EXISTING_POSTS          = self::SETTINGS_PREFIX . 'scan_existing_posts';
+	public const ARCHIVE_ORG_SECRET_KEY       = self::SETTINGS_PREFIX . 'archive_api_key';
+	public const ARCHIVE_ORG_ACCESS_KEY       = self::SETTINGS_PREFIX . 'archive_api_secret';
+	public const FIXER_OPTION                 = self::SETTINGS_PREFIX . 'fixer_option';
+	public const ARCHIVE_ORG_STATUS_KEY       = self::SETTINGS_PREFIX . 'archive_api_status';
 
-	## Table names.
+	// Table names.
+	public const LINK_TABLE = self::SETTINGS_PREFIX . 'link_archive';
+
+	// LEGACY TABLE NAME, TO REMOVE.
 	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
 	public const SCAN_REPORT_TABLE_NAME = self::SETTINGS_PREFIX . 'scan_report';
 	public const SCAN_LINK_CACHE_TABLE  = self::SETTINGS_PREFIX . 'scan_link_cache';
 
-	## Events
-	public const RUNNER_EVENT = self::SETTINGS_PREFIX . 'event_runner';
+	// Meta Keys
+	public const LINK_META_KEY = self::SETTINGS_PREFIX . 'links';
 
+	// Fixer Options
+	public const FIXER_OPTION_DO_NOTHING   = 'do_nothing';
+	public const FIXER_OPTION_REPLACE_LINK = 'replace_link';
+
+	/**
+	 * Gets the link table name.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string
+	 */
+	public static function get_link_table_name(): string {
+		global $wpdb;
+		return $wpdb->prefix . self::LINK_TABLE;
+	}
 
 	/**
 	 * Get all post types which should be scanned.
 	 *
 	 * @since   1.0.0
-	 * @version 1.0.0
 	 *
 	 * @return  string[]
 	 */
-	public static function get_post_types(): array {
-		return \is_multisite()
-			? array_map( 'esc_html', (array) \get_site_option( self::POST_TYPES_OPTION_KEY, array( 'page', 'post' ) ) )
-			: array_map( 'esc_html', (array) get_option( self::POST_TYPES_OPTION_KEY, array( 'page', 'post' ) ) );
+	public static function get_allowed_post_types(): array {
+		return array_map( 'esc_html', (array) get_option( self::ALLOWED_POST_TYPES, array( 'page', 'post' ) ) );
 	}
 
 	/**
@@ -62,9 +80,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function drop_tables_on_uninstall(): bool {
-		return \is_multisite()
-			? (bool) get_site_option( self::DROP_TABLES_ON_UNINSTALL_KEY, false )
-			: (bool) get_option( self::DROP_TABLES_ON_UNINSTALL_KEY, false );
+		return (bool) get_option( self::DROP_TABLES_ON_UNINSTALL_KEY, false );
 	}
 
 	/**
@@ -75,9 +91,7 @@ class Settings {
 	 * @return class-string<Abstract_Migration>[]
 	 */
 	public static function migrations(): array {
-		return \is_multisite()
-			? (array) get_site_option( self::MIGRATIONS_KEY, array() )
-			: (array) get_option( self::MIGRATIONS_KEY, array() );
+		return (array) get_option( self::MIGRATIONS_KEY, array() );
 	}
 
 	/**
@@ -90,11 +104,7 @@ class Settings {
 	 * @return void
 	 */
 	public static function update_migrations( array $migrations ): void {
-		if ( \is_multisite() ) {
-			update_site_option( self::MIGRATIONS_KEY, $migrations );
-		} else {
-			update_option( self::MIGRATIONS_KEY, $migrations, false );
-		}
+		update_option( self::MIGRATIONS_KEY, $migrations, false );
 	}
 
 	/**
@@ -105,36 +115,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_checker_timeout(): int {
-		return \is_multisite()
-			? absint( get_site_option( self::LINK_CHECKER_TIMEOUT, 1000 ) )
-			: absint( get_option( self::LINK_CHECKER_TIMEOUT, 1000 ) );
-	}
-
-	/**
-	 * Gets the list of all HTTP status to look for.
-	 * As comma separated string.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string
-	 */
-	public static function get_http_status_codes(): string {
-		return \is_multisite()
-			? sanitize_text_field( (string) get_site_option( self::HTTP_STATUS_CODES, '404,410,500,502,300,301,303' ) )
-			: sanitize_text_field( (string) get_option( self::HTTP_STATUS_CODES, '404,410,500,502,300,301,303' ) );
-	}
-
-	/**
-	 * Get the link cache expiry (in seconds.)
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return integer
-	 */
-	public static function get_link_cache_expiration(): int {
-		return \is_multisite()
-			? absint( get_site_option( self::LINK_CACHE_EXPIRATION, DAY_IN_SECONDS ) )
-			: absint( get_option( self::LINK_CACHE_EXPIRATION, DAY_IN_SECONDS ) );
+		return absint( apply_filters( 'wlf_link_checker_timeout', 5000 ) );
 	}
 
 	/**
@@ -145,9 +126,7 @@ class Settings {
 	 * @return string[]
 	 */
 	public static function get_link_exclusions(): array {
-		$links = \is_multisite()
-			? array_map( 'esc_html', (array) get_site_option( self::LINK_EXCLUSIONS, array() ) )
-			: array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
+		$links = array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
 		return apply_filters( 'wlf_link_exclusions', $links );
 	}
 
@@ -159,8 +138,169 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_posts_per_batch(): int {
-		return \is_multisite()
-			? absint( get_site_option( self::EVENT_POSTS_PER_BATCH, 10 ) )
-			: absint( get_option( self::EVENT_POSTS_PER_BATCH, 10 ) );
+		$per_batch = absint( apply_filters( 'wlf_posts_per_batch', 10 ) );
+
+		// If value is less than or equal to 1, set as 2.
+		return $per_batch <= 1 ? 2 : $per_batch;
+	}
+
+	/**
+	 * Get the link check duration.
+	 * In days
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return integer
+	 */
+	public static function get_link_check_duration(): int {
+		return absint( apply_filters( 'wlf_link_check_duration_in_days', 7 ) );
+	}
+
+	/**
+	 * Which HTTP Status codes are treated as valid.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return integer[]
+	 */
+	public static function get_valid_http_status_codes(): array {
+		$codes = array( 200, 206, 429 );
+		return (array) apply_filters( 'wlf_valid_http_status_codes', $codes );
+	}
+
+	/**
+	 * Should existing posts be scanned?
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return boolean
+	 */
+	public static function should_scan_existing_posts(): bool {
+		return (bool) get_option( self::SCAN_EXISTING_POSTS, true );
+	}
+
+	/**
+	 * How many times does a link need to be invalid before considered broken.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return integer
+	 */
+	public static function get_failed_count(): int {
+		return absint( apply_filters( 'wlf_failed_count', 5 ) );
+	}
+
+	/**
+	 * Get the archive.org API key.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string
+	 */
+	public static function get_archive_api_key(): string {
+		return esc_attr( get_option( self::ARCHIVE_ORG_SECRET_KEY, '' ) );
+	}
+
+	/**
+	 * Get the archive.org API secret.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string
+	 */
+	public static function get_archive_access_key(): string {
+		return esc_attr( get_option( self::ARCHIVE_ORG_ACCESS_KEY, '' ) );
+	}
+
+	/**
+	 * Checks if the archive.org API is configured.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function is_archive_api_configured(): bool {
+		return '' !== self::get_archive_api_key() && '' !== self::get_archive_access_key();
+	}
+
+	/**
+	 * Gets the current fixer option.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string
+	 */
+	public static function get_fixer_option(): string {
+		return esc_attr( get_option( self::FIXER_OPTION, self::FIXER_OPTION_REPLACE_LINK ) );
+	}
+
+	/**
+	 * Checks if the archive.org API is online.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function is_archive_api_online(): bool {
+		// Get the transient.
+		$status = get_transient( self::ARCHIVE_ORG_STATUS_KEY );
+
+		// If not set, trigger a check.
+		if ( false === $status ) {
+			Check_Archive_Services_Online_Event::add_to_queue();
+			return false;
+		}
+
+		// If the status is not an array or doesnt have the status keu, trigger a check.
+		if ( ! is_array( $status ) || ! isset( $status['status'] ) ) {
+			Check_Archive_Services_Online_Event::add_to_queue();
+			return false;
+		}
+
+		// Return the status.
+		return 'online' === $status['status'];
+	}
+
+	/**
+	 * Update the current online status of the archive.org API.
+	 *
+	 * @param boolean $link_checker_status The status of the link checker.
+	 * @param boolean $snapshot_status     The status of the snapshot service.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return void
+	 */
+	public static function update_archive_api_status( bool $link_checker_status, bool $snapshot_status ): void {
+		$status = array(
+			'link_checker' => $link_checker_status,
+			'snapshot'     => $snapshot_status,
+			'status'       => $link_checker_status && $snapshot_status ? 'online' : 'offline',
+			'last-checked' => \gmdate( 'Y-m-d H:i:s' ),
+		);
+
+		$duration = apply_filters( 'wlf_archive_api_status_duration', \HOUR_IN_SECONDS );
+
+		// Set the transient.
+		set_transient( self::ARCHIVE_ORG_STATUS_KEY, $status, $duration );
+	}
+
+	/**
+	 * Get the archive api extended status.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return array|null
+	 */
+	public static function get_archive_api_status(): ?array {
+		$status = get_transient( self::ARCHIVE_ORG_STATUS_KEY );
+
+		// If we dont have a status, trigger a check.
+		if ( false === $status ) {
+			Check_Archive_Services_Online_Event::add_to_queue();
+			return null;
+		}
+
+		return is_array( $status ) ? $status : null;
 	}
 }

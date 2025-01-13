@@ -3,8 +3,12 @@
 defined( 'ABSPATH' ) || exit;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Plugin;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Link_Checker_Client;
 
 // region
 
@@ -58,6 +62,42 @@ function wpcomsp_wayback_link_fixer_get_plugin_slug(): string {
 }
 
 /**
+ * Escape a HTTP status code.
+ *
+ * @since 1.0.0
+ *
+ * @param integer|string $code The status code.
+ *
+ * @return integer|null
+ */
+function wpcomsp_wayback_link_fixer_escape_http_status_code( $code ): ?int {
+	$code = absint( (int) $code );
+	return $code > 0 ? $code : null;
+}
+
+/**
+ * Gets the current Snapshot Client.
+ *
+ * @since 1.2.0
+ *
+ * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client
+ */
+function wpcomsp_wayback_link_fixer_get_snapshot_client(): Snapshot_Client {
+	return apply_filters( 'wlf_snapshot_client', new HTTP_Snapshot_Client() );
+}
+
+/**
+ * Gets the current Link Checker Client.
+ *
+ * @since 1.2.0
+ *
+ * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client
+ */
+function wpcomsp_wayback_link_fixer_get_link_checker_client(): Link_Checker_Client {
+	return apply_filters( 'wlf_link_checker_client', new HTTP_Link_Checker_Client() );
+}
+
+/**
  * Render a template with args.
  *
  * @since 1.0.0
@@ -105,265 +145,216 @@ function wpcomsp_wayback_link_fixer_render_template( string $template, array $ar
 	}
 }
 
-/**
- * Get the user name of the report creator.
- *
- * @since 1.0.0
- *
- * @param \WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report $report The report.
- *
- * @return string
- */
-function wpcomsp_wayback_link_fixer_get_report_author( Report $report ): string {
-	$user_id = $report->get_user_id();
-	$user    = get_userdata( $user_id );
-	return $user && $user->display_name ? $user->display_name : __( 'User not found', 'wpcomsp_wayback_link_fixer' );
-}
+
 
 /**
- * Get the name of a staus code.
+ * Enqueue select2 assets.
  *
- * @since 1.0.0
+ * @since 1.1.0
  *
- * @param integer $code The status code.
- *
- * @return string
- */
-function wpcomsp_wayback_link_fixer_get_status_code_name( int $code ): string {
-	switch ( $code ) {
-		case 100:
-			$text = __( 'Continue', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 101:
-			$text = __( 'Switching Protocols', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 200:
-			$text = __( 'OK', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 201:
-			$text = __( 'Created', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 202:
-			$text = __( 'Accepted', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 203:
-			$text = __( 'Non-Authoritative Information', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 204:
-			$text = __( 'No Content', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 205:
-			$text = __( 'Reset Content', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 206:
-			$text = __( 'Partial Content', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 300:
-			$text = __( 'Multiple Choices', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 301:
-			$text = __( 'Moved Permanently', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 302:
-			$text = __( 'Moved Temporarily', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 303:
-			$text = __( 'See Other', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 304:
-			$text = __( 'Not Modified', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 305:
-			$text = __( 'Use Proxy', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 400:
-			$text = __( 'Bad Request', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 401:
-			$text = __( 'Unauthorized', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 402:
-			$text = __( 'Payment Required', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 403:
-			$text = __( 'Forbidden', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 404:
-			$text = __( 'Not Found', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 405:
-			$text = __( 'Method Not Allowed', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 406:
-			$text = __( 'Not Acceptable', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 407:
-			$text = __( 'Proxy Authentication Required', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 408:
-			$text = __( 'Request Time-out', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 409:
-			$text = __( 'Conflict', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 410:
-			$text = __( 'Gone', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 411:
-			$text = __( 'Length Required', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 412:
-			$text = __( 'Precondition Failed', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 413:
-			$text = __( 'Request Entity Too Large', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 414:
-			$text = __( 'Request-URI Too Large', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 415:
-			$text = __( 'Unsupported Media Type', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 500:
-			$text = __( 'Internal Server Error', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 501:
-			$text = __( 'Not Implemented', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 502:
-			$text = __( 'Bad Gateway', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 503:
-			$text = __( 'Service Unavailable', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 504:
-			$text = __( 'Gateway Time-out', 'wpcomsp_wayback_link_fixer' );
-			break;
-		case 505:
-			$text = __( 'HTTP Version not supported', 'wpcomsp_wayback_link_fixer' );
-			break;
-		default:
-			$text = sprintf(
-				// translators: %d is the status code.
-				__( 'Unknown http status code "%d"', 'wpcomsp_wayback_link_fixer' ),
-				absint( $code )
-			);
-			break;
-	}
-		return $text;
-}
-
-/**
- * Generates the title with link for a post as part pf a log.
- *
- * @param integer $post_id The post id.
- * @param integer $blog_id The blog id.
- *
- * @return string The title with link.
- */
-function wpcomsp_wayback_link_fixer_get_log_post_title( int $post_id, int $blog_id ): string {
-
-	// Cache the current blog id.
-	$current_blog_id = get_current_blog_id();
-
-	// If a multisite, swtich to the blog.
-	if ( is_multisite() && $blog_id !== $current_blog_id ) {
-		switch_to_blog( $blog_id );
-	}
-	// If the post doesnt exist
-	if ( ! get_post_status( $post_id ) ) {
-		return esc_html__( 'Post Not Found', 'wpcomsp_wayback_link_fixer' );
-	}
-
-	$wlf_log_post_title = get_the_title( $post_id );
-	$link               = sprintf(
-		// translators: %1$s is the post url, %2$s is the post title, %3$d is the post id.
-		"<a href='%s'>%s (#%d)</a>",
-		esc_url( get_edit_post_link( $post_id ) ?? '#' ),
-		'' === $wlf_log_post_title ? esc_html__( 'No title', 'wpcomsp_wayback_link_fixer' ) : esc_html( $wlf_log_post_title ),
-		$post_id
-	);
-
-	// If a multisite, swtich back to the current blog.
-	if ( is_multisite() && $blog_id !== $current_blog_id ) {
-		switch_to_blog( $current_blog_id );
-	}
-
-	return $link;
-}
-
-/**
- * Renders an admin notice.
- *
- * @since 1.0.0
- *
- * @param string $message The message to display.
- * @param string $type    The type of notice. Can be error, warning, success or info.
+ * @param array<string> $deps The dependencies.
  *
  * @return void
  */
-function wpcomsp_wayback_link_fixer_render_admin_notice( string $message, string $type = 'error' ): void {
-	add_action(
-		'admin_notices',
-		function () use ( $message, $type ) {
-			printf(
-				'<div class="notice notice-%s is-dismissible"><p>%s</p></div>',
-				esc_attr( $type ),
-				esc_html( $message )
-			);
+function wpcomsp_wayback_link_fixer_enqueue_select2_assets( array $deps = array() ): void {
+	wp_enqueue_style( 'select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', $deps, '4.1.0-rc.0' );
+	wp_enqueue_script( 'select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', 'jquery', '4.1.0-rc.0', true );
+}
+
+/**
+ * Render the CSS used for archived links in the header.
+ *
+ * @since 1.1.0
+ *
+ * @return void
+ */
+function wpcomsp_wayback_link_fixer_render_archived_link_css(): void {
+	$css = <<<CSS
+		.wlf-archived__redirect{
+			    color: var(--wp--preset--color--primary) !important;
+    			padding: 0 8px;
+    			font-size: 75%;
 		}
+		.wlf-archived__redirect:hover {
+			color: #005f7b;
+		}
+}
+CSS;
+
+	// Filter the css.
+	$css = apply_filters( 'wlf_archived_link_css', $css );
+
+	echo '<style>' . $css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+/**
+ * Get image asset URL from filename.
+ *
+ * @since 1.2.0
+ *
+ * @param string $filename The filename.
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_get_image_asset_url( string $filename ): string {
+	return esc_url( WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/images/' . $filename );
+}
+
+/**
+ * Trims a string based on a defined length with a suffix.
+ *
+ * @since 1.2.0
+ *
+ * @param string  $text   The text to trim.
+ * @param integer $length The length to trim to.
+ * @param string  $suffix The suffix to append.
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_trim_string( string $text, int $length, string $suffix = '...' ): string {
+	if ( mb_strlen( $text ) <= $length ) {
+		return $text;
+	}
+
+	return mb_strimwidth( $text, 0, $length, $suffix );
+}
+
+/**
+ * Get the sites date/time format
+ *
+ * @since 1.2.0
+ *
+ * @return string
+ */
+function wpcomsp_wayback_link_fixer_get_date_format(): string {
+	return get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+}
+
+/**
+ * Renders the notice about not authenticated with the Wayback Machine.
+ *
+ * @since 1.3.0
+ *
+ * @return void
+ */
+function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
+	// If we have authentication details for the Wayback Machine, bail.
+	if ( Settings::is_archive_api_configured() ) {
+		return;
+	}
+
+	?>
+	<div class="notice notice-error">
+		<p>
+			<?php esc_html_e( 'You are using Link Fixer in unauthenticated mode, which restricts you to 200 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
+	</div>
+	<?php
+}
+
+/**
+ * Renders the notice about the Wayback Machine being offline.
+ *
+ * @since 1.3.0
+ *
+ * @return void
+ */
+function wpcomsp_wayback_link_fixer_render_wayback_offline_notice(): void {
+	// If the Wayback Machine is online, bail.
+	if ( Settings::is_archive_api_online() ) {
+		return;
+	}
+
+	?>
+	<div class="notice notice-error">
+		<p>
+			<?php esc_html_e( 'The Wayback Machine is currently offline. Please try again later.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
+	</div>
+	<?php
+}
+
+/**
+ * Checks if a link is already an internet archive link.
+ *
+ * @since 1.3.0
+ *
+ * @param string $url The URL to check.
+ *
+ * @return boolean
+ */
+function wpcomsp_wayback_link_fixer_is_archive_link( string $url ): bool {
+	$urls = array(
+		'https://web.archive.org/web/',
+		'http://web.archive.org/web/',
 	);
+
+	foreach ( $urls as $archive_url ) {
+		if ( 0 === strpos( $url, $archive_url ) ) {
+			return true;
+		}
+	}
+		return false;
 }
 
 /**
- * Get the name of a user for the select2 field.
+ * Normalize a URL.
  *
- * @since 1.0.0
+ * Will urldecode, remove trailing slashes, and lowercase the URL.
  *
- * @param \WP_User $user The user.
+ * @since 1.3.0
  *
- * @return string
- */
-function wpcomsp_wayback_link_fixer_get_user_name( WP_User $user ): string {
-	// Get the name.
-	$name = $user->display_name;
-
-	// If we have no name, show the username.
-	if ( ! $name ) {
-		$name = $user->user_login;
-	}
-
-	// If we have no username, show the email.
-	if ( ! $name ) {
-		$name = $user->user_email;
-	}
-
-	return $name;
-}
-
-/**
- * Get the name of a blog based on its id.
- *
- * @since 1.0.0
- *
- * @param integer $blog_id The blog id.
+ * @param string $url The URL to normalize.
  *
  * @return string
  */
-function wpcomsp_wayback_link_fixer_get_blog_name( int $blog_id ): string {
-	// If we are on the main site, return the site name.
-	if ( 1 === $blog_id ) {
-		return get_bloginfo( 'name' );
+function wpcomsp_wayback_link_fixer_normalize_url( string $url ): string {
+	$url = rtrim( $url, '/' );
+
+	// URL Encode the url parameters.
+	$url_parts = wp_parse_url( $url );
+
+	// If we have a pathm, encode it.
+	if ( isset( $url_parts['path'] ) ) {
+		// Split path by /
+		$path_parts        = explode( '/', $url_parts['path'] );
+		$path_parts        = array_map( 'rawurlencode', $path_parts );
+		$url_parts['path'] = implode( '/', $path_parts );
 	}
 
-	return get_blog_option( $blog_id, 'blogname' );
+	// If we have a query, encode it.
+	if ( isset( $url_parts['query'] ) ) {
+		$url_parts['query'] = rawurlencode( $url_parts['query'] );
+	}
+
+	// If we have a fragment, encode it.
+	if ( isset( $url_parts['fragment'] ) ) {
+		$url_parts['fragment'] = str_replace( '%21', '!', rawurlencode( $url_parts['fragment'] ) );
+	}
+
+	// Rebuild the scheme and host
+	$url  = isset( $url_parts['scheme'] ) ? $url_parts['scheme'] . '://' : '';
+	$url .= isset( $url_parts['host'] ) ? $url_parts['host'] : '';
+
+	// Add port if specified
+	if ( isset( $url_parts['port'] ) ) {
+		$url .= ':' . $url_parts['port'];
+	}
+
+	// Add the path
+	$url .= isset( $url_parts['path'] ) ? $url_parts['path'] : '';
+
+	// Add the query if present
+	if ( isset( $url_parts['query'] ) ) {
+		$url .= '?' . $url_parts['query'];
+	}
+
+	// Add the fragment if present
+	if ( isset( $url_parts['fragment'] ) ) {
+		$url .= '#' . $url_parts['fragment'];
+	}
+
+	return $url;
 }
-
-// endregion
-
-//region OTHERS
-
-require WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'includes/assets.php';
-require WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'includes/settings.php';
 
 // endregion

@@ -1,12 +1,13 @@
-# Created by https://www.toptal.com/developers/gitignore/api/macos,linux,windows,node,yarn,composer,phpstorm+all,visualstudiocode,sublimetext
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,linux,windows,node,yarn,composer,phpstorm+all,visualstudiocode,sublimetext
+### PHP Unit ##
+.phpunit.result.cache
+wordpress/
+tests/.env
 
-### Composer ###
-composer.phar
+# Do not track the project workspace for VSCode
+wayback-link-fixer.code-workspace
 
-# Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
-# You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
-# composer.lock
+# Created by https://www.toptal.com/developers/gitignore/api/node,yarn,linux,macos,windows,sublimetext,phpstorm+all,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=node,yarn,linux,macos,windows,sublimetext,phpstorm+all,visualstudiocode
 
 ### Linux ###
 *~
@@ -82,6 +83,12 @@ lib-cov
 coverage
 *.lcov
 
+# PHPUnit and Coverage
+coverage.xml
+wordpress
+coverage-report
+.phpunit.result.cache
+
 # nyc test coverage
 .nyc_output
 
@@ -137,6 +144,7 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
+tests/.env
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -318,21 +326,19 @@ bh_unicode_properties.cache
 GitHub.sublime-settings
 
 ### VisualStudioCode ###
-.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
-# Do not track the project workspace for VSCode
-wayback-link-fixer.code-workspace
 
 # Local History for Visual Studio Code
 .history/
 
 # Built Visual Studio Code Extensions
 *.vsix
+.vscode
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
@@ -382,4 +388,8 @@ $RECYCLE.BIN/
 # and uncomment the following lines
 # .pnp.*
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,linux,windows,node,yarn,composer,phpstorm+all,visualstudiocode,sublimetext
+# Custom
+pack
+wayback-link-fixer.zip
+
+# End of https://www.toptal.com/developers/gitignore/api/node,yarn,linux,macos,windows,sublimetext,phpstorm+all,visualstudiocode

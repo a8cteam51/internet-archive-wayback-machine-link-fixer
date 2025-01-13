@@ -1,0 +1,238 @@
+<?php
+
+/**
+ * Test Settings
+ *
+ * @since 1.2.0
+ *
+ * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings
+ */
+
+declare(strict_types=1);
+
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Settings;
+
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Abstract_Migration;
+
+class Test_Settings extends \WP_UnitTestCase {
+
+	/**
+	 * Clear all the options before each test.
+	 *
+	 * @return void
+	 */
+	public function setUp(): void {
+		parent::setUp();
+		delete_option( Settings::ALLOWED_POST_TYPES );
+		delete_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY );
+		delete_option( Settings::MIGRATIONS_KEY );
+		delete_option( Settings::LINK_EXCLUSIONS );
+		delete_option( Settings::SCAN_EXISTING_POSTS );
+		delete_option( Settings::FIXER_OPTION );
+	}
+
+	/**
+	 * @testdox It should be possible to get the link table name, prefixed with the WordPress table prefix.
+	 *
+	 * @return void
+	 */
+	public function test_can_get_link_table_name(): void {
+		$table_name = Settings::get_link_table_name();
+		$prefix     = $GLOBALS['wpdb']->prefix;
+
+		$this->assertStringStartsWith( $prefix, $table_name );
+		$this->assertStringEndsWith( Settings::LINK_TABLE, $table_name );
+	}
+
+	/**
+	 * @testdox It should be possible to get the allowed post types.
+	 *
+	 * @return void
+	 */
+	public function test_can_get_allowed_post_types(): void {
+		// Set the allowed post types.
+		$allowed_post_types = array( 'post', 'page', 'other' );
+		update_option( Settings::ALLOWED_POST_TYPES, $allowed_post_types );
+
+		$this->assertEquals( $allowed_post_types, Settings::get_allowed_post_types() );
+	}
+
+	/**
+	 * @testdox It should be possible to set if the tables should be dropped or not.
+	 *
+	 * @return void
+	 */
+	public function test_can_set_drop_tables_on_uninstall(): void {
+		update_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY, false );
+		$this->assertFalse( Settings::drop_tables_on_uninstall() );
+		update_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY, true );
+		$this->assertTrue( Settings::drop_tables_on_uninstall() );
+	}
+
+	/**
+	 * @testdox It should be possible to set and get the migrations.
+	 *
+	 * @return void
+	 */
+	public function test_can_set_and_get_migrations(): void {
+		$migration_1 = $this->createMock( Abstract_Migration::class );
+		$migration_2 = $this->createMock( Abstract_Migration::class );
+		$migrations  = array( $migration_1::class, $migration_2::class );
+		Settings::update_migrations( $migrations );
+		$this->assertEquals( $migrations, Settings::migrations() );
+	}
+
+	/**
+	 * @testdox It should be possible to get the link checker timeout in seconds and control this via a filter.
+	 *
+	 * @return void
+	 */
+	public function test_can_get_link_checker_timeout(): void {
+		add_filter(
+			'wlf_link_checker_timeout',
+			function () {
+				return 20;
+			}
+		);
+
+		$timeout = Settings::get_link_checker_timeout();
+		$this->assertEquals( 20, $timeout );
+
+		// Clean up.
+		remove_all_filters( 'wlf_link_checker_timeout' );
+	}
+
+	/**
+	 * @testdox It should be possible to get all excluded links from the database.
+	 *
+	 * @return void
+	 */
+	public function test_can_get_excluded_links(): void {
+		$excluded_links = array(
+			'https://example.com/1',
+			'https://example.com/2',
+			'https://example.com/3',
+		);
+
+		// Set the excluded links.
+		update_option( Settings::LINK_EXCLUSIONS, $excluded_links );
+
+		$this->assertEquals( $excluded_links, Settings::get_link_exclusions() );
+	}
+
+	/**
+	 * @testdox It should be possible to add links to the exclusion list via a filter, to ensure some can not be removed.
+	 *
+	 * @return void
+	 */
+	public function test_can_add_links_to_exclusion_list_via_filter(): void {
+		add_filter(
+			'wlf_link_exclusions',
+			function ( array $links ) {
+				$links[] = 'https://example.com/4';
+				return $links;
+			}
+		);
+
+		$this->assertEquals( array( 'https://example.com/4' ), Settings::get_link_exclusions() );
+
+		// Clean up.
+		remove_all_filters( 'wlf_link_exclusions' );
+	}
+
+	/**
+	 * @testdox It should be possible to change how many posts are processed per batch via a filter
+	 *
+	 * @return void
+	 */
+	public function test_can_change_posts_per_batch_via_filter(): void {
+
+		// By default, the posts per batch is 10.
+		$this->assertEquals( 10, Settings::get_posts_per_batch() );
+
+		add_filter(
+			'wlf_posts_per_batch',
+			function () {
+				return 5;
+			}
+		);
+
+		$this->assertEquals( 5, Settings::get_posts_per_batch() );
+
+		// Clean up.
+		remove_all_filters( 'wlf_posts_per_batch' );
+	}
+
+	/**
+	 * @testdox It should be possible to change the duration between link checks via a filter.
+	 *
+	 * @return void
+	 */
+	public function test_can_change_link_check_duration_via_filter(): void {
+		// By default, the link check duration is 7 day.
+		$this->assertEquals( 7, Settings::get_link_check_duration() );
+
+		add_filter(
+			'wlf_link_check_duration_in_days',
+			function () {
+				return 2;
+			}
+		);
+
+		$this->assertEquals( 2, Settings::get_link_check_duration() );
+
+		// Clean up.
+		remove_all_filters( 'wlf_link_check_duration_in_days' );
+	}
+
+	/**
+	 * @testdox It should be possible to change the http status codes which are treated as OK via a filter.
+	 *
+	 * @return void
+	 */
+	public function test_can_change_valid_http_status_codes_via_filter(): void {
+		// By default, the valid http status codes are 200, 206 and 429.
+		$this->assertEquals( array( 200, 206, 429 ), Settings::get_valid_http_status_codes() );
+
+		add_filter(
+			'wlf_valid_http_status_codes',
+			function () {
+				return array( 200, 206, 301 );
+			}
+		);
+
+		$this->assertEquals( array( 200, 206, 301 ), Settings::get_valid_http_status_codes() );
+
+		// Clean up.
+		remove_all_filters( 'wlf_valid_http_status_codes' );
+	}
+
+	/**
+	 * @testdox It should be possible to define if existing posts should be scanned in the settings.
+	 *
+	 * @return void
+	 */
+	public function test_can_define_if_existing_posts_should_be_scanned(): void {
+		// By default, existing posts should be scanned.
+		$this->assertTrue( Settings::should_scan_existing_posts() );
+
+		\update_option( Settings::SCAN_EXISTING_POSTS, true );
+
+		$this->assertTrue( Settings::should_scan_existing_posts() );
+	}
+
+	/**
+	 * @testdox It should be possible to change what happens when a broken link is encountered and it should replace by default.
+	 *
+	 * @return void
+	 */
+	public function test_can_change_fixer_option(): void {
+		// By default, the fixer option is replace.
+		$this->assertEquals( Settings::FIXER_OPTION_REPLACE_LINK, Settings::get_fixer_option() );
+
+		\update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_DO_NOTHING );
+
+		$this->assertEquals( Settings::FIXER_OPTION_DO_NOTHING, Settings::get_fixer_option() );
+	}
+}

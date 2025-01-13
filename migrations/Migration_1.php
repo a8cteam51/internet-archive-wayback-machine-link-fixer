@@ -3,10 +3,12 @@
 /**
  * Migration 1
  *
- * Created: 17 Oct 2023
+ * Created: 12 Aug 2024
  * Iteration: 1
  *
- * @since 0.1.0
+ * @since 1.3.0
+ *
+ * This is a merge of the development migrations into a single migration.
  */
 
 declare(strict_types=1);
@@ -34,48 +36,25 @@ class Migration_1 extends Abstract_Migration {
 
 		$charset_collate = $wpdb->get_charset_collate();
 
-		// Create the report table.
-		$report_table_name = Settings::SCAN_REPORT_TABLE_NAME;
-		$report_sql        = "CREATE TABLE $report_table_name (
-			id bigint(20) NOT NULL AUTO_INCREMENT,
-			report_id varchar(36) NOT NULL,
-			user_id bigint(20) NOT NULL,
-			blog_id bigint(20) NOT NULL,
-			process varchar(20) NOT NULL,
-			description text NULL,
-			create_date datetime NOT NULL,
-			completed_date datetime NULL,
-			PRIMARY KEY  (id)
-		) $charset_collate;";
-
-		// Create the log table.
-		$log_table_name = Settings::SCAN_LOG_TABLE_NAME;
-
-		$log_sql = "CREATE TABLE $log_table_name (
-			id bigint(20) NOT NULL AUTO_INCREMENT,
-			report_id varchar(36) NOT NULL,
-			post_id bigint(20) NOT NULL,
-			links longtext NOT NULL,
-			PRIMARY KEY  (id)
-		) $charset_collate;";
-
 		// Create the link cache table.
-		$link_cache_table_name = Settings::SCAN_LINK_CACHE_TABLE;
+		$link_cache_table_name = Settings::get_link_table_name();
 
 		$link_cache_sql = "CREATE TABLE $link_cache_table_name (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
 			url longtext NOT NULL,
-			link longtext NOT NULL,
-			create_date datetime NOT NULL,
+			archived longtext,
+			is_broken tinyint(1) NOT NULL DEFAULT 0,
+			checks JSON NOT NULL,
+			message longtext,
+			redirect_url longtext,
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		dbDelta( $report_sql );
-		dbDelta( $log_sql );
 		dbDelta( $link_cache_sql );
 	}
+
 
 	/**
 	 * Run when the table is dropped.
@@ -88,12 +67,7 @@ class Migration_1 extends Abstract_Migration {
 		global $wpdb;
 
 		// Drop the log table.
-
-		$log_table_name = $wpdb->prefix . Settings::SCAN_LOG_TABLE_NAME;
-		$wpdb->query( "DROP TABLE IF EXISTS $log_table_name" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant due to table name.
-
-		// Drop the report table.
-		$report_table_name = $wpdb->prefix . Settings::SCAN_REPORT_TABLE_NAME;
-		$wpdb->query( "DROP TABLE IF EXISTS $report_table_name" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant due to table name.
+		$link_table = Settings::get_link_table_name();
+		$wpdb->query( "DROP TABLE IF EXISTS $link_table" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, cant due to table name.
 	}
 }

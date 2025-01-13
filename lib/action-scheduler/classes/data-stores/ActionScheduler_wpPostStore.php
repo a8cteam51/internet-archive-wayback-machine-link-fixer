@@ -512,7 +512,7 @@ class ActionScheduler_wpPostStore extends ActionScheduler_Store {
 		$post = get_post( $action_id );
 		if ( empty( $post ) || ( self::POST_TYPE !== $post->post_type ) ) {
 			/* translators: %s is the action ID */
-			throw new InvalidArgumentException( sprintf( __( 'Unidentified action %s', 'action-scheduler' ), $action_id ) );
+			throw new InvalidArgumentException( sprintf( __( 'Unidentified action %s: we were unable to cancel this action. It may may have been deleted by another process.', 'action-scheduler' ), $action_id ) );
 		}
 		do_action( 'action_scheduler_canceled_action', $action_id );
 		add_filter( 'pre_wp_unique_post_slug', array( $this, 'set_unique_post_slug' ), 10, 5 );
@@ -531,7 +531,7 @@ class ActionScheduler_wpPostStore extends ActionScheduler_Store {
 		$post = get_post( $action_id );
 		if ( empty( $post ) || ( self::POST_TYPE !== $post->post_type ) ) {
 			/* translators: %s is the action ID */
-			throw new InvalidArgumentException( sprintf( __( 'Unidentified action %s', 'action-scheduler' ), $action_id ) );
+			throw new InvalidArgumentException( sprintf( __( 'Unidentified action %s: we were unable to delete this action. It may may have been deleted by another process.', 'action-scheduler' ), $action_id ) );
 		}
 		do_action( 'action_scheduler_deleted_action', $action_id );
 
@@ -561,7 +561,7 @@ class ActionScheduler_wpPostStore extends ActionScheduler_Store {
 		$post = get_post( $action_id );
 		if ( empty( $post ) || ( self::POST_TYPE !== $post->post_type ) ) {
 			/* translators: %s is the action ID */
-			throw new InvalidArgumentException( sprintf( __( 'Unidentified action %s', 'action-scheduler' ), $action_id ) );
+			throw new InvalidArgumentException( sprintf( __( 'Unidentified action %s: we were unable to determine the date of this action. It may may have been deleted by another process.', 'action-scheduler' ), $action_id ) );
 		}
 		if ( 'publish' === $post->post_status ) {
 			return as_get_datetime_object( $post->post_modified_gmt );
@@ -690,7 +690,7 @@ class ActionScheduler_wpPostStore extends ActionScheduler_Store {
 		$params[] = $limit;
 
 		// Run the query and gather results.
-		$rows_affected = $wpdb->query( $wpdb->prepare( "{$update} {$where} {$order}", $params ) ); // phpcs:ignore // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		$rows_affected = $wpdb->query( $wpdb->prepare( "{$update} {$where} {$order}", $params ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 
 		if ( false === $rows_affected ) {
 			throw new RuntimeException( __( 'Unable to claim actions. Database error.', 'action-scheduler' ) );
@@ -725,7 +725,7 @@ class ActionScheduler_wpPostStore extends ActionScheduler_Store {
 			'post_status'      => ActionScheduler_Store::STATUS_PENDING,
 			'has_password'     => false,
 			'posts_per_page'   => $limit * 3,
-			'suppress_filters' => true,
+			'suppress_filters' => true, // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.SuppressFilters_suppress_filters
 			'no_found_rows'    => true,
 			'orderby'          => array(
 				'menu_order' => 'ASC',
@@ -984,7 +984,7 @@ class ActionScheduler_wpPostStore extends ActionScheduler_Store {
 		$post = get_post( $action_id );
 		if ( empty( $post ) || ( self::POST_TYPE !== $post->post_type ) ) {
 			/* translators: %s is the action ID */
-			throw new InvalidArgumentException( sprintf( __( 'Unidentified action %s', 'action-scheduler' ), $action_id ) );
+			throw new InvalidArgumentException( sprintf( __( 'Unidentified action %s: we were unable to mark this action as having completed. It may may have been deleted by another process.', 'action-scheduler' ), $action_id ) );
 		}
 		add_filter( 'wp_insert_post_data', array( $this, 'filter_insert_post_data' ), 10, 1 );
 		add_filter( 'pre_wp_unique_post_slug', array( $this, 'set_unique_post_slug' ), 10, 5 );

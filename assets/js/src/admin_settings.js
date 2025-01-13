@@ -13,6 +13,8 @@
 		const NEW_LINK_BUTTON = jQuery('#wlf_excluded_links_new_action');
 		const NEW_LINK_TEMPLATE = WlfSettings.newExcludedTemplate;
 		const NO_LINKS = jQuery('#wlf_excluded_empty');
+		const HTTP_CODES = jQuery('#t51_wlf_http_status_codes');
+		const HTTP_CODES_SELECT = jQuery('#t51_wlf_http_status_codes_select');
 
 		// Handle removing a link.
 		EXCLUDED_LINKS.on('click', '.remove-exclusion', function (e) {
@@ -79,5 +81,27 @@
 				NO_LINKS.show();
 			}
 		}
+
+		/**
+		 * Use Select2 for the HTTP status code select.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @return {void}
+		 */
+		HTTP_CODES_SELECT.select2({
+			width: '100%',
+			allowClear: true
+		});
+
+		/**
+		 * On changes of select, update list.
+		 *
+		 * @since 1.1.0
+		 */
+		HTTP_CODES_SELECT.on('change', function () {
+			const selected = HTTP_CODES_SELECT.val();
+			HTTP_CODES.val(selected.join(','));
+		});
 	});
 })();

@@ -40,14 +40,7 @@ class Settings_Page {
 	public function initialize(): void {
 		add_action( 'admin_init', array( $this, 'register_fields' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-		// Enable network support for pages.
-		if ( \is_multisite() ) {
-			add_action( 'network_admin_menu', array( $this, 'register_page' ) );
-			add_action( 'network_admin_edit_' . self::PAGE_SLUG, array( $this, 'update_multisite_settings' ) );
-		} else {
-			add_action( 'admin_menu', array( $this, 'register_page' ), 20, 0 );
-		}
+		add_action( 'admin_menu', array( $this, 'register_page' ), 20, 0 );
 	}
 
 	/**
@@ -64,49 +57,6 @@ class Settings_Page {
 		$this->add_settings_fields();
 	}
 
-		/**
-	 * Handle saving settings for multisite.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return void
-	 */
-	public function update_multisite_settings(): void {
-		// If the multiste settings nonce is not set, show an error.
-		if ( ! isset( $_POST['_multisite_settings_nonce'] ) ) {
-			wp_die( esc_html__( 'Invalid request.', 'wpcomsp_wayback_link_fixer' ) );
-		}
-
-		// Verify the nonce.
-		if ( ! wp_verify_nonce( $_POST['_multisite_settings_nonce'], self::PAGE_SLUG ) ) {
-			wp_die( esc_html__( 'Invalid request.', 'wpcomsp_wayback_link_fixer' ) );
-		}
-
-		// Options
-		$options = array_filter( $GLOBALS['wp_registered_settings'], fn( $setting ) => 0 === strpos( $setting, 't51_wlf_' ), ARRAY_FILTER_USE_KEY );
-
-		// Iterate over the options and update them.
-		foreach ( $options as $name => $option ) {
-			$value = isset( $_POST[ $name ] ) ? $_POST[ $name ] : $option['default'];
-
-			// Sanitize the option.
-			$value = $option['sanitize_callback']( $value );
-			// Update the option.
-			update_site_option( $name, $value );
-		}
-
-		// Redirect back to the network settings page.
-		wp_safe_redirect(
-			add_query_arg(
-				array(
-					'page'    => self::PAGE_SLUG,
-					'updated' => 'true',
-				),
-				network_admin_url( 'admin.php' )
-			)
-		);
-		exit;
-	}
 
 	/**
 	 * Registers the settings page.
@@ -118,17 +68,14 @@ class Settings_Page {
 	 */
 	public function register_page(): void {
 		$this->menu_hook = \add_submenu_page(
-			Report_Viewer_Page::PAGE_SLUG,
+			'options-general.php',
 			__( 'Wayback Link Fixer', 'wpcomsp_wayback_link_fixer' ),
-			__( 'Settings', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )
 		);
 	}
-
-
-
 
 	/**
 	 * Enqueue the settings page scripts.
@@ -144,6 +91,9 @@ class Settings_Page {
 		if ( $this->menu_hook !== $page_hook ) {
 			return;
 		}
+
+		// Register select2
+		wpcomsp_wayback_link_fixer_enqueue_select2_assets( array( self::PAGE_SLUG ) );
 
 		\wp_register_script(
 			self::PAGE_SLUG,
@@ -180,28 +130,26 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_page(): void {
-		if ( \is_multisite() ) {
-			// If updated, show notice.
-			if ( isset( $_GET['updated'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings updated.', 'wpcomsp_wayback_link_fixer' ) . '</p></div>';
-			}
-
-			echo wp_kses(
-				'<form action="edit.php?action=' . self::PAGE_SLUG . '" method="post">',
-				array(
-					'form' => array(
-						'action' => array(),
-						'method' => array(),
-					),
-				)
-			);
-			wp_nonce_field( self::PAGE_SLUG, '_multisite_settings_nonce', false, true );
-		} else {
-			echo '<form action="options.php" method="post">';
-		}
+		wpcomsp_wayback_link_fixer_render_wayback_offline_notice();
+		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
+		echo '<form action="options.php" method="post">';
 
 		\do_settings_sections( self::PAGE_SLUG );
 		\settings_fields( self::PAGE_SLUG );
+
+		echo wp_kses(
+			sprintf(
+				// Translators: %s is the link to the Internet account setup.
+				__( "To get your API key and secret, please visit the <a href='%s' target='_blank'>Internet Archive</a> and create a new S3 access key.", 'wpcomsp_wayback_link_fixer' ),
+				esc_url( 'https://archive.org/account/s3.php' )
+			),
+			array(
+				'a' => array(
+					'href'   => array(),
+					'target' => array(),
+				),
+			)
+		);
 
 		\submit_button( __( 'Save Changes', 'wpcomsp_wayback_link_fixer' ) );
 
@@ -218,13 +166,13 @@ class Settings_Page {
 	private function register_settings_fields(): void {
 		\register_setting(
 			self::PAGE_SLUG,
-			Settings::POST_TYPES_OPTION_KEY,
+			Settings::ALLOWED_POST_TYPES,
 			array(
 				'type'              => 'array',
 				'sanitize_callback' => fn( $value ): array => array_map( 'sanitize_text_field', (array) $value ),
 				'default'           => array( 'page', 'post' ),
 				'show_in_rest'      => array(
-					'name'   => Settings::POST_TYPES_OPTION_KEY,
+					'name'   => Settings::ALLOWED_POST_TYPES,
 					'schema' => array(
 						'type'  => 'array',
 						'items' => array(
@@ -253,47 +201,15 @@ class Settings_Page {
 
 		\register_setting(
 			self::PAGE_SLUG,
-			Settings::LINK_CHECKER_TIMEOUT,
+			Settings::SCAN_EXISTING_POSTS,
 			array(
-				'type'              => 'integer',
-				'sanitize_callback' => 'absint',
-				'default'           => 1000,
+				'type'              => 'boolean',
+				'sanitize_callback' => 'wp_validate_boolean',
+				'default'           => true,
 				'show_in_rest'      => array(
-					'name'   => Settings::LINK_CHECKER_TIMEOUT,
+					'name'   => Settings::SCAN_EXISTING_POSTS,
 					'schema' => array(
-						'type' => 'integer',
-					),
-				),
-			)
-		);
-
-		\register_setting(
-			self::PAGE_SLUG,
-			Settings::HTTP_STATUS_CODES,
-			array(
-				'type'              => 'string',
-				'sanitize_callback' => 'sanitize_text_field',
-				'default'           => '404,410,500,502,300,301,303',
-				'show_in_rest'      => array(
-					'name'   => Settings::HTTP_STATUS_CODES,
-					'schema' => array(
-						'type' => 'string',
-					),
-				),
-			)
-		);
-
-		\register_setting(
-			self::PAGE_SLUG,
-			Settings::LINK_CACHE_EXPIRATION,
-			array(
-				'type'              => 'integer',
-				'sanitize_callback' => 'absint',
-				'default'           => DAY_IN_SECONDS,
-				'show_in_rest'      => array(
-					'name'   => Settings::LINK_CACHE_EXPIRATION,
-					'schema' => array(
-						'type' => 'integer',
+						'type' => 'boolean',
 					),
 				),
 			)
@@ -320,17 +236,34 @@ class Settings_Page {
 
 		\register_setting(
 			self::PAGE_SLUG,
-			Settings::EVENT_POSTS_PER_BATCH,
+			Settings::ARCHIVE_ORG_SECRET_KEY,
 			array(
-				'type'              => 'integer',
-				'sanitize_callback' => 'absint',
-				'default'           => 10,
-				'show_in_rest'      => array(
-					'name'   => Settings::EVENT_POSTS_PER_BATCH,
-					'schema' => array(
-						'type' => 'integer',
-					),
-				),
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
+				'show_in_rest'      => false,
+			),
+		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::ARCHIVE_ORG_ACCESS_KEY,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
+				'show_in_rest'      => false,
+			)
+		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::FIXER_OPTION,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => Settings::FIXER_OPTION_REPLACE_LINK,
+				'show_in_rest'      => false,
 			)
 		);
 	}
@@ -351,7 +284,7 @@ class Settings_Page {
 		);
 
 		\add_settings_field(
-			Settings::POST_TYPES_OPTION_KEY,
+			Settings::ALLOWED_POST_TYPES,
 			__( 'Post Types', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_post_types_field' ),
 			self::PAGE_SLUG,
@@ -367,25 +300,17 @@ class Settings_Page {
 		);
 
 		\add_settings_field(
-			Settings::LINK_CHECKER_TIMEOUT,
-			__( 'Link Checker Timeout in MS', 'wpcomsp_wayback_link_fixer' ),
-			array( $this, 'render_link_checker_timeout_field' ),
+			Settings::SCAN_EXISTING_POSTS,
+			__( 'Should existing posts be checked', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_check_existing_posts' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
 
 		\add_settings_field(
-			Settings::HTTP_STATUS_CODES,
-			__( 'HTTP Status Codes', 'wpcomsp_wayback_link_fixer' ),
-			array( $this, 'render_http_status_codes_field' ),
-			self::PAGE_SLUG,
-			self::SETTINGS_SECTION
-		);
-
-		\add_settings_field(
-			Settings::LINK_CACHE_EXPIRATION,
-			__( 'Link Cache Expiration in Seconds', 'wpcomsp_wayback_link_fixer' ),
-			array( $this, 'render_link_cache_expiration_field' ),
+			Settings::FIXER_OPTION,
+			__( 'Fixer Option', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_fixer_option' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
@@ -399,9 +324,17 @@ class Settings_Page {
 		);
 
 		\add_settings_field(
-			Settings::EVENT_POSTS_PER_BATCH,
-			__( 'Posts per Batch', 'wpcomsp_wayback_link_fixer' ),
-			array( $this, 'render_event_posts_per_batch_field' ),
+			Settings::ARCHIVE_ORG_SECRET_KEY,
+			__( 'Archive.org Secret Key', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_archive_api_secret_key' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::ARCHIVE_ORG_ACCESS_KEY,
+			__( 'Archive.org Access Key', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_archive_api_access_key' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
@@ -417,19 +350,20 @@ class Settings_Page {
 	public function render_post_types_field(): void {
 		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type ) {
 			?>
-			<label for="<?php echo esc_attr( Settings::POST_TYPES_OPTION_KEY ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
+			<label for="<?php echo esc_attr( Settings::ALLOWED_POST_TYPES ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
 				<input
 					type="checkbox"
-					id="<?php echo esc_attr( Settings::POST_TYPES_OPTION_KEY ); ?>_<?php echo esc_attr( $post_type->name ); ?>"
-					name="<?php echo esc_attr( Settings::POST_TYPES_OPTION_KEY ); ?>[]"
+					id="<?php echo esc_attr( Settings::ALLOWED_POST_TYPES ); ?>_<?php echo esc_attr( $post_type->name ); ?>"
+					name="<?php echo esc_attr( Settings::ALLOWED_POST_TYPES ); ?>[]"
 					value="<?php echo esc_attr( $post_type->name ); ?>"
-					<?php checked( in_array( $post_type->name, Settings::get_post_types(), true ) ); ?>
+					<?php checked( in_array( $post_type->name, Settings::get_allowed_post_types(), true ) ); ?>
 				/>
 				<?php echo esc_html( $post_type->label ); ?>
 			</label>
 			<br />
 			<?php
 		}
+		echo '<p class="description">' . esc_html__( 'Which post type should be checked?', 'wpcomsp_wayback_link_fixer' ) . '</p>';
 	}
 
 	/**
@@ -451,63 +385,34 @@ class Settings_Page {
 			/>
 			<?php esc_html_e( 'Drop tables on uninstall', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
+		<p class="description">
+			<?php esc_html_e( 'If checked, the plugin will drop the tables on uninstall.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
 		<?php
 	}
 
 	/**
-	 * Render the link checker timeout field.
+	 * Renders the field for checking existing posts.
 	 *
-	 * @since   1.0.0
-	 *-+
-	 * @return  void
+	 * @since 1.2.0
+	 *
+	 * @return void
 	 */
-	public function render_link_checker_timeout_field(): void {
+	public function render_check_existing_posts(): void {
 		?>
-		<input
-			type="number"
-			id="<?php echo esc_attr( Settings::LINK_CHECKER_TIMEOUT ); ?>"
-			name="<?php echo esc_attr( Settings::LINK_CHECKER_TIMEOUT ); ?>"
-			value="<?php echo absint( Settings::get_link_checker_timeout() ); ?>"
-			min="0"
-			max="5000"
-		/>
-		<?php
-	}
-
-	/**
-	 * Render the http status codes field.
-	 *
-	 * @since   1.0.0
-	 *
-	 * @return  void
-	 */
-	public function render_http_status_codes_field(): void {
-		?>
-		<input
-			type="text"
-			id="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>"
-			name="<?php echo esc_attr( Settings::HTTP_STATUS_CODES ); ?>"
-			value="<?php echo esc_attr( Settings::get_http_status_codes() ); ?>"
-		/>
-		<?php
-	}
-
-	/**
-	 * Render the link cache expiration field.
-	 *
-	 * @since   1.0.0
-	 *
-	 * @return  void
-	 */
-	public function render_link_cache_expiration_field(): void {
-		?>
-		<input
-			type="number"
-			id="<?php echo esc_attr( Settings::LINK_CACHE_EXPIRATION ); ?>"
-			name="<?php echo esc_attr( Settings::LINK_CACHE_EXPIRATION ); ?>"
-			value="<?php echo absint( Settings::get_link_cache_expiration() ); ?>"
-			min="0"
-		/>
+		<label for="<?php echo esc_attr( Settings::SCAN_EXISTING_POSTS ); ?>">
+			<input
+				type="checkbox"
+				id="<?php echo esc_attr( Settings::SCAN_EXISTING_POSTS ); ?>"
+				name="<?php echo esc_attr( Settings::SCAN_EXISTING_POSTS ); ?>"
+				value="1"
+				<?php checked( Settings::should_scan_existing_posts() ); ?>
+			/>
+			<?php esc_html_e( 'Scan existing posts', 'wpcomsp_wayback_link_fixer' ); ?>
+		</label>
+		<p class="description">
+			<?php esc_html_e( 'If checked, the plugin will scan existing posts for broken links.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
 		<?php
 	}
 
@@ -524,7 +429,7 @@ class Settings_Page {
 		echo \wp_kses(
 			sprintf(
 				'<div><p>%s</p></div>',
-				__( 'Enter a list of URLs to exclude from the link checker. These can be added using <code>*</code> wildcards such as <code>*.twitter.com*</code> to exclude any twitter link', 'wpcomsp_wayback_link_fixer' )
+				__( 'Enter a list of URLs to exclude from the link checker. These can be added using <code>*</code> wildcards such as <code>https://x.com*</code> to exclude any x/twitter link', 'wpcomsp_wayback_link_fixer' )
 			),
 			array(
 				'code' => array(),
@@ -539,7 +444,7 @@ class Settings_Page {
 				<input
 					type="text"
 					id="wlf_excluded_links_new"
-					placeholder="<?php esc_html_e( 'Add a new exclusion (*.twitter.*)', 'wpcomsp_wayback_link_fixer' ); ?>"
+					placeholder="<?php esc_html_e( 'Add a new exclusion (https://x.com*)', 'wpcomsp_wayback_link_fixer' ); ?>"
 				/>
 				<button id="wlf_excluded_links_new_action" type="button" class="button button-secondary add-exclusion"><?php esc_html_e( 'Add', 'wpcomsp_wayback_link_fixer' ); ?></button>
 			</div>
@@ -616,21 +521,73 @@ class Settings_Page {
 	}
 
 	/**
-	 * Render the event posts per batch field.
+	 * Render the archive api key field.
 	 *
 	 * @since   1.0.0
 	 *
 	 * @return  void
 	 */
-	public function render_event_posts_per_batch_field(): void {
+	public function render_archive_api_secret_key(): void {
 		?>
 		<input
-			type="number"
-			id="<?php echo esc_attr( Settings::EVENT_POSTS_PER_BATCH ); ?>"
-			name="<?php echo esc_attr( Settings::EVENT_POSTS_PER_BATCH ); ?>"
-			value="<?php echo absint( Settings::get_posts_per_batch() ); ?>"
-			min="0"
+			type="password"
+			id="<?php echo esc_attr( Settings::ARCHIVE_ORG_SECRET_KEY ); ?>"
+			name="<?php echo esc_attr( Settings::ARCHIVE_ORG_SECRET_KEY ); ?>"
+			value="<?php echo esc_attr( Settings::get_archive_api_key() ); ?>"
+			style="width:80%;"
 		/>
+		<p class="description">
+			<?php esc_html_e( 'Archive.org S3 Secret Key', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Render the archive api secret field.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return  void
+	 */
+	public function render_archive_api_access_key(): void {
+		?>
+		<input
+			type="password"
+			id="<?php echo esc_attr( Settings::ARCHIVE_ORG_ACCESS_KEY ); ?>"
+			name="<?php echo esc_attr( Settings::ARCHIVE_ORG_ACCESS_KEY ); ?>"
+			value="<?php echo esc_attr( Settings::get_archive_access_key() ); ?>"
+			style="width:80%;"
+		/>
+		<p class="description">
+			<?php esc_html_e( 'Archive.org S3 Access Key', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Render the fixer option field.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return  void
+	 */
+	public function render_fixer_option(): void {
+		?>
+		<select
+			id="<?php echo esc_attr( Settings::FIXER_OPTION ); ?>"
+			name="<?php echo esc_attr( Settings::FIXER_OPTION ); ?>"
+		>
+			<option value="<?php echo esc_attr( Settings::FIXER_OPTION_REPLACE_LINK ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_REPLACE_LINK ); ?>>
+				<?php esc_html_e( 'Replace Link (No Notification)', 'wpcomsp_wayback_link_fixer' ); ?>
+			</option>
+			<option value="<?php echo esc_attr( Settings::FIXER_OPTION_DO_NOTHING ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_DO_NOTHING ); ?>>
+				<?php esc_html_e( 'Do Nothing', 'wpcomsp_wayback_link_fixer' ); ?>
+			</option>
+		</select>
+		<p class="description">
+			<?php esc_html_e( 'Choose how to handle broken links.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
 		<?php
 	}
 }
+

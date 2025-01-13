@@ -1,32 +1,30 @@
 <?php
-
 /**
  * The wayback-link-fixer bootstrap file.
  *
  * @since       1.0.0
- * @version     1.0.0
+ * @version     1.3.0
  * @author      WordPress.com Special Projects
  * @license     GPL-3.0-or-later
  *
  * @noinspection    ALL
  *
  * @wordpress-plugin
- * Plugin Name:             wayback-link-fixer
+ * Plugin Name:             Wayback Link Fixer
  * Plugin URI:              https://wpspecialprojects.wordpress.com
- * Description:
- * Version:                 1.0.0
+ * Description:             Scans links in your content and fixes them to use the Wayback Machine, archived version.
+ * Version:                 1.3.0
  * Requires at least:       6.2
  * Tested up to:            6.2
- * Requires PHP:            8.0
+ * Requires PHP:            7.4
  * Author:                  WordPress.com Special Projects
  * Author URI:              https://wpspecialprojects.wordpress.com
  * License:                 GPL v3 or later
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             wpcomsp-wayback-link-fixer
  * Domain Path:             /languages
- * WC requires at least:    7.4
- * WC tested up to:         7.4
  **/
+
 
 defined( 'ABSPATH' ) || exit;
 
@@ -41,6 +39,9 @@ define( 'WPCOMSP_WAYBACK_LINK_FIXER_URL', plugin_dir_url( __FILE__ ) );
 $wpcomsp_wayback_link_fixer_requirements = validate_plugin_requirements( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME );
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', $wpcomsp_wayback_link_fixer_requirements );
 
+// Include the action scheduler integration.
+require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'lib/action-scheduler/action-scheduler.php';
+
 // Load plugin translations so they are available even for the error admin notices.
 add_action(
 	'init',
@@ -50,9 +51,6 @@ add_action(
 			false,
 			dirname( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME ) . WPCOMSP_WAYBACK_LINK_FIXER_METADATA['DomainPath']
 		);
-
-		// Include the action scheduler integration.
-		require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'lib/action-scheduler/action-scheduler.php';
 	}
 );
 
@@ -84,7 +82,10 @@ if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
 	// Add all migrations.
 	\WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations::$migrations = array( //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1::class,
+		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_2::class,
 	);
+
+	add_action( 'wp_head', 'wpcomsp_wayback_link_fixer_render_archived_link_css', 999 );
 
 
 	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'functions.php';
