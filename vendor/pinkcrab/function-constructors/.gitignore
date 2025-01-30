@@ -1,0 +1,11 @@
+vendor/
+composer.lock
+sandbox/
+wiki/
+*.code-workspace
+.phpunit.result.cache
+.php-cs-fixer.cache
+clover.xml
+coverage-report/
+.vscode
+phpunit_9.xml
