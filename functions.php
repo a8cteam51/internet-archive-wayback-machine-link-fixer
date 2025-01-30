@@ -356,5 +356,3 @@ function wpcomsp_wayback_link_fixer_normalize_url( string $url ): string {
 
 	return $url;
 }
-
-// endregion
