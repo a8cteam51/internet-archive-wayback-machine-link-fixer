@@ -1,9 +1,0 @@
-parameters:
-	deprecationRulesInstalled: true
-
-rules:
-	- Swissspidy\PHPStan\Rules\NoPrivate\CallToPrivateFunctionRule
-	- Swissspidy\PHPStan\Rules\NoPrivate\CallToPrivateMethodRule
-	- Swissspidy\PHPStan\Rules\NoPrivate\CallToPrivateStaticMethodRule
-	- Swissspidy\PHPStan\Rules\NoPrivate\InheritanceOfPrivateClassRule
-	- Swissspidy\PHPStan\Rules\NoPrivate\InstantiationOfPrivateClassRule
