@@ -1,4 +1,4 @@
-# Team 51 WayBack Link Fixer Plugin
+# Team 51 Wayback Link Fixer Plugin
 
 **Contributors:** wpcomspecialprojects \
 **Tags:** \
@@ -11,7 +11,7 @@
 
 ## Description
 
-Welcome to **WayBack Link Fixer**, a powerful tool designed to enhance your WordPress site by automatically scanning posts for links, retrieving the latest snapshots from the Wayback Machine, and seamlessly replacing broken links with archived versions. This innovative solution ensures that your posts remain resilient against `BITROT` , preserving the integrity of linked content over time.
+Welcome to **Wayback Link Fixer**, a powerful tool designed to enhance your WordPress site by automatically scanning posts for links, retrieving the latest snapshots from the Wayback Machine, and seamlessly replacing broken links with archived versions. This innovative solution ensures that your posts remain resilient against `BITROT` , preserving the integrity of linked content over time.
 
 ## Installation
 
@@ -19,13 +19,13 @@ Welcome to **WayBack Link Fixer**, a powerful tool designed to enhance your Word
 
 1. Upload the archive using the WordPress plugin uploader.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Configure the plugin settings by navigating to the 'WayBack Link Fixer' menu in the WordPress admin dashboard.
+3. Configure the plugin settings by navigating to the 'Wayback Link Fixer' menu in the WordPress admin dashboard.
 
 ### Via FTP
 
 1. Extract the archive and upload the plugin folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Configure the plugin settings by navigating to the 'WayBack Link Fixer' menu in the WordPress admin dashboard.
+3. Configure the plugin settings by navigating to the 'Wayback Link Fixer' menu in the WordPress admin dashboard.
 
 Certainly! Here’s a more polished version for a WordPress plugin readme:
 
