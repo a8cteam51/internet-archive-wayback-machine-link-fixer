@@ -266,6 +266,38 @@ class Settings_Page {
 				'show_in_rest'      => false,
 			)
 		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::ALLOW_OWN_CONTENT_SUBMISSIONS,
+			array(
+				'type'              => 'boolean',
+				'sanitize_callback' => 'wp_validate_boolean',
+				'default'           => false,
+				'show_in_rest'      => array(
+					'name'   => Settings::ALLOW_OWN_CONTENT_SUBMISSIONS,
+					'schema' => array(
+						'type' => 'boolean',
+					),
+				),
+			)
+		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE,
+			array(
+				'type'              => 'boolean',
+				'sanitize_callback' => 'wp_validate_boolean',
+				'default'           => false,
+				'show_in_rest'      => array(
+					'name'   => Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE,
+					'schema' => array(
+						'type' => 'boolean',
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -311,6 +343,22 @@ class Settings_Page {
 			Settings::FIXER_OPTION,
 			__( 'Fixer Option', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_fixer_option' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::ALLOW_OWN_CONTENT_SUBMISSIONS,
+			__( 'Allow own posts to be added to the wayback machine', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_allow_own_posts' ),
+			self::PAGE_SLUG,
+			self::SETTINGS_SECTION
+		);
+
+		\add_settings_field(
+			Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE,
+			__( 'Routinely update own posts in the wayback machine', 'wpcomsp_wayback_link_fixer' ),
+			array( $this, 'render_own_link_routinely_update' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
 		);
@@ -586,6 +634,56 @@ class Settings_Page {
 		</select>
 		<p class="description">
 			<?php esc_html_e( 'Choose how to handle broken links.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Renders the field which is used to set allowing own posts to be added to the wayback machine.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return void
+	 */
+	public function render_allow_own_posts(): void {
+		?>
+		<label for="<?php echo esc_attr( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS ); ?>">
+			<input
+				type="checkbox"
+				id="<?php echo esc_attr( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS ); ?>"
+				name="<?php echo esc_attr( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS ); ?>"
+				value="1"
+				<?php checked( Settings::add_own_links() ); ?>
+			/>
+			<?php esc_html_e( 'Allow own posts to be added to the wayback machine', 'wpcomsp_wayback_link_fixer' ); ?>
+		</label>
+		<p class="description">
+			<?php esc_html_e( 'If checked, the plugin will add own posts to the wayback machine and update whenever the a post is updated.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Renders the field which is used to allow own posts to be upated routinely.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return void
+	 */
+	public function render_own_link_routinely_update(): void {
+		?>
+		<label for="<?php echo esc_attr( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE ); ?>">
+			<input
+				type="checkbox"
+				id="<?php echo esc_attr( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE ); ?>"
+				name="<?php echo esc_attr( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE ); ?>"
+				value="1"
+				<?php checked( Settings::own_link_routinely_update() ); ?>
+			/>
+			<?php esc_html_e( 'Routinely update own posts in the wayback machine', 'wpcomsp_wayback_link_fixer' ); ?>
+		</label>
+		<p class="description">
+			<?php esc_html_e( 'If checked, the plugin will update own posts in the wayback machine.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</p>
 		<?php
 	}

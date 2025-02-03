@@ -25,6 +25,7 @@
  * Domain Path:             /languages
  **/
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 

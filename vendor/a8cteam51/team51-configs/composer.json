@@ -1,0 +1,57 @@
+{
+  "name": "a8cteam51/team51-configs",
+  "type": "library",
+
+  "description": "A collection of shared configuration files for Team51 projects.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Contributors",
+      "homepage": "https://github.com/a8cteam51/team51-configs/graphs/contributors"
+    }
+  ],
+
+  "require": {
+    "php": ">=8.3",
+    "ext-json": "*",
+
+    "wp-coding-standards/wpcs": "^3",
+    "phpcompatibility/phpcompatibility-wp": "*",
+
+    "phpmd/phpmd": "^2",
+
+    "phpstan/phpstan": "^2",
+    "phpstan/extension-installer": "^1",
+    "phpstan/phpstan-deprecation-rules": "^2",
+    "phpstan/phpstan-strict-rules": "^2",
+    "johnbillion/wp-compat": "^1",
+    "szepeviktor/phpstan-wordpress": "^2",
+    "swissspidy/phpstan-no-private": "^1"
+  },
+  "require-dev": {
+    "composer/composer": "^2"
+  },
+
+  "autoload": {
+    "classmap": [
+      "composer"
+    ]
+  },
+
+  "scripts": {
+    "generate-autoloader": "@composer dump-autoload --ignore-platform-reqs -o",
+
+    "packages-install": "@composer install --ignore-platform-reqs --no-interaction",
+    "packages-update": [
+      "@composer clear-cache",
+      "@composer update --prefer-stable --ignore-platform-reqs --no-interaction"
+    ]
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/*": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
+    }
+  }
+}

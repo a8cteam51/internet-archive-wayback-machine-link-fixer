@@ -1,0 +1,24 @@
+parameters:
+	WPCompat:
+		pluginFile: null
+		requiresAtLeast: null
+
+services:
+	-
+		class: WPCompat\PHPStan\Rules\SinceVersionRule
+		arguments:
+			pluginFile: %WPCompat.pluginFile%
+			requiresAtLeast: %WPCompat.requiresAtLeast%
+		tags:
+			- phpstan.rules.rule
+
+	-
+		class: WPCompat\PHPStan\Rules\MethodExistsVisitor
+		tags:
+			- phpstan.parser.richParserNodeVisitor
+
+parametersSchema:
+	WPCompat: structure([
+		pluginFile: schema(string(), nullable()),
+		requiresAtLeast: schema(string(), nullable()),
+	])

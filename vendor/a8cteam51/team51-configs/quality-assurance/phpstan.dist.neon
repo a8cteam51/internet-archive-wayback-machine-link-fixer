@@ -1,0 +1,11 @@
+includes:
+    - phpstan.dist.neon.php
+
+parameters:
+    level: 8
+    inferPrivatePropertyTypeFromConstructor: true
+    treatPhpDocTypesAsCertain: false
+    bootstrapFiles:
+        - %currentWorkingDirectory%/vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+    typeAliases:
+        PluginMetaData: 'array{Name: string, PluginURI: string, Version: string, Description: string, Author: string, AuthorURI: string, TextDomain: string, DomainPath: string, Network: bool, Title: string, AuthorName: string, RequiresPHP: string, RequiresWP: string, "WC requires at least"?: string, "WC tested up to"?: string}'

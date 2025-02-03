@@ -135,7 +135,7 @@ class Scan_Posts_Event {
 		if ( $query->have_posts() ) {
 			// Iterate over the posts.
 			foreach ( $query->posts as $post ) {
-				$this->post_controller->process_single_post( $post->ID );
+				$this->post_controller->process_links_in_content( $post->ID );
 			}
 		}
 

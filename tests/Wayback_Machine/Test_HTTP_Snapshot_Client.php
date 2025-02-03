@@ -160,7 +160,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 *
 	 * @return array
 	 */
-	public function latest_snapshot_response_provider() {
+	public static function latest_snapshot_response_provider() {
 		return array(
 			'invalid body'               => array( array( 'body' => 'not json' ), false ),
 			'missing archived_snapshots' => array( array( 'body' => json_encode( array( 'url' => 'http://example.com' ) ) ), false ),
