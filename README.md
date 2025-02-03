@@ -79,6 +79,18 @@ You can use this plugin without an API key, but you will be limited to 200 new s
 
 ![image](./_docs/settings--fixer-option.png)
 
+### Add Own Content to Wayback Machine
+
+You can allow all posts to be added to the Wayback Machine. This will ensure that all posts are archived and can be accessed at a later date. By turning on this setting, every time a post is created or updated, it will be added to the Wayback Machine.
+
+![image](./_docs/settings--add-own-posts.png)
+
+### Routine Update own Content
+
+You can allow all posts to be routinely updated in the Wayback Machine. This will ensure that all posts are archived and can be accessed at a later date. By turning on this setting, every post will be updated every 14 days.
+
+![image](./_docs/settings--routinelyh-add-own-posts.png)
+
 You can use this setting to choose how the plugin should handle broken links. Either do nothing or replace the broken link with the archived version (if available).
 
 ### Internet Archive Status
@@ -497,6 +509,56 @@ add_filter( 'wlf_archive_api_status_duration', function( int $url ): int {
 });
 ```
 
+#### `wlf_add_own_content_to_wayback_machine`
+This filter is applied to the setting which allows the user to add their own content to the Wayback Machine. The default is false and can be controlled via settings also.
+
+```php
+add_filter( 'wlf_add_own_content_to_wayback_machine', function( bool $add_own_content ): bool {
+	return true;
+});
+```
+
+> Please note when a post is added, a 10 minute delay is added before the post is added to the Wayback Machine. This will prevent the internet archive from blocking the request and creating lots of snapshots with no real changes.
+
+#### `wlf_own_content_post_types`
+This allows control over which post types are allowed to be added. The default is `post` and `page`.
+
+```php
+add_filter( 'wlf_own_content_post_types', function( array $post_types ): array {
+	$post_types[] = 'custom_post_type';
+	return $post_types;
+});
+```
+
+#### `wlf_routinely_update_wayback_machine`
+When this is set to retturn true, all posts in the allowed post types will be routinely updated in the Wayback Machine. The default is false.
+
+```php
+add_filter( 'wlf_routinely_update_wayback_machine', function( bool $routinely_update ): bool {
+	return true;
+});
+```
+
+#### `wlf_routinely_update_wayback_machine_interval`
+This is used to denote how long between each routine update. The default is 14 days. `The time is give in seconds.`
+
+```php
+add_filter( 'wlf_routinely_update_wayback_machine_interval', function( int $interval ): int {
+	return 7 * \DAY_IN_SECONDS; // 7 days
+});
+```
+
+#### `wlf_own_content_allow_post`
+This filter allows a final decision to be made on if a post should be added to the Wayback Machine. The default is to allow all posts.
+
+```php
+add_filter( 'wlf_own_content_allow_post', function( bool $allow, int $post_id ): bool {
+	if ( get_post_meta( $post_id, 'do_not_archive', true ) ) {
+		return false;
+	}
+	return $allow;
+});
+```
 
 ### Internet Archive / Wayback Link Fixer Instances.
 

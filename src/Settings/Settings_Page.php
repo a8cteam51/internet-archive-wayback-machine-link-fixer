@@ -349,7 +349,7 @@ class Settings_Page {
 
 		\add_settings_field(
 			Settings::ALLOW_OWN_CONTENT_SUBMISSIONS,
-			__( 'Allow own posts to be added to the wayback machine', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Add own posts', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_allow_own_posts' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
@@ -357,7 +357,7 @@ class Settings_Page {
 
 		\add_settings_field(
 			Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE,
-			__( 'Routinely update own posts in the wayback machine', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Routinely update own posts', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_own_link_routinely_update' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION
@@ -671,6 +671,8 @@ class Settings_Page {
 	 * @return void
 	 */
 	public function render_own_link_routinely_update(): void {
+		$interval = Settings::own_link_routine_update_interval();
+
 		?>
 		<label for="<?php echo esc_attr( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE ); ?>">
 			<input
@@ -683,7 +685,13 @@ class Settings_Page {
 			<?php esc_html_e( 'Routinely update own posts in the wayback machine', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
 		<p class="description">
-			<?php esc_html_e( 'If checked, the plugin will update own posts in the wayback machine.', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php
+			\printf(
+					// Translators: %s is the interval.
+				esc_html__( 'If checked, the plugin will update own posts in the wayback machine every %s', 'wpcomsp_wayback_link_fixer' ),
+				esc_html( \human_time_diff( 0, $interval ) )
+			)
+			?>
 		</p>
 		<?php
 	}
