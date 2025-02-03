@@ -43,11 +43,18 @@ class Settings {
 	public const SCAN_LINK_CACHE_TABLE  = self::SETTINGS_PREFIX . 'scan_link_cache';
 
 	// Meta Keys
-	public const LINK_META_KEY = self::SETTINGS_PREFIX . 'links';
+	public const LINK_META_KEY           = self::SETTINGS_PREFIX . 'links';
+	public const OWN_LINK_LAST_PROCESSED = self::SETTINGS_PREFIX . 'last_processed';
 
 	// Fixer Options
 	public const FIXER_OPTION_DO_NOTHING   = 'do_nothing';
 	public const FIXER_OPTION_REPLACE_LINK = 'replace_link';
+
+	// Own content submissions.
+	public const ALLOW_OWN_CONTENT_SUBMISSIONS             = self::SETTINGS_PREFIX . 'allow_own_content_submissions';
+	public const ALLOWED_OWN_CONTENT_POST_TYPES            = self::SETTINGS_PREFIX . 'allowed_own_content_post_types';
+	public const ROUTINELY_UPDATE_WAYBACK_MACHINE          = self::SETTINGS_PREFIX . 'routinely_update_wayback_machine';
+	public const ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL = self::SETTINGS_PREFIX . 'routinely_update_wayback_machine_interval';
 
 	/**
 	 * Gets the link table name.
@@ -302,5 +309,65 @@ class Settings {
 		}
 
 		return is_array( $status ) ? $status : null;
+	}
+
+	/**
+	 * Checks if posts should be added to wayback machine on save.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function add_own_links(): bool {
+		return (bool) \apply_filters(
+			'wlf_add_own_content_to_wayback_machine',
+			(bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, false )
+		);
+	}
+
+	/**
+	 * Gets the post types whos posts should be added to the wayback machine.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string[]
+	 */
+	public static function own_link_allowed_post_types(): array {
+		return \apply_filters(
+			'wlf_own_content_post_types',
+			array_map( 'esc_html', (array) get_option( self::ALLOWED_OWN_CONTENT_POST_TYPES, array( 'post', 'page' ) ) )
+		);
+	}
+
+	/**
+	 * Checks if posts should be routinely updated in the wayback machine.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function own_link_routinely_update(): bool {
+		return (bool) \apply_filters(
+			'wlf_routinely_update_wayback_machine',
+			(bool) get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE, false )
+		);
+	}
+
+	/**
+	 * Gets the interval between updates.
+	 *
+	 * Time in seconds.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return integer
+	 */
+	public static function own_link_routine_update_interval(): int {
+		return absint(
+			\apply_filters(
+				'wlf_routinely_update_wayback_machine_interval',
+				\get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 14 * \DAY_IN_SECONDS )
+			)
+		);
 	}
 }

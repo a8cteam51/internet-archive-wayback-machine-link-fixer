@@ -22,7 +22,7 @@ class Test_Functions extends \WP_UnitTestCase {
 	 *
 	 * @return array
 	 */
-	public function normalize_url_provider(): array {
+	public static function normalize_url_provider(): array {
 		return array(
 			'HTTPs simple' => array( 'https://example.com', 'https://example.com' ),
 			'HTTP simple' => array( 'http://example.com', 'http://example.com' ),

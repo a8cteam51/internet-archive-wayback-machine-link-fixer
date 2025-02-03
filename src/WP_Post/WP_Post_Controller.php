@@ -16,6 +16,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Exclusion;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Link_Check_Ajax;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Process_Local_Post_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Processor;
 
@@ -53,7 +54,8 @@ class WP_Post_Controller {
 	 * @return void
 	 */
 	private function register_hooks(): void {
-		add_action( 'save_post', array( $this, 'on_save_post' ), 10, 3 );
+		add_action( 'save_post', array( $this, 'on_save_post_process_post_links' ), 10, 3 );
+		add_action( 'save_post', array( $this, 'on_save_post_process_own_post' ), 10, 3 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_script' ) );
 		add_filter( 'render_block', array( $this, 'render_block' ), 999, 2 );  }
 
@@ -66,14 +68,77 @@ class WP_Post_Controller {
 	 *
 	 * @return void
 	 */
-	public function on_save_post( int $post_id, \WP_Post $post, bool $update ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+	public function on_save_post_process_post_links( int $post_id, \WP_Post $post, bool $update ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		// Check the post type is one we are checking.
 		if ( in_array( $post->post_type, Settings::get_allowed_post_types(), true ) === false ) {
 			return;
 		}
 
-		$this->process_single_post( $post_id );
+		$this->process_links_in_content( $post_id );
+	}
+
+	/**
+	 * Handles the save post action for adding own links.
+	 *
+	 * @param integer  $post_id The post id.
+	 * @param \WP_Post $post    The post object.
+	 * @param boolean  $update  Whether this is an existing post being updated or not.
+	 *
+	 * @return void
+	 */
+	public function on_save_post_process_own_post( int $post_id, \WP_Post $post, bool $update ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		// If doing auto save, return.
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		// Check if we should be adding our own links.
+		if ( ! Settings::add_own_links() ) {
+			return;
+		}
+
+		// Get the allowed post types.
+		if ( ! in_array( $post->post_type, Settings::own_link_allowed_post_types(), true ) ) {
+			return;
+		}
+
+		// If the post is not published, return.
+		if ( 'publish' !== $post->post_status ) {
+			return;
+		}
+
+		try {
+			$this->add_own_post_to_wayback_machine( $post_id );
+		} catch ( \Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+			// Do nothing! Squiz.PHP.CommentedOutCode.Found
+		}
+	}
+
+	/**
+	 * Adds the permalink of a post to the wayback machine.
+	 *
+	 * @param integer $post_id The post id.
+	 *
+	 * @return void
+	 *
+	 * @throws \Exception If the post id is not valid.
+	 */
+	public function add_own_post_to_wayback_machine( int $post_id ): void {
+
+		// Get the post.
+		$post = get_post( $post_id );
+
+		// If the post is not valid, throw an exception.
+		if ( ! $post ) {
+			throw new \Exception( 'Invalid post id' );
+		}
+
+		$can_add = \apply_filters( 'wlf_own_content_allow_post', true, $post );
+
+		if ( $can_add ) {
+			Process_Local_Post_Event::add_to_queue_with_delay( $post_id );
+		}
 	}
 
 	/**
@@ -83,7 +148,7 @@ class WP_Post_Controller {
 	 *
 	 * @return void
 	 */
-	public function process_single_post( int $post_id ): void {
+	public function process_links_in_content( int $post_id ): void {
 		// Create an instance of the processor.
 		$post_processor = new Post_Processor( $post_id );
 		$links          = $post_processor->process();
