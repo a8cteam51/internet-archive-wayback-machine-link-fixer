@@ -49,10 +49,7 @@
         "psr-4": {
             "WPCOMSpecialProjects\\Wayback_Link_Fixer\\": "src",
             "WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\": "migrations"
-        },
-        "classmap": [
-            "models"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
