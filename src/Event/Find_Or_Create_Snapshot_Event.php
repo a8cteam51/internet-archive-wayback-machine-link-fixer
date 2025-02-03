@@ -62,6 +62,26 @@ class Find_Or_Create_Snapshot_Event {
 	}
 
 	/**
+	 * Adds the event to the queue with a delay.
+	 *
+	 * @param integer $link_id The link id.
+	 * @param integer $delay   The delay in seconds.
+	 *
+	 * @return void
+	 */
+	public static function add_to_queue_with_delay( int $link_id, int $delay ): void {
+		$time = time() + $delay;
+
+		\as_schedule_single_action(
+			$time,
+			self::HANDLE,
+			array(
+				'link_id' => $link_id,
+			)
+		);
+	}
+
+	/**
 	 * Runs the event.
 	 *
 	 * @param integer $link_id The link id.
@@ -76,6 +96,12 @@ class Find_Or_Create_Snapshot_Event {
 		// If we have no link, throw an error.
 		if ( null === $link ) {
 			throw new \Exception( esc_html( 'Link not found with id ' . $link_id ) ); //
+		}
+
+		// If the service is offline, try again later.
+		if ( ! $this->wayback_machine->is_online() ) {
+			self::add_to_queue_with_delay( $link_id, 1 * \HOUR_IN_SECONDS );
+			return;
 		}
 
 		// If the link is an archive.org link, add message and throw error.

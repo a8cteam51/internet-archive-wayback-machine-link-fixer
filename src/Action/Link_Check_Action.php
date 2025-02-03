@@ -60,6 +60,15 @@ class Link_Check_Action {
 			);
 		}
 
+		// If the service is offline, we can't check the link.
+		if ( ! $this->link_checker->is_online() ) {
+			return array(
+				'link'    => null,
+				'checked' => false,
+				'valid'   => false,
+			);
+		}
+
 		// If the link is an internet archive link, we don't need to check it.
 		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
 			return array(

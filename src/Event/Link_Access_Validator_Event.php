@@ -64,6 +64,26 @@ class Link_Access_Validator_Event {
 	}
 
 	/**
+	 * Add a delay to the event.
+	 *
+	 * @param integer $link_id The link id.
+	 * @param integer $delay   The delay in seconds.
+	 *
+	 * @return void
+	 */
+	public static function add_to_queue_with_delay( int $link_id, int $delay = \HOUR_IN_SECONDS ): void {
+		$time_to_run = time() + $delay;
+
+		\as_schedule_single_action(
+			$time_to_run,
+			self::HANDLE,
+			array(
+				'link_id' => $link_id,
+			)
+		);
+	}
+
+	/**
 	 * Invoke the event.
 	 *
 	 * @param integer $link_id The link id.
@@ -86,6 +106,12 @@ class Link_Access_Validator_Event {
 					)
 				)
 			);
+		}
+
+		// If the service is offline, we can't check the link.
+		if ( ! $this->wayback_machine->is_online() ) {
+			self::add_to_queue_with_delay( $link_id );
+			throw new \Exception( esc_html( 'Service is offline, trying again in 1 hour.' ) );
 		}
 
 		// If we have no link, throw an error.

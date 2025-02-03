@@ -57,6 +57,15 @@ class Validate_Link_Action {
 	public function validate_link( int $link_id ): array {
 		$link = $this->link_repository->find_by_id( $link_id );
 
+		// If the service is offline, we can't check the link.
+		if ( ! $this->wayback_machine->is_online() ) {
+			return array(
+				'link'    => $link,
+				'job_id'  => null,
+				'message' => __( 'Service is offline', 'wpcomsp_wayback_link_fixer' ),
+			);
+		}
+
 		if ( ! $link ) {
 			return array(
 				'link'    => null,

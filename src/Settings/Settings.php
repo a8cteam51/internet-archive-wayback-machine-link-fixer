@@ -9,6 +9,7 @@
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Archive_Services_Online_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Abstract_Migration;
 
 defined( 'ABSPATH' ) || exit;
@@ -31,6 +32,7 @@ class Settings {
 	public const ARCHIVE_ORG_SECRET_KEY       = self::SETTINGS_PREFIX . 'archive_api_key';
 	public const ARCHIVE_ORG_ACCESS_KEY       = self::SETTINGS_PREFIX . 'archive_api_secret';
 	public const FIXER_OPTION                 = self::SETTINGS_PREFIX . 'fixer_option';
+	public const ARCHIVE_ORG_STATUS_KEY       = self::SETTINGS_PREFIX . 'archive_api_status';
 
 	// Table names.
 	public const LINK_TABLE = self::SETTINGS_PREFIX . 'link_archive';
@@ -41,11 +43,18 @@ class Settings {
 	public const SCAN_LINK_CACHE_TABLE  = self::SETTINGS_PREFIX . 'scan_link_cache';
 
 	// Meta Keys
-	public const LINK_META_KEY = self::SETTINGS_PREFIX . 'links';
+	public const LINK_META_KEY           = self::SETTINGS_PREFIX . 'links';
+	public const OWN_LINK_LAST_PROCESSED = self::SETTINGS_PREFIX . 'last_processed';
 
 	// Fixer Options
 	public const FIXER_OPTION_DO_NOTHING   = 'do_nothing';
 	public const FIXER_OPTION_REPLACE_LINK = 'replace_link';
+
+	// Own content submissions.
+	public const ALLOW_OWN_CONTENT_SUBMISSIONS             = self::SETTINGS_PREFIX . 'allow_own_content_submissions';
+	public const ALLOWED_OWN_CONTENT_POST_TYPES            = self::SETTINGS_PREFIX . 'allowed_own_content_post_types';
+	public const ROUTINELY_UPDATE_WAYBACK_MACHINE          = self::SETTINGS_PREFIX . 'routinely_update_wayback_machine';
+	public const ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL = self::SETTINGS_PREFIX . 'routinely_update_wayback_machine_interval';
 
 	/**
 	 * Gets the link table name.
@@ -230,5 +239,135 @@ class Settings {
 	 */
 	public static function get_fixer_option(): string {
 		return esc_attr( get_option( self::FIXER_OPTION, self::FIXER_OPTION_REPLACE_LINK ) );
+	}
+
+	/**
+	 * Checks if the archive.org API is online.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function is_archive_api_online(): bool {
+		// Get the transient.
+		$status = get_transient( self::ARCHIVE_ORG_STATUS_KEY );
+
+		// If not set, trigger a check.
+		if ( false === $status ) {
+			Check_Archive_Services_Online_Event::add_to_queue();
+			return false;
+		}
+
+		// If the status is not an array or doesnt have the status keu, trigger a check.
+		if ( ! is_array( $status ) || ! isset( $status['status'] ) ) {
+			Check_Archive_Services_Online_Event::add_to_queue();
+			return false;
+		}
+
+		// Return the status.
+		return 'online' === $status['status'];
+	}
+
+	/**
+	 * Update the current online status of the archive.org API.
+	 *
+	 * @param boolean $link_checker_status The status of the link checker.
+	 * @param boolean $snapshot_status     The status of the snapshot service.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return void
+	 */
+	public static function update_archive_api_status( bool $link_checker_status, bool $snapshot_status ): void {
+		$status = array(
+			'link_checker' => $link_checker_status,
+			'snapshot'     => $snapshot_status,
+			'status'       => $link_checker_status && $snapshot_status ? 'online' : 'offline',
+			'last-checked' => \gmdate( 'Y-m-d H:i:s' ),
+		);
+
+		$duration = apply_filters( 'wlf_archive_api_status_duration', \HOUR_IN_SECONDS );
+
+		// Set the transient.
+		set_transient( self::ARCHIVE_ORG_STATUS_KEY, $status, $duration );
+	}
+
+	/**
+	 * Get the archive api extended status.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return array|null
+	 */
+	public static function get_archive_api_status(): ?array {
+		$status = get_transient( self::ARCHIVE_ORG_STATUS_KEY );
+
+		// If we dont have a status, trigger a check.
+		if ( false === $status ) {
+			Check_Archive_Services_Online_Event::add_to_queue();
+			return null;
+		}
+
+		return is_array( $status ) ? $status : null;
+	}
+
+	/**
+	 * Checks if posts should be added to wayback machine on save.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function add_own_links(): bool {
+		return (bool) \apply_filters(
+			'wlf_add_own_content_to_wayback_machine',
+			(bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, false )
+		);
+	}
+
+	/**
+	 * Gets the post types whos posts should be added to the wayback machine.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string[]
+	 */
+	public static function own_link_allowed_post_types(): array {
+		return \apply_filters(
+			'wlf_own_content_post_types',
+			array_map( 'esc_html', (array) get_option( self::ALLOWED_OWN_CONTENT_POST_TYPES, array( 'post', 'page' ) ) )
+		);
+	}
+
+	/**
+	 * Checks if posts should be routinely updated in the wayback machine.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function own_link_routinely_update(): bool {
+		return (bool) \apply_filters(
+			'wlf_routinely_update_wayback_machine',
+			(bool) get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE, false )
+		);
+	}
+
+	/**
+	 * Gets the interval between updates.
+	 *
+	 * Time in seconds.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return integer
+	 */
+	public static function own_link_routine_update_interval(): int {
+		return absint(
+			\apply_filters(
+				'wlf_routinely_update_wayback_machine_interval',
+				\get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 14 * \DAY_IN_SECONDS )
+			)
+		);
 	}
 }

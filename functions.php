@@ -253,6 +253,28 @@ function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
 }
 
 /**
+ * Renders the notice about the Wayback Machine being offline.
+ *
+ * @since 1.3.0
+ *
+ * @return void
+ */
+function wpcomsp_wayback_link_fixer_render_wayback_offline_notice(): void {
+	// If the Wayback Machine is online, bail.
+	if ( Settings::is_archive_api_online() ) {
+		return;
+	}
+
+	?>
+	<div class="notice notice-error">
+		<p>
+			<?php esc_html_e( 'The Wayback Machine is currently offline. Please try again later.', 'wpcomsp_wayback_link_fixer' ); ?>
+		</p>
+	</div>
+	<?php
+}
+
+/**
  * Checks if a link is already an internet archive link.
  *
  * @since 1.3.0
@@ -334,5 +356,3 @@ function wpcomsp_wayback_link_fixer_normalize_url( string $url ): string {
 
 	return $url;
 }
-
-// endregion

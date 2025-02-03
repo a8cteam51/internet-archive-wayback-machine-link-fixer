@@ -13,9 +13,13 @@
  * Plugin Name:             Wayback Link Fixer
  * Plugin URI:              https://wpspecialprojects.wordpress.com
  * Description:             Scans links in your content and fixes them to use the Wayback Machine, archived version.
+<<<<<<< HEAD
  * Version:                 1.3.0RC1
+=======
+ * Version:                 1.3.0-rc.1
+>>>>>>> develop
  * Requires at least:       6.2
- * Tested up to:            6.2
+ * Tested up to:            6.7
  * Requires PHP:            7.4
  * Author:                  WordPress.com Special Projects
  * Author URI:              https://wpspecialprojects.wordpress.com
@@ -25,6 +29,7 @@
  * Domain Path:             /languages
  **/
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -36,49 +41,47 @@ define( 'WPCOMSP_WAYBACK_LINK_FIXER_BASENAME', plugin_basename( __FILE__ ) );
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_URL', plugin_dir_url( __FILE__ ) );
 
-$wpcomsp_wayback_link_fixer_requirements = validate_plugin_requirements( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME );
-define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', $wpcomsp_wayback_link_fixer_requirements );
-
-// Include the action scheduler integration.
-require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'lib/action-scheduler/action-scheduler.php';
+// Load the rest of the bootstrap functions.
+require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/functions-bootstrap.php';
 
 // Load plugin translations so they are available even for the error admin notices.
 add_action(
 	'init',
 	static function () {
 		load_plugin_textdomain(
-			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['TextDomain'],
+			wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( 'TextDomain' ),
 			false,
-			dirname( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME ) . WPCOMSP_WAYBACK_LINK_FIXER_METADATA['DomainPath']
+			dirname( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME ) . wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( 'DomainPath' )
 		);
+	}
+);
+
+// Declare compatibility with WC features.
+add_action(
+	'before_woocommerce_init',
+	static function () {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
 	}
 );
 
 // Load the autoloader.
 if ( ! is_file( WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/vendor/autoload.php' ) ) {
-	add_action(
-		'admin_notices',
-		static function () {
-			$message      = __( 'It seems like <strong>wayback-link-fixer</strong> is corrupted. Please reinstall!', 'wpcomsp_wayback_link_fixer' );
-			$html_message = wp_sprintf( '<div class="error notice wpcomsp-wayback-link-fixer-error">%s</div>', wpautop( $message ) );
-			echo wp_kses_post( $html_message );
-		}
-	);
+	wpcomsp_wayback_link_fixer_scaffold_output_requirements_error( new WP_Error( 'missing_autoloader' ) );
 	return;
 }
 require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/vendor/autoload.php';
 
+define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', wpcomsp_wayback_link_fixer_scaffold_validate_requirements() );
 
 
-if ( $wpcomsp_wayback_link_fixer_requirements instanceof WP_Error ) {
-	add_action(
-		'admin_notices',
-		static function () use ( $wpcomsp_wayback_link_fixer_requirements ): void {
-			$html_message = wp_sprintf( '<div class="error notice wpcomsp-wayback-link-fixer-error">%s</div>', $wpcomsp_wayback_link_fixer_requirements->get_error_message() );
-			echo wp_kses_post( $html_message );
-		}
-	);
+if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
+	wpcomsp_wayback_link_fixer_scaffold_output_requirements_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS );
 } else {
+	// Include the action scheduler integration.
+	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'lib/action-scheduler/action-scheduler.php';
+
 	// Add all migrations.
 	\WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations::$migrations = array( //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1::class,

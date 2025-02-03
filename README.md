@@ -1,31 +1,34 @@
-# Team 51 WayBack Link Fixer Plugin
+# Team 51 Wayback Link Fixer Plugin
 
 **Contributors:** wpcomspecialprojects \
 **Tags:** \
-**Requires at least:** 6.4 \
-**Tested up to:** 6.5 \
-**Requires PHP:** 8.0 \
+**Requires at least:** 6.2 \
+**Tested up to:** 6.7 \
+**Requires PHP:** 7.4 \
 **Stable tag:** 1.3.0 RC1   \
 **License:** GPLv3 or later \
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html
 
 ## Description
 
-Welcome to **WayBack Link Fixer**, a powerful tool designed to enhance your WordPress site by automatically scanning posts for links, retrieving the latest snapshots from the Wayback Machine, and seamlessly replacing broken links with archived versions. This innovative solution ensures that your posts remain resilient against `BITROT` , preserving the integrity of linked content over time.
+Welcome to **Wayback Link Fixer**, a powerful tool designed to enhance your WordPress site by automatically scanning posts for links, retrieving the latest snapshots from the Wayback Machine, and seamlessly replacing broken links with archived versions. This innovative solution ensures that your posts remain resilient against `BITROT` , preserving the integrity of linked content over time.
 
 ## Installation
+
+**[Download the latest release](https://github.com/a8cteam51/wayback-link-fixer/releases/latest/download/wayback-link-fixer.zip)**
+
 
 ### Via WP Admin Dashboard
 
 1. Upload the archive using the WordPress plugin uploader.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Configure the plugin settings by navigating to the 'WayBack Link Fixer' menu in the WordPress admin dashboard.
+3. Configure the plugin settings by navigating to the 'Wayback Link Fixer' menu in the WordPress admin dashboard.
 
 ### Via FTP
 
 1. Extract the archive and upload the plugin folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Configure the plugin settings by navigating to the 'WayBack Link Fixer' menu in the WordPress admin dashboard.
+3. Configure the plugin settings by navigating to the 'Wayback Link Fixer' menu in the WordPress admin dashboard.
 
 Certainly! Here’s a more polished version for a WordPress plugin readme:
 
@@ -76,7 +79,26 @@ You can use this plugin without an API key, but you will be limited to 200 new s
 
 ![image](./_docs/settings--fixer-option.png)
 
+### Add Own Content to Wayback Machine
+
+You can allow all posts to be added to the Wayback Machine. This will ensure that all posts are archived and can be accessed at a later date. By turning on this setting, every time a post is created or updated, it will be added to the Wayback Machine.
+
+![image](./_docs/settings--add-own-posts.png)
+
+### Routine Update own Content
+
+You can allow all posts to be routinely updated in the Wayback Machine. This will ensure that all posts are archived and can be accessed at a later date. By turning on this setting, every post will be updated every 14 days.
+
+![image](./_docs/settings--routinelyh-add-own-posts.png)
+
 You can use this setting to choose how the plugin should handle broken links. Either do nothing or replace the broken link with the archived version (if available).
+
+### Internet Archive Status
+
+Following the 2024 incident, we have added some checks that run routinely to check if the Internet Archive is still running. If it is not, the plugin will not be able to create new snapshots or check the status of existing links. Any pending checks or links to be created, will be delayed but should still run later onces things are back up an running.
+
+You can tell when things of offline with the following notice 
+![image](./_docs/ia-offline.png)
 
 ## Links 
 
@@ -477,16 +499,66 @@ add_filter( 'wlf_get_closest_snapshot_url', function( string $base_url, string $
 });
 ```
 
-#### `wlf_create_snapshot_url`
+#### `wlf_archive_api_status_duration`
 
-This is the base url used when creating a snapshot of a link. This is done as a POST request, with the URL passed as a body parameter.
+This set how long the wait should be between checking the status of the archive API. The default is 1 hour.
 
 ```php
-add_filter( 'wlf_create_snapshot_url', function( string $url ): string {
-	return 'https://my-custom-snapshot-creator.com';
+add_filter( 'wlf_archive_api_status_duration', function( int $url ): int {
+	return 30 * \MINUTE_IN_SECONDS; // 30 minutes
 });
 ```
 
+#### `wlf_add_own_content_to_wayback_machine`
+This filter is applied to the setting which allows the user to add their own content to the Wayback Machine. The default is false and can be controlled via settings also.
+
+```php
+add_filter( 'wlf_add_own_content_to_wayback_machine', function( bool $add_own_content ): bool {
+	return true;
+});
+```
+
+> Please note when a post is added, a 10 minute delay is added before the post is added to the Wayback Machine. This will prevent the internet archive from blocking the request and creating lots of snapshots with no real changes.
+
+#### `wlf_own_content_post_types`
+This allows control over which post types are allowed to be added. The default is `post` and `page`.
+
+```php
+add_filter( 'wlf_own_content_post_types', function( array $post_types ): array {
+	$post_types[] = 'custom_post_type';
+	return $post_types;
+});
+```
+
+#### `wlf_routinely_update_wayback_machine`
+When this is set to retturn true, all posts in the allowed post types will be routinely updated in the Wayback Machine. The default is false.
+
+```php
+add_filter( 'wlf_routinely_update_wayback_machine', function( bool $routinely_update ): bool {
+	return true;
+});
+```
+
+#### `wlf_routinely_update_wayback_machine_interval`
+This is used to denote how long between each routine update. The default is 14 days. `The time is give in seconds.`
+
+```php
+add_filter( 'wlf_routinely_update_wayback_machine_interval', function( int $interval ): int {
+	return 7 * \DAY_IN_SECONDS; // 7 days
+});
+```
+
+#### `wlf_own_content_allow_post`
+This filter allows a final decision to be made on if a post should be added to the Wayback Machine. The default is to allow all posts.
+
+```php
+add_filter( 'wlf_own_content_allow_post', function( bool $allow, int $post_id ): bool {
+	if ( get_post_meta( $post_id, 'do_not_archive', true ) ) {
+		return false;
+	}
+	return $allow;
+});
+```
 
 ### Internet Archive / Wayback Link Fixer Instances.
 

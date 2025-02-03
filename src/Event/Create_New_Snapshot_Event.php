@@ -112,6 +112,12 @@ class Create_New_Snapshot_Event {
 			throw new \Exception( esc_html( 'Max attempts reached for link ' . $link_id ) );
 		}
 
+		// If the service is offline, try again later in 1 hour.
+		if ( ! $this->wayback_machine->is_online() ) {
+			self::add_delayed_to_queue( $link_id, $attempt, \HOUR_IN_SECONDS );
+			throw new \Exception( esc_html( 'Service is offline, trying again in 1 hour.' ) );
+		}
+
 		try {
 			// Find the link based on its id.
 			$link = $this->link_repository->find_by_id( $link_id );

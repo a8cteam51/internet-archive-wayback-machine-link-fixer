@@ -103,6 +103,12 @@ class Scan_Posts_Event {
 		// Setup the class.
 		$this->setup();
 
+		// If the service is offline, we can't check the link.
+		if ( ! Settings::is_archive_api_online() ) {
+			self::add_to_action_scheduler();
+			return;
+		}
+
 		// Look for more posts, which do not have the meta data.
 		$query = new \WP_Query(
 			array(
@@ -129,7 +135,7 @@ class Scan_Posts_Event {
 		if ( $query->have_posts() ) {
 			// Iterate over the posts.
 			foreach ( $query->posts as $post ) {
-				$this->post_controller->process_single_post( $post->ID );
+				$this->post_controller->process_links_in_content( $post->ID );
 			}
 		}
 
