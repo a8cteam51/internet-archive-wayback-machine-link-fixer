@@ -14,6 +14,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Find or Create Snapshot Event class.
  */

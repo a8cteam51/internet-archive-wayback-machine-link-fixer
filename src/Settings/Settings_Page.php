@@ -1,15 +1,14 @@
 <?php
 
 /**
- * The Settings acpage
+ * The Settings page controller class.
  *
  * @since      1.0.0
- * @version    1.0.0
  */
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
+declare(strict_types=1);
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Viewer\Report_Viewer_Page;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
 
 defined( 'ABSPATH' ) || exit;
 

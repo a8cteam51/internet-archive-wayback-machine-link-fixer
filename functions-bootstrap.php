@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Handles all bootstrap functionality.
+ *
+ * @since 1.0.0
+ */
+
+declare(strict_types=1);
+
 defined( 'ABSPATH' ) || exit;
 
 /**

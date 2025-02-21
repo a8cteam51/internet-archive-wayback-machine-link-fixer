@@ -13,6 +13,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * The report page.
  */

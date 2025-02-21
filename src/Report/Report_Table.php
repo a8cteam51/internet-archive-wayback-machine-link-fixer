@@ -35,10 +35,6 @@ class Report_Table extends \WP_List_Table {
 	public const COLUMN_LINK_CHECKS_LAST = 'report-link-checks-last';
 	public const COLUMN_LINK_EXCLUDE     = 'report-link-exclude';
 
-
-
-
-
 	/**
 	 * Holds all the links from the logs.
 	 *
@@ -333,7 +329,7 @@ class Report_Table extends \WP_List_Table {
 					// translators: %1$s is the link url, %2$s is the last check date, %3$s is the last check http code.
 					__( 'Link %1$s checked successfully on %2$s with %3$s status', 'wpcomsp_wayback_link_fixer' ),
 					esc_html( wpcomsp_wayback_link_fixer_trim_string( $link_url, 54 ) ),
-					\DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) ),
+					DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) ),
 					esc_html( $last_check['http_code'] )
 				),
 				'type'    => 'success',
@@ -939,7 +935,7 @@ class Report_Table extends \WP_List_Table {
 			// translators: %1$s is the last check date, %2$s is the last check http code.
 			__( '%1$s with %2$s status', 'wpcomsp_wayback_link_fixer' ),
 			$last_check['date']
-				? \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) )
+				? DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) )
 				: __( 'Missing date', 'wpcomsp_wayback_link_fixer' ),
 			$last_check
 				? esc_html( $last_check['http_code'] )

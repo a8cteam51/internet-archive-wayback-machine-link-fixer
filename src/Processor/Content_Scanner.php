@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Processor;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Content Scanner class.
  */

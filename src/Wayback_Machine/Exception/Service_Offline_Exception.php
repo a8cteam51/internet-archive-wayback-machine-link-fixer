@@ -13,6 +13,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception;
 
 use Exception;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Service_Offline_Exception
  */

@@ -14,7 +14,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Process_Local_Post_Event;
+
+defined( 'ABSPATH' ) || exit;
 
 
 /**

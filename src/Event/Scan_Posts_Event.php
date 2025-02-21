@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Action shceduler event for scanning posts for links.
+ * Action scheduler event for scanning posts for links.
  *
  * This will ensure that any old or imported posts are scanned for links.
  *
@@ -15,6 +15,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
 
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Scan Posts Event class.

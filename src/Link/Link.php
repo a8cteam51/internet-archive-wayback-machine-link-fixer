@@ -12,6 +12,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Link Model
  */

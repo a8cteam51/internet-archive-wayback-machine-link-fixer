@@ -118,7 +118,7 @@ class Update_Archive_URL_Event {
 			);
 		}
 
-		// If we dont have a link, then we can't do anything.
+		// If we don't have a link, then we can't do anything.
 		if ( null === $link ) {
 			throw new \Exception( esc_attr( "Could not find the link with ID {$link_id}" ), 1 );
 		}

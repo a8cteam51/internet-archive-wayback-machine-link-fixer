@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Event Controller class.
  */

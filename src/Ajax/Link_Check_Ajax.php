@@ -15,6 +15,8 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Link_Check_Ajax
  */

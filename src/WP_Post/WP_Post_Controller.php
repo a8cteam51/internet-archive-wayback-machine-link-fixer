@@ -20,6 +20,8 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Process_Local_Post_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Processor;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Handles the various post actions.
  */

@@ -15,6 +15,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Link_Check_Action
  */

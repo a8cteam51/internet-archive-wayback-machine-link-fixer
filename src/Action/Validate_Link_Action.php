@@ -20,6 +20,8 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Validator_Status;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Validate_Link_Action
  */

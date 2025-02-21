@@ -19,6 +19,8 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Of
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * The Wayback Machine Rest Client.
  */

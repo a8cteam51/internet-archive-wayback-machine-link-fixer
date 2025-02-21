@@ -13,6 +13,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Find_Or_Create_Snapshot_Event;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Link Response class.
  */
