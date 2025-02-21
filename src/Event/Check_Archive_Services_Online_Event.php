@@ -48,7 +48,7 @@ class Check_Archive_Services_Online_Event {
 	 */
 	public static function add_to_queue(): void {
 		// Add an single event with the date as epoch.
-		\as_schedule_single_action(
+		as_schedule_single_action(
 			0, // Forces the event to run immediately.
 			self::HANDLE,
 			array(),

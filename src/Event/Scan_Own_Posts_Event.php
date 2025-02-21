@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
+use WP_Query;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
 
@@ -64,23 +65,23 @@ class Scan_Own_Posts_Event {
 		}
 
 		// Bail if action scheduler is not available.
-		if ( ! \function_exists( 'as_has_scheduled_action' ) ) {
+		if ( ! function_exists( 'as_has_scheduled_action' ) ) {
 			return;
 		}
 
 		// If the event is not scheduled, schedule it.
-		if ( \as_has_scheduled_action( self::HANDLE ) ) {
+		if ( as_has_scheduled_action( self::HANDLE ) ) {
 			return;
 		}
 
 		// Get the delay of the event.
-		$interval = absint( \apply_filters( 'wlf_scan_own_posts_event_interval', 15 * \MINUTE_IN_SECONDS ) );
+		$interval = absint( apply_filters( 'wlf_scan_own_posts_event_interval', 15 * \MINUTE_IN_SECONDS ) );
 
 		// If we have 0 interval, add as async action.
 		if ( 0 === $interval ) {
-			\as_enqueue_async_action( self::HANDLE, array(), 'wayback-link-fixer' );
+			as_enqueue_async_action( self::HANDLE, array(), 'wayback-link-fixer' );
 		} else {
-			\as_schedule_single_action( \time() + $interval, self::HANDLE, array(), 'wayback-link-fixer' );
+			as_schedule_single_action( time() + $interval, self::HANDLE, array(), 'wayback-link-fixer' );
 		}
 	}
 
@@ -95,7 +96,7 @@ class Scan_Own_Posts_Event {
 
 		$allowed_delay      = Settings::own_link_routine_update_interval();
 		$allowed_post_types = Settings::own_link_allowed_post_types();
-		$posts_per_call     = absint( \apply_filters( 'wlf_scan_own_posts_per_call', 10 ) );
+		$posts_per_call     = absint( apply_filters( 'wlf_scan_own_posts_per_call', 10 ) );
 
 		$args = array(
 			'posts_per_page' => $posts_per_call,
@@ -119,7 +120,7 @@ class Scan_Own_Posts_Event {
 		);
 
 		// Get all posts that are in the defined post types and have not been checked since
-		$posts = new \WP_Query( $args );
+		$posts = new WP_Query( $args );
 
 		// If we have no posts, bail.
 		if ( ! $posts->have_posts() ) {

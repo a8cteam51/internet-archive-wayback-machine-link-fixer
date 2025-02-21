@@ -153,7 +153,7 @@ function wpcomsp_wayback_link_fixer_scaffold_output_requirements_error( $error )
 	add_action(
 		'admin_notices',
 		static function () use ( $error ) {
-			$requirements_error = \wp_sprintf(
+			$requirements_error = wp_sprintf(
 				/* translators: 1: Plugin name, 2: Plugin version */
 				__( '<strong>%1$s (version %2$s)</strong> could not be initialized.', 'wpcomsp_wayback_link_fixer' ),
 				wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( 'Name' ),

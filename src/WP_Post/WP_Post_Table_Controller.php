@@ -79,7 +79,7 @@ class WP_Post_Table_Controller {
 	 */
 	private function get_link( int $link_id ): ?Link {
 		// Look for the link in the cache
-		if ( \array_key_last( $this->links ) === $link_id ) {
+		if ( array_key_last( $this->links ) === $link_id ) {
 			return $this->links[ $link_id ];
 		}
 
@@ -101,12 +101,12 @@ class WP_Post_Table_Controller {
 	 */
 	public function add_column( array $columns ): array {
 		// Get the post type.
-		$post_type = \get_current_screen()->post_type;
+		$post_type = get_current_screen()->post_type;
 		// Get the post types from settings.
 		$allowed_post_types = Settings::get_allowed_post_types();
 
 		// If the post type is not in the allowed post types, return the columns.
-		if ( ! \in_array( $post_type, $allowed_post_types, true ) ) {
+		if ( ! in_array( $post_type, $allowed_post_types, true ) ) {
 			return $columns;
 		}
 
@@ -133,7 +133,7 @@ class WP_Post_Table_Controller {
 		$links = get_post_meta( $post_id, Settings::LINK_META_KEY, true );
 
 		// If we have no links (empty or not an array), return.
-		if ( ! \is_array( $links ) || empty( $links ) ) {
+		if ( ! is_array( $links ) || empty( $links ) ) {
 			return;
 		}
 
@@ -148,11 +148,11 @@ class WP_Post_Table_Controller {
 
 		// If we have no links, show a message.
 		if ( empty( $stats['total'] ) ) {
-			echo \esc_html__( 'No links found', 'wpcomsp_wayback_link_fixer' );
+			echo esc_html__( 'No links found', 'wpcomsp_wayback_link_fixer' );
 			return;
 		}
 
-		print \wp_kses(
+		print wp_kses(
 			sprintf(
 			// translators: %2$s is the url to view the links in a report, %2$s is the number of broken links, %3$s is the total number of links.
 				__( '<a href="%1$s"><strong>%2$s</strong> broken out of <strong>%3$s</strong></a>', 'wpcomsp_wayback_link_fixer' ),
@@ -180,8 +180,8 @@ class WP_Post_Table_Controller {
 		// If we have no links, cast to array.
 		$links = $links ?? array();
 
-		$total  = \count( $links );
-		$broken = \count(
+		$total  = count( $links );
+		$broken = count(
 			array_filter(
 				$links,
 				function ( Link $link ): bool {
@@ -202,19 +202,10 @@ class WP_Post_Table_Controller {
 	 * @return string
 	 */
 	private function generate_report_page_url( array $links, int $post_id ): string {
-
-		// Extract the ids from the links.
-		$ids = \array_map(
-			function ( Link $link ): int {
-				return absint( $link->get_id() );
-			},
-			$links
-		);
-
 		$url = Report_Page::get_page_url();
 
 		// Add the initial post id.
-		$url = \add_query_arg( 'wlf_filtered_post_id', $post_id, $url );
+		$url = add_query_arg( 'wlf_filtered_post_id', $post_id, $url );
 
 		return $url;
 	}

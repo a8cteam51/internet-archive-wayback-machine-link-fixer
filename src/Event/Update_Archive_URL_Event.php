@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
+use Exception;
+use Throwable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
@@ -60,7 +62,7 @@ class Update_Archive_URL_Event {
 	 * @return void
 	 */
 	public function setup(): void {
-		$this->max_attempts = \apply_filters( 'wlf_update_archive_url_attempts', $this->max_attempts );
+		$this->max_attempts = apply_filters( 'wlf_update_archive_url_attempts', $this->max_attempts );
 
 		$this->wayback_machine = new Wayback_Machine_Service();
 		$this->repository      = new Link_Repository();
@@ -76,8 +78,8 @@ class Update_Archive_URL_Event {
 	 * @return void
 	 */
 	public static function add_to_queue( int $link_id, int $attempt = 0, int $delay = 0 ): void {
-		\as_schedule_single_action(
-			\time() + $delay,
+		as_schedule_single_action(
+			time() + $delay,
 			self::HANDLE,
 			array(
 				'link_id' => $link_id,
@@ -105,9 +107,9 @@ class Update_Archive_URL_Event {
 		try {
 			// Find the link based on its id.
 			$link = $this->repository->find_by_id( $link_id );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			self::add_to_queue( $link_id, $attempt + 1, 15 * \MINUTE_IN_SECONDS );
-			throw new \Exception(
+			throw new Exception(
 				esc_html(
 					sprintf(
 						'Error finding link id: %d, error: %s',
@@ -120,20 +122,20 @@ class Update_Archive_URL_Event {
 
 		// If we don't have a link, then we can't do anything.
 		if ( null === $link ) {
-			throw new \Exception( esc_attr( "Could not find the link with ID {$link_id}" ), 1 );
+			throw new Exception( esc_attr( "Could not find the link with ID {$link_id}" ), 1 );
 		}
 
 		// If we have reached the maximum number of attempts, then mark the link as broken.
 		if ( $attempt > $this->max_attempts ) {
-			throw new \Exception( esc_attr( "Reached maximum number of attempts for link with ID {$link_id}" ), 1 );
+			throw new Exception( esc_attr( "Reached maximum number of attempts for link with ID {$link_id}" ), 1 );
 		}
 
 		// Attempt to get the archived link
 		try {
 			$archive_url = $this->wayback_machine->find_archive( $link->get_href() );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			self::add_to_queue( $link_id, $attempt + 1, 15 * \MINUTE_IN_SECONDS );
-			throw new \Exception(
+			throw new Exception(
 				esc_html(
 					sprintf(
 						'Error getting archive URL for link id: %d, error: %s',

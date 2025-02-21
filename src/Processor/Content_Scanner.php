@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Processor;
 
+use DOMDocument;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -65,7 +67,7 @@ class Content_Scanner {
 			return $this;
 		}
 
-		$dom = new \DOMDocument();
+		$dom = new DOMDocument();
 		$dom->loadHTML( $this->content, LIBXML_NOERROR );
 
 		$anchors = $dom->getElementsByTagName( 'a' );

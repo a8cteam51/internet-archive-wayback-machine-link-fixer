@@ -119,7 +119,7 @@ class Report_Table extends \WP_List_Table {
 
 		$from_meta = get_user_meta( get_current_user_id(), $option['option'], true );
 
-		return \is_numeric( $from_meta )
+		return is_numeric( $from_meta )
 			? absint( $from_meta )
 			: absint( $option['default'] );
 	}
@@ -152,7 +152,7 @@ class Report_Table extends \WP_List_Table {
 		}
 
 		// Verify the nonce and referrer.
-		if ( ! \wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) && check_admin_referer( 'bulk-' . $this->_args['plural'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) && check_admin_referer( 'bulk-' . $this->_args['plural'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			// Add a notice.
 			$this->notices[] = array(
 				'message' => __( 'Something went wrong, please try again', 'wpcomsp_wayback_link_fixer' ),
@@ -248,7 +248,7 @@ class Report_Table extends \WP_List_Table {
 		}
 
 		// Add to the redirect the current page.
-		$url = \home_url() . $redirect;
+		$url = home_url() . $redirect;
 
 		// Redirect to the page using JS as page already loaded headers.
 		echo "<script>window.location = '$url';</script>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, this is just a redirect.
@@ -652,7 +652,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_status_from_url(): ?string {
 		return array_key_exists( 'wlf_status', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? \sanitize_text_field( $_GET['wlf_status'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( $_GET['wlf_status'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: '';
 	}
 
@@ -663,7 +663,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_excluded_status_from_url(): ?string {
 		return array_key_exists( 'wlf_is_excluded', $_GET ) && '' !== $_GET['wlf_is_excluded'] // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? \sanitize_text_field( $_GET['wlf_is_excluded'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( $_GET['wlf_is_excluded'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: null;
 	}
 
@@ -674,7 +674,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_archived_status_from_url(): ?string {
 		return array_key_exists( 'wlf_has_archive', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? \sanitize_text_field( $_GET['wlf_has_archive'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( $_GET['wlf_has_archive'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: '';
 	}
 
@@ -769,7 +769,7 @@ class Report_Table extends \WP_List_Table {
 	private function get_link_ids_from_url(): array {
 
 		// If we have the post id in the url, return the links ids.
-		if ( ! \array_key_exists( 'wlf_filtered_post_id', $_GET ) ) { // phpcs:ignore
+		if ( ! array_key_exists( 'wlf_filtered_post_id', $_GET ) ) { // phpcs:ignore
 			return array();
 		}
 
@@ -855,7 +855,7 @@ class Report_Table extends \WP_List_Table {
 
 				return sprintf(
 					'<a href="%s">%s</a>',
-					esc_url( \add_query_arg( array( 'wlf_link_id' => $item->get_id() ), $url ) ),
+					esc_url( add_query_arg( array( 'wlf_link_id' => $item->get_id() ), $url ) ),
 					$this->compile_link_name( $item )
 				);
 			case self::COLUMN_LINK_ARCHIVE:

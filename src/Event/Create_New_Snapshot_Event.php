@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
+use Exception;
+use Throwable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Snapshot_Status_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
@@ -53,7 +55,7 @@ class Create_New_Snapshot_Event {
 	public function setup(): void {
 		$this->link_repository = new Link_Repository();
 		$this->wayback_machine = new Wayback_Machine_Service();
-		$this->attempt         = \apply_filters( 'wlf_create_new_snapshot_attempts', 3 );
+		$this->attempt         = apply_filters( 'wlf_create_new_snapshot_attempts', 3 );
 	}
 
 	/**
@@ -85,7 +87,7 @@ class Create_New_Snapshot_Event {
 	 * @return integer
 	 */
 	public static function add_delayed_to_queue( int $link_id, int $attempt, int $delay = 15 * \MINUTE_IN_SECONDS ): int {
-		return \as_schedule_single_action(
+		return as_schedule_single_action(
 			time() + $delay,
 			self::HANDLE,
 			array(
@@ -111,21 +113,21 @@ class Create_New_Snapshot_Event {
 
 		// If the attempt is greater than or equal to the max attempts, return early.
 		if ( $attempt >= $this->attempt ) {
-			throw new \Exception( esc_html( 'Max attempts reached for link ' . $link_id ) );
+			throw new Exception( esc_html( 'Max attempts reached for link ' . $link_id ) );
 		}
 
 		// If the service is offline, try again later in 1 hour.
 		if ( ! $this->wayback_machine->is_online() ) {
 			self::add_delayed_to_queue( $link_id, $attempt, \HOUR_IN_SECONDS );
-			throw new \Exception( esc_html( 'Service is offline, trying again in 1 hour.' ) );
+			throw new Exception( esc_html( 'Service is offline, trying again in 1 hour.' ) );
 		}
 
 		try {
 			// Find the link based on its id.
 			$link = $this->link_repository->find_by_id( $link_id );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			self::add_to_queue( $link_id, $attempt + 1 );
-			throw new \Exception(
+			throw new Exception(
 				esc_html(
 					sprintf(
 						'Error finding link id: %d, error: %s',
@@ -138,7 +140,7 @@ class Create_New_Snapshot_Event {
 
 		// If we have no link, throw an error.
 		if ( null === $link ) {
-			throw new \Exception( esc_html( 'Link not found with id ' . $link_id ) ); //
+			throw new Exception( esc_html( 'Link not found with id ' . $link_id ) ); //
 		}
 
 		// If the link already has a archived link, return early.
@@ -149,9 +151,9 @@ class Create_New_Snapshot_Event {
 		// Ensure we are working with the final link, incase its been redirected.
 		try {
 			$link_url = $this->wayback_machine->get_final_url( $link->get_href() );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			self::add_delayed_to_queue( $link_id, $attempt + 1 );
-			throw new \Exception(
+			throw new Exception(
 				esc_html(
 					sprintf(
 						'Error getting final URL for link id: %d, error: %s',
@@ -172,9 +174,9 @@ class Create_New_Snapshot_Event {
 		// Attempt to get the archived link
 		try {
 			$archive_url = $this->get_archived_link( $link_url );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			self::add_delayed_to_queue( $link_id, $attempt + 1 );
-			throw new \Exception(
+			throw new Exception(
 				esc_html(
 					sprintf(
 						'Error getting archive URL for link id: %d, error: %s',
@@ -191,7 +193,7 @@ class Create_New_Snapshot_Event {
 			// Attempt to create a snapshot
 			try {
 				$job_id = $this->wayback_machine->create_snapshot( $link_url );
-			} catch ( \Throwable $th ) {
+			} catch ( Throwable $th ) {
 				// If this is the last attempt, re throw the error.
 				if ( $th instanceof Exceeded_Snapshot_Limit_Exception
 				|| $attempt >= $this->attempt

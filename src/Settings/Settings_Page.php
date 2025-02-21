@@ -66,7 +66,7 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function register_page(): void {
-		$this->menu_hook = \add_submenu_page(
+		$this->menu_hook = add_submenu_page(
 			'options-general.php',
 			__( 'Wayback Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			__( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ),
@@ -94,7 +94,7 @@ class Settings_Page {
 		// Register select2
 		wpcomsp_wayback_link_fixer_enqueue_select2_assets( array( self::PAGE_SLUG ) );
 
-		\wp_register_script(
+		wp_register_script(
 			self::PAGE_SLUG,
 			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/admin_settings.js',
 			array( 'jquery' ),
@@ -102,7 +102,7 @@ class Settings_Page {
 			true
 		);
 
-		\wp_localize_script(
+		wp_localize_script(
 			self::PAGE_SLUG,
 			'WlfSettings',
 			array(
@@ -110,7 +110,7 @@ class Settings_Page {
 			)
 		);
 
-		\wp_enqueue_script( self::PAGE_SLUG );
+		wp_enqueue_script( self::PAGE_SLUG );
 
 		//  Register the styles.
 		wp_enqueue_style(
@@ -133,8 +133,8 @@ class Settings_Page {
 		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
 		echo '<form action="options.php" method="post">';
 
-		\do_settings_sections( self::PAGE_SLUG );
-		\settings_fields( self::PAGE_SLUG );
+		do_settings_sections( self::PAGE_SLUG );
+		settings_fields( self::PAGE_SLUG );
 
 		echo wp_kses(
 			sprintf(
@@ -150,7 +150,7 @@ class Settings_Page {
 			)
 		);
 
-		\submit_button( __( 'Save Changes', 'wpcomsp_wayback_link_fixer' ) );
+		submit_button( __( 'Save Changes', 'wpcomsp_wayback_link_fixer' ) );
 
 		echo '</form>';
 	}
@@ -163,7 +163,7 @@ class Settings_Page {
 	 * @return  void
 	 */
 	private function register_settings_fields(): void {
-		\register_setting(
+		register_setting(
 			self::PAGE_SLUG,
 			Settings::ALLOWED_POST_TYPES,
 			array(
@@ -182,7 +182,7 @@ class Settings_Page {
 			)
 		);
 
-		\register_setting(
+		register_setting(
 			self::PAGE_SLUG,
 			Settings::DROP_TABLES_ON_UNINSTALL_KEY,
 			array(
@@ -198,7 +198,7 @@ class Settings_Page {
 			)
 		);
 
-		\register_setting(
+		register_setting(
 			self::PAGE_SLUG,
 			Settings::SCAN_EXISTING_POSTS,
 			array(
@@ -214,7 +214,7 @@ class Settings_Page {
 			)
 		);
 
-		\register_setting(
+		register_setting(
 			self::PAGE_SLUG,
 			Settings::LINK_EXCLUSIONS,
 			array(
@@ -233,7 +233,7 @@ class Settings_Page {
 			)
 		);
 
-		\register_setting(
+		register_setting(
 			self::PAGE_SLUG,
 			Settings::ARCHIVE_ORG_SECRET_KEY,
 			array(
@@ -244,7 +244,7 @@ class Settings_Page {
 			),
 		);
 
-		\register_setting(
+		register_setting(
 			self::PAGE_SLUG,
 			Settings::ARCHIVE_ORG_ACCESS_KEY,
 			array(
@@ -255,7 +255,7 @@ class Settings_Page {
 			)
 		);
 
-		\register_setting(
+		register_setting(
 			self::PAGE_SLUG,
 			Settings::FIXER_OPTION,
 			array(
@@ -266,7 +266,7 @@ class Settings_Page {
 			)
 		);
 
-		\register_setting(
+		register_setting(
 			self::PAGE_SLUG,
 			Settings::ALLOW_OWN_CONTENT_SUBMISSIONS,
 			array(
@@ -282,7 +282,7 @@ class Settings_Page {
 			)
 		);
 
-		\register_setting(
+		register_setting(
 			self::PAGE_SLUG,
 			Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE,
 			array(
@@ -307,14 +307,14 @@ class Settings_Page {
 	 * @return  void
 	 */
 	private function add_settings_fields(): void {
-		\add_settings_section(
+		add_settings_section(
 			self::SETTINGS_SECTION,
 			__( 'Wayback Link Fixer :: Settings', 'wpcomsp_wayback_link_fixer' ),
 			'__return_empty_string',
 			self::PAGE_SLUG
 		);
 
-		\add_settings_field(
+		add_settings_field(
 			Settings::ALLOWED_POST_TYPES,
 			__( 'Post Types', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_post_types_field' ),
@@ -322,7 +322,7 @@ class Settings_Page {
 			self::SETTINGS_SECTION
 		);
 
-		\add_settings_field(
+		add_settings_field(
 			Settings::DROP_TABLES_ON_UNINSTALL_KEY,
 			__( 'Drop Tables on Uninstall', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_drop_tables_on_uninstall_field' ),
@@ -330,7 +330,7 @@ class Settings_Page {
 			self::SETTINGS_SECTION
 		);
 
-		\add_settings_field(
+		add_settings_field(
 			Settings::SCAN_EXISTING_POSTS,
 			__( 'Should existing posts be checked', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_check_existing_posts' ),
@@ -338,7 +338,7 @@ class Settings_Page {
 			self::SETTINGS_SECTION
 		);
 
-		\add_settings_field(
+		add_settings_field(
 			Settings::FIXER_OPTION,
 			__( 'Fixer Option', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_fixer_option' ),
@@ -346,7 +346,7 @@ class Settings_Page {
 			self::SETTINGS_SECTION
 		);
 
-		\add_settings_field(
+		add_settings_field(
 			Settings::ALLOW_OWN_CONTENT_SUBMISSIONS,
 			__( 'Add own posts', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_allow_own_posts' ),
@@ -354,7 +354,7 @@ class Settings_Page {
 			self::SETTINGS_SECTION
 		);
 
-		\add_settings_field(
+		add_settings_field(
 			Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE,
 			__( 'Routinely update own posts', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_own_link_routinely_update' ),
@@ -362,7 +362,7 @@ class Settings_Page {
 			self::SETTINGS_SECTION
 		);
 
-		\add_settings_field(
+		add_settings_field(
 			Settings::LINK_EXCLUSIONS,
 			__( 'Link Exclusions', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_link_exclusions_field' ),
@@ -370,7 +370,7 @@ class Settings_Page {
 			self::SETTINGS_SECTION
 		);
 
-		\add_settings_field(
+		add_settings_field(
 			Settings::ARCHIVE_ORG_SECRET_KEY,
 			__( 'Archive.org Secret Key', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_archive_api_secret_key' ),
@@ -378,7 +378,7 @@ class Settings_Page {
 			self::SETTINGS_SECTION
 		);
 
-		\add_settings_field(
+		add_settings_field(
 			Settings::ARCHIVE_ORG_ACCESS_KEY,
 			__( 'Archive.org Access Key', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_archive_api_access_key' ),
@@ -473,7 +473,7 @@ class Settings_Page {
 	public function render_link_exclusions_field(): void {
 		$urls = Settings::get_link_exclusions();
 
-		echo \wp_kses(
+		echo wp_kses(
 			sprintf(
 				'<div><p>%s</p></div>',
 				__( 'Enter a list of URLs to exclude from the link checker. These can be added using <code>*</code> wildcards such as <code>https://x.com*</code> to exclude any x/twitter link', 'wpcomsp_wayback_link_fixer' )
@@ -685,10 +685,10 @@ class Settings_Page {
 		</label>
 		<p class="description">
 			<?php
-			\printf(
+			printf(
 					// Translators: %s is the interval.
 				esc_html__( 'If checked, the plugin will update own posts in the wayback machine every %s', 'wpcomsp_wayback_link_fixer' ),
-				esc_html( \human_time_diff( 0, $interval ) )
+				esc_html( human_time_diff( 0, $interval ) )
 			)
 			?>
 		</p>

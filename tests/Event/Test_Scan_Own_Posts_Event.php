@@ -11,8 +11,6 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Processor;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Scan_Own_Posts_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
 use WPCOMSpecialProjects\Wayback_Link_Fixer_Tests\Tools\Wayback_Machine_Helper;
 
 /**
@@ -41,6 +39,13 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 
 		// Clear the clients.
 		$this->clear_clients();
+
+				// Get all existing posts.
+		$all = \get_posts( array( 'post_type' => 'any', 'posts_per_page' => -1 ) );
+		// Iterate through all posts and remove them.
+		foreach ( $all as $post ) {
+			\wp_delete_post( $post->ID, true );
+		}
 
 		parent::set_up();
 	}
@@ -110,6 +115,8 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_set_allowed_post_types(): void {
+
+
 		// Allow with the filters.
 		\add_filter( 'wlf_own_content_allow_post', '__return_true' );
 		\add_filter( 'wlf_routinely_update_wayback_machine', '__return_true' );
@@ -126,13 +133,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		$post_id = $this->factory->post->create( array( 'post_type' => 'post' ) );
 		$page_id = $this->factory->post->create( array( 'post_type' => 'page' ) );
 
-		// $this->create_service(
-		// 	true,
-		// 	function ( array $config ): array {
-		// 		$config['snapshot']->method( 'create_snapshot' )->willReturnCallback( fn( $url ) => $url );
-		// 		return $config;
-		// 	}
-		// );
+
 
 		// Run the event.
 		$event = new Scan_Own_Posts_Event();
@@ -159,6 +160,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 
 		// Set the interval to 24 hours.
 		\add_filter( 'wlf_routinely_update_wayback_machine_interval', fn() => 24 * HOUR_IN_SECONDS );
+
 
 		// Create 2 posts.
 		$post_id_1 = $this->factory->post->create( array( 'post_type' => 'post' ) );

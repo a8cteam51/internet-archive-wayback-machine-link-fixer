@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client;
 
 use Exception;
+use Throwable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
@@ -47,8 +48,8 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	 * @return string The base url.
 	 */
 	public function get_base_url(): string {
-		return \trailingslashit(
-			\untrailingslashit(
+		return trailingslashit(
+			untrailingslashit(
 				apply_filters( 'wlf_find_snapshot_base_url', 'https://archive.org/wayback/available/' )
 			)
 		);
@@ -89,7 +90,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$api_url = $this->get_base_url();
 
 		// add the url to the query string
-		$url = add_query_arg( 'url', \esc_url_raw( $url ), $api_url );
+		$url = add_query_arg( 'url', esc_url_raw( $url ), $api_url );
 
 		$url = apply_filters( 'wlf_get_latest_snapshot_url', $url, $api_url );
 
@@ -121,7 +122,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$api_url = $this->get_base_url();
 
 		// add the url to the query string
-		$api_url = add_query_arg( 'url', \esc_url_raw( $url ), $api_url );
+		$api_url = add_query_arg( 'url', esc_url_raw( $url ), $api_url );
 
 		// add the timestamp to the query string
 		$api_url = add_query_arg( 'timestamp', $date->format( 'Ymd' ), $api_url );
@@ -197,7 +198,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 
 		// If we have no matches, throw an exception.
 		if ( empty( $matches ) ) {
-			throw new \Exception( 'Failed to find job id.' );
+			throw new Exception( 'Failed to find job id.' );
 		}
 
 		return esc_attr( $matches[1] );
@@ -243,15 +244,15 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		}
 
 		// If response has `archived_snapshots`
-		if ( ! \array_key_exists( 'archived_snapshots', $response_body )
+		if ( ! array_key_exists( 'archived_snapshots', $response_body )
 		|| empty( $response_body['archived_snapshots'] )
-		|| ! \is_array( $response_body['archived_snapshots'] )
+		|| ! is_array( $response_body['archived_snapshots'] )
 		) {
 			return null;
 		}
 
 		// If response has `closest`
-		if ( ! \array_key_exists( 'closest', $response_body['archived_snapshots'] )
+		if ( ! array_key_exists( 'closest', $response_body['archived_snapshots'] )
 		|| empty( $response_body['archived_snapshots']['closest'] )
 		|| ! is_array( $response_body['archived_snapshots']['closest'] )
 		) {
@@ -259,7 +260,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		}
 
 		// If response has `available` and is true.
-		if ( ! \array_key_exists( 'available', $response_body['archived_snapshots']['closest'] )
+		if ( ! array_key_exists( 'available', $response_body['archived_snapshots']['closest'] )
 		|| ! $response_body['archived_snapshots']['closest']['available']
 		) {
 			return null;
@@ -292,7 +293,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 
 		// If we dont have a ref code, throw an exception.
 		if ( empty( $job_id ) ) {
-			throw new \Exception( 'Invalid snapshot job id' );
+			throw new Exception( 'Invalid snapshot job id' );
 		}
 
 		$query_url = 'https://web.archive.org/save/status/' . $job_id;
@@ -354,7 +355,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 					'sslverify' => false,
 				)
 			);
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			return false;
 		}
 
