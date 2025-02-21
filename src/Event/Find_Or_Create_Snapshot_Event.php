@@ -11,8 +11,11 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
+use Exception;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Find or Create Snapshot Event class.
@@ -53,7 +56,7 @@ class Find_Or_Create_Snapshot_Event {
 	 * @return void
 	 */
 	public static function add_to_queue( int $link_id ): void {
-		\as_enqueue_async_action(
+		as_enqueue_async_action(
 			self::HANDLE,
 			array(
 				'link_id' => $link_id,
@@ -72,7 +75,7 @@ class Find_Or_Create_Snapshot_Event {
 	public static function add_to_queue_with_delay( int $link_id, int $delay ): void {
 		$time = time() + $delay;
 
-		\as_schedule_single_action(
+		as_schedule_single_action(
 			$time,
 			self::HANDLE,
 			array(
@@ -95,7 +98,7 @@ class Find_Or_Create_Snapshot_Event {
 
 		// If we have no link, throw an error.
 		if ( null === $link ) {
-			throw new \Exception( esc_html( 'Link not found with id ' . $link_id ) ); //
+			throw new Exception( esc_html( 'Link not found with id ' . $link_id ) ); //
 		}
 
 		// If the service is offline, try again later.
@@ -108,7 +111,7 @@ class Find_Or_Create_Snapshot_Event {
 		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
 			$link->set_message( esc_html( 'Already an Internet Archive Snapshot.' ) );
 			$this->link_repository->upsert( $link );
-			throw new \Exception( esc_html( 'Already an Internet Archive Snapshot.' ) );
+			throw new Exception( esc_html( 'Already an Internet Archive Snapshot.' ) );
 		}
 
 		// Get the links latest snapshot.

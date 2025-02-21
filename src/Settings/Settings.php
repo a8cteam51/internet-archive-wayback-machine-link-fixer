@@ -4,8 +4,9 @@
  * The Settings access class.
  *
  * @since      1.0.0
- * @version    1.0.0
  */
+
+declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
 
@@ -283,7 +284,7 @@ class Settings {
 			'link_checker' => $link_checker_status,
 			'snapshot'     => $snapshot_status,
 			'status'       => $link_checker_status && $snapshot_status ? 'online' : 'offline',
-			'last-checked' => \gmdate( 'Y-m-d H:i:s' ),
+			'last-checked' => gmdate( 'Y-m-d H:i:s' ),
 		);
 
 		$duration = apply_filters( 'wlf_archive_api_status_duration', \HOUR_IN_SECONDS );
@@ -319,7 +320,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function add_own_links(): bool {
-		return (bool) \apply_filters(
+		return (bool) apply_filters(
 			'wlf_add_own_content_to_wayback_machine',
 			(bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, false )
 		);
@@ -333,7 +334,7 @@ class Settings {
 	 * @return string[]
 	 */
 	public static function own_link_allowed_post_types(): array {
-		return \apply_filters(
+		return apply_filters(
 			'wlf_own_content_post_types',
 			array_map( 'esc_html', (array) get_option( self::ALLOWED_OWN_CONTENT_POST_TYPES, array( 'post', 'page' ) ) )
 		);
@@ -347,7 +348,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function own_link_routinely_update(): bool {
-		return (bool) \apply_filters(
+		return (bool) apply_filters(
 			'wlf_routinely_update_wayback_machine',
 			(bool) get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE, false )
 		);
@@ -364,9 +365,9 @@ class Settings {
 	 */
 	public static function own_link_routine_update_interval(): int {
 		return absint(
-			\apply_filters(
+			apply_filters(
 				'wlf_routinely_update_wayback_machine_interval',
-				\get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 14 * \DAY_IN_SECONDS )
+				get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 14 * \DAY_IN_SECONDS )
 			)
 		);
 	}

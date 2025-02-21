@@ -9,6 +9,8 @@
  * @var string $wlf_back_url The URL to return to the report.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 // Check if we have any previous links to show.
 $wlf_check_count      = count( $wlf_link->get_checks() );
 $wlf_hide_check_count = $wlf_check_count > 10 ? absint( $wlf_check_count - 10 ) : 0;

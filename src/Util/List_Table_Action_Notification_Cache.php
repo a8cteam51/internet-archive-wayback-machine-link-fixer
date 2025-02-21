@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Util;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * List_Table_Action_Notification_Cache
  */

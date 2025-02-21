@@ -12,6 +12,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Class used to render the dashboard notifications.
  */

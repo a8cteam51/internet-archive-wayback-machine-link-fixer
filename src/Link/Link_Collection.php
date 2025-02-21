@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Link collection class.
  */

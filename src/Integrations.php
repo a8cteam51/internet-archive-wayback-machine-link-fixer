@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Integrations for the plugin.
+ *
+ * Registered as an integration in src/Wayback_Link_Fixer.php
+ *
+ * @since 1.0.0
+ */
+
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Ajax_Controller;
