@@ -136,7 +136,7 @@ class Settings_Page {
 		wpcomsp_wayback_link_fixer_render_wayback_offline_notice();
 		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
 
-		echo '<div class="wrap"><h1>' . esc_html( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ) . '</h1><form action="options.php" method="post">';
+		echo '<div class="wrap"><h1>' . esc_html__( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ) . '</h1><form action="options.php" method="post">';
 
 		do_settings_sections( self::PAGE_SLUG );
 		settings_fields( self::PAGE_SLUG );
