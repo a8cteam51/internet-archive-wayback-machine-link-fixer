@@ -30,6 +30,8 @@ class Test_Settings extends \WP_UnitTestCase {
 		delete_option( Settings::LINK_EXCLUSIONS );
 		delete_option( Settings::SCAN_EXISTING_POSTS );
 		delete_option( Settings::FIXER_OPTION );
+
+		update_option(Settings::PROCESS_LINKS, true);
 	}
 
 	/**
@@ -234,5 +236,26 @@ class Test_Settings extends \WP_UnitTestCase {
 		\update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_DO_NOTHING );
 
 		$this->assertEquals( Settings::FIXER_OPTION_DO_NOTHING, Settings::get_fixer_option() );
+	}
+
+	/**
+	 * @testdox If the option to process links is not enable, allowing scanning existing posts, should return false.
+	 *
+	 * @return void
+	 */
+	public function test_should_scan_existing_posts_should_return_false_if_option_is_not_enabled(): void {
+		update_option(Settings::PROCESS_LINKS, false);
+		$this->assertFalse(Settings::should_scan_existing_posts());
+
+		// Set the scan existing posts to true.
+		update_option(Settings::SCAN_EXISTING_POSTS, true);
+		$this->assertFalse(Settings::should_scan_existing_posts());
+
+		// Set the process links to true.
+		update_option(Settings::PROCESS_LINKS, true);
+		$this->assertTrue(Settings::should_scan_existing_posts());
+
+		// Set the scan existing posts to false.
+		update_option(Settings::SCAN_EXISTING_POSTS, false);
 	}
 }

@@ -73,6 +73,20 @@ class WP_Post_Controller {
 	 * @return void
 	 */
 	public function on_save_post_process_post_links( int $post_id, \WP_Post $post, bool $update ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		// If doing auto save, return.
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		// If the post is not published, return.
+		if ( 'publish' !== $post->post_status ) {
+			return;
+		}
+
+		// If the option to process links is not set, return.
+		if ( ! Settings::is_link_processing_enabled() ) {
+			return;
+		}
 
 		// Check the post type is one we are checking.
 		if ( in_array( $post->post_type, Settings::get_allowed_post_types(), true ) === false ) {
