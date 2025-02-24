@@ -20,3 +20,25 @@
         padding: 10px;
     }
 }
+
+.wlf_settings_card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 2px rgba(0, 0, 0, 0.16);
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 5px 10px;
+    width: calc(100% - 10px);
+    background-color: white;
+    margin-bottom: 10px;
+}
+
+.wlf_settings_post_types {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 16px;
+    width: fit-content;
+}
+
+.wlf_read-only {
+    pointer-events: none;
+    background-color: #f9f9f9;
+}

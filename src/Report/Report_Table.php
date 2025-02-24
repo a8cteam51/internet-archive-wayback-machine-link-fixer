@@ -633,6 +633,7 @@ class Report_Table extends \WP_List_Table {
 				);
 			}
 			?>
+		</select>
 
 		<?php if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>
 			<input type="hidden" name="wlf_filtered_post_id" value="<?php echo esc_attr( $_GET['wlf_filtered_post_id'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>" />

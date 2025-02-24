@@ -136,6 +136,38 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox If its set to not process links, do not add them to the meta.
+	 *
+	 * @return void
+	 */
+	public function test_not_process_links_not_added_to_meta(): void {
+		update_option( Settings::PROCESS_LINKS, false );
+
+		$post_id = \WP_UnitTestCase_Base::factory()->post->create();
+
+		// Add some content to the post.
+		$content = 'This is a post with a link to <a href="https://from.post/content">example</a><br>And another link to <a href="https://from.post/content_twice">example</a>';
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+				'post_type'    => 'post',
+			)
+		);
+
+		$handler = new WP_Post_Controller();
+		$handler->on_save_post_process_post_links( $post_id, get_post( $post_id ), true );
+
+		// Get the post meta.
+		$meta = get_post_meta( $post_id, Settings::LINK_META_KEY, true );
+		$this->assertEmpty( $meta );
+
+		// Revert
+		update_option( Settings::PROCESS_LINKS, true );
+	}
+
+
+	/**
 	 * @testdox When called from the front end, the front end script should be enqueued with all the posts links passed in a localized data.
 	 * @group localized-data
 	 * @return void

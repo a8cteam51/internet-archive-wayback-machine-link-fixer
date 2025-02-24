@@ -25,6 +25,7 @@ class Settings {
 
 
 	// Option keys
+	public const PROCESS_LINKS                = self::SETTINGS_PREFIX . 'process_links';
 	public const ALLOWED_POST_TYPES           = self::SETTINGS_PREFIX . 'post_types';
 	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
 	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
@@ -67,6 +68,17 @@ class Settings {
 	public static function get_link_table_name(): string {
 		global $wpdb;
 		return $wpdb->prefix . self::LINK_TABLE;
+	}
+
+	/**
+	 * Is the link processing enabled?
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function is_link_processing_enabled(): bool {
+		return (bool) get_option( self::PROCESS_LINKS, false );
 	}
 
 	/**
@@ -184,6 +196,10 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function should_scan_existing_posts(): bool {
+		// If you can not process links, return false.
+		if ( ! self::is_link_processing_enabled() ) {
+			return false;
+		}
 		return (bool) get_option( self::SCAN_EXISTING_POSTS, true );
 	}
 
@@ -367,7 +383,7 @@ class Settings {
 		return absint(
 			apply_filters(
 				'wlf_routinely_update_wayback_machine_interval',
-				get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 14 * \DAY_IN_SECONDS )
+				get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 7 * \DAY_IN_SECONDS )
 			)
 		);
 	}

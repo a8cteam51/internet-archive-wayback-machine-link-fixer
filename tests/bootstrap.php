@@ -47,6 +47,9 @@ tests_add_filter(
 		if ( ! $online ) {
 			$GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] = true;
 		}
+
+		// Ensure the settings to process links is enabled.
+		update_option(Settings::PROCESS_LINKS, true);
 	}
 );
 
