@@ -136,7 +136,7 @@ class Settings_Page {
 		wpcomsp_wayback_link_fixer_render_wayback_offline_notice();
 		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
 
-		echo '<div class="wrap"><h1>ddd</h1><form action="options.php" method="post">';
+		echo '<div class="wrap"><h1>' . esc_html( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ) . '</h1><form action="options.php" method="post">';
 
 		do_settings_sections( self::PAGE_SLUG );
 		settings_fields( self::PAGE_SLUG );
@@ -365,7 +365,7 @@ class Settings_Page {
 
 		add_settings_section(
 			self::GROUP_IA_SETTINGS,
-			__( 'Internet Archive Settings', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Internet Archive API', 'wpcomsp_wayback_link_fixer' ),
 			'__return_empty_string',
 			self::PAGE_SLUG,
 			array(
@@ -380,7 +380,7 @@ class Settings_Page {
 
 		add_settings_section(
 			self::GROUP_LINK_FIXER,
-			__( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			'__return_empty_string',
 			self::PAGE_SLUG,
 			array(
@@ -391,7 +391,7 @@ class Settings_Page {
 
 		add_settings_section(
 			self::GROUP_AUTO_ARCHIVER,
-			__( 'Auto Archiver Settings', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Auto Archiver', 'wpcomsp_wayback_link_fixer' ),
 			'__return_empty_string',
 			self::PAGE_SLUG,
 			array(
