@@ -1,0 +1,110 @@
+	#wlf_wizard {
+	    padding: 10px;
+	    background: white;
+	    border-radius: 10px;
+	}
+	
+	#wlf_wizard input[type="checkbox"] {
+	    appearance: none;
+	    width: 40px;
+	    height: 20px;
+	    background: #ccc;
+	    border-radius: 20px;
+	    position: relative;
+	    cursor: pointer;
+	    transition: background 0.3s;
+	    margin: inherit;
+	    margin-top: 5px;
+	}
+	
+	#wlf_wizard input[type="checkbox"]::before {
+	    content: "";
+	    position: absolute;
+	    width: 16px;
+	    height: 16px;
+	    background: white;
+	    border-radius: 50%;
+	    top: 1px;
+	    left: 2px;
+	    transition: transform 0.3s;
+	}
+	
+	#wlf_wizard input[type="checkbox"]:checked {
+	    background: #4CAF50;
+	}
+	
+	#wlf_wizard input[type="checkbox"]:checked::before {
+	    transform: translateX(20px);
+	    top: 4px;
+	    left: 5px;
+	}
+	
+	#wlf-wizard__footer {
+	    display: flex;
+	    width: 100%;
+	    align-items: center;
+	    justify-content: space-between;
+	}
+	
+	.wlf-wizard__footer__progress {
+	    flex-grow: 1;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    padding: 0 25px;
+	    width: 100%;
+	}
+	
+	.wlf-wizard__footer__progress__bar {
+	    width: 100%;
+	    justify-content: center;
+	    align-items: center;
+	    display: inline;
+	    text-align: center;
+	}
+	
+	.wlf-wizard__footer__progress__bar__inner {
+	    background-color: #a7a7a7;
+	    height: 5px;
+	}
+	
+	.wlf-wizard__content form {
+	    display: flex;
+	    flex-direction: column;
+	}
+	
+	.wlf-wizard__content__field {
+	    display: flex;
+	    flex-direction: column;
+	    margin-bottom: 20px;
+	    justify-content: center;
+	    align-items: center;
+	    padding: 10px;
+	}
+	
+	.wlf-wizard__content__field label {
+	    font-size: 17px;
+	    line-height: 20px;
+	    font-weight: 700;
+	}
+	
+	.wlf-wizard__content__inner-field.checkbox {
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    justify-content: center;
+	}
+	
+	.wlf-wizard__content__inner-field.checkbox input {
+	    margin: 10px;
+	}
+	
+	.wlf-wizard__content__inner-field.checkboxes {
+	    display: grid;
+	    grid-template-columns: repeat(2, 1fr);
+	    grid-gap: 10px;
+	}
+	
+	.wlf-wizard__content__field.is_optional.disabled {
+	    opacity: 0.5;
+	}

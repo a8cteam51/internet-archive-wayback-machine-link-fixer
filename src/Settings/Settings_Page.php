@@ -737,7 +737,7 @@ class Settings_Page {
 			type="password"
 			id="<?php echo esc_attr( Settings::ARCHIVE_ORG_SECRET_KEY ); ?>"
 			name="<?php echo esc_attr( Settings::ARCHIVE_ORG_SECRET_KEY ); ?>"
-			value="<?php echo esc_attr( Settings::get_archive_api_key() ); ?>"
+			value="<?php echo esc_attr( Settings::get_archive_secret_key() ); ?>"
 			style="width:80%;"
 		/>
 		<p class="description">

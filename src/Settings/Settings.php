@@ -31,8 +31,8 @@ class Settings {
 	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
 	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
 	public const SCAN_EXISTING_POSTS          = self::SETTINGS_PREFIX . 'scan_existing_posts';
-	public const ARCHIVE_ORG_SECRET_KEY       = self::SETTINGS_PREFIX . 'archive_api_key';
-	public const ARCHIVE_ORG_ACCESS_KEY       = self::SETTINGS_PREFIX . 'archive_api_secret';
+	public const ARCHIVE_ORG_SECRET_KEY       = self::SETTINGS_PREFIX . 'archive_api_secret';
+	public const ARCHIVE_ORG_ACCESS_KEY       = self::SETTINGS_PREFIX . 'archive_api_access';
 	public const FIXER_OPTION                 = self::SETTINGS_PREFIX . 'fixer_option';
 	public const ARCHIVE_ORG_STATUS_KEY       = self::SETTINGS_PREFIX . 'archive_api_status';
 
@@ -221,7 +221,7 @@ class Settings {
 	 *
 	 * @return string
 	 */
-	public static function get_archive_api_key(): string {
+	public static function get_archive_secret_key(): string {
 		return esc_attr( get_option( self::ARCHIVE_ORG_SECRET_KEY, '' ) );
 	}
 
@@ -244,7 +244,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function is_archive_api_configured(): bool {
-		return '' !== self::get_archive_api_key() && '' !== self::get_archive_access_key();
+		return '' !== self::get_archive_secret_key() && '' !== self::get_archive_access_key();
 	}
 
 	/**
