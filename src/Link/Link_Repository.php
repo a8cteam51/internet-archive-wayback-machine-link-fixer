@@ -10,8 +10,12 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 
+use DateTime;
+use Exception;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Find_Or_Create_Snapshot_Event;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Link Response class.
@@ -171,7 +175,7 @@ class Link_Repository {
 
 		// If the insert failed, throw an exception.
 		if ( false === $result ) {
-			throw new \Exception( esc_html( 'Failed to insert link: ' . $this->wpdb->last_error ) );
+			throw new Exception( esc_html( 'Failed to insert link: ' . $this->wpdb->last_error ) );
 		}
 
 		// Get the last insert id.
@@ -188,7 +192,7 @@ class Link_Repository {
 	 *
 	 * @return Link
 	 *
-	 * @throws \Exception If the link cannot be updated.
+	 * @throws Exception If the link cannot be updated.
 	 */
 	private function update( Link $link ): Link {
 		// Extract the values.
@@ -235,7 +239,7 @@ class Link_Repository {
 
 		// If we dont have a valid row id, throw an exception.
 		if ( false === $result ) {
-			throw new \Exception( 'Failed to update link.' );
+			throw new Exception( 'Failed to update link.' );
 		}
 
 		return $this->find_by_id( $id );
@@ -251,7 +255,7 @@ class Link_Repository {
 	public function find_or_create( string $url ): Link {
 
 		// Strip any trailing slashes.
-		$url = \untrailingslashit( $url );
+		$url = untrailingslashit( $url );
 
 		$link = $this->find_by_url( $url );
 
@@ -286,8 +290,8 @@ class Link_Repository {
 
 		if ( is_array( $checks ) ) {
 			foreach ( $checks as $check ) {
-				$code = \array_key_exists( 'http_code', $check ) ? (int) $check['http_code'] : 0;
-				$date = \array_key_exists( 'date', $check ) ? esc_attr( $check['date'] ) : null;
+				$code = array_key_exists( 'http_code', $check ) ? (int) $check['http_code'] : 0;
+				$date = array_key_exists( 'date', $check ) ? esc_attr( $check['date'] ) : null;
 
 				$link->add_check( $code, $date );
 			}
@@ -481,7 +485,7 @@ class Link_Repository {
 	 */
 	private function get_date_range( string $date ): array {
 		// Create DateTime object from 'yyyy-mm' date.
-		$date = new \DateTime( $date );
+		$date = new DateTime( $date );
 
 		// Get the start of the month.
 		$start = $date->format( 'Y-m-01' );
@@ -572,7 +576,7 @@ class Link_Repository {
 
 		// Iterate over each row and extract the links.
 		foreach ( $rows as $row ) {
-			$links = \maybe_unserialize( $row->meta_value );
+			$links = maybe_unserialize( $row->meta_value );
 
 			if ( ! is_array( $links ) ) {
 				continue;

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Action shceduler event for scanning posts for links.
+ * Action scheduler event for scanning posts for links.
  *
  * This will ensure that any old or imported posts are scanned for links.
  *
@@ -12,9 +12,11 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
+use WP_Query;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
 
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Scan Posts Event class.
@@ -74,23 +76,23 @@ class Scan_Posts_Event {
 		}
 
 		// Bail if action scheduler is not available.
-		if ( ! \function_exists( 'as_has_scheduled_action' ) ) {
+		if ( ! function_exists( 'as_has_scheduled_action' ) ) {
 			return;
 		}
 
 		// If the event is not scheduled, schedule it.
-		if ( \as_has_scheduled_action( self::HANDLE ) ) {
+		if ( as_has_scheduled_action( self::HANDLE ) ) {
 			return;
 		}
 
 		// Get the delay of the event.
-		$interval = \absint( \apply_filters( 'wlf_scan_posts_interval', 10 * \MINUTE_IN_SECONDS ) );
+		$interval = absint( apply_filters( 'wlf_scan_posts_interval', 10 * \MINUTE_IN_SECONDS ) );
 
 		// If we have 0 interval, add as async action.
 		if ( 0 === $interval ) {
-			\as_enqueue_async_action( self::HANDLE, array(), 'wayback-link-fixer' );
+			as_enqueue_async_action( self::HANDLE, array(), 'wayback-link-fixer' );
 		} else {
-			\as_schedule_single_action( \time() + $interval, self::HANDLE, array(), 'wayback-link-fixer' );
+			as_schedule_single_action( time() + $interval, self::HANDLE, array(), 'wayback-link-fixer' );
 		}
 	}
 
@@ -110,7 +112,7 @@ class Scan_Posts_Event {
 		}
 
 		// Look for more posts, which do not have the meta data.
-		$query = new \WP_Query(
+		$query = new WP_Query(
 			array(
 				'post_type'              => $this->allowed_post_types,
 				'posts_per_page'         => $this->posts_per_call,
@@ -124,7 +126,7 @@ class Scan_Posts_Event {
 					),
 					array(
 						'key'     => Settings::LINK_META_KEY,
-						'value'   => \time(),
+						'value'   => time(),
 						'compare' => '=',
 					),
 				),

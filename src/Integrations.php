@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Integrations for the plugin.
+ *
+ * Registered as an integration in src/Wayback_Link_Fixer.php
+ *
+ * @since 1.0.0
+ */
+
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Ajax_Controller;
@@ -8,6 +16,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event_Controller;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Table_Controller;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Setup_Wizard;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,6 +35,7 @@ final class Integrations {
 	private $wp_post_table_controller;
 	private $report_page;
 	private $dashboard_notification;
+	private $setup_wizard;
 
 	/**
 	 * Creates a new instance of the integrations component.
@@ -38,6 +48,7 @@ final class Integrations {
 		$this->wp_post_table_controller = new WP_Post_Table_Controller();
 		$this->report_page              = new Report\Report_Page();
 		$this->dashboard_notification   = new Dashboard_Notifications();
+		$this->setup_wizard             = new Setup_Wizard();
 	}
 
 
@@ -61,6 +72,7 @@ final class Integrations {
 		$this->wp_post_table_controller->initialize();
 		$this->report_page->initialize();
 		$this->dashboard_notification->initialize();
+		$this->setup_wizard->initialize();
 	}
 
 	// endregion

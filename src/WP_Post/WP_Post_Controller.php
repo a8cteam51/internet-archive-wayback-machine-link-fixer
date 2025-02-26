@@ -12,13 +12,17 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post;
 
+use Exception;
+use Throwable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Exclusion;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Link_Check_Ajax;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Process_Local_Post_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Processor;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Process_Local_Post_Event;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Handles the various post actions.
@@ -69,6 +73,20 @@ class WP_Post_Controller {
 	 * @return void
 	 */
 	public function on_save_post_process_post_links( int $post_id, \WP_Post $post, bool $update ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		// If doing auto save, return.
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		// If the post is not published, return.
+		if ( 'publish' !== $post->post_status ) {
+			return;
+		}
+
+		// If the option to process links is not set, return.
+		if ( ! Settings::is_link_processing_enabled() ) {
+			return;
+		}
 
 		// Check the post type is one we are checking.
 		if ( in_array( $post->post_type, Settings::get_allowed_post_types(), true ) === false ) {
@@ -110,7 +128,7 @@ class WP_Post_Controller {
 
 		try {
 			$this->add_own_post_to_wayback_machine( $post_id );
-		} catch ( \Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+		} catch ( Throwable $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 			// Do nothing! Squiz.PHP.CommentedOutCode.Found
 		}
 	}
@@ -131,10 +149,10 @@ class WP_Post_Controller {
 
 		// If the post is not valid, throw an exception.
 		if ( ! $post ) {
-			throw new \Exception( 'Invalid post id' );
+			throw new Exception( 'Invalid post id' );
 		}
 
-		$can_add = \apply_filters( 'wlf_own_content_allow_post', true, $post );
+		$can_add = apply_filters( 'wlf_own_content_allow_post', true, $post );
 
 		if ( $can_add ) {
 			Process_Local_Post_Event::add_to_queue_with_delay( $post_id );
@@ -206,7 +224,7 @@ class WP_Post_Controller {
 		$assets = require $script_assets;
 
 		// Register the script.
-		\wp_register_script(
+		wp_register_script(
 			'wpcomsp-wayback-link-fixer-front-link-checker',
 			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/front_link_checker.js',
 			$assets['dependencies'],
@@ -215,7 +233,7 @@ class WP_Post_Controller {
 		);
 
 		// localise the script.
-		\wp_localize_script(
+		wp_localize_script(
 			'wpcomsp-wayback-link-fixer-front-link-checker',
 			'wlfArchivedLinks',
 			array(
@@ -224,13 +242,13 @@ class WP_Post_Controller {
 				'linkCheckNonce'  => wp_create_nonce( Link_Check_Ajax::ACTION ),
 				'linkDelayInDays' => Settings::get_link_check_duration(),
 				'fixerOption'     => Settings::get_fixer_option(),
-				'ajaxUrl'         => \admin_url( 'admin-ajax.php' ),
+				'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
 
 			)
 		);
 
 		// Enqueue the script.
-		\wp_enqueue_script( 'wpcomsp-wayback-link-fixer-front-link-checker' );
+		wp_enqueue_script( 'wpcomsp-wayback-link-fixer-front-link-checker' );
 	}
 
 	/**
@@ -255,7 +273,7 @@ class WP_Post_Controller {
 		$posts[] = $post_id;
 
 		// If not a post or a an allowed post type, return.
-		$post = \get_post( $post_id );
+		$post = get_post( $post_id );
 		if ( ! $post || ! in_array( $post->post_type, Settings::get_allowed_post_types(), true ) ) {
 			return $block_content;
 		}

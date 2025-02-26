@@ -13,6 +13,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * The report page.
  */
@@ -159,7 +161,7 @@ class Report_Page {
 			'option'  => 'links_per_page',
 		);
 
-		\add_screen_option( $option, $args );
+		add_screen_option( $option, $args );
 	}
 
 	/**
@@ -191,10 +193,10 @@ class Report_Page {
 
 		// If we have a post id in params, show a message.
 		if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
-			$post_id = \sanitize_text_field( $_GET['wlf_filtered_post_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+			$post_id = sanitize_text_field( $_GET['wlf_filtered_post_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
 
 			// Get the post title.
-			$post = \get_post( $post_id );
+			$post = get_post( $post_id );
 
 			// Show if we have a valid post.
 			if ( $post ) {
@@ -208,7 +210,7 @@ class Report_Page {
 				printf(
 					// translators: %s is the body of the message.
 					'<div class="notice notice-info"><p>%s</p></div>',
-					\wp_kses( $body, array( 'a' => array( 'href' => array() ) ) )
+					wp_kses( $body, array( 'a' => array( 'href' => array() ) ) )
 				);
 			}
 		}

@@ -13,8 +13,10 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+
+defined( 'ABSPATH' ) || exit;
+
 
 /**
  * Check Archive Status Event class.
@@ -46,7 +48,7 @@ class Check_Archive_Services_Online_Event {
 	 */
 	public static function add_to_queue(): void {
 		// Add an single event with the date as epoch.
-		\as_schedule_single_action(
+		as_schedule_single_action(
 			0, // Forces the event to run immediately.
 			self::HANDLE,
 			array(),

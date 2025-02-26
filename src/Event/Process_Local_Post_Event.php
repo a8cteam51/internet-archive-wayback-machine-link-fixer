@@ -10,8 +10,12 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
 
+use Exception;
+use Throwable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Process Local Post Event class.
@@ -61,10 +65,10 @@ class Process_Local_Post_Event {
 	 */
 	public static function add_to_queue_with_delay( int $post_id, int $delay = 1 * \HOUR_IN_SECONDS ): void {
 		// If there is already a scheduled event with this post ID, cancel it.
-		\as_unschedule_action( self::HANDLE, array( 'post_id' => $post_id ) );
+		as_unschedule_action( self::HANDLE, array( 'post_id' => $post_id ) );
 
 		$time_to_run = time() + $delay;
-		\as_schedule_single_action(
+		as_schedule_single_action(
 			$time_to_run,
 			self::HANDLE,
 			array(
@@ -92,7 +96,7 @@ class Process_Local_Post_Event {
 		// If Wayback Link Fixer is offline, add the event to the queue delayed.
 		if ( ! $this->wayback_machine->is_online()['snapshot'] ) {
 			self::add_to_queue_with_delay( $post_id );
-			throw new \Exception( esc_html( 'Service is offline, trying again in 1 hour.' ) );
+			throw new Exception( esc_html( 'Service is offline, trying again in 1 hour.' ) );
 		}
 
 		// Get the post.
@@ -100,7 +104,7 @@ class Process_Local_Post_Event {
 
 		// If the post is not found, throw an exception.
 		if ( ! $post ) {
-			throw new \Exception( esc_html( "Post not found for id:{$post_id}" ) );
+			throw new Exception( esc_html( "Post not found for id:{$post_id}" ) );
 		}
 
 		// Get the permalink.
@@ -108,14 +112,14 @@ class Process_Local_Post_Event {
 
 		// If the permalink is not found, throw an exception.
 		if ( ! $permalink ) {
-			throw new \Exception( esc_html( "Permalink not found for post id:{$post_id}" ) );
+			throw new Exception( esc_html( "Permalink not found for post id:{$post_id}" ) );
 		}
 
 		// Create a snapshot.
 		try {
 			$this->wayback_machine->create_snapshot( $permalink );
-		} catch ( \Exception $th ) {
-			throw new \Exception( esc_html( "Failed to create snapshot for post id #{$post_id} : {$th->getMessage()}" ) );
+		} catch ( Throwable $th ) {
+			throw new Exception( esc_html( "Failed to create snapshot for post id #{$post_id} : {$th->getMessage()}" ) );
 		}
 
 		// Add the last updated meta key.

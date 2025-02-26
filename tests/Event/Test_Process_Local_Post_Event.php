@@ -186,7 +186,7 @@ class Test_Process_Local_Post_Event extends TestCase {
 
 		$this->expectException( \Exception::class );
 		$this->expectExceptionMessage( 'Post not found for id:6' );
-		$event( 6 );
+		$event( 600000 );
 	}
 
 	/**

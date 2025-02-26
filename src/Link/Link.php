@@ -10,7 +10,10 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 
+use DateTime;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Link Model
@@ -325,7 +328,7 @@ class Link implements \JsonSerializable {
 				$is_valid = in_array( absint( $check['http_code'] ), Settings::get_valid_http_status_codes(), true );
 
 				// Allow additional checks
-				return \apply_filters( 'wlf_is_valid_check', $is_valid, $check, $this );
+				return apply_filters( 'wlf_is_valid_check', $is_valid, $check, $this );
 			}
 		);
 
