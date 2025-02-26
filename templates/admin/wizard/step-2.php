@@ -78,8 +78,4 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 	</select>
 </div>
 
-
-
 <?php echo $footer; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-
-

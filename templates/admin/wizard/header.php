@@ -11,7 +11,7 @@
 
 <div id="wlf_wizard"> <!-- Wizard container -->
 	<div class="wlf-wizard__content"> <!-- Wizard content -->
-		<h1><?php esc_html_e( 'Wayback Link Fixer Setup Wizard', 'wpcomsp_wayback_link_fixer' );?></h1>
+		<h1><?php esc_html_e( 'Wayback Link Fixer Setup Wizard', 'wpcomsp_wayback_link_fixer' ); ?></h1>
 
 		<form method="post" action="">
 			<input type="hidden" name="wlf-action" value="start-wizard" />

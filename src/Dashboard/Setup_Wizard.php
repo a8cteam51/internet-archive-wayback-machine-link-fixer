@@ -64,7 +64,7 @@ class Setup_Wizard {
 			return;
 		}
 
-		if ( isset( $_GET['page'] ) && self::PAGE_SLUG === $_GET['page'] ) {
+		if ( isset( $_GET['page'] ) && self::PAGE_SLUG === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return;
 		}
 
@@ -77,7 +77,7 @@ class Setup_Wizard {
 		add_action(
 			'admin_notices',
 			function () use ( $message ) {
-				printf( '<div class="notice notice-warning is-dismissible"><p>%s</p></div>', $message );
+				printf( '<div class="notice notice-warning is-dismissible"><p>%s</p></div>', $message ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			}
 		);
 	}
@@ -210,7 +210,7 @@ class Setup_Wizard {
 		}
 
 		$index    = array_keys( self::STEPS );
-		$previous = array_search( $current_step, $index ) - 1;
+		$previous = array_search( $current_step, $index, true ) - 1;
 
 		// Update the step.
 		$previous_step = $index[ $previous ];
@@ -223,6 +223,7 @@ class Setup_Wizard {
 	 * @return void
 	 */
 	private function handle_step_1(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		// Check we have the 2 api creds.
 		if ( ! isset( $_POST['wlf_wizard_archive_access_key'], $_POST['wlf_wizard_archive_secret_key'] ) ) {
 			$this->add_notice( 'Missing archive.org credentials', 'error' );
@@ -239,6 +240,7 @@ class Setup_Wizard {
 		// Update the step.
 		$next = sanitize_text_field( wp_unslash( $_POST['wlf-next-step'] ) );
 		update_option( self::OPTION_NAME, $next );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
 
 	/**
@@ -247,6 +249,7 @@ class Setup_Wizard {
 	 * @return void
 	 */
 	private function handle_step_2(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		// Get values from the form.
 		$is_active          = isset( $_POST['wlf_wizard_activate_link_fixer'] );
 		$allowed_post_types = isset( $_POST['wlf_wizard_post_types'] ) && is_array( $_POST['wlf_wizard_post_types'] )
@@ -264,6 +267,7 @@ class Setup_Wizard {
 		// Update the step.
 		$next = sanitize_text_field( wp_unslash( $_POST['wlf-next-step'] ) );
 		update_option( self::OPTION_NAME, $next );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
 
 	/**
@@ -272,6 +276,7 @@ class Setup_Wizard {
 	 * @return void
 	 */
 	private function handle_step_3(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		// Get values from the form.
 		$is_active             = isset( $_POST['wlf_wizard_activate_auto_archiver'] );
 		$allowed_post_types    = isset( $_POST['wlf_wizard_post_types'] ) && is_array( $_POST['wlf_wizard_post_types'] )
@@ -289,7 +294,9 @@ class Setup_Wizard {
 		// Update the step.
 		$next = sanitize_text_field( wp_unslash( $_POST['wlf-next-step'] ) );
 		update_option( self::OPTION_NAME, $next );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
+
 	/**
 	 * Render the page.
 	 *
@@ -308,16 +315,15 @@ class Setup_Wizard {
 			$step_data['template']
 		);
 
-		echo wpcomsp_wayback_link_fixer_render_template(
-			$view_path,
-			array(
-				'step_data'  => $step_data,
-				'settings'   => new Settings(),
-				'post_types' => $this->get_public_post_types(),
-				'header'     => $this->get_page_header( $step_data ),
-				'footer'     => $this->get_page_footer( $step_data ),
-			)
+		$view_data = array(
+			'step_data'  => $step_data,
+			'settings'   => new Settings(),
+			'post_types' => $this->get_public_post_types(),
+			'header'     => $this->get_page_header( $step_data ),
+			'footer'     => $this->get_page_footer( $step_data ),
 		);
+
+		echo wpcomsp_wayback_link_fixer_render_template( $view_path, $view_data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		echo '</div>';
 	}
@@ -362,7 +368,7 @@ class Setup_Wizard {
 		}
 
 		$index      = array_keys( self::STEPS );
-		$next_index = array_search( $state, $index ) + 1;
+		$next_index = array_search( $state, $index, true ) + 1;
 
 		return array(
 			'template' => self::STEPS[ $state ],

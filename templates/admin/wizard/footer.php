@@ -42,7 +42,7 @@ $wlf_progress_pc = ( $step_data['progress']['current'] / $step_data['progress'][
 		</div>
 		<div class="wlf-wizard__footer__next">
 			<?php if ( 'complete' !== $step_data['step'] ) : ?>
-				<button class="button button-primary" type="submit" name="next-step" <?php echo esc_attr( $wlf_next_state ); ?>><?php echo $wlf_next_label; ?></button>
+				<button class="button button-primary" type="submit" name="next-step" <?php echo esc_attr( $wlf_next_state ); ?>><?php echo esc_html( $wlf_next_label ); ?></button>
 			<?php endif; ?>
 		</div>
 	</div>
