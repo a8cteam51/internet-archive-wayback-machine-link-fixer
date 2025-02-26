@@ -22,9 +22,6 @@ $wlf_progress_string = sprintf(
 );
 
 $wlf_progress_pc = ( $step_data['progress']['current'] / $step_data['progress']['total'] ) * 100;
-
-// If the p
-
 ?>
 	</div> <!-- END Wizard content -->
 
