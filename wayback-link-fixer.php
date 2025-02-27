@@ -10,9 +10,9 @@
  * @noinspection    ALL
  *
  * @wordpress-plugin
- * Plugin Name:             Wayback Link Fixer
+ * Plugin Name:             Internet Archive Wayback Machine Link Fixer
  * Plugin URI:              https://wpspecialprojects.wordpress.com
- * Description:             Scans links in your content and fixes them to use the Wayback Machine, archived version.
+ * Description:             This plugin scans your content for links, replacing broken ones with archived versions from the Wayback Machine. It also features Auto Archiving, which automatically creates snapshots of your own pages and any other links on your site that aren’t yet archived, ensuring long-term accessibility.
  * Version:                 1.3.0-rc.1
  * Requires at least:       6.2
  * Tested up to:            6.7
@@ -24,8 +24,6 @@
  * Text Domain:             wpcomsp-wayback-link-fixer
  * Domain Path:             /languages
  **/
-
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
