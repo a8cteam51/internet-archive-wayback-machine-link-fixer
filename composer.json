@@ -1,7 +1,7 @@
 {
     "name": "a8cteam51/wayback-link-fixer",
     "type": "wordpress-plugin",
-    "description": "",
+    "description": "A WordPress plugin that scans content for links, replacing broken ones with archived versions from the Wayback Machine. It also features Auto Archiving, creating snapshots of your own pages and other site links that aren’t yet archived. Uses Action Scheduler for background tasks.",
     "homepage": "https://github.com/a8cteam51/wayback-link-fixer",
     "license": "GPL-2.0-or-later",
     "authors": [{
