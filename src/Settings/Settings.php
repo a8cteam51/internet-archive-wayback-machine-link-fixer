@@ -373,17 +373,15 @@ class Settings {
 	/**
 	 * Gets the interval between updates.
 	 *
-	 * Time in seconds.
-	 *
 	 * @since 1.3.0
 	 *
-	 * @return integer
+	 * @return integer Time in days.
 	 */
 	public static function own_link_routine_update_interval(): int {
 		return absint(
 			apply_filters(
 				'wlf_routinely_update_wayback_machine_interval',
-				get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 7 * \DAY_IN_SECONDS )
+				get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 28 )
 			)
 		);
 	}

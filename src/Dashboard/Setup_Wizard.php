@@ -283,17 +283,14 @@ class Setup_Wizard {
 			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['wlf_wizard_post_types'] )
 			: array();
 		$enable_routine_update = isset( $_POST['wlf_wizard_recurring_backup'] );
-		$routine_frequency     = isset( $_POST['wlf_wizard_backup_frequency'] ) ? absint( $_POST['wlf_wizard_backup_frequency'] ) : 7;
 
 		// Update all the settings.
 		update_option( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS, $is_active );
 		update_option( Settings::ALLOWED_OWN_CONTENT_POST_TYPES, $allowed_post_types );
 		update_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE, $enable_routine_update );
-		update_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, $routine_frequency );
 
 		// Update the step.
-		$next = sanitize_text_field( wp_unslash( $_POST['wlf-next-step'] ) );
-		update_option( self::OPTION_NAME, $next );
+		update_option( self::OPTION_NAME, 'complete' );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
 
@@ -362,20 +359,15 @@ class Setup_Wizard {
 	private function get_step_data(): array {
 		$state = get_option( self::OPTION_NAME, 'step-1' );
 
-		// Get the next step, if finished, return the finished template.
-		if ( 'finish' === $state ) {
-			return 'finish';
-		}
-
 		$index      = array_keys( self::STEPS );
 		$next_index = array_search( $state, $index, true ) + 1;
 
 		return array(
 			'template' => self::STEPS[ $state ],
 			'step'     => $state,
-			'next'     => $index[ $next_index ],
+			'next'     => array_key_exists( $next_index, $index ) ? $index[ $next_index ] : $state,
 			'progress' => array(
-				'current' => $next_index,
+				'current' => array_key_exists( $next_index, $index ) ? $next_index : array_key_last( $index ),
 				'total'   => count( $index ) - 1,
 			),
 		);

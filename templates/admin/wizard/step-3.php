@@ -13,15 +13,6 @@
  */
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-
-$wlf_interval = absint( Settings::own_link_routine_update_interval() );
-
-// If greater than 0, convert to days from seconds.
-if ( $wlf_interval > 0 ) {
-	$wlf_interval = $wlf_interval / DAY_IN_SECONDS;
-} else {
-	$wlf_interval = 28;
-}
 ?>
 
 <?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -66,15 +57,6 @@ if ( $wlf_interval > 0 ) {
 	<p class="description"><?php esc_html_e( 'If enabled, your posts will be routinely updated on the Wayback Machine.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 		<input type="checkbox" name="wlf_wizard_recurring_backup" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
 	</div>
-</div>
-
-<div class="wlf-wizard__content__field is_optional" >
-	<label for="wlf_wizard_backup_frequency">
-		<?php esc_html_e( 'Backup interval', 'wpcomsp_wayback_link_fixer' ); ?>
-	</label>
-	<p class="description"><?php esc_html_e( 'Please enter how many days between each routine archive of your posts.', 'wpcomsp_wayback_link_fixer' ); ?></p>
-	<input type="number" min="1" name="wlf_wizard_backup_frequency" value="<?php echo esc_attr( $wlf_interval ); ?>" />
-
 </div>
 
 <?php echo $footer; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
