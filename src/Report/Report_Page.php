@@ -180,7 +180,6 @@ class Report_Page {
 
 		// Render any notices.
 		$table->render_notices();
-		wpcomsp_wayback_link_fixer_render_wayback_offline_notice();
 		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
 
 		echo '<div class="wrap">';
