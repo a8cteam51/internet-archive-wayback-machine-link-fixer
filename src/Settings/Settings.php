@@ -383,7 +383,7 @@ class Settings {
 		return absint(
 			apply_filters(
 				'wlf_routinely_update_wayback_machine_interval',
-				get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 7 * \DAY_IN_SECONDS )
+				get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 7 )
 			)
 		);
 	}

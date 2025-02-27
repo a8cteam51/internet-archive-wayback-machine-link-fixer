@@ -328,11 +328,8 @@ class Settings_Page {
 			Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL,
 			array(
 				'type'              => 'integer',
-				'sanitize_callback' => function ( $value ): int {
-					// Covert from days to seconds.
-					return absint( $value ) * DAY_IN_SECONDS;
-				},
-				'default'           => 7,
+				'sanitize_callback' => 'absint',
+				'default'           => 28,
 				'show_in_rest'      => array(
 					'name'   => Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL,
 					'schema' => array(
@@ -824,8 +821,6 @@ class Settings_Page {
 	 * @return void
 	 */
 	public function render_own_link_routinely_update(): void {
-		$interval = Settings::own_link_routine_update_interval();
-
 		?>
 		<label for="<?php echo esc_attr( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE ); ?>">
 			<input
@@ -850,8 +845,6 @@ class Settings_Page {
 	 */
 	public function render_own_link_routinely_update_interval(): void {
 		$interval = Settings::own_link_routine_update_interval();
-		// Cast to days.
-		$interval = 0 === $interval ? 0 : $interval / DAY_IN_SECONDS;
 		?>
 		<input
 			type="number"

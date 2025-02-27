@@ -45,7 +45,3 @@ $wlf_progress_pc = ( $step_data['progress']['current'] / $step_data['progress'][
 	</div>
 	</form> <!-- END Wizard form -->
 </div> <!-- END Wizard container -->
-
-<script>
-
-</script>
