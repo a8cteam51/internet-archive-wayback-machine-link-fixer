@@ -86,8 +86,8 @@ class Report_Page {
 	public function register_page(): void {
 		$hook = add_submenu_page(
 			self::PARENT_SLUG,
-			__( 'Links', 'wpcomsp_wayback_link_fixer' ),
-			__( 'Links', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Link Fixer :: Links', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
 			self::SLUG,
 			array( $this, 'render_page' )
@@ -185,7 +185,7 @@ class Report_Page {
 		echo '<div class="wrap">';
 		printf(
 			'<h1 class="wp-heading-inline">%s</h1>',
-			esc_html__( 'Wayback Link Fixer :: Links', 'wpcomsp_wayback_link_fixer' ),
+			esc_html__( 'Link Fixer :: Links', 'wpcomsp_wayback_link_fixer' ),
 		);
 
 		echo '<hr class="wp-header-end">';
