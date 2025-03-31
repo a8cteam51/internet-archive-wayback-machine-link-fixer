@@ -30,6 +30,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 		<label for="wlf_wizard_activate_auto_archiver">
 			<?php esc_html_e( 'Enable auto archiver', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
+		<p class="description"><?php esc_html_e( 'When "Auto Archiver" is enabled, your content is automatically updated on the Internet Archive each time you save changes.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 		<input type="checkbox" id="is_active" name="wlf_wizard_activate_auto_archiver" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
 	</div>
 </div>
