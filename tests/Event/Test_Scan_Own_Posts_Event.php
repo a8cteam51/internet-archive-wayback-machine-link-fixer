@@ -159,16 +159,15 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		\add_filter( 'wlf_routinely_update_wayback_machine', '__return_true' );
 
 		// Set the interval to 24 hours.
-		\add_filter( 'wlf_routinely_update_wayback_machine_interval', fn() => 24 * HOUR_IN_SECONDS );
+		\add_filter( 'wlf_routinely_update_wayback_machine_interval', fn() => 1 );
 
 
 		// Create 2 posts.
 		$post_id_1 = $this->factory->post->create( array( 'post_type' => 'post' ) );
 		$post_id_2 = $this->factory->post->create( array( 'post_type' => 'post' ) );
-
 		// Set the meta, post 1 should be last checked 2 days ago and post 2 should be 1hour ago.
 		$time_1 = time() - 2 * DAY_IN_SECONDS;
-		$time_2 = time() - HOUR_IN_SECONDS;
+		$time_2 = time() - 1 * HOUR_IN_SECONDS;
 
 		update_post_meta($post_id_1, Settings::OWN_LINK_LAST_PROCESSED, $time_1);
 		update_post_meta($post_id_2, Settings::OWN_LINK_LAST_PROCESSED, $time_2);
