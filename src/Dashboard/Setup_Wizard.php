@@ -300,7 +300,11 @@ class Setup_Wizard {
 	 * @return void
 	 */
 	public function render_page(): void {
+
 		echo '<div class="wrap">';
+		echo '<h1>';
+		esc_html_e( 'Link Fixer Setup Wizard', 'wpcomsp_wayback_link_fixer' );
+		echo '</h1>';
 
 		$step_data = $this->get_step_data();
 

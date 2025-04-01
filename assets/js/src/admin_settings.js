@@ -30,7 +30,7 @@
 		 * @param {Event} e - The event object.
 		 *
 		 */
-		function doNothing(e){
+		function doNothing(e) {
 			e.preventDefault();
 		}
 
@@ -53,37 +53,23 @@
 		 * @param {string} groupName - The data-group attribute value.
 		 */
 		function toggleElements(isChecked, groupName) {
-			// Get all elements with the specified data-group attribute and process
-			jQuery(`[data-group="${groupName}"]`).each((index, element) => {
-				if (isChecked) {
-					// Allow editing
-					if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-						element.removeAttribute('readonly');
-					} else if (element.tagName === 'BUTTON') {
-						element.removeAttribute('disabled');
-					} else if (element.tagName === 'SELECT') {
-						element.removeEventListener('mousedown', doNothing);
-						element.style.pointerEvents = 'auto';
-					}
-					element.classList.remove('wlf-read-only');
-				} else {
-					// Make inputs/textareas read-only, disable buttons
-					if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-						element.setAttribute('readonly', true);
-					} else if (element.tagName === 'BUTTON') {
-						element.setAttribute('disabled', true);
-					} else if (element.tagName === 'SELECT') {
-						element.addEventListener('mousedown', doNothing);
-						element.style.pointerEvents = 'none';
-					}
-					element.classList.add('wlf-read-only');
-				}
-			});
+
+			// Get the field list, based on teh group name.
+			const fieldList = 'link_fixer' === groupName
+				? '.wlf_toggle_setting__fixer'
+				: '.wlf_toggle_setting__auto_archiver';
+
+
+			if (!isChecked) {
+				jQuery(fieldList).addClass('hidden');
+			} else {
+				jQuery(fieldList).removeClass('hidden');
+			}
 		}
 
 		// Runs the checks on load
-		 toggleElements(PROCESS_LINK.prop('checked'), 'link_fixer');
-		 toggleElements(AUTO_ARCHIVE.prop('checked'), 'auto_archiver');
+		toggleElements(PROCESS_LINK.prop('checked'), 'link_fixer');
+		toggleElements(AUTO_ARCHIVE.prop('checked'), 'auto_archiver');
 
 		/**
 		 * Get the last index from the links.

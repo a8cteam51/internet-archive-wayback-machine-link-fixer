@@ -14,6 +14,8 @@
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
+// Holds the class to hide all inputs if not enabled.
+$wlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 ?>
 
 <?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -23,19 +25,20 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 </div>
 
 <div class="wlf-wizard__content__intro">
-	<p><?php esc_html_e( 'If you wish to create more than 200 links per month, you will need to get a free account with archive.org and enter the supplied credentials here.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+	<p><?php esc_html_e( 'You can set the Link Fixer to work only with specific post types and apply it to existing posts.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 </div>
 
 <div class="wlf-wizard__content__field">
 	<div class="wlf-wizard__content__inner-field checkbox">
 		<label for="wlf_wizard_activate_link_fixer">
-			<?php esc_html_e( 'Enable link fixer', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'Enable Link Fixer', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
+		<p class="description"><?php esc_html_e( 'When enabled, all links withing your content will be indexed.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 		<input type="checkbox" id="is_active" name="wlf_wizard_activate_link_fixer" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
 	</div>
 </div>
 
-<div class="wlf-wizard__content__field is_optional" >
+<div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $wlf_hide_class ); ?>" >
 	<label for="wlf_wizard_post_types">
 		<?php esc_html_e( 'Post Types', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>
@@ -50,17 +53,17 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 	</div>
 </div>
 
-<div class="wlf-wizard__content__field  is_optional">
+<div class="wlf-wizard__content__field  is_optional <?php echo esc_attr( $wlf_hide_class ); ?>">
 	<div class="wlf-wizard__content__inner-field checkbox">
 		<label for="wlf_wizard_scan_existing_content">
-			<?php esc_html_e( 'Scan existing content', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'Scan Existing Content', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
 		<p class="description"><?php esc_html_e( 'If enabled, all existing posts will be scanned and processed.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 		<input type="checkbox" id="wlf_is_active" name="wlf_wizard_scan_existing_content" value="1" <?php checked( Settings::should_scan_existing_posts() ); ?> />
 	</div>
 </div>
 
-<div class="wlf-wizard__content__field is_optional" >
+<div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $wlf_hide_class ); ?>" >
 	<label for="wlf_wizard_outcome">
 		<?php esc_html_e( 'Broken Link Outcome', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>

@@ -20,7 +20,8 @@
 </div>
 
 <div class="wlf-wizard__content__intro">
-	<p><?php esc_html_e( 'If you wish to create more than 200 links per month, you will need to get a free account with archive.org and enter the supplied credentials here.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+	<p><?php esc_html_e( 'If you wish to create more than 200 links per month, you will need to get a free account with archive.org and enter the supplied credentials below.', 'wpcomsp_wayback_link_fixer' ); ?>
+		<a href="https://archive.org/account/s3.php" target="_blank"><?php esc_html_e( 'Get your api keys here.', 'wpcomsp_wayback_link_fixer' ); ?></a></p>
 </div>
 
 <div class="wlf-wizard__content__field">

@@ -13,6 +13,9 @@
  */
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+
+// Holds the class to hide all inputs if not enabled.
+$wlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 ?>
 
 <?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -30,11 +33,12 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 		<label for="wlf_wizard_activate_auto_archiver">
 			<?php esc_html_e( 'Enable auto archiver', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
-		<input type="checkbox" id="is_active" name="wlf_wizard_activate_auto_archiver" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
+		<p class="description"><?php esc_html_e( 'When "Auto Archiver" is enabled, your content is automatically updated on the Internet Archive each time you save changes.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+		<input type="checkbox" id="is_active" name="wlf_wizard_activate_auto_archiver" value="1" <?php checked( Settings::add_own_links() ); ?> />
 	</div>
 </div>
 
-<div class="wlf-wizard__content__field is_optional" >
+<div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $wlf_hide_class ); ?>" >
 	<label for="wlf_wizard_post_types">
 		<?php esc_html_e( 'Post Types', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>
@@ -49,7 +53,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 	</div>
 </div>
 
-<div class="wlf-wizard__content__field  is_optional">
+<div class="wlf-wizard__content__field  is_optional <?php echo esc_attr( $wlf_hide_class ); ?>">
 	<div class="wlf-wizard__content__inner-field checkbox">
 		<label for="wlf_wizard_recurring_backup">
 			<?php esc_html_e( 'Routinely auto archive posts', 'wpcomsp_wayback_link_fixer' ); ?>

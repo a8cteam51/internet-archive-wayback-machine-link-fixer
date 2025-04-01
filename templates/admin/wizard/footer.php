@@ -27,7 +27,9 @@ $wlf_progress_pc = ( $step_data['progress']['current'] / $step_data['progress'][
 
 	<div id="wlf-wizard__footer">
 		<div class="wlf-wizard__footer__previous">
-			<button class="button button-primary" type="submit" name="wlf-previous-step" <?php echo esc_attr( $wlf_previous_state ); ?>><?php esc_html_e( 'Previous Step', 'wpcomsp_wayback_link_fixer' ); ?></button>
+			<?php if ( 'complete' !== $step_data['step'] ) : ?>
+				<button class="button button-primary" type="submit" name="wlf-previous-step" <?php echo esc_attr( $wlf_previous_state ); ?>><?php esc_html_e( 'Previous Step', 'wpcomsp_wayback_link_fixer' ); ?></button>
+			<?php endif; ?>
 		</div>
 		<div class="wlf-wizard__footer__progress">
 			<?php if ( 'complete' !== $step_data['step'] ) : ?>
