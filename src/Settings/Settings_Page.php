@@ -422,7 +422,7 @@ class Settings_Page {
 
 		add_settings_field(
 			Settings::SCAN_EXISTING_POSTS,
-			__( 'Should existing posts be checked', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Existing Posts', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_check_existing_posts' ),
 			self::PAGE_SLUG,
 			self::GROUP_LINK_FIXER
@@ -585,7 +585,7 @@ class Settings_Page {
 				name="<?php echo esc_attr( Settings::DROP_TABLES_ON_UNINSTALL_KEY ); ?>"
 				value="1"
 				<?php checked( Settings::drop_tables_on_uninstall() ); ?>
-			/><?php esc_html_e( 'If checked this will remove all local data when plugin is uninstalled. Leave unchecked, if plan on using long term.', 'wpcomsp_wayback_link_fixer' ); ?>
+			/><?php esc_html_e( 'If checked this will remove all local data when plugin is uninstalled. Leave unchecked if you plan to re-install this plugin.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
 		<?php
 	}
@@ -608,10 +608,10 @@ class Settings_Page {
 				data-group="link_fixer"
 				<?php checked( Settings::should_scan_existing_posts() ); ?>
 			/>
-			<?php esc_html_e( 'When active all posts within the allowed post types, will be scanned and all links added to the WayBack Machine.', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'When enabled, all posts of the allowed types will be scanned, and their links will be archived in the Wayback Machine.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
 		<p class="description">
-			<?php esc_html_e( 'Perfect for processing existing content.', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'This runs in the background and may take hours or days, depending on post and link count.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</p>
 		<?php
 	}
