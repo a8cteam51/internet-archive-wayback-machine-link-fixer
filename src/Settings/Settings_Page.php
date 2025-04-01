@@ -380,7 +380,9 @@ class Settings_Page {
 		add_settings_section(
 			self::GROUP_LINK_FIXER,
 			__( 'Link Fixer', 'wpcomsp_wayback_link_fixer' ),
-			'__return_empty_string',
+			function () {
+				echo '<p class="description">' . esc_html__( 'Automatically scan all links in your content to detect and replace broken ones. Find or create archived versions on the Internet Archive and ensure your links remain accessible. Keep your content reliable and up-to-date effortlessly.', 'wpcomsp_wayback_link_fixer' ) . '</p>';
+			},
 			self::PAGE_SLUG,
 			array(
 				'before_section' => '<div id="wlf_settings_link_fixer_section" class="wlf_settings_card">',
@@ -391,7 +393,9 @@ class Settings_Page {
 		add_settings_section(
 			self::GROUP_AUTO_ARCHIVER,
 			__( 'Auto Archiver', 'wpcomsp_wayback_link_fixer' ),
-			'__return_empty_string',
+			function () {
+				echo '<p class="description">' . esc_html__( 'Keep your content securely archived with the Auto Archiver. Each time you update a post, a fresh copy is saved to the Wayback Machine. Ensure your work remains accessible and preserved over time.', 'wpcomsp_wayback_link_fixer' ) . '</p>';
+			},
 			self::PAGE_SLUG,
 			array(
 				'before_section' => '<div id="wlf_settings_auto_archiver_section" class="wlf_settings_card">',
@@ -412,7 +416,8 @@ class Settings_Page {
 			__( 'Post Types', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_fixer_post_types_field' ),
 			self::PAGE_SLUG,
-			self::GROUP_LINK_FIXER
+			self::GROUP_LINK_FIXER,
+			array( 'class' => Settings::is_link_processing_enabled() ? 'wlf_toggle_setting__fixer' : 'wlf_toggle_setting__fixer hidden' )
 		);
 
 		add_settings_field(
@@ -420,7 +425,8 @@ class Settings_Page {
 			__( 'Wipe Data on Uninstall', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_drop_tables_on_uninstall_field' ),
 			self::PAGE_SLUG,
-			self::GROUP_PLUGIN_SETTINGS
+			self::GROUP_PLUGIN_SETTINGS,
+			array( 'class' => Settings::is_link_processing_enabled() ? 'wlf_toggle_setting__fixer' : 'wlf_toggle_setting__fixer hidden' )
 		);
 
 		add_settings_field(
@@ -428,7 +434,8 @@ class Settings_Page {
 			__( 'Existing Posts', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_check_existing_posts' ),
 			self::PAGE_SLUG,
-			self::GROUP_LINK_FIXER
+			self::GROUP_LINK_FIXER,
+			array( 'class' => Settings::is_link_processing_enabled() ? 'wlf_toggle_setting__fixer' : 'wlf_toggle_setting__fixer hidden' )
 		);
 
 		add_settings_field(
@@ -436,7 +443,8 @@ class Settings_Page {
 			__( 'Fixer Option', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_fixer_option' ),
 			self::PAGE_SLUG,
-			self::GROUP_LINK_FIXER
+			self::GROUP_LINK_FIXER,
+			array( 'class' => Settings::is_link_processing_enabled() ? 'wlf_toggle_setting__fixer' : 'wlf_toggle_setting__fixer hidden' )
 		);
 
 		add_settings_field(
@@ -444,7 +452,8 @@ class Settings_Page {
 			__( 'Link Exclusions', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_link_exclusions_field' ),
 			self::PAGE_SLUG,
-			self::GROUP_LINK_FIXER
+			self::GROUP_LINK_FIXER,
+			array( 'class' => Settings::is_link_processing_enabled() ? 'wlf_toggle_setting__fixer' : 'wlf_toggle_setting__fixer hidden' )
 		);
 
 		add_settings_field(
@@ -476,7 +485,8 @@ class Settings_Page {
 			__( 'Routinely Archive', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_own_link_routinely_update' ),
 			self::PAGE_SLUG,
-			self::GROUP_AUTO_ARCHIVER
+			self::GROUP_AUTO_ARCHIVER,
+			array( 'class' => Settings::add_own_links() ? 'wlf_toggle_setting__auto_archiver' : 'wlf_toggle_setting__auto_archiver hidden' )
 		);
 
 		add_settings_field(
@@ -484,7 +494,8 @@ class Settings_Page {
 			__( 'Routine Interval', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_own_link_routinely_update_interval' ),
 			self::PAGE_SLUG,
-			self::GROUP_AUTO_ARCHIVER
+			self::GROUP_AUTO_ARCHIVER,
+			array( 'class' => Settings::add_own_links() ? 'wlf_toggle_setting__auto_archiver' : 'wlf_toggle_setting__auto_archiver hidden' )
 		);
 
 		add_settings_field(
@@ -492,7 +503,8 @@ class Settings_Page {
 			__( 'Allowed Post Types', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_archiver_post_types_field' ),
 			self::PAGE_SLUG,
-			self::GROUP_AUTO_ARCHIVER
+			self::GROUP_AUTO_ARCHIVER,
+			array( 'class' => Settings::add_own_links() ? 'wlf_toggle_setting__auto_archiver' : 'wlf_toggle_setting__auto_archiver hidden' )
 		);
 	}
 
@@ -569,7 +581,7 @@ class Settings_Page {
 			</label>
 			<?php
 		}
-		echo '</div><p class="description">' . esc_html__( 'Please choose which post types who posts will be auto archived on the Wayback Machine.', 'wpcomsp_wayback_link_fixer' ) . '</p>';
+		echo '</div><p class="description">' . esc_html__( 'Please choose which post types will be auto archived on publish, to the Wayback Machine..', 'wpcomsp_wayback_link_fixer' ) . '</p>';
 	}
 
 	/**
