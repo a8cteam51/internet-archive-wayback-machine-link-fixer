@@ -306,7 +306,6 @@ class Setup_Wizard {
 		esc_html_e( 'Link Fixer Setup Wizard', 'wpcomsp_wayback_link_fixer' );
 		echo '</h1>';
 
-
 		$step_data = $this->get_step_data();
 
 		$view_path = sprintf(

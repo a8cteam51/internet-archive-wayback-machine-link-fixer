@@ -15,7 +15,7 @@
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
 // Holds the class to hide all inputs if not enabled.
-$hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
+$wlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 ?>
 
 <?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -38,7 +38,7 @@ $hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 	</div>
 </div>
 
-<div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $hide_class ); ?>" >
+<div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $wlf_hide_class ); ?>" >
 	<label for="wlf_wizard_post_types">
 		<?php esc_html_e( 'Post Types', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>
@@ -53,7 +53,7 @@ $hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 	</div>
 </div>
 
-<div class="wlf-wizard__content__field  is_optional <?php echo esc_attr( $hide_class ); ?>">
+<div class="wlf-wizard__content__field  is_optional <?php echo esc_attr( $wlf_hide_class ); ?>">
 	<div class="wlf-wizard__content__inner-field checkbox">
 		<label for="wlf_wizard_scan_existing_content">
 			<?php esc_html_e( 'Scan Existing Content', 'wpcomsp_wayback_link_fixer' ); ?>
@@ -63,7 +63,7 @@ $hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 	</div>
 </div>
 
-<div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $hide_class ); ?>" >
+<div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $wlf_hide_class ); ?>" >
 	<label for="wlf_wizard_outcome">
 		<?php esc_html_e( 'Broken Link Outcome', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>
