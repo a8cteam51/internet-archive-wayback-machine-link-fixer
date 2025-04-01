@@ -378,11 +378,14 @@ class Settings {
 	 * @return integer Time in days.
 	 */
 	public static function own_link_routine_update_interval(): int {
-		return absint(
+		$default = 28;
+		$interval =  absint(
 			apply_filters(
 				'wlf_routinely_update_wayback_machine_interval',
-				get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 28 )
+				get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, $default )
 			)
 		);
+
+		return $interval <= 0 ? $default : $interval;
 	}
 }

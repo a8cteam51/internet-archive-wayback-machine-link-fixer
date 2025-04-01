@@ -328,7 +328,10 @@ class Settings_Page {
 			Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL,
 			array(
 				'type'              => 'integer',
-				'sanitize_callback' => 'absint',
+				'sanitize_callback' => function ( $value ) {
+					$value = absint( $value );
+					return 0 === $value ? 28 : $value;
+				},
 				'default'           => 28,
 				'show_in_rest'      => array(
 					'name'   => Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL,
