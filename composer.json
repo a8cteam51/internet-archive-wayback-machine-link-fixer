@@ -49,10 +49,7 @@
         "psr-4": {
             "WPCOMSpecialProjects\\Wayback_Link_Fixer\\": "src",
             "WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\": "migrations"
-        },
-        "classmap": [
-            "models"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -81,7 +78,7 @@
             "@updatepo",
             "@makejson"
         ],
-        "makepot": "wp i18n make-pot . --exclude=vendor,node_modules,pack,tests,lib,migrations,coverage,coverate-reports ",
+        "makepot": "wp i18n make-pot . --include=src,templates,assets --exclude=vendor,node_modules,pack,tests,lib,migrations,coverage,coverate-reports ",
         "updatepo": "wp i18n update-po ./languages/wayback-link-fixer.pot",
         "makejson": "wp i18n make-json ./languages --pretty-print --no-purge",
         "makemo": "wp i18n make-mo ./languages",
