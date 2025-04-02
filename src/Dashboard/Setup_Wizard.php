@@ -22,10 +22,10 @@ defined( 'ABSPATH' ) || exit;
  */
 class Setup_Wizard {
 
-	private const OPTION_NAME = 'wlf_setup_wizard';
+	private const OPTION_NAME   = 'wlf_setup_wizard';
 	private const HAS_COMPLETED = 'wlf_setup_wizard_completed';
-	private const PAGE_SLUG   = 'wayback-link-fixer-setup-wizard';
-	private const STEPS       = array(
+	private const PAGE_SLUG     = 'wayback-link-fixer-setup-wizard';
+	private const STEPS         = array(
 		'step-1'   => 'step-1.php',
 		'step-2'   => 'step-2.php',
 		'step-3'   => 'step-3.php',
