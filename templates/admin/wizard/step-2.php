@@ -30,11 +30,13 @@ $wlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 
 <div class="wlf-wizard__content__field">
 	<div class="wlf-wizard__content__inner-field checkbox">
-		<label for="wlf_wizard_activate_link_fixer">
-			<?php esc_html_e( 'Enable Link Fixer', 'wpcomsp_wayback_link_fixer' ); ?>
-		</label>
+		<div class="inner-spaced-between">
+			<label for="wlf_wizard_activate_link_fixer">
+				<?php esc_html_e( 'Enable Link Fixer', 'wpcomsp_wayback_link_fixer' ); ?>
+			</label>
+			<input type="checkbox" id="is_active" name="wlf_wizard_activate_link_fixer" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
+		</div>
 		<p class="description"><?php esc_html_e( 'When enabled, all links withing your content will be indexed.', 'wpcomsp_wayback_link_fixer' ); ?></p>
-		<input type="checkbox" id="is_active" name="wlf_wizard_activate_link_fixer" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
 	</div>
 </div>
 
@@ -45,21 +47,25 @@ $wlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 	<p class="description"><?php esc_html_e( 'Select the post types you want to enable the link fixer for.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 	<div class="wlf-wizard__content__inner-field checkboxes">
 		<?php foreach ( $post_types as $wlf_pt_slug => $wlf_pt_name ) : ?>
-			<label>
+			<div class="inner-spaced-between__list">
+				<label>
+					<?php echo esc_html( $wlf_pt_name ); ?>
+				</label>
 				<input type="checkbox" name="wlf_wizard_post_types[]" value="<?php echo esc_attr( $wlf_pt_slug ); ?>" <?php checked( in_array( $wlf_pt_slug, Settings::get_allowed_post_types(), true ) ); ?> />
-				<?php echo esc_html( $wlf_pt_name ); ?>
-			</label>
+			</div>
 		<?php endforeach; ?>
 	</div>
 </div>
 
 <div class="wlf-wizard__content__field  is_optional <?php echo esc_attr( $wlf_hide_class ); ?>">
 	<div class="wlf-wizard__content__inner-field checkbox">
-		<label for="wlf_wizard_scan_existing_content">
-			<?php esc_html_e( 'Scan Existing Content', 'wpcomsp_wayback_link_fixer' ); ?>
-		</label>
-		<p class="description"><?php esc_html_e( 'If enabled, all existing posts will be scanned and processed.', 'wpcomsp_wayback_link_fixer' ); ?></p>
-		<input type="checkbox" id="wlf_is_active" name="wlf_wizard_scan_existing_content" value="1" <?php checked( Settings::should_scan_existing_posts() ); ?> />
+		<div class="inner-spaced-between">
+			<label for="wlf_wizard_scan_existing_content">
+				<?php esc_html_e( 'Scan Existing Content', 'wpcomsp_wayback_link_fixer' ); ?>
+			</label>
+			<input type="checkbox" id="wlf_is_active" name="wlf_wizard_scan_existing_content" id="wlf_wizard_scan_existing_content" value="1" <?php checked( Settings::should_scan_existing_posts() ); ?> />
+		</div>
+		<p class="description"><?php esc_html_e( 'If enabled, all existing posts will be scanned and processed. Please note this process can take multiple days if you have a lot of content and links.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 	</div>
 </div>
 

@@ -1,7 +1,12 @@
 	#wlf_wizard {
-	    padding: 10px;
+	    padding: 20px 30px;
 	    background: white;
 	    border-radius: 10px;
+	    width: 500px;
+	    min-width: 250px;
+	    max-width: calc(100% - 60px);
+	    margin-left: auto;
+	    margin-right: auto;
 	}
 	
 	#wlf_wizard input[type="checkbox"] {
@@ -14,7 +19,6 @@
 	    cursor: pointer;
 	    transition: background 0.3s;
 	    margin: inherit;
-	    margin-top: 5px;
 	}
 	
 	#wlf_wizard input[type="checkbox"]::before {
@@ -30,13 +34,22 @@
 	}
 	
 	#wlf_wizard input[type="checkbox"]:checked {
-	    background: #4CAF50;
+	    background: #2271b1;
 	}
 	
 	#wlf_wizard input[type="checkbox"]:checked::before {
 	    transform: translateX(20px);
 	    top: 4px;
 	    left: 5px;
+	}
+	
+	#wlf_wizard input[type="text"],
+	#wlf_wizard input[type="password"],
+	#wlf_wizard select {
+	    width: 100%;
+	    padding: 10px;
+	    font-size: 19px;
+	    max-width: unset;
 	}
 	
 	#wlf-wizard__footer {
@@ -53,6 +66,10 @@
 	    justify-content: center;
 	    padding: 0 25px;
 	    width: 100%;
+	    // Hide on screens smaller than 500px
+	    @media (max-width: 499px) {
+	        display: none;
+	    }
 	}
 	
 	.wlf-wizard__footer__progress__bar {
@@ -78,14 +95,32 @@
 	    flex-direction: column;
 	    margin-bottom: 20px;
 	    justify-content: center;
-	    align-items: center;
-	    padding: 10px;
+	    align-items: flex-start;
 	}
 	
 	.wlf-wizard__content__field label {
 	    font-size: 17px;
 	    line-height: 20px;
-	    font-weight: 700;
+	    margin-bottom: 6px;
+	    font-weight: 400;
+	}
+	
+	.wlf-wizard__content__inner-field .inner-spaced-between__list {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    padding: 3px 25px;
+	}
+	
+	.wlf-wizard__content__inner-field .inner-spaced-between__list:hover {
+	    background-color: #f9f9f9;
+	}
+	
+	.wlf-wizard__content__inner-field .inner-spaced-between {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    width: 100%;
 	}
 	
 	.wlf-wizard__content__inner-field.checkbox {
@@ -93,6 +128,7 @@
 	    flex-direction: column;
 	    align-items: center;
 	    justify-content: center;
+	    width: 100%;
 	}
 	
 	.wlf-wizard__content__inner-field.checkbox input {
@@ -100,9 +136,11 @@
 	}
 	
 	.wlf-wizard__content__inner-field.checkboxes {
-	    display: grid;
-	    grid-template-columns: repeat(2, 1fr);
-	    grid-gap: 10px;
+	    width: 100%;
+	}
+	
+	.wlf-wizard__content__inner-field p.description {
+	    width: 100%;
 	}
 	
 	.wlf-wizard__content__field.is_optional.disabled {

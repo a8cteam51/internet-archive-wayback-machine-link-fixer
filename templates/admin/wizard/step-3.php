@@ -30,11 +30,13 @@ $wlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 
 <div class="wlf-wizard__content__field">
 	<div class="wlf-wizard__content__inner-field checkbox">
-		<label for="wlf_wizard_activate_auto_archiver">
-			<?php esc_html_e( 'Enable auto archiver', 'wpcomsp_wayback_link_fixer' ); ?>
-		</label>
+		<div class="inner-spaced-between">
+			<label for="wlf_wizard_activate_auto_archiver">
+				<?php esc_html_e( 'Enable auto archiver', 'wpcomsp_wayback_link_fixer' ); ?>
+			</label>
+			<input type="checkbox" id="is_active" name="wlf_wizard_activate_auto_archiver" value="1" <?php checked( Settings::add_own_links() ); ?> />
+		</div>
 		<p class="description"><?php esc_html_e( 'When "Auto Archiver" is enabled, your content is automatically updated on the Internet Archive each time you save changes.', 'wpcomsp_wayback_link_fixer' ); ?></p>
-		<input type="checkbox" id="is_active" name="wlf_wizard_activate_auto_archiver" value="1" <?php checked( Settings::add_own_links() ); ?> />
 	</div>
 </div>
 
@@ -45,21 +47,25 @@ $wlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 	<p class="description"><?php esc_html_e( 'Select which post types should be archived on the Wayback Machine.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 	<div class="wlf-wizard__content__inner-field checkboxes">
 		<?php foreach ( $post_types as $wlf_pt_slug => $wlf_pt_name ) : ?>
-			<label>
-				<input type="checkbox" name="wlf_wizard_post_types[]" value="<?php echo esc_attr( $wlf_pt_slug ); ?>" <?php checked( in_array( $wlf_pt_slug, Settings::own_link_allowed_post_types(), true ) ); ?> />
-				<?php echo esc_html( $wlf_pt_name ); ?>
-			</label>
+			<div class="inner-spaced-between__list">
+				<label>
+					<?php echo esc_html( $wlf_pt_name ); ?>
+				</label>
+					<input type="checkbox" name="wlf_wizard_post_types[]" value="<?php echo esc_attr( $wlf_pt_slug ); ?>" <?php checked( in_array( $wlf_pt_slug, Settings::own_link_allowed_post_types(), true ) ); ?> />
+			</div>
 		<?php endforeach; ?>
 	</div>
 </div>
 
 <div class="wlf-wizard__content__field  is_optional <?php echo esc_attr( $wlf_hide_class ); ?>">
 	<div class="wlf-wizard__content__inner-field checkbox">
-		<label for="wlf_wizard_recurring_backup">
-			<?php esc_html_e( 'Routinely auto archive posts', 'wpcomsp_wayback_link_fixer' ); ?>
-		</label>
-	<p class="description"><?php esc_html_e( 'If enabled, your posts will be routinely updated on the Wayback Machine.', 'wpcomsp_wayback_link_fixer' ); ?></p>
-		<input type="checkbox" name="wlf_wizard_recurring_backup" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
+		<div class="inner-spaced-between">
+			<label for="wlf_wizard_recurring_backup">
+				<?php esc_html_e( 'Routinely auto archive posts', 'wpcomsp_wayback_link_fixer' ); ?>
+			</label>
+			<input type="checkbox" name="wlf_wizard_recurring_backup" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
+		</div>
+		<p class="description"><?php esc_html_e( 'If enabled, your posts will be routinely updated on the Wayback Machine.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 	</div>
 </div>
 

@@ -11,6 +11,10 @@
  * @param string $header The header template.
  * @param string $footer The footer template.
  */
+
+// Sets the type for api keys based on the current environment.
+$wlf_access_type = '' === $settings->get_archive_access_key() ? 'text' : 'password';
+$wlf_secret_type = '' === $settings->get_archive_secret_key() ? 'text' : 'password';
 ?>
 
 <?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -28,13 +32,13 @@
 	<label for="wlf_wizard_archive_access_key">
 		<?php esc_html_e( 'Archive.org Access Key', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>
-	<input type="text" name="wlf_wizard_archive_access_key" value="<?php echo esc_attr( $settings->get_archive_access_key() ); ?>" />
+	<input type="<?php echo esc_html( $wlf_access_type ); ?>" name="wlf_wizard_archive_access_key" value="<?php echo esc_attr( $settings->get_archive_access_key() ); ?>" />
 </div>
 <div class="wlf-wizard__content__field">
 	<label for="wlf_wizard_archive_secret_key">
 		<?php esc_html_e( 'Archive.org Secret Key', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>
-	<input type="text" name="wlf_wizard_archive_secret_key" value="<?php echo esc_attr( $settings->get_archive_secret_key() ); ?>" />
+	<input type="<?php echo esc_html( $wlf_secret_type ); ?>" name="wlf_wizard_archive_secret_key" value="<?php echo esc_attr( $settings->get_archive_secret_key() ); ?>" />
 </div>
 
 

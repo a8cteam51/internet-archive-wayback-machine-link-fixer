@@ -22,9 +22,10 @@ defined( 'ABSPATH' ) || exit;
  */
 class Setup_Wizard {
 
-	private const OPTION_NAME = 'wlf_setup_wizard';
-	private const PAGE_SLUG   = 'wayback-link-fixer-setup-wizard';
-	private const STEPS       = array(
+	private const OPTION_NAME   = 'wlf_setup_wizard';
+	private const HAS_COMPLETED = 'wlf_setup_wizard_completed';
+	private const PAGE_SLUG     = 'wayback-link-fixer-setup-wizard';
+	private const STEPS         = array(
 		'step-1'   => 'step-1.php',
 		'step-2'   => 'step-2.php',
 		'step-3'   => 'step-3.php',
@@ -50,8 +51,7 @@ class Setup_Wizard {
 	 * @return boolean
 	 */
 	public static function is_setup_complete(): bool {
-		$state = get_option( self::OPTION_NAME, 'step-1' );
-		return 'complete' === $state;
+		return (bool) get_option( self::HAS_COMPLETED, false );
 	}
 
 	/**
@@ -291,6 +291,7 @@ class Setup_Wizard {
 
 		// Update the step.
 		update_option( self::OPTION_NAME, 'complete' );
+		update_option( self::HAS_COMPLETED, true );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
 
