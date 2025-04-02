@@ -20,14 +20,13 @@ $wlf_progress_string = sprintf(
 	$step_data['progress']['current'],
 	$step_data['progress']['total']
 );
-
 $wlf_progress_pc = ( $step_data['progress']['current'] / $step_data['progress']['total'] ) * 100;
 ?>
 	</div> <!-- END Wizard content -->
 
 	<div id="wlf-wizard__footer">
 		<div class="wlf-wizard__footer__previous">
-			<?php if ( 'complete' !== $step_data['step'] ) : ?>
+			<?php if ( 'dcomplete' !== $step_data['step'] ) : ?>
 				<button class="button button-primary" type="submit" name="wlf-previous-step" <?php echo esc_attr( $wlf_previous_state ); ?>><?php esc_html_e( 'Previous Step', 'wpcomsp_wayback_link_fixer' ); ?></button>
 			<?php endif; ?>
 		</div>
