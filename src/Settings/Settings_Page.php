@@ -357,7 +357,7 @@ class Settings_Page {
 			'__return_empty_string',
 			self::PAGE_SLUG,
 			array(
-				'before_section' => '<div id="wlf_settings_plugin_section" class="wlf_settings_card">',
+				'before_section' => '<div id="wlf_settings_plugin_section" class="wlf_settings_postbox">',
 				'after_section'  => '</div>',
 			)
 		);
@@ -368,12 +368,12 @@ class Settings_Page {
 			'__return_empty_string',
 			self::PAGE_SLUG,
 			array(
-				'before_section' => '<div id="wlf_settings_ia_section" class="wlf_settings_card">',
-				'after_section'  => sprintf(
+				'before_section' => '<div id="wlf_settings_ia_section" class="wlf_settings_postbox">',
+				'after_section'  => '<p class="description">' . sprintf(
 						// Translators: %s is the link to the Internet account setup.
 					__( "To get your API key and secret, please visit the <a href='%s' target='_blank'>Internet Archive</a> and create a new S3 access key.", 'wpcomsp_wayback_link_fixer' ),
 					esc_url( 'https://archive.org/account/s3.php' )
-				) . '</div>',
+				) . '</p></div>',
 			)
 		);
 
@@ -385,7 +385,7 @@ class Settings_Page {
 			},
 			self::PAGE_SLUG,
 			array(
-				'before_section' => '<div id="wlf_settings_link_fixer_section" class="wlf_settings_card">',
+				'before_section' => '<div id="wlf_settings_link_fixer_section" class="wlf_settings_postbox">',
 				'after_section'  => '</div>',
 			)
 		);
@@ -398,7 +398,7 @@ class Settings_Page {
 			},
 			self::PAGE_SLUG,
 			array(
-				'before_section' => '<div id="wlf_settings_auto_archiver_section" class="wlf_settings_card">',
+				'before_section' => '<div id="wlf_settings_auto_archiver_section" class="wlf_settings_postbox">',
 				'after_section'  => '</div>',
 			)
 		);
