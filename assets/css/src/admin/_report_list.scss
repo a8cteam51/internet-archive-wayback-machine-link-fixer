@@ -20,6 +20,22 @@
             width: unset;
         }
     }
+    .dashicons.dashicons-yes-alt {
+        color: #2271b1;
+    }
+    .report-link-url a:first-of-type {
+        display: inline-block;
+        max-width: calc(100% - 30px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+    }
+    .report-link-url .dashicons {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 5px;
+    }
 }
 
 // .wlf-filters {
