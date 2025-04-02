@@ -247,7 +247,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(),  array(), Link_Repository::ORDER_ID_DESC );
+		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), array(), Link_Repository::ORDER_ID_DESC );
 
 		// We should have the first two links
 		$expected = array(
@@ -270,7 +270,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(),  array(), Link_Repository::ORDER_URL_ASC );
+		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), array(), Link_Repository::ORDER_URL_ASC );
 
 		// We should have the first two links
 		$expected = array(
@@ -353,7 +353,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(),  array(), Link_Repository::ORDER_URL_DESC );
+		$queried_links = $this->link_repository->query_links( 2, 1, array(), array(), array(), Link_Repository::ORDER_URL_DESC );
 
 		// We should have the first two links
 		$expected = array(
@@ -429,20 +429,20 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_query_links_by_ids(): void {
-	 // Insert the default links.
-	 $this->populate_database();
+		// Insert the default links.
+		$this->populate_database();
 
-	 // Get first 5 link ids.
-	 $link_ids = array_slice( $this->link_ids, 0, 5 );
+		// Get first 5 link ids.
+		$link_ids = array_slice( $this->link_ids, 0, 5 );
 
-	 // Query the links.
-	 $queried_links = $this->link_repository->query_links( 10, 1, array(), $link_ids );
+		// Query the links.
+		$queried_links = $this->link_repository->query_links( 10, 1, array(), $link_ids );
 
-	 $this->assertCount( 5, $queried_links );
+		$this->assertCount( 5, $queried_links );
 
-	 foreach ( $queried_links as $index => $link ) {
-	     $this->assertContains( $link->get_id(), $link_ids );
-	 }
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertContains( $link->get_id(), $link_ids );
+		}
 	}
 
 	/**
@@ -455,7 +455,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 10, 1, array(), array(),  array(), Link_Repository::ORDER_DATE_DESC, null, '2022-01' );
+		$queried_links = $this->link_repository->query_links( 10, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, '2022-01' );
 
 		$this->assertCount( 1, $queried_links );
 
@@ -514,7 +514,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$this->populate_database();
 
 		// Query the links.
-		$queried_links = $this->link_repository->query_links( 10, 1, array(), array(),  array(), Link_Repository::ORDER_DATE_DESC, 'glynn' );
+		$queried_links = $this->link_repository->query_links( 10, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, 'glynn' );
 
 		$this->assertCount( 1, $queried_links );
 
@@ -554,6 +554,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 				'2021-02-01 00:00:00'
 			)->set_excluded(),
 			( new Link( 'https://glynn.com' ) )
+			->set_archived_href( 'https://archive.com/https://glynn.com' )
 			->add_check(
 				200,
 				'2021-03-01 00:00:00'
@@ -589,6 +590,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 				'2021-09-01 00:00:00'
 			)->set_broken(),
 			( new Link( 'https://zebra.zoo' ) )
+			->set_archived_href( 'https://archive.com/https://zebra.zoo' )
 			->add_check(
 				404,
 				'2021-10-01 00:00:00'
@@ -635,34 +637,77 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	public function test_totals_with_and_without_archives(): void {
 		global $wpdb;
 
-		$links = [
-			['url' => 'https://wlf1.com', 'checks' => '[]'],
-			['url' => 'https://wlf2.com', 'checks' => '[]'],
-			['url' => 'https://wlf3.com', 'checks' => '[]'],
-			['url' => 'https://wlf4.com', 'checks' => '[]'],
-			['url' => 'https://wlf5.com', 'archived' => '', 'checks' => '[]'],
-			['url' => 'https://wlf6.com', 'archived' => '', 'checks' => '[]'],
-			['url' => 'https://wlf7.com', 'archived' => '', 'checks' => '[]'],
-			['url' => 'https://wlf8.com', 'archived' => '', 'checks' => '[]'],
-			['url' => 'https://wlf9.com', 'archived' => 'https://arch9.com', 'checks' => '[]'],
-			['url' => 'https://wlf10.com', 'archived' => 'https://arch10.com', 'checks' => '[]'],
-			['url' => 'https://wlf11.com', 'archived' => 'https://arch11.com', 'checks' => '[]'],
-			['url' => 'https://wlf12.com', 'archived' => 'https://arch12.com', 'checks' => '[]'],
-		];
+		$links = array(
+			array(
+				'url'    => 'https://wlf1.com',
+				'checks' => '[]',
+			),
+			array(
+				'url'    => 'https://wlf2.com',
+				'checks' => '[]',
+			),
+			array(
+				'url'    => 'https://wlf3.com',
+				'checks' => '[]',
+			),
+			array(
+				'url'    => 'https://wlf4.com',
+				'checks' => '[]',
+			),
+			array(
+				'url'      => 'https://wlf5.com',
+				'archived' => '',
+				'checks'   => '[]',
+			),
+			array(
+				'url'      => 'https://wlf6.com',
+				'archived' => '',
+				'checks'   => '[]',
+			),
+			array(
+				'url'      => 'https://wlf7.com',
+				'archived' => '',
+				'checks'   => '[]',
+			),
+			array(
+				'url'      => 'https://wlf8.com',
+				'archived' => '',
+				'checks'   => '[]',
+			),
+			array(
+				'url'      => 'https://wlf9.com',
+				'archived' => 'https://arch9.com',
+				'checks'   => '[]',
+			),
+			array(
+				'url'      => 'https://wlf10.com',
+				'archived' => 'https://arch10.com',
+				'checks'   => '[]',
+			),
+			array(
+				'url'      => 'https://wlf11.com',
+				'archived' => 'https://arch11.com',
+				'checks'   => '[]',
+			),
+			array(
+				'url'      => 'https://wlf12.com',
+				'archived' => 'https://arch12.com',
+				'checks'   => '[]',
+			),
+		);
 
 		foreach ( $links as $link ) {
 			$wpdb->insert( Settings::get_link_table_name(), $link );
 		}
 
 		// Check the total links.
-		$this->assertCount( 12, $this->link_repository->query_links( 100, 1) );
+		$this->assertCount( 12, $this->link_repository->query_links( 100, 1 ) );
 
 		// Check without archives.
-		$this->assertCount( 8, $this->link_repository->query_links( 100, 1, array(), array(), array(Link_Repository::LINK_NO_ARCHIVE)) );
+		$this->assertCount( 8, $this->link_repository->query_links( 100, 1, array(), array(), array( Link_Repository::LINK_NO_ARCHIVE ) ) );
 
 		// Check with archives.
-		$this->assertCount( 4, $this->link_repository->query_links( 100, 1, array(), array(), array(Link_Repository::LINK_HAS_ARCHIVE)) );
-
+		$this->assertCount( 4, $this->link_repository->query_links( 100, 1, array(), array(), array( Link_Repository::LINK_HAS_ARCHIVE ) ) );
 	}
 
 	/**
@@ -686,7 +731,6 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 			null,
 			true
 		);
-
 
 		// 4 are set as excluded
 		$this->assertCount( 4, $queried_links );
@@ -715,6 +759,383 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		// Check the links are not excluded.
 		foreach ( $queried_links as $link ) {
 			$this->assertFalse( $link->is_excluded() );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to order the links by the last check date. [ASC]
+	 *
+	 * @return void
+	 */
+	public function test_can_order_links_by_last_check_date_asc(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links(
+			2,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_DATE_ASC
+		);
+
+		// dd($queried_links);
+
+		// We should have the first two links
+		$expected = array(
+			'https://jump.uk', // 2020-06-01 00:00:00
+			'https://foo.com', // 2021-02-01 00:00:00
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertEquals( $link->get_href(), $expected[ $index ] );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to order the links by the last check date. [DESC]
+	 *
+	 * @return void
+	 */
+	public function test_can_order_links_by_last_check_date_desc(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links(
+			2,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_DATE_DESC
+		);
+
+		// We should have the first two links
+		$expected = array(
+			'https://walnut.org',  // 2023-08-01 00:00:00
+			'https://example.com', // 2022-01-01 00:00:00
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertEquals( $link->get_href(), $expected[ $index ] );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to order the links by the number of checks (with 2nd on the url) [ASC]
+	 *
+	 * @return void
+	 */
+	public function test_can_order_links_by_number_of_checks_asc(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links(
+			10,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_LINK_CHECKS_ASC
+		);
+
+		// We should have the first two links
+		$expected = array(
+			'https://acorn.retro', // Count 1
+			'https://banana.fruit', // Count 1
+			'https://example.com/6',  // Count 1
+			'https://foo.com',    // Count 1
+			'https://glynn.com',  // Count 1
+			'https://hello.you',  // Count 1
+			'https://jump.uk',    // Count 1
+			'https://walnut.org', // Count 1
+			'https://zebra.zoo',  // Count 1
+
+			'https://example.com', // Count 3
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertEquals( $link->get_href(), $expected[ $index ] );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to order the links by the number of checks (with 2nd on the url) [DESC]
+	 *
+	 * @return void
+	 */
+	public function test_can_order_links_by_number_of_checks_desc(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links(
+			10,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_LINK_CHECKS_DESC
+		);
+
+		// We should have the first two links
+		$expected = array(
+			'https://example.com', // Count 3
+
+			'https://zebra.zoo',  // Count 1
+			'https://walnut.org', // Count 1
+			'https://jump.uk',    // Count 1
+			'https://hello.you',  // Count 1
+			'https://glynn.com',  // Count 1
+			'https://foo.com',    // Count 1
+			'https://example.com/6',  // Count 1
+			'https://banana.fruit', // Count 1
+			'https://acorn.retro', // Count 1
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertEquals( $link->get_href(), $expected[ $index ] );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to order the links based on the health, with url being the 2nd sortable value [ASC]
+	 *
+	 * @return void
+	 */
+	public function test_can_order_links_by_health_and_url_asc(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links(
+			10,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_LINK_HEALTH_ASC
+		);
+
+		// We should have the first two links
+		$expected = array(
+			'https://banana.fruit', // is_broken = false
+			'https://example.com/6',  // is_broken = false
+			'https://foo.com', // is_broken = false
+			'https://glynn.com',  // is_broken = false
+			'https://hello.you',  // is_broken = false
+			'https://walnut.org',  // is_broken = false
+			'https://zebra.zoo',  // is_broken = false
+
+			'https://acorn.retro', // is_broken = true
+			'https://example.com', // is_broken = true
+			'https://jump.uk',    // is_broken = true
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertEquals( $link->get_href(), $expected[ $index ] );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to order the links based on the health, with url being the 2nd sortable value [DESC]
+	 *
+	 * @return void
+	 */
+	public function test_can_order_links_by_health_and_url_desc(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links(
+			10,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_LINK_HEALTH_DESC
+		);
+
+		// We should have the first two links
+		$expected = array(
+			'https://jump.uk',    // is_broken = true
+			'https://example.com', // is_broken = true
+			'https://acorn.retro', // is_broken = true
+
+			'https://zebra.zoo',  // is_broken = false
+			'https://walnut.org',  // is_broken = false
+			'https://hello.you',  // is_broken = false
+			'https://glynn.com',  // is_broken = false
+			'https://foo.com', // is_broken = false
+			'https://example.com/6',  // is_broken = false
+			'https://banana.fruit', // is_broken = false
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertEquals( $link->get_href(), $expected[ $index ] );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to order the links based on the exclusion, with url being the 2nd sortable value [DESC]
+	 *
+	 * @return void
+	 */
+	public function test_can_order_links_by_exclusion_and_url_desc(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links(
+			10,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_LINK_EXCLUDED_DESC
+		);
+
+		dump($queried_links);
+
+		// We should have the first two links
+		$expected = array(
+			'https://walnut.org',  // is_excluded = true
+			'https://hello.you',  // is_excluded = true
+			'https://foo.com', // is_excluded = true
+			'https://example.com', // is_excluded = true
+
+			'https://zebra.zoo',  // is_excluded = false
+			'https://jump.uk',    // is_excluded = false
+			'https://glynn.com',  // is_excluded = false
+			'https://example.com/6',  // is_excluded = false
+			'https://banana.fruit', // is_excluded = false
+			'https://acorn.retro', // is_excluded = false
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertEquals( $link->get_href(), $expected[ $index ] );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to order the links based on the exclusion, with url being the 2nd sortable value [ASC]
+	 *
+	 * @return void
+	 */
+	public function test_can_order_links_by_exclusion_and_url_asc(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links(
+			10,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_LINK_EXCLUDED_ASC
+		);
+
+		// We should have the first two links
+		$expected = array(
+			'https://acorn.retro', // is_excluded = false
+			'https://banana.fruit', // is_excluded = false
+			'https://example.com/6',  // is_excluded = false
+			'https://glynn.com',  // is_excluded = false
+			'https://jump.uk',    // is_excluded = false
+			'https://zebra.zoo',  // is_excluded = false
+
+			'https://example.com', // is_excluded = true
+			'https://foo.com', // is_excluded = true
+			'https://hello.you',  // is_excluded = true
+			'https://walnut.org',  // is_excluded = true
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertEquals( $link->get_href(), $expected[ $index ] );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to order the links based on if the link has an archived link, with url being the 2nd sortable value [ASC]
+	 *
+	 * @return void
+	 */
+	public function test_can_order_links_by_has_archive_and_url_asc(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links(
+			20,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_HAS_ARCHIVE_ASC
+		);
+
+		// We should have the first two links
+		$expected = array(
+			'https://acorn.retro', // archive_url = ''
+			'https://banana.fruit', // archive_url = ''
+			'https://example.com', // archive_url = ''
+			'https://example.com/6',  // archive_url = ''
+			'https://foo.com', // archive_url = ''
+			'https://hello.you',  // archive_url = ''
+			'https://jump.uk',    // archive_url = ''
+			'https://walnut.org',  // archive_url = ''
+
+			'https://glynn.com',  // archive_url = 'https://archive.com/https://glynn.com'
+			'https://zebra.zoo',  // archive_url = 'https://archive.com/https://zebra.zoo'
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertEquals( $link->get_href(), $expected[ $index ] );
+		}
+	}
+
+	/**
+	 * @testdox It should be possible to order the links based on if the link has an archived link, with url being the 2nd sortable value [DESC]
+	 *
+	 * @return void
+	 */
+	public function test_can_order_links_by_has_archive_and_url_desc(): void {
+		// Insert the default links.
+		$this->populate_database();
+
+		// Query the links.
+		$queried_links = $this->link_repository->query_links(
+			20,
+			1,
+			array(),
+			array(),
+			array(),
+			Link_Repository::ORDER_HAS_ARCHIVE_DESC
+		);
+
+		// We should have the first two links
+		$expected = array(
+			'https://zebra.zoo',  // archive_url = 'https://archive.com/https://zebra.zoo'
+			'https://glynn.com',  // archive_url = 'https://archive.com/https://glynn.com'
+
+
+			'https://walnut.org',  // archive_url = ''
+			'https://jump.uk',    // archive_url = ''
+			'https://hello.you',  // archive_url = ''
+			'https://foo.com', // archive_url = ''
+			'https://example.com/6',  // archive_url = ''
+			'https://example.com', // archive_url = ''
+			'https://banana.fruit', // archive_url = ''
+			'https://acorn.retro', // archive_url = ''
+		);
+
+		foreach ( $queried_links as $index => $link ) {
+			$this->assertEquals( $link->get_href(), $expected[ $index ] );
 		}
 	}
 }

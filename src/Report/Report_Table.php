@@ -111,7 +111,6 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_links_per_page(): int {
 		$option = get_current_screen()->get_option( 'per_page' );
-
 		// If the option is not set, return 10.
 		if ( ! $option ) {
 			return 10;
@@ -515,7 +514,6 @@ class Report_Table extends \WP_List_Table {
 	private function define_pagination_args() {
 		// Get the total number of links.
 		$link_count = count( $this->get_links( \PHP_INT_MAX, 1 ) );
-
 		// Set the pagination args.
 		$this->set_pagination_args(
 			array(
@@ -554,11 +552,11 @@ class Report_Table extends \WP_List_Table {
 		return array(
 			self::COLUMN_CHECKBOX         => '<input type="checkbox" />',
 			self::COLUMN_LINK_URL         => __( 'URL', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_LINK_ARCHIVE     => __( 'Has Archived Link', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_ARCHIVE     => __( 'Has Archived', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_HEALTH      => __( 'Link Health', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_LINK_CHECKS      => __( 'Check Count', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_EXCLUDE     => __( 'Link Excluded', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_CHECKS      => __( 'Times Checked', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'wpcomsp_wayback_link_fixer' ),
 		);
 	}
 
@@ -720,7 +718,7 @@ class Report_Table extends \WP_List_Table {
 		$order_by = sanitize_text_field( $_GET['orderby'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 
 		// If orderby is not a valid column, return default.
-		if ( ! in_array( $order_by, array( self::COLUMN_LINK_URL, self::COLUMN_LINK_CHECKS_LAST ), true ) ) {
+		if ( ! in_array( $order_by, array( self::COLUMN_LINK_URL, self::COLUMN_LINK_CHECKS_LAST, self::COLUMN_LINK_ARCHIVE, self::COLUMN_LINK_CHECKS, self::COLUMN_LINK_EXCLUDE, self::COLUMN_LINK_HEALTH ), true ) ) {
 			return Link_Repository::ORDER_ID_DESC;
 		}
 
@@ -729,16 +727,30 @@ class Report_Table extends \WP_List_Table {
 			? sanitize_text_field( $_GET['order'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: 'asc';
 
+		$asc_map = array(
+			self::COLUMN_LINK_URL         => Link_Repository::ORDER_URL_ASC,
+			self::COLUMN_LINK_CHECKS_LAST => Link_Repository::ORDER_DATE_ASC,
+			self::COLUMN_LINK_ARCHIVE     => Link_Repository::ORDER_HAS_ARCHIVE_ASC,
+			self::COLUMN_LINK_HEALTH      => Link_Repository::ORDER_LINK_HEALTH_ASC,
+			self::COLUMN_LINK_EXCLUDE     => Link_Repository::ORDER_LINK_EXCLUDED_ASC,
+			self::COLUMN_LINK_CHECKS      => Link_Repository::ORDER_LINK_CHECKS_ASC,
+		);
+
+		$desc_map = array(
+			self::COLUMN_LINK_URL         => Link_Repository::ORDER_URL_DESC,
+			self::COLUMN_LINK_CHECKS_LAST => Link_Repository::ORDER_DATE_DESC,
+			self::COLUMN_LINK_ARCHIVE     => Link_Repository::ORDER_HAS_ARCHIVE_DESC,
+			self::COLUMN_LINK_HEALTH      => Link_Repository::ORDER_LINK_HEALTH_DESC,
+			self::COLUMN_LINK_EXCLUDE     => Link_Repository::ORDER_LINK_EXCLUDED_DESC,
+			self::COLUMN_LINK_CHECKS      => Link_Repository::ORDER_LINK_CHECKS_DESC,
+		);
+
 		// Return the correct order.
 		switch ( $order ) {
 			case 'asc':
-				return self::COLUMN_LINK_URL === $order_by
-					? Link_Repository::ORDER_URL_ASC
-					: Link_Repository::ORDER_DATE_ASC;
+				return $asc_map[ $order_by ];
 			case 'desc':
-				return self::COLUMN_LINK_URL === $order_by
-					? Link_Repository::ORDER_URL_DESC
-					: Link_Repository::ORDER_DATE_DESC;
+				return $desc_map[ $order_by ];
 			default:
 				return Link_Repository::ORDER_ID_DESC;
 		}
@@ -838,6 +850,10 @@ class Report_Table extends \WP_List_Table {
 		return array(
 			self::COLUMN_LINK_URL         => array( self::COLUMN_LINK_URL, true ),
 			self::COLUMN_LINK_CHECKS_LAST => array( self::COLUMN_LINK_CHECKS_LAST, true ),
+			self::COLUMN_LINK_ARCHIVE     => array( self::COLUMN_LINK_ARCHIVE, false ),
+			self::COLUMN_LINK_HEALTH      => array( self::COLUMN_LINK_HEALTH, false ),
+			self::COLUMN_LINK_EXCLUDE     => array( self::COLUMN_LINK_EXCLUDE, false ),
+			self::COLUMN_LINK_CHECKS      => array( self::COLUMN_LINK_CHECKS, false ),
 		);
 	}
 

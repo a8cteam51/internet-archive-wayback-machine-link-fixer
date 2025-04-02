@@ -1,89 +1,110 @@
-.wlf-filters {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    .wlf-filter {
-        .select2-selection--single {
-            height: 32px;
+.wp-list-table.reports {
+    .column-report-link-archive,
+    .column-report-is-broken,
+    .column-report-link-checks,
+    .column-report-link-exclude {
+        max-width: 10%;
+        width: 130px;
+        text-align: center;
+        // from 1200 downwars
+        @media (max-width: 1200px) {
+            max-width: unset;
+            width: unset;
         }
-        &.select-single {
-            .select2-container {
-                width: auto !important;
-                min-width: 110px;
-            }
+    }
+    .column-report-link-checks-last {
+        max-width: 30%;
+        width: 240px;
+        @media (max-width: 1200px) {
+            max-width: unset;
+            width: unset;
         }
-        &.select-multi {
-            &.wide {
-                .select2-container {
-                    min-width: 200px;
-                }
-            }
-            .select2-selection--multiple {
-                padding-bottom: 0;
-            }
-        }
-        margin-right: 10px;
     }
 }
 
-
-/* The single report. */
-
-#wlf-modal {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: 99999;
-    background-color: #9d9d9db6;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .wlf-modal__inner {
-        min-height: fit-content;
-        min-width: 50vw;
-        background-color: #fff;
-        border-radius: 5px;
-        padding: 15px;
-        #wlf-modal__inner-header {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            &-title {
-                flex-grow: 1;
-                padding: 5px;
-                font-size: larger;
-                font-weight: bolder;
-                margin: 0;
-            }
-            &-close {
-                display: flex;
-                justify-content: flex-end;
-                align-items: center;
-                padding: 5px;
-                font-size: 20px;
-                line-height: 20px;
-                .dashicons {
-                    cursor: pointer;
-                }
-            }
-        }
-        #wlf-modal__inner-content {
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            /* The Replacement link form */
-            #wlf-report-fix-form {
-                flex-direction: column;
-                display: flex;
-                select,
-                input {
-                    width: 100%;
-                    min-width: -webkit-fill-available;
-                    margin-bottom: 5px;
-                }
-            }
-        }
-    }
-}
+// .wlf-filters {
+//     display: flex;
+//     align-items: center;
+//     flex-grow: 1;
+//     .wlf-filter {
+//         .select2-selection--single {
+//             height: 32px;
+//         }
+//         &.select-single {
+//             .select2-container {
+//                 width: auto !important;
+//                 min-width: 110px;
+//             }
+//         }
+//         &.select-multi {
+//             &.wide {
+//                 .select2-container {
+//                     min-width: 200px;
+//                 }
+//             }
+//             .select2-selection--multiple {
+//                 padding-bottom: 0;
+//             }
+//         }
+//         margin-right: 10px;
+//     }
+// }
+// /* The single report. */
+// #wlf-modal {
+//     position: fixed;
+//     width: 100%;
+//     height: 100%;
+//     z-index: 99999;
+//     background-color: #9d9d9db6;
+//     top: 0;
+//     left: 0;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     .wlf-modal__inner {
+//         min-height: fit-content;
+//         min-width: 50vw;
+//         background-color: #fff;
+//         border-radius: 5px;
+//         padding: 15px;
+//         #wlf-modal__inner-header {
+//             display: flex;
+//             flex-direction: row;
+//             flex-wrap: nowrap;
+//             &-title {
+//                 flex-grow: 1;
+//                 padding: 5px;
+//                 font-size: larger;
+//                 font-weight: bolder;
+//                 margin: 0;
+//             }
+//             &-close {
+//                 display: flex;
+//                 justify-content: flex-end;
+//                 align-items: center;
+//                 padding: 5px;
+//                 font-size: 20px;
+//                 line-height: 20px;
+//                 .dashicons {
+//                     cursor: pointer;
+//                 }
+//             }
+//         }
+//         #wlf-modal__inner-content {
+//             padding: 10px;
+//             display: flex;
+//             flex-direction: column;
+//             /* The Replacement link form */
+//             #wlf-report-fix-form {
+//                 flex-direction: column;
+//                 display: flex;
+//                 select,
+//                 input {
+//                     width: 100%;
+//                     min-width: -webkit-fill-available;
+//                     margin-bottom: 5px;
+//                 }
+//             }
+//         }
+//     }
+// }

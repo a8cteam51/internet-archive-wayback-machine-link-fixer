@@ -38,6 +38,13 @@ class Report_Page {
 	private $link_repository;
 
 	/**
+	 * Holds the current page hook.
+	 *
+	 * @var string
+	 */
+	private $hook;
+
+	/**
 	 * Creates a new instance of the report page.
 	 */
 	public function __construct() {
@@ -93,11 +100,43 @@ class Report_Page {
 			array( $this, 'render_page' )
 		);
 
+		$this->hook = $hook;
+
 		// Add the screen options.
 		add_action( "load-$hook", array( $this, 'register_screen_options' ) );
 
 		// Toggle bulk actions.
 		add_filter( 'bulk_actions-' . $hook, array( $this, 'add_bulk_actions' ) );
+
+		// Enqueue the scripts and styles.
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+	}
+
+	/**
+	 * Enqueue the scripts and styles for the page.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param string $hook The current page hook.
+	 *
+	 * @return void
+	 */
+	public function enqueue_scripts( string $hook ): void {
+		// If not this page, bail.
+		if ( $hook !== $this->hook ) {
+			return;
+		}
+
+		// Enqueue the admin styles.
+		wp_enqueue_style(
+			self::SLUG,
+			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
+			array(),
+			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
+		);
+
+		// dd($hook, $this);
 	}
 
 	/**
