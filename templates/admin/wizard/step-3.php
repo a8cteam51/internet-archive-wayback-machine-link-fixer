@@ -39,7 +39,6 @@ $wlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 		<p class="description"><?php esc_html_e( 'When "Auto Archiver" is enabled, your content is automatically updated on the Internet Archive each time you save changes.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 	</div>
 </div>
-
 <div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $wlf_hide_class ); ?>" >
 	<label for="wlf_wizard_post_types">
 		<?php esc_html_e( 'Post Types', 'wpcomsp_wayback_link_fixer' ); ?>
