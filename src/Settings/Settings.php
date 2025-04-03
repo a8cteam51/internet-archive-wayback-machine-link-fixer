@@ -388,4 +388,17 @@ class Settings {
 
 		return $interval <= 0 ? $default : $interval;
 	}
+
+	/**
+	 * Should the link table, show additional data?
+	 *
+	 * This is for debugging purposes only.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function show_link_table_debug_data(): bool {
+		return (bool) apply_filters( 'wlf_show_link_table_debug_data', false );
+	}
 }

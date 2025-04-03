@@ -12,6 +12,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
 
 use DateTimeImmutable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Check_Action;
@@ -549,15 +550,34 @@ class Report_Table extends \WP_List_Table {
 	 * @return array<string, string>
 	 */
 	public function get_columns() {
-		return array(
+		$columns = array(
 			self::COLUMN_CHECKBOX         => '<input type="checkbox" />',
 			self::COLUMN_LINK_URL         => __( 'URL', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_ARCHIVE     => __( 'Has Archived', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_HEALTH      => __( 'Link Health', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_LINK_EXCLUDE     => __( 'Link Excluded', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS      => __( 'Times Checked', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'wpcomsp_wayback_link_fixer' ),
 		);
+
+		if ( Settings::show_link_table_debug_data() ) {
+			$exclude = array(
+				self::COLUMN_LINK_EXCLUDE => __( 'Link Excluded', 'wpcomsp_wayback_link_fixer' ),
+			);
+
+			// Add exclude after health.
+			$health_index = array_search( self::COLUMN_LINK_HEALTH, array_keys( $columns ), true );
+			if ( false !== $health_index ) {
+				$columns = array_merge(
+					array_slice( $columns, 0, $health_index + 1, true ),
+					$exclude,
+					array_slice( $columns, $health_index + 1, null, true )
+				);
+			} else {
+				// Add exclude at the end.
+				$columns = array_merge( $columns, $exclude );
+			}
+		}
+		return $columns;
 	}
 
 	/**
@@ -613,25 +633,26 @@ class Report_Table extends \WP_List_Table {
 			?>
 		</select>
 
-
-		<label for="wlf_is_excluded" class="screen-reader-text"><?php esc_html_e( 'Filter by excluded', 'wpcomsp_wayback_link_fixer' ); ?></label>
-		<select name="wlf_is_excluded" id="wlf_is_excluded">
-			<option value=""><?php esc_html_e( 'Show with or without excluded link', 'wpcomsp_wayback_link_fixer' ); ?></option>
-			<?php
-			$has_archive = array(
-				Link_Repository::LINK_IS_EXCLUDED  => __( 'Show links that are excluded', 'wpcomsp_wayback_link_fixer' ),
-				Link_Repository::LINK_NOT_EXCLUDED => __( 'Show links that are not excluded', 'wpcomsp_wayback_link_fixer' ),
-			);
-			foreach ( $has_archive as $archive => $label ) {
-				printf(
-					'<option value="%s"%s>%s</option>',
-					esc_attr( $archive ),
-					selected( $this->get_excluded_status_from_url(), $archive, false ),
-					esc_html( $label )
+		<?php if ( Settings::show_link_table_debug_data() ) : ?>
+			<label for="wlf_is_excluded" class="screen-reader-text"><?php esc_html_e( 'Filter by excluded', 'wpcomsp_wayback_link_fixer' ); ?></label>
+			<select name="wlf_is_excluded" id="wlf_is_excluded">
+				<option value=""><?php esc_html_e( 'Show with or without excluded link', 'wpcomsp_wayback_link_fixer' ); ?></option>
+				<?php
+				$has_archive = array(
+					Link_Repository::LINK_IS_EXCLUDED  => __( 'Show links that are excluded', 'wpcomsp_wayback_link_fixer' ),
+					Link_Repository::LINK_NOT_EXCLUDED => __( 'Show links that are not excluded', 'wpcomsp_wayback_link_fixer' ),
 				);
-			}
-			?>
-		</select>
+				foreach ( $has_archive as $archive => $label ) {
+					printf(
+						'<option value="%s"%s>%s</option>',
+						esc_attr( $archive ),
+						selected( $this->get_excluded_status_from_url(), $archive, false ),
+						esc_html( $label )
+					);
+				}
+				?>
+			</select>
+		<?php endif; ?>
 
 		<?php if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>
 			<input type="hidden" name="wlf_filtered_post_id" value="<?php echo esc_attr( $_GET['wlf_filtered_post_id'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>" />
