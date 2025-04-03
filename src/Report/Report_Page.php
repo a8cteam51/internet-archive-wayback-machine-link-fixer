@@ -110,7 +110,6 @@ class Report_Page {
 
 		// Enqueue the scripts and styles.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
 	}
 
 	/**
@@ -135,8 +134,6 @@ class Report_Page {
 			array(),
 			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
 		);
-
-		// dd($hook, $this);
 	}
 
 	/**

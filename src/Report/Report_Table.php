@@ -554,7 +554,7 @@ class Report_Table extends \WP_List_Table {
 			self::COLUMN_LINK_URL         => __( 'URL', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_ARCHIVE     => __( 'Has Archived', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_HEALTH      => __( 'Link Health', 'wpcomsp_wayback_link_fixer' ),
-			// self::COLUMN_LINK_EXCLUDE     => __( 'Link Excluded', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_EXCLUDE     => __( 'Link Excluded', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS      => __( 'Times Checked', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'wpcomsp_wayback_link_fixer' ),
 		);
@@ -937,7 +937,7 @@ class Report_Table extends \WP_List_Table {
 			return __( 'N/a', 'wpcomsp_wayback_link_fixer' );
 		}
 
-		$last_check_status = $last_check['http_code'] ?? null;
+		$last_check_status   = $last_check['http_code'] ?? null;
 		$last_status_display = $last_check_status
 			? "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/{$last_check_status}\" target=\"_blank\">{$last_check_status}  status</a>"
 			: __( 'No HTTP Code', 'wpcomsp_wayback_link_fixer' );

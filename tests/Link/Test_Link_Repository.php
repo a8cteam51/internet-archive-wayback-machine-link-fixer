@@ -999,8 +999,6 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 			Link_Repository::ORDER_LINK_EXCLUDED_DESC
 		);
 
-		dump($queried_links);
-
 		// We should have the first two links
 		$expected = array(
 			'https://walnut.org',  // is_excluded = true
