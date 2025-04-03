@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-04-02T10:14:07+00:00\n"
+"POT-Creation-Date: 2025-04-03T10:34:23+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: wpcomsp_wayback_link_fixer\n"
@@ -134,234 +134,228 @@ msgstr ""
 msgid "Link Fixer Setup Wizard"
 msgstr ""
 
-#: src/Report/Report_Page.php:89
-#: src/Report/Report_Page.php:188
+#: src/Report/Report_Page.php:96
+#: src/Report/Report_Page.php:224
 msgid "Link Fixer :: Links"
 msgstr ""
 
-#: src/Report/Report_Page.php:90
+#: src/Report/Report_Page.php:97
 #: src/Settings/Settings_Page.php:382
 msgid "Link Fixer"
 msgstr ""
 
-#: src/Report/Report_Page.php:117
+#: src/Report/Report_Page.php:153
 msgid "API Offline, options disabled"
 msgstr ""
 
-#: src/Report/Report_Page.php:159
+#: src/Report/Report_Page.php:195
 #: src/WP_Post/WP_Post_Table_Controller.php:114
 msgid "Links"
 msgstr ""
 
 #. translators: %1$s is the post title, %2$s is the link to view all links.
-#: src/Report/Report_Page.php:204
+#: src/Report/Report_Page.php:240
 msgid "Showing links for %1$s <a href=\"%2$s\">(Show all links)</a>"
 msgstr ""
 
-#: src/Report/Report_Page.php:221
+#: src/Report/Report_Page.php:257
 msgid "Search"
 msgstr ""
 
-#: src/Report/Report_Page.php:244
+#: src/Report/Report_Page.php:280
 msgid "The link does not exist."
 msgstr ""
 
-#: src/Report/Report_Page.php:256
+#: src/Report/Report_Page.php:292
 msgid "The link is not valid."
 msgstr ""
 
-#: src/Report/Report_Table.php:158
+#: src/Report/Report_Table.php:157
 msgid "Something went wrong, please try again"
 msgstr ""
 
-#: src/Report/Report_Table.php:177
+#: src/Report/Report_Table.php:176
 msgid "No links selected."
 msgstr ""
 
-#: src/Report/Report_Table.php:206
+#: src/Report/Report_Table.php:205
 msgid "No action selected, are services offline?"
 msgstr ""
 
-#: src/Report/Report_Table.php:215
+#: src/Report/Report_Table.php:214
 msgid "Unknown action."
 msgstr ""
 
 #. translators: %d is the link id.
-#: src/Report/Report_Table.php:289
-#: src/Report/Report_Table.php:359
-#: src/Report/Report_Table.php:436
-#: src/Report/Report_Table.php:488
+#: src/Report/Report_Table.php:288
+#: src/Report/Report_Table.php:358
+#: src/Report/Report_Table.php:435
+#: src/Report/Report_Table.php:487
 msgid "Link not found with id:%d"
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:302
+#: src/Report/Report_Table.php:301
 msgid "It was not possible to check %s"
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:318
+#: src/Report/Report_Table.php:317
 msgid "Link %s has no checks."
 msgstr ""
 
 #. translators: %1$s is the link url, %2$s is the last check date, %3$s is the last check http code.
-#: src/Report/Report_Table.php:330
+#: src/Report/Report_Table.php:329
 msgid "Link %1$s checked successfully on %2$s with %3$s status"
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:372
+#: src/Report/Report_Table.php:371
 msgid "Link %s is already an archived link."
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:385
+#: src/Report/Report_Table.php:384
 msgid "No archived link found for %s"
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:398
+#: src/Report/Report_Table.php:397
 msgid "It was not possible to update %s, the latest archive link is the same"
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:410
+#: src/Report/Report_Table.php:409
 msgid "Link %s updated successfully"
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:449
+#: src/Report/Report_Table.php:448
 msgid "Link %1$s could not have a new snapshot created: %2$s"
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:462
+#: src/Report/Report_Table.php:461
 msgid "Link %s added to the queue for updating, please wait."
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:500
+#: src/Report/Report_Table.php:499
 msgid "Validating %s to ensure we can check its current status"
 msgstr ""
 
-#: src/Report/Report_Table.php:556
+#: src/Report/Report_Table.php:554
+#: templates/admin/reports/link-details.php:36
 msgid "URL"
 msgstr ""
 
-#: src/Report/Report_Table.php:557
-msgid "Has Archived Link"
+#: src/Report/Report_Table.php:555
+msgid "Has Archived"
 msgstr ""
 
-#: src/Report/Report_Table.php:558
+#: src/Report/Report_Table.php:556
 msgid "Link Health"
 msgstr ""
 
-#: src/Report/Report_Table.php:559
-msgid "Check Count"
-msgstr ""
-
-#: src/Report/Report_Table.php:560
-msgid "Last Check"
-msgstr ""
-
-#: src/Report/Report_Table.php:561
+#: src/Report/Report_Table.php:557
 msgid "Link Excluded"
 msgstr ""
 
-#: src/Report/Report_Table.php:580
+#: src/Report/Report_Table.php:558
+msgid "Times Checked"
+msgstr ""
+
+#: src/Report/Report_Table.php:559
+msgid "Last Check"
+msgstr ""
+
+#: src/Report/Report_Table.php:578
 msgid "Filter by status"
 msgstr ""
 
-#: src/Report/Report_Table.php:582
+#: src/Report/Report_Table.php:580
 msgid "Show valid and broken links"
 msgstr ""
 
-#: src/Report/Report_Table.php:585
+#: src/Report/Report_Table.php:583
 msgid "Show Broken links "
 msgstr ""
 
-#: src/Report/Report_Table.php:586
+#: src/Report/Report_Table.php:584
 msgid "Show Valid links"
 msgstr ""
 
-#: src/Report/Report_Table.php:599
+#: src/Report/Report_Table.php:597
 msgid "Filter by archived link"
 msgstr ""
 
-#: src/Report/Report_Table.php:601
+#: src/Report/Report_Table.php:599
 msgid "Show with or without archived link"
 msgstr ""
 
-#: src/Report/Report_Table.php:604
+#: src/Report/Report_Table.php:602
 msgid "Show links with archived link"
 msgstr ""
 
-#: src/Report/Report_Table.php:605
+#: src/Report/Report_Table.php:603
 msgid "Show links without archived link"
 msgstr ""
 
-#: src/Report/Report_Table.php:619
+#: src/Report/Report_Table.php:617
 msgid "Filter by excluded"
 msgstr ""
 
-#: src/Report/Report_Table.php:621
+#: src/Report/Report_Table.php:619
 msgid "Show with or without excluded link"
 msgstr ""
 
-#: src/Report/Report_Table.php:624
+#: src/Report/Report_Table.php:622
 msgid "Show links that are excluded"
 msgstr ""
 
-#: src/Report/Report_Table.php:625
+#: src/Report/Report_Table.php:623
 msgid "Show links that are not excluded"
 msgstr ""
 
-#: src/Report/Report_Table.php:642
+#: src/Report/Report_Table.php:640
 msgid "Filter"
 msgstr ""
 
-#: src/Report/Report_Table.php:756
+#: src/Report/Report_Table.php:768
 msgid "Update To Latest Snapshot"
 msgstr ""
 
-#: src/Report/Report_Table.php:757
+#: src/Report/Report_Table.php:769
 msgid "Create New Snapshot"
 msgstr ""
 
-#: src/Report/Report_Table.php:758
+#: src/Report/Report_Table.php:770
 msgid "Check Link Status"
 msgstr ""
 
-#: src/Report/Report_Table.php:759
+#: src/Report/Report_Table.php:771
 msgid "Verify Link Allows Checking"
 msgstr ""
 
-#: src/Report/Report_Table.php:881
-msgid "Broken"
-msgstr ""
-
-#: src/Report/Report_Table.php:882
-msgid "Not Broken"
-msgstr ""
-
-#: src/Report/Report_Table.php:932
+#: src/Report/Report_Table.php:937
 msgid "N/a"
 msgstr ""
 
-#. translators: %1$s is the last check date, %2$s is the last check http code.
-#: src/Report/Report_Table.php:937
-msgid "%1$s with %2$s status"
-msgstr ""
-
-#: src/Report/Report_Table.php:940
-msgid "Missing date"
-msgstr ""
-
 #: src/Report/Report_Table.php:943
+#: src/Report/Report_Table.php:953
 msgid "No HTTP Code"
 msgstr ""
 
-#: src/Report/Report_Table.php:955
+#. translators: %1$s is the last check date, %2$s is the last check http code.
+#: src/Report/Report_Table.php:947
+msgid "%1$s with %2$s"
+msgstr ""
+
+#: src/Report/Report_Table.php:950
+msgid "Missing date"
+msgstr ""
+
+#: src/Report/Report_Table.php:965
 msgid "No links have been created yet."
 msgstr ""
 
@@ -551,13 +545,17 @@ msgstr ""
 msgid "<a href=\"%1$s\"><strong>%2$s</strong> broken out of <strong>%3$s</strong></a>"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:36
-msgid "Url"
+#: templates/admin/reports/link-details.php:23
+msgid "Return to Links"
+msgstr ""
+
+#: templates/admin/reports/link-details.php:33
+msgid "Link Details"
 msgstr ""
 
 #: templates/admin/reports/link-details.php:39
 #: templates/admin/reports/link-details.php:41
-msgid "Archived Url"
+msgid "Archived URL"
 msgstr ""
 
 #: templates/admin/reports/link-details.php:41
@@ -565,7 +563,7 @@ msgid "No Archived Link Found"
 msgstr ""
 
 #: templates/admin/reports/link-details.php:45
-msgid "Has Redirect Url"
+msgid "Has Redirect URL"
 msgstr ""
 
 #: templates/admin/reports/link-details.php:49
@@ -580,6 +578,10 @@ msgstr ""
 msgid "This link does not allow indexing"
 msgstr ""
 
+#: templates/admin/reports/link-details.php:61
+msgid "Link Checks"
+msgstr ""
+
 #: templates/admin/reports/link-details.php:65
 #: templates/admin/reports/link-details.php:67
 msgid "Is Broken"
@@ -590,7 +592,7 @@ msgid "Date"
 msgstr ""
 
 #: templates/admin/reports/link-details.php:73
-#: templates/admin/reports/link-details.php:122
+#: templates/admin/reports/link-details.php:126
 msgid "Status"
 msgstr ""
 
@@ -602,43 +604,51 @@ msgstr ""
 msgid "Show Previous Checks"
 msgstr ""
 
+#: templates/admin/reports/link-details.php:104
+msgid "Error"
+msgstr ""
+
 #: templates/admin/reports/link-details.php:115
+msgid "Places This Link Appears"
+msgstr ""
+
+#: templates/admin/reports/link-details.php:119
 msgid "No posts found for this link."
 msgstr ""
 
-#: templates/admin/reports/link-details.php:120
+#: templates/admin/reports/link-details.php:124
 msgid "Post"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:121
+#: templates/admin/reports/link-details.php:125
 msgid "Post Type"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:123
+#: templates/admin/reports/link-details.php:127
 msgid "Actions"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:152
+#: templates/admin/reports/link-details.php:156
 msgid "Published"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:154
+#: templates/admin/reports/link-details.php:158
 msgid "Draft"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:156
+#: templates/admin/reports/link-details.php:160
 msgid "Pending"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:158
+#: templates/admin/reports/link-details.php:162
 msgid "Scheduled"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:165
+#: templates/admin/reports/link-details.php:169
 msgid "Edit"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:169
+#: templates/admin/reports/link-details.php:173
 msgid "View"
 msgstr ""
 
