@@ -8,13 +8,14 @@
 	jQuery(document).ready(function () {
 
 		// Get the settings.
+		const PROCESS_LINK = jQuery('#t51_wlf_process_links');
+		const AUTO_ARCHIVE = jQuery('#t51_wlf_allow_own_content_submissions');
+
 		const EXCLUDED_LINKS = jQuery('#wlf_excluded_links');
 		const NEW_LINK = jQuery('#wlf_excluded_links_new');
 		const NEW_LINK_BUTTON = jQuery('#wlf_excluded_links_new_action');
 		const NEW_LINK_TEMPLATE = WlfSettings.newExcludedTemplate;
 		const NO_LINKS = jQuery('#wlf_excluded_empty');
-		const HTTP_CODES = jQuery('#t51_wlf_http_status_codes');
-		const HTTP_CODES_SELECT = jQuery('#t51_wlf_http_status_codes_select');
 
 		// Handle removing a link.
 		EXCLUDED_LINKS.on('click', '.remove-exclusion', function (e) {
@@ -22,6 +23,53 @@
 			jQuery(this).parent().remove();
 			checkNoLinks();
 		});
+
+		/**
+		 * Prevents default behavior of select elements.
+		 *
+		 * @param {Event} e - The event object.
+		 *
+		 */
+		function doNothing(e) {
+			e.preventDefault();
+		}
+
+		// When a checkbox or radio has wlf-read-only class, prevent the user from changing it.
+		jQuery(document).on('click', '.wlf_settings_card input.wlf-read-only, .wlf_settings_card select.wlf-read-only', doNothing);
+
+		// When Process Links is checked, enable the excluded links.
+		PROCESS_LINK.on('change', function () {
+			toggleElements(this.checked, 'link_fixer');
+		});
+
+		// When Auto Archive is checked, enable the excluded links.
+		AUTO_ARCHIVE.on('change', function () {
+			toggleElements(this.checked, 'auto_archiver');
+		});
+
+		/**
+		 * Toggles the state of elements in the specified group.
+		 * @param {boolean} isChecked - The state of the checkbox.
+		 * @param {string} groupName - The data-group attribute value.
+		 */
+		function toggleElements(isChecked, groupName) {
+
+			// Get the field list, based on teh group name.
+			const fieldList = 'link_fixer' === groupName
+				? '.wlf_toggle_setting__fixer'
+				: '.wlf_toggle_setting__auto_archiver';
+
+
+			if (!isChecked) {
+				jQuery(fieldList).addClass('hidden');
+			} else {
+				jQuery(fieldList).removeClass('hidden');
+			}
+		}
+
+		// Runs the checks on load
+		toggleElements(PROCESS_LINK.prop('checked'), 'link_fixer');
+		toggleElements(AUTO_ARCHIVE.prop('checked'), 'auto_archiver');
 
 		/**
 		 * Get the last index from the links.
@@ -81,27 +129,5 @@
 				NO_LINKS.show();
 			}
 		}
-
-		/**
-		 * Use Select2 for the HTTP status code select.
-		 *
-		 * @since 1.1.0
-		 *
-		 * @return {void}
-		 */
-		HTTP_CODES_SELECT.select2({
-			width: '100%',
-			allowClear: true
-		});
-
-		/**
-		 * On changes of select, update list.
-		 *
-		 * @since 1.1.0
-		 */
-		HTTP_CODES_SELECT.on('change', function () {
-			const selected = HTTP_CODES_SELECT.val();
-			HTTP_CODES.val(selected.join(','));
-		});
 	});
 })();

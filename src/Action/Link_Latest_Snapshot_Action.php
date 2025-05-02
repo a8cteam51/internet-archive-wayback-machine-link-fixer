@@ -18,6 +18,8 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Link_Latest_Snapshot_Action
  */

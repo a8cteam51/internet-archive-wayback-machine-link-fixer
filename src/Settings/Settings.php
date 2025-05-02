@@ -4,8 +4,9 @@
  * The Settings access class.
  *
  * @since      1.0.0
- * @version    1.0.0
  */
+
+declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
 
@@ -24,13 +25,14 @@ class Settings {
 
 
 	// Option keys
+	public const PROCESS_LINKS                = self::SETTINGS_PREFIX . 'process_links';
 	public const ALLOWED_POST_TYPES           = self::SETTINGS_PREFIX . 'post_types';
 	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
 	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
 	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
 	public const SCAN_EXISTING_POSTS          = self::SETTINGS_PREFIX . 'scan_existing_posts';
-	public const ARCHIVE_ORG_SECRET_KEY       = self::SETTINGS_PREFIX . 'archive_api_key';
-	public const ARCHIVE_ORG_ACCESS_KEY       = self::SETTINGS_PREFIX . 'archive_api_secret';
+	public const ARCHIVE_ORG_SECRET_KEY       = self::SETTINGS_PREFIX . 'archive_api_secret';
+	public const ARCHIVE_ORG_ACCESS_KEY       = self::SETTINGS_PREFIX . 'archive_api_access';
 	public const FIXER_OPTION                 = self::SETTINGS_PREFIX . 'fixer_option';
 	public const ARCHIVE_ORG_STATUS_KEY       = self::SETTINGS_PREFIX . 'archive_api_status';
 
@@ -43,11 +45,18 @@ class Settings {
 	public const SCAN_LINK_CACHE_TABLE  = self::SETTINGS_PREFIX . 'scan_link_cache';
 
 	// Meta Keys
-	public const LINK_META_KEY = self::SETTINGS_PREFIX . 'links';
+	public const LINK_META_KEY           = self::SETTINGS_PREFIX . 'links';
+	public const OWN_LINK_LAST_PROCESSED = self::SETTINGS_PREFIX . 'last_processed';
 
 	// Fixer Options
 	public const FIXER_OPTION_DO_NOTHING   = 'do_nothing';
 	public const FIXER_OPTION_REPLACE_LINK = 'replace_link';
+
+	// Own content submissions.
+	public const ALLOW_OWN_CONTENT_SUBMISSIONS             = self::SETTINGS_PREFIX . 'allow_own_content_submissions';
+	public const ALLOWED_OWN_CONTENT_POST_TYPES            = self::SETTINGS_PREFIX . 'allowed_own_content_post_types';
+	public const ROUTINELY_UPDATE_WAYBACK_MACHINE          = self::SETTINGS_PREFIX . 'routinely_update_wayback_machine';
+	public const ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL = self::SETTINGS_PREFIX . 'routinely_update_wayback_machine_interval';
 
 	/**
 	 * Gets the link table name.
@@ -59,6 +68,17 @@ class Settings {
 	public static function get_link_table_name(): string {
 		global $wpdb;
 		return $wpdb->prefix . self::LINK_TABLE;
+	}
+
+	/**
+	 * Is the link processing enabled?
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function is_link_processing_enabled(): bool {
+		return (bool) get_option( self::PROCESS_LINKS, false );
 	}
 
 	/**
@@ -176,6 +196,10 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function should_scan_existing_posts(): bool {
+		// If you can not process links, return false.
+		if ( ! self::is_link_processing_enabled() ) {
+			return false;
+		}
 		return (bool) get_option( self::SCAN_EXISTING_POSTS, true );
 	}
 
@@ -197,7 +221,7 @@ class Settings {
 	 *
 	 * @return string
 	 */
-	public static function get_archive_api_key(): string {
+	public static function get_archive_secret_key(): string {
 		return esc_attr( get_option( self::ARCHIVE_ORG_SECRET_KEY, '' ) );
 	}
 
@@ -220,7 +244,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function is_archive_api_configured(): bool {
-		return '' !== self::get_archive_api_key() && '' !== self::get_archive_access_key();
+		return '' !== self::get_archive_secret_key() && '' !== self::get_archive_access_key();
 	}
 
 	/**
@@ -276,7 +300,7 @@ class Settings {
 			'link_checker' => $link_checker_status,
 			'snapshot'     => $snapshot_status,
 			'status'       => $link_checker_status && $snapshot_status ? 'online' : 'offline',
-			'last-checked' => \gmdate( 'Y-m-d H:i:s' ),
+			'last-checked' => gmdate( 'Y-m-d H:i:s' ),
 		);
 
 		$duration = apply_filters( 'wlf_archive_api_status_duration', \HOUR_IN_SECONDS );
@@ -302,5 +326,79 @@ class Settings {
 		}
 
 		return is_array( $status ) ? $status : null;
+	}
+
+	/**
+	 * Checks if posts should be added to wayback machine on save.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function add_own_links(): bool {
+		return (bool) apply_filters(
+			'wlf_add_own_content_to_wayback_machine',
+			(bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, false )
+		);
+	}
+
+	/**
+	 * Gets the post types whos posts should be added to the wayback machine.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string[]
+	 */
+	public static function own_link_allowed_post_types(): array {
+		return apply_filters(
+			'wlf_own_content_post_types',
+			array_map( 'esc_html', (array) get_option( self::ALLOWED_OWN_CONTENT_POST_TYPES, array( 'post', 'page' ) ) )
+		);
+	}
+
+	/**
+	 * Checks if posts should be routinely updated in the wayback machine.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function own_link_routinely_update(): bool {
+		return (bool) apply_filters(
+			'wlf_routinely_update_wayback_machine',
+			(bool) get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE, false )
+		);
+	}
+
+	/**
+	 * Gets the interval between updates.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return integer Time in days.
+	 */
+	public static function own_link_routine_update_interval(): int {
+		$default  = 28;
+		$interval = absint(
+			apply_filters(
+				'wlf_routinely_update_wayback_machine_interval',
+				get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, $default )
+			)
+		);
+
+		return $interval <= 0 ? $default : $interval;
+	}
+
+	/**
+	 * Should the link table, show additional data?
+	 *
+	 * This is for debugging purposes only.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function show_link_table_debug_data(): bool {
+		return (bool) apply_filters( 'wlf_show_link_table_debug_data', false );
 	}
 }

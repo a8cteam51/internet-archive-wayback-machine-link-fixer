@@ -10,10 +10,13 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client;
 
+use Throwable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Link Checker.
@@ -143,7 +146,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 			throw Invalid_Response_Exception::create();
 		}
 
-		$code = \sanitize_text_field( $response['status'] );
+		$code = sanitize_text_field( $response['status'] );
 
 		// If we dont have a valid status code, throw exception.
 		if ( ! is_numeric( $code ) ) {
@@ -176,7 +179,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 		// Get the response, with a defined timeout.
 		try {
 			$response = wp_remote_get( $query_url, array( 'timeout' => apply_filters( 'wlf_is_online_timeout', 10 ) ) );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			return false;
 		}
 

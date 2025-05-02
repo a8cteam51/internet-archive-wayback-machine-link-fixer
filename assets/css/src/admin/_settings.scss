@@ -20,3 +20,54 @@
         padding: 10px;
     }
 }
+
+.wlf_settings_postbox {
+    position: relative;
+    min-width: 255px;
+    border: 1px solid #c3c4c7;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    background: #fff;
+    margin-bottom: 20px;
+    padding-top: 0;
+    h2 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #c3c4c7;
+        padding: 10px;
+        margin: 0;
+        font-size: 14px;
+        padding: 8px 12px;
+        line-height: 14px;
+    }
+    table.form-table {
+        th {
+            padding-left: 10px;
+            font-size: 13px;
+        }
+    }
+    >p.description {
+        padding: 10px 15px 5px;
+    }
+}
+
+.wlf_settings_card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 2px rgba(0, 0, 0, 0.16);
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 5px 10px;
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+.wlf_settings_post_types {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 16px;
+    width: fit-content;
+}
+
+.wlf_read-only {
+    pointer-events: none;
+    background-color: #f9f9f9;
+}

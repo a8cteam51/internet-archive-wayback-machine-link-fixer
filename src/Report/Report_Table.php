@@ -12,6 +12,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
 
 use DateTimeImmutable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Check_Action;
@@ -34,10 +35,6 @@ class Report_Table extends \WP_List_Table {
 	public const COLUMN_LINK_CHECKS      = 'report-link-checks';
 	public const COLUMN_LINK_CHECKS_LAST = 'report-link-checks-last';
 	public const COLUMN_LINK_EXCLUDE     = 'report-link-exclude';
-
-
-
-
 
 	/**
 	 * Holds all the links from the logs.
@@ -115,7 +112,6 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_links_per_page(): int {
 		$option = get_current_screen()->get_option( 'per_page' );
-
 		// If the option is not set, return 10.
 		if ( ! $option ) {
 			return 10;
@@ -123,7 +119,7 @@ class Report_Table extends \WP_List_Table {
 
 		$from_meta = get_user_meta( get_current_user_id(), $option['option'], true );
 
-		return \is_numeric( $from_meta )
+		return is_numeric( $from_meta )
 			? absint( $from_meta )
 			: absint( $option['default'] );
 	}
@@ -156,7 +152,7 @@ class Report_Table extends \WP_List_Table {
 		}
 
 		// Verify the nonce and referrer.
-		if ( ! \wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) && check_admin_referer( 'bulk-' . $this->_args['plural'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) && check_admin_referer( 'bulk-' . $this->_args['plural'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			// Add a notice.
 			$this->notices[] = array(
 				'message' => __( 'Something went wrong, please try again', 'wpcomsp_wayback_link_fixer' ),
@@ -252,7 +248,7 @@ class Report_Table extends \WP_List_Table {
 		}
 
 		// Add to the redirect the current page.
-		$url = \home_url() . $redirect;
+		$url = home_url() . $redirect;
 
 		// Redirect to the page using JS as page already loaded headers.
 		echo "<script>window.location = '$url';</script>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, this is just a redirect.
@@ -333,7 +329,7 @@ class Report_Table extends \WP_List_Table {
 					// translators: %1$s is the link url, %2$s is the last check date, %3$s is the last check http code.
 					__( 'Link %1$s checked successfully on %2$s with %3$s status', 'wpcomsp_wayback_link_fixer' ),
 					esc_html( wpcomsp_wayback_link_fixer_trim_string( $link_url, 54 ) ),
-					\DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) ),
+					DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) ),
 					esc_html( $last_check['http_code'] )
 				),
 				'type'    => 'success',
@@ -519,7 +515,6 @@ class Report_Table extends \WP_List_Table {
 	private function define_pagination_args() {
 		// Get the total number of links.
 		$link_count = count( $this->get_links( \PHP_INT_MAX, 1 ) );
-
 		// Set the pagination args.
 		$this->set_pagination_args(
 			array(
@@ -555,15 +550,34 @@ class Report_Table extends \WP_List_Table {
 	 * @return array<string, string>
 	 */
 	public function get_columns() {
-		return array(
+		$columns = array(
 			self::COLUMN_CHECKBOX         => '<input type="checkbox" />',
 			self::COLUMN_LINK_URL         => __( 'URL', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_LINK_ARCHIVE     => __( 'Has Archived Link', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_ARCHIVE     => __( 'Has Archived', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_HEALTH      => __( 'Link Health', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_LINK_CHECKS      => __( 'Check Count', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_CHECKS      => __( 'Times Checked', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_LINK_EXCLUDE     => __( 'Link Excluded', 'wpcomsp_wayback_link_fixer' ),
 		);
+
+		if ( Settings::show_link_table_debug_data() ) {
+			$exclude = array(
+				self::COLUMN_LINK_EXCLUDE => __( 'Link Excluded', 'wpcomsp_wayback_link_fixer' ),
+			);
+
+			// Add exclude after health.
+			$health_index = array_search( self::COLUMN_LINK_HEALTH, array_keys( $columns ), true );
+			if ( false !== $health_index ) {
+				$columns = array_merge(
+					array_slice( $columns, 0, $health_index + 1, true ),
+					$exclude,
+					array_slice( $columns, $health_index + 1, null, true )
+				);
+			} else {
+				// Add exclude at the end.
+				$columns = array_merge( $columns, $exclude );
+			}
+		}
+		return $columns;
 	}
 
 	/**
@@ -619,24 +633,26 @@ class Report_Table extends \WP_List_Table {
 			?>
 		</select>
 
-
-		<label for="wlf_is_excluded" class="screen-reader-text"><?php esc_html_e( 'Filter by excluded', 'wpcomsp_wayback_link_fixer' ); ?></label>
-		<select name="wlf_is_excluded" id="wlf_is_excluded">
-			<option value=""><?php esc_html_e( 'Show with or without excluded link', 'wpcomsp_wayback_link_fixer' ); ?></option>
-			<?php
-			$has_archive = array(
-				Link_Repository::LINK_IS_EXCLUDED  => __( 'Show links that are excluded', 'wpcomsp_wayback_link_fixer' ),
-				Link_Repository::LINK_NOT_EXCLUDED => __( 'Show links that are not excluded', 'wpcomsp_wayback_link_fixer' ),
-			);
-			foreach ( $has_archive as $archive => $label ) {
-				printf(
-					'<option value="%s"%s>%s</option>',
-					esc_attr( $archive ),
-					selected( $this->get_excluded_status_from_url(), $archive, false ),
-					esc_html( $label )
+		<?php if ( Settings::show_link_table_debug_data() ) : ?>
+			<label for="wlf_is_excluded" class="screen-reader-text"><?php esc_html_e( 'Filter by excluded', 'wpcomsp_wayback_link_fixer' ); ?></label>
+			<select name="wlf_is_excluded" id="wlf_is_excluded">
+				<option value=""><?php esc_html_e( 'Show with or without excluded link', 'wpcomsp_wayback_link_fixer' ); ?></option>
+				<?php
+				$has_archive = array(
+					Link_Repository::LINK_IS_EXCLUDED  => __( 'Show links that are excluded', 'wpcomsp_wayback_link_fixer' ),
+					Link_Repository::LINK_NOT_EXCLUDED => __( 'Show links that are not excluded', 'wpcomsp_wayback_link_fixer' ),
 				);
-			}
-			?>
+				foreach ( $has_archive as $archive => $label ) {
+					printf(
+						'<option value="%s"%s>%s</option>',
+						esc_attr( $archive ),
+						selected( $this->get_excluded_status_from_url(), $archive, false ),
+						esc_html( $label )
+					);
+				}
+				?>
+			</select>
+		<?php endif; ?>
 
 		<?php if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>
 			<input type="hidden" name="wlf_filtered_post_id" value="<?php echo esc_attr( $_GET['wlf_filtered_post_id'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>" />
@@ -656,7 +672,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_status_from_url(): ?string {
 		return array_key_exists( 'wlf_status', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? \sanitize_text_field( $_GET['wlf_status'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( $_GET['wlf_status'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: '';
 	}
 
@@ -667,7 +683,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_excluded_status_from_url(): ?string {
 		return array_key_exists( 'wlf_is_excluded', $_GET ) && '' !== $_GET['wlf_is_excluded'] // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? \sanitize_text_field( $_GET['wlf_is_excluded'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( $_GET['wlf_is_excluded'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: null;
 	}
 
@@ -678,7 +694,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_archived_status_from_url(): ?string {
 		return array_key_exists( 'wlf_has_archive', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? \sanitize_text_field( $_GET['wlf_has_archive'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( $_GET['wlf_has_archive'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: '';
 	}
 
@@ -723,7 +739,7 @@ class Report_Table extends \WP_List_Table {
 		$order_by = sanitize_text_field( $_GET['orderby'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 
 		// If orderby is not a valid column, return default.
-		if ( ! in_array( $order_by, array( self::COLUMN_LINK_URL, self::COLUMN_LINK_CHECKS_LAST ), true ) ) {
+		if ( ! in_array( $order_by, array( self::COLUMN_LINK_URL, self::COLUMN_LINK_CHECKS_LAST, self::COLUMN_LINK_ARCHIVE, self::COLUMN_LINK_CHECKS, self::COLUMN_LINK_EXCLUDE, self::COLUMN_LINK_HEALTH ), true ) ) {
 			return Link_Repository::ORDER_ID_DESC;
 		}
 
@@ -732,16 +748,30 @@ class Report_Table extends \WP_List_Table {
 			? sanitize_text_field( $_GET['order'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: 'asc';
 
+		$asc_map = array(
+			self::COLUMN_LINK_URL         => Link_Repository::ORDER_URL_ASC,
+			self::COLUMN_LINK_CHECKS_LAST => Link_Repository::ORDER_DATE_ASC,
+			self::COLUMN_LINK_ARCHIVE     => Link_Repository::ORDER_HAS_ARCHIVE_ASC,
+			self::COLUMN_LINK_HEALTH      => Link_Repository::ORDER_LINK_HEALTH_ASC,
+			self::COLUMN_LINK_EXCLUDE     => Link_Repository::ORDER_LINK_EXCLUDED_ASC,
+			self::COLUMN_LINK_CHECKS      => Link_Repository::ORDER_LINK_CHECKS_ASC,
+		);
+
+		$desc_map = array(
+			self::COLUMN_LINK_URL         => Link_Repository::ORDER_URL_DESC,
+			self::COLUMN_LINK_CHECKS_LAST => Link_Repository::ORDER_DATE_DESC,
+			self::COLUMN_LINK_ARCHIVE     => Link_Repository::ORDER_HAS_ARCHIVE_DESC,
+			self::COLUMN_LINK_HEALTH      => Link_Repository::ORDER_LINK_HEALTH_DESC,
+			self::COLUMN_LINK_EXCLUDE     => Link_Repository::ORDER_LINK_EXCLUDED_DESC,
+			self::COLUMN_LINK_CHECKS      => Link_Repository::ORDER_LINK_CHECKS_DESC,
+		);
+
 		// Return the correct order.
 		switch ( $order ) {
 			case 'asc':
-				return self::COLUMN_LINK_URL === $order_by
-					? Link_Repository::ORDER_URL_ASC
-					: Link_Repository::ORDER_DATE_ASC;
+				return $asc_map[ $order_by ];
 			case 'desc':
-				return self::COLUMN_LINK_URL === $order_by
-					? Link_Repository::ORDER_URL_DESC
-					: Link_Repository::ORDER_DATE_DESC;
+				return $desc_map[ $order_by ];
 			default:
 				return Link_Repository::ORDER_ID_DESC;
 		}
@@ -773,7 +803,7 @@ class Report_Table extends \WP_List_Table {
 	private function get_link_ids_from_url(): array {
 
 		// If we have the post id in the url, return the links ids.
-		if ( ! \array_key_exists( 'wlf_filtered_post_id', $_GET ) ) { // phpcs:ignore
+		if ( ! array_key_exists( 'wlf_filtered_post_id', $_GET ) ) { // phpcs:ignore
 			return array();
 		}
 
@@ -841,6 +871,10 @@ class Report_Table extends \WP_List_Table {
 		return array(
 			self::COLUMN_LINK_URL         => array( self::COLUMN_LINK_URL, true ),
 			self::COLUMN_LINK_CHECKS_LAST => array( self::COLUMN_LINK_CHECKS_LAST, true ),
+			self::COLUMN_LINK_ARCHIVE     => array( self::COLUMN_LINK_ARCHIVE, false ),
+			self::COLUMN_LINK_HEALTH      => array( self::COLUMN_LINK_HEALTH, false ),
+			self::COLUMN_LINK_EXCLUDE     => array( self::COLUMN_LINK_EXCLUDE, false ),
+			self::COLUMN_LINK_CHECKS      => array( self::COLUMN_LINK_CHECKS, false ),
 		);
 	}
 
@@ -859,7 +893,7 @@ class Report_Table extends \WP_List_Table {
 
 				return sprintf(
 					'<a href="%s">%s</a>',
-					esc_url( \add_query_arg( array( 'wlf_link_id' => $item->get_id() ), $url ) ),
+					esc_url( add_query_arg( array( 'wlf_link_id' => $item->get_id() ), $url ) ),
 					$this->compile_link_name( $item )
 				);
 			case self::COLUMN_LINK_ARCHIVE:
@@ -870,20 +904,9 @@ class Report_Table extends \WP_List_Table {
 					)
 					: '<span class="dashicons dashicons-dismiss"></span>';
 			case self::COLUMN_LINK_HEALTH:
-				return sprintf(
-					'<span class="%s"><img src="%s" alt="%s" style="width:20px"/></span>',
-					$item->is_broken()
-						? 'wlf-broken'
-						: 'wlf-not-broken',
-					wpcomsp_wayback_link_fixer_get_image_asset_url(
-						$item->is_broken()
-							? 'error.svg'
-							: 'heart.svg'
-					),
-					$item->is_broken()
-						? esc_html__( 'Broken', 'wpcomsp_wayback_link_fixer' )
-						: esc_html__( 'Not Broken', 'wpcomsp_wayback_link_fixer' )
-				);
+				return ! $item->is_broken()
+					? '<span class="dashicons dashicons-yes-alt"></span>'
+					: '<span class="dashicons dashicons-dismiss"></span>';
 			case self::COLUMN_LINK_CHECKS:
 				return count( $item->get_checks() );
 
@@ -913,7 +936,7 @@ class Report_Table extends \WP_List_Table {
 	private function compile_link_name( Link $item ): string {
 		return sprintf(
 			'%s <a href="%s" target="_blank">%s</a>',
-			esc_html( wpcomsp_wayback_link_fixer_trim_string( $item->get_href(), 54 ) ),
+			esc_html( wpcomsp_wayback_link_fixer_trim_string( $item->get_href(), 200 ) ),
 			$item->get_href(),
 			'<span class="dashicons dashicons-external"></span>'
 		);
@@ -935,14 +958,19 @@ class Report_Table extends \WP_List_Table {
 			return __( 'N/a', 'wpcomsp_wayback_link_fixer' );
 		}
 
+		$last_check_status   = $last_check['http_code'] ?? null;
+		$last_status_display = $last_check_status
+			? "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/{$last_check_status}\" target=\"_blank\">{$last_check_status}  status</a>"
+			: __( 'No HTTP Code', 'wpcomsp_wayback_link_fixer' );
+
 		return sprintf(
 			// translators: %1$s is the last check date, %2$s is the last check http code.
-			__( '%1$s with %2$s status', 'wpcomsp_wayback_link_fixer' ),
+			__( '%1$s with %2$s', 'wpcomsp_wayback_link_fixer' ),
 			$last_check['date']
-				? \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) )
+				? DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) )
 				: __( 'Missing date', 'wpcomsp_wayback_link_fixer' ),
 			$last_check
-				? esc_html( $last_check['http_code'] )
+				? $last_status_display
 				: __( 'No HTTP Code', 'wpcomsp_wayback_link_fixer' )
 		);
 	}

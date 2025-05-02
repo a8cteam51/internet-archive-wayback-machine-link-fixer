@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Migration;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Abstract Migration.
  */

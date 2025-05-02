@@ -14,11 +14,14 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Action;
 
+use Throwable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Snapshot_Status_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Link_New_Snapshot_Action
@@ -86,7 +89,7 @@ class Link_New_Snapshot_Action {
 		// Attempt to create a new snapshot.
 		try {
 			$job_id = $this->wayback_machine->create_snapshot( $link->get_href() );
-		} catch ( \Throwable $th ) {
+		} catch ( Throwable $th ) {
 			// If we have an exceeded snapshot limit exception, return the message.
 			if ( $th instanceof Exceeded_Snapshot_Limit_Exception ) {
 				return array(

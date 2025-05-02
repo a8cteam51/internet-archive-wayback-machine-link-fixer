@@ -12,8 +12,11 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Action;
 
+use Throwable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Link_Check_Action
@@ -90,7 +93,7 @@ class Link_Check_Action {
 		// Get the current status.
 		try {
 			$status = $this->link_checker->check_single( $link->get_href() );
-		} catch ( \Exception $e ) {
+		} catch ( Throwable $e ) {
 			return array(
 				'link'    => $link,
 				'checked' => false,

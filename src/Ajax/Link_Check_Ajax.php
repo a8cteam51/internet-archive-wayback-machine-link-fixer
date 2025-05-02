@@ -10,10 +10,14 @@ declare( strict_types = 1 );
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax;
 
+use DateTime;
+use Exception;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Link_Check_Ajax
@@ -54,8 +58,8 @@ class Link_Check_Ajax {
 			( new self() )->__invoke();
 		};
 
-		\add_action( 'wp_ajax_' . self::ACTION, $handler );
-		\add_action( 'wp_ajax_nopriv_' . self::ACTION, $handler );
+		add_action( 'wp_ajax_' . self::ACTION, $handler );
+		add_action( 'wp_ajax_nopriv_' . self::ACTION, $handler );
 	}
 
 	/**
@@ -80,12 +84,12 @@ class Link_Check_Ajax {
 		// Validate the nonce.
 		try {
 			$this->validate_request();
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->send_error( $e->getMessage(), 403 );
 		}
 
 		// Find the link.
-		$link = $this->link_repository->find_by_url( \sanitize_text_field( \untrailingslashit( $_POST['link'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, Checked above.
+		$link = $this->link_repository->find_by_url( sanitize_text_field( untrailingslashit( $_POST['link'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, Checked above.
 
 		// If the link does not exist, send an error.
 		if ( null === $link ) {
@@ -128,10 +132,10 @@ class Link_Check_Ajax {
 
 		// Check if the last check was more than the duration ago.
 		$duration   = Settings::get_link_check_duration();
-		$last_check = new \DateTime( $last_check['date'] );
+		$last_check = new DateTime( $last_check['date'] );
 
 		// Get the current time.
-		$now = new \DateTime();
+		$now = new DateTime();
 
 		// Get the difference in days.
 		$diff = $now->diff( $last_check );
@@ -152,7 +156,7 @@ class Link_Check_Ajax {
 		// Get the current status.
 		try {
 			$status = $this->link_checker->check_single( $link->get_href() );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->send_error( $e->getMessage(), 500 );
 		}
 
@@ -193,17 +197,17 @@ class Link_Check_Ajax {
 
 		// Check we have the link id in the request.
 		if ( ! isset( $_POST['link'] ) ) {
-			throw new \Exception( 'Link not set in request.' );
+			throw new Exception( 'Link not set in request.' );
 		}
 
 		// Check the nonce is set in the request.
 		if ( ! isset( $_POST['nonce'] ) ) {
-			throw new \Exception( 'Nonce not set in request.' );
+			throw new Exception( 'Nonce not set in request.' );
 		}
 
 		// Verify the nonce.
-		if ( ! \wp_verify_nonce( \sanitize_text_field( $_POST['nonce'] ), self::ACTION ) ) {
-			throw new \Exception( 'Invalid nonce.' );
+		if ( ! wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), self::ACTION ) ) {
+			throw new Exception( 'Invalid nonce.' );
 		}
 	}
 
@@ -216,7 +220,7 @@ class Link_Check_Ajax {
 	 * @return void
 	 */
 	private function send_error( string $message, int $status = 500 ): void {
-		\wp_send_json_error( $message, $status );
+		wp_send_json_error( $message, $status );
 	}
 
 	/**
@@ -227,6 +231,6 @@ class Link_Check_Ajax {
 	 * @return void
 	 */
 	private function send_success( $data ): void {
-		\wp_send_json_success( $data );
+		wp_send_json_success( $data );
 	}
 }

@@ -10,6 +10,11 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine;
 
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Link Checker Client interface.
+ */
 interface Link_Checker_Client {
 
 	/**

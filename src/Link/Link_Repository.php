@@ -10,26 +10,38 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
 
+use DateTime;
+use Exception;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Find_Or_Create_Snapshot_Event;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Link Response class.
  */
 class Link_Repository {
 
-	public const LINK_STATUS_BROKEN = 1;
-	public const LINK_STATUS_OK     = 0;
-	public const LINK_HAS_ARCHIVE   = 1;
-	public const LINK_NO_ARCHIVE    = 0;
-	public const LINK_IS_EXCLUDED   = 1;
-	public const LINK_NOT_EXCLUDED  = 0;
-	public const ORDER_DATE_ASC     = 'date_asc';
-	public const ORDER_DATE_DESC    = 'date_desc';
-	public const ORDER_ID_ASC       = 'id_asc';
-	public const ORDER_ID_DESC      = 'id_desc';
-	public const ORDER_URL_ASC      = 'url_asc';
-	public const ORDER_URL_DESC     = 'url_desc';
+	public const LINK_STATUS_BROKEN       = 1;
+	public const LINK_STATUS_OK           = 0;
+	public const LINK_HAS_ARCHIVE         = 1;
+	public const LINK_NO_ARCHIVE          = 0;
+	public const LINK_IS_EXCLUDED         = 1;
+	public const LINK_NOT_EXCLUDED        = 0;
+	public const ORDER_DATE_ASC           = 'date_asc';
+	public const ORDER_DATE_DESC          = 'date_desc';
+	public const ORDER_ID_ASC             = 'id_asc';
+	public const ORDER_ID_DESC            = 'id_desc';
+	public const ORDER_URL_ASC            = 'url_asc';
+	public const ORDER_URL_DESC           = 'url_desc';
+	public const ORDER_HAS_ARCHIVE_DESC   = 'has_archive_desc';
+	public const ORDER_HAS_ARCHIVE_ASC    = 'has_archive_asc';
+	public const ORDER_LINK_HEALTH_DESC   = 'link_health_desc';
+	public const ORDER_LINK_HEALTH_ASC    = 'link_health_asc';
+	public const ORDER_LINK_EXCLUDED_DESC = 'link_excluded_desc';
+	public const ORDER_LINK_EXCLUDED_ASC  = 'link_excluded_asc';
+	public const ORDER_LINK_CHECKS_DESC   = 'link_checks_desc';
+	public const ORDER_LINK_CHECKS_ASC    = 'link_checks_asc';
 
 	/**
 	 * The table name, taking into account the prefix.
@@ -50,7 +62,7 @@ class Link_Repository {
 	 *
 	 * @param string|null $table_name The table name.
 	 */
-	public function __construct( string $table_name = null ) {
+	public function __construct( ?string $table_name = null ) {
 		global $wpdb;
 
 		$this->wpdb       = $wpdb;
@@ -171,7 +183,7 @@ class Link_Repository {
 
 		// If the insert failed, throw an exception.
 		if ( false === $result ) {
-			throw new \Exception( esc_html( 'Failed to insert link: ' . $this->wpdb->last_error ) );
+			throw new Exception( esc_html( 'Failed to insert link: ' . $this->wpdb->last_error ) );
 		}
 
 		// Get the last insert id.
@@ -188,7 +200,7 @@ class Link_Repository {
 	 *
 	 * @return Link
 	 *
-	 * @throws \Exception If the link cannot be updated.
+	 * @throws Exception If the link cannot be updated.
 	 */
 	private function update( Link $link ): Link {
 		// Extract the values.
@@ -235,7 +247,7 @@ class Link_Repository {
 
 		// If we dont have a valid row id, throw an exception.
 		if ( false === $result ) {
-			throw new \Exception( 'Failed to update link.' );
+			throw new Exception( 'Failed to update link.' );
 		}
 
 		return $this->find_by_id( $id );
@@ -251,7 +263,7 @@ class Link_Repository {
 	public function find_or_create( string $url ): Link {
 
 		// Strip any trailing slashes.
-		$url = \untrailingslashit( $url );
+		$url = untrailingslashit( $url );
 
 		$link = $this->find_by_url( $url );
 
@@ -286,8 +298,8 @@ class Link_Repository {
 
 		if ( is_array( $checks ) ) {
 			foreach ( $checks as $check ) {
-				$code = \array_key_exists( 'http_code', $check ) ? (int) $check['http_code'] : 0;
-				$date = \array_key_exists( 'date', $check ) ? esc_attr( $check['date'] ) : null;
+				$code = array_key_exists( 'http_code', $check ) ? (int) $check['http_code'] : 0;
+				$date = array_key_exists( 'date', $check ) ? esc_attr( $check['date'] ) : null;
 
 				$link->add_check( $code, $date );
 			}
@@ -481,7 +493,7 @@ class Link_Repository {
 	 */
 	private function get_date_range( string $date ): array {
 		// Create DateTime object from 'yyyy-mm' date.
-		$date = new \DateTime( $date );
+		$date = new DateTime( $date );
 
 		// Get the start of the month.
 		$start = $date->format( 'Y-m-01' );
@@ -525,6 +537,22 @@ class Link_Repository {
 				return ' ORDER BY url DESC';
 			case self::ORDER_ID_ASC:
 				return ' ORDER BY id ASC';
+			case self::ORDER_HAS_ARCHIVE_ASC:
+				return ' ORDER BY archived ASC, url ASC';
+			case self::ORDER_HAS_ARCHIVE_DESC:
+				return ' ORDER BY archived DESC, url DESC';
+			case self::ORDER_LINK_HEALTH_ASC:
+				return ' ORDER BY is_broken ASC, url ASC';
+			case self::ORDER_LINK_HEALTH_DESC:
+				return ' ORDER BY is_broken DESC, url DESC';
+			case self::ORDER_LINK_EXCLUDED_ASC:
+				return ' ORDER BY excluded ASC, url ASC';
+			case self::ORDER_LINK_EXCLUDED_DESC:
+				return ' ORDER BY excluded DESC, url DESC';
+			case self::ORDER_LINK_CHECKS_ASC:
+				return ' ORDER BY JSON_LENGTH(`checks`) ASC, url ASC';
+			case self::ORDER_LINK_CHECKS_DESC:
+				return ' ORDER BY JSON_LENGTH(`checks`) DESC, url DESC';
 			case self::ORDER_ID_DESC:
 			default:
 				return ' ORDER BY id DESC';
@@ -572,7 +600,7 @@ class Link_Repository {
 
 		// Iterate over each row and extract the links.
 		foreach ( $rows as $row ) {
-			$links = \maybe_unserialize( $row->meta_value );
+			$links = maybe_unserialize( $row->meta_value );
 
 			if ( ! is_array( $links ) ) {
 				continue;

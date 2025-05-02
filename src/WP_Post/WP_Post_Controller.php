@@ -12,12 +12,17 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post;
 
+use Exception;
+use Throwable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Exclusion;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Link_Check_Ajax;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Processor;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Process_Local_Post_Event;
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Handles the various post actions.
@@ -53,7 +58,8 @@ class WP_Post_Controller {
 	 * @return void
 	 */
 	private function register_hooks(): void {
-		add_action( 'save_post', array( $this, 'on_save_post' ), 10, 3 );
+		add_action( 'save_post', array( $this, 'on_save_post_process_post_links' ), 10, 3 );
+		add_action( 'save_post', array( $this, 'on_save_post_process_own_post' ), 10, 3 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_script' ) );
 		add_filter( 'render_block', array( $this, 'render_block' ), 999, 2 );  }
 
@@ -66,14 +72,91 @@ class WP_Post_Controller {
 	 *
 	 * @return void
 	 */
-	public function on_save_post( int $post_id, \WP_Post $post, bool $update ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+	public function on_save_post_process_post_links( int $post_id, \WP_Post $post, bool $update ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		// If doing auto save, return.
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		// If the post is not published, return.
+		if ( 'publish' !== $post->post_status ) {
+			return;
+		}
+
+		// If the option to process links is not set, return.
+		if ( ! Settings::is_link_processing_enabled() ) {
+			return;
+		}
 
 		// Check the post type is one we are checking.
 		if ( in_array( $post->post_type, Settings::get_allowed_post_types(), true ) === false ) {
 			return;
 		}
 
-		$this->process_single_post( $post_id );
+		$this->process_links_in_content( $post_id );
+	}
+
+	/**
+	 * Handles the save post action for adding own links.
+	 *
+	 * @param integer  $post_id The post id.
+	 * @param \WP_Post $post    The post object.
+	 * @param boolean  $update  Whether this is an existing post being updated or not.
+	 *
+	 * @return void
+	 */
+	public function on_save_post_process_own_post( int $post_id, \WP_Post $post, bool $update ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		// If doing auto save, return.
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		// Check if we should be adding our own links.
+		if ( ! Settings::add_own_links() ) {
+			return;
+		}
+
+		// Get the allowed post types.
+		if ( ! in_array( $post->post_type, Settings::own_link_allowed_post_types(), true ) ) {
+			return;
+		}
+
+		// If the post is not published, return.
+		if ( 'publish' !== $post->post_status ) {
+			return;
+		}
+
+		try {
+			$this->add_own_post_to_wayback_machine( $post_id );
+		} catch ( Throwable $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+			// Do nothing! Squiz.PHP.CommentedOutCode.Found
+		}
+	}
+
+	/**
+	 * Adds the permalink of a post to the wayback machine.
+	 *
+	 * @param integer $post_id The post id.
+	 *
+	 * @return void
+	 *
+	 * @throws \Exception If the post id is not valid.
+	 */
+	public function add_own_post_to_wayback_machine( int $post_id ): void {
+
+		// Get the post.
+		$post = get_post( $post_id );
+
+		// If the post is not valid, throw an exception.
+		if ( ! $post ) {
+			throw new Exception( 'Invalid post id' );
+		}
+
+		$can_add = apply_filters( 'wlf_own_content_allow_post', true, $post );
+
+		if ( $can_add ) {
+			Process_Local_Post_Event::add_to_queue_with_delay( $post_id );
+		}
 	}
 
 	/**
@@ -83,7 +166,7 @@ class WP_Post_Controller {
 	 *
 	 * @return void
 	 */
-	public function process_single_post( int $post_id ): void {
+	public function process_links_in_content( int $post_id ): void {
 		// Create an instance of the processor.
 		$post_processor = new Post_Processor( $post_id );
 		$links          = $post_processor->process();
@@ -141,7 +224,7 @@ class WP_Post_Controller {
 		$assets = require $script_assets;
 
 		// Register the script.
-		\wp_register_script(
+		wp_register_script(
 			'wpcomsp-wayback-link-fixer-front-link-checker',
 			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/front_link_checker.js',
 			$assets['dependencies'],
@@ -150,7 +233,7 @@ class WP_Post_Controller {
 		);
 
 		// localise the script.
-		\wp_localize_script(
+		wp_localize_script(
 			'wpcomsp-wayback-link-fixer-front-link-checker',
 			'wlfArchivedLinks',
 			array(
@@ -159,13 +242,13 @@ class WP_Post_Controller {
 				'linkCheckNonce'  => wp_create_nonce( Link_Check_Ajax::ACTION ),
 				'linkDelayInDays' => Settings::get_link_check_duration(),
 				'fixerOption'     => Settings::get_fixer_option(),
-				'ajaxUrl'         => \admin_url( 'admin-ajax.php' ),
+				'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
 
 			)
 		);
 
 		// Enqueue the script.
-		\wp_enqueue_script( 'wpcomsp-wayback-link-fixer-front-link-checker' );
+		wp_enqueue_script( 'wpcomsp-wayback-link-fixer-front-link-checker' );
 	}
 
 	/**
@@ -190,7 +273,7 @@ class WP_Post_Controller {
 		$posts[] = $post_id;
 
 		// If not a post or a an allowed post type, return.
-		$post = \get_post( $post_id );
+		$post = get_post( $post_id );
 		if ( ! $post || ! in_array( $post->post_type, Settings::get_allowed_post_types(), true ) ) {
 			return $block_content;
 		}

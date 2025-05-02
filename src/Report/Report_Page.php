@@ -13,6 +13,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * The report page.
  */
@@ -34,6 +36,13 @@ class Report_Page {
 	 * @var Link_Repository
 	 */
 	private $link_repository;
+
+	/**
+	 * Holds the current page hook.
+	 *
+	 * @var string
+	 */
+	private $hook;
 
 	/**
 	 * Creates a new instance of the report page.
@@ -84,18 +93,47 @@ class Report_Page {
 	public function register_page(): void {
 		$hook = add_submenu_page(
 			self::PARENT_SLUG,
-			__( 'Links', 'wpcomsp_wayback_link_fixer' ),
-			__( 'Links', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Link Fixer :: Links', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
 			self::SLUG,
 			array( $this, 'render_page' )
 		);
+
+		$this->hook = $hook;
 
 		// Add the screen options.
 		add_action( "load-$hook", array( $this, 'register_screen_options' ) );
 
 		// Toggle bulk actions.
 		add_filter( 'bulk_actions-' . $hook, array( $this, 'add_bulk_actions' ) );
+
+		// Enqueue the scripts and styles.
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+	}
+
+	/**
+	 * Enqueue the scripts and styles for the page.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param string $hook The current page hook.
+	 *
+	 * @return void
+	 */
+	public function enqueue_scripts( string $hook ): void {
+		// If not this page, bail.
+		if ( $hook !== $this->hook ) {
+			return;
+		}
+
+		// Enqueue the admin styles.
+		wp_enqueue_style(
+			self::SLUG,
+			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
+			array(),
+			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
+		);
 	}
 
 	/**
@@ -159,7 +197,7 @@ class Report_Page {
 			'option'  => 'links_per_page',
 		);
 
-		\add_screen_option( $option, $args );
+		add_screen_option( $option, $args );
 	}
 
 	/**
@@ -178,23 +216,22 @@ class Report_Page {
 
 		// Render any notices.
 		$table->render_notices();
-		wpcomsp_wayback_link_fixer_render_wayback_offline_notice();
 		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
 
 		echo '<div class="wrap">';
 		printf(
 			'<h1 class="wp-heading-inline">%s</h1>',
-			esc_html__( 'Wayback Link Fixer :: Links', 'wpcomsp_wayback_link_fixer' ),
+			esc_html__( 'Link Fixer :: Links', 'wpcomsp_wayback_link_fixer' ),
 		);
 
 		echo '<hr class="wp-header-end">';
 
 		// If we have a post id in params, show a message.
 		if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
-			$post_id = \sanitize_text_field( $_GET['wlf_filtered_post_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+			$post_id = sanitize_text_field( $_GET['wlf_filtered_post_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
 
 			// Get the post title.
-			$post = \get_post( $post_id );
+			$post = get_post( $post_id );
 
 			// Show if we have a valid post.
 			if ( $post ) {
@@ -208,7 +245,7 @@ class Report_Page {
 				printf(
 					// translators: %s is the body of the message.
 					'<div class="notice notice-info"><p>%s</p></div>',
-					\wp_kses( $body, array( 'a' => array( 'href' => array() ) ) )
+					wp_kses( $body, array( 'a' => array( 'href' => array() ) ) )
 				);
 			}
 		}

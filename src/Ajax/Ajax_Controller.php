@@ -12,6 +12,8 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Link_Check_Ajax;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Ajax_Controller
  */

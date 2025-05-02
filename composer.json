@@ -1,7 +1,7 @@
 {
     "name": "a8cteam51/wayback-link-fixer",
     "type": "wordpress-plugin",
-    "description": "",
+    "description": "A WordPress plugin that scans content for links, replacing broken ones with archived versions from the Wayback Machine. It also features Auto Archiving, creating snapshots of your own pages and other site links that aren’t yet archived. Uses Action Scheduler for background tasks.",
     "homepage": "https://github.com/a8cteam51/wayback-link-fixer",
     "license": "GPL-2.0-or-later",
     "authors": [{
@@ -33,14 +33,15 @@
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "roave/security-advisories": "dev-latest",
         "php-stubs/wordpress-stubs": "6.6.*",
-        "phpunit/phpunit": "^8.5 || ^9.0",
+        "phpunit/phpunit": "^8.5 || ^9.4",
         "roots/wordpress": "6.6.*",
         "wp-phpunit/wp-phpunit": "6.6.*",
-        "yoast/phpunit-polyfills": "^1.0.0 || ^2.0.0",
+        "yoast/phpunit-polyfills": "*",
         "vlucas/phpdotenv": "<=5.5.0",
         "wp-coding-standards/wpcs": "^3",
         "phpcompatibility/phpcompatibility-wp": "*",
         "phpstan/phpstan": "*",
+        "szepeviktor/phpstan-wordpress": "*",
         "symfony/var-dumper": "^5.0",
         "gin0115/wpunit-helpers": "^1.1"
     },
@@ -48,10 +49,7 @@
         "psr-4": {
             "WPCOMSpecialProjects\\Wayback_Link_Fixer\\": "src",
             "WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\": "migrations"
-        },
-        "classmap": [
-            "models"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -80,7 +78,7 @@
             "@updatepo",
             "@makejson"
         ],
-        "makepot": "wp i18n make-pot . --exclude=vendor,node_modules,pack,tests,lib,migrations,coverage,coverate-reports ",
+        "makepot": "wp i18n make-pot . --include=src,templates,assets --exclude=vendor,node_modules,pack,tests,lib,migrations,coverage,coverate-reports ",
         "updatepo": "wp i18n update-po ./languages/wayback-link-fixer.pot",
         "makejson": "wp i18n make-json ./languages --pretty-print --no-purge",
         "makemo": "wp i18n make-mo ./languages",

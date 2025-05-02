@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Plugin Functions.
+ *
+ * @since 1.0.0
+ */
+
+declare(strict_types=1);
+
 defined( 'ABSPATH' ) || exit;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Plugin;
@@ -357,4 +365,28 @@ function wpcomsp_wayback_link_fixer_normalize_url( string $url ): string {
 	return $url;
 }
 
-// endregion
+/**
+ * Gets an admin link to given post ttype slug.
+ *
+ * @since 1.3.0
+ *
+ * @param string $post_type The post type slug.
+ * @param string $target    The target to open the link in.
+ *
+ * @return string|null
+ */
+function wpcomsp_wayback_link_fixer_get_admin_post_type_link( string $post_type, string $target = '_self' ): ?string {
+	// Get the post type object.
+	$post_type_object = get_post_type_object( $post_type );
+
+	// If we don't have a post type object, bail.
+	if ( ! $post_type_object ) {
+		return null;
+	}
+
+	// Get the admin URL for the post type.
+	$url = admin_url( 'edit.php?post_type=' . $post_type );
+
+	// Return the link.
+	return '<a href="' . esc_url( $url ) . '" target="' . esc_attr( $target ) . '">' . esc_html( $post_type_object->labels->name ) . '</a>';
+}
