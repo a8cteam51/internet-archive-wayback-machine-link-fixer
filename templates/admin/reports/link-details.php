@@ -61,11 +61,17 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 							<h2 class="handle ui-sortable-handle"><?php esc_html_e( 'Link Checks', 'wpcomsp_wayback_link_fixer' ); ?></h2>
 						</div>
 						<div class="inside">
-							<?php if ( $wlf_link->is_broken() ) : ?>
-								<p class="wlf_link_broken"><strong><?php esc_html_e( 'Is Broken', 'wpcomsp_wayback_link_fixer' ); ?></strong>: Yes</p>
-							<?php else : ?>
-								<p class="wlf_link_broken"><strong><?php esc_html_e( 'Is Broken', 'wpcomsp_wayback_link_fixer' ); ?></strong>: No</p>
-							<?php endif; ?>
+							<p class="wlf_link_broken">
+								<?php
+								$normal = ( 0 === count( $wlf_link->get_checks() ) ) ? 'Not Checked' : 'Normal';
+								sprintf(
+									'<strong>%s</strong>: %s',
+									esc_html__( 'Current Status', 'wpcomsp_wayback_link_fixer' ),
+									$wlf_link->is_broken() ? 'Broken' : $normal
+								);
+								?>
+							</p>
+
 							<table class="wp-list-table widefat fixed striped">
 								<thead>
 									<tr>

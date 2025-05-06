@@ -24,7 +24,8 @@
         "@wordpress/scripts": "^25.3.4",
         "npm-run-all": "^4.1.5",
         "postcss-cli": "^10.1.0",
-        "rtlcss": "^4.0.0"
+        "rtlcss": "^4.0.0",
+        "sass": "^1.87.0"
     },
     "rtlcssConfig": {
         "options": {
@@ -59,6 +60,7 @@
         "check-engines": "wp-scripts check-engines",
         "check-licenses": "wp-scripts check-licenses",
         "start": "npm-run-all --parallel start:**",
+		"start:styles": "wp-scripts start assets/css/src/*.scss --output-path=assets/css/build",
         "start:blocks": "wp-scripts start --webpack-src-dir=blocks/src --output-path=blocks/build",
         "start:assets:scripts": "wp-scripts start assets/js/src/*.js --output-path=assets/js/build"
     }
