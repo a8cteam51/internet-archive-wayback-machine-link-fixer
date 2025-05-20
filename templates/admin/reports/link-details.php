@@ -113,7 +113,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 										<?php endif; ?>
 												<td><?php echo esc_html( \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', esc_attr( $wlf_check['date'] ) )->format( wpcomsp_wayback_link_fixer_get_date_format() ) ); ?></td>
 												<?php if ( is_numeric( $wlf_check['http_code'] ) ) : ?>
-													<td class="wlf-archived__http-code"><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/<?php echo esc_url( $wlf_check['http_code'] ); ?>" target="_blank"><?php echo esc_html( $wlf_check['http_code'] ); ?></a></td>
+													<td class="wlf-archived__http-code"><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/<?php echo esc_attr( $wlf_check['http_code'] ); ?>" target="_blank"><?php echo esc_html( $wlf_check['http_code'] ); ?></a></td>
 												<?php else : ?>
 													<td class="wlf-archived__error"><?php esc_html_e( 'Error', 'wpcomsp_wayback_link_fixer' ); ?></td>
 												<?php endif; ?>
