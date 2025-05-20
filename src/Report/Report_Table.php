@@ -78,6 +78,31 @@ class Report_Table extends \WP_List_Table {
 	}
 
 	/**
+	 * Displays the bulk actions dropdown.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string $which The location of the bulk actions: Either 'top' or 'bottom'.
+	 *                      This is designated as optional for backward compatibility.
+	 *
+	 * @return void
+	 */
+	protected function bulk_actions( $which = '' ) {
+		\ob_start();
+		parent::bulk_actions( $which );
+		$bulk_actions = \ob_get_clean();
+
+		$help_icon = '<span id="wlf_help_info_bulk_actions" class="wlf_bulk_actions_trigger dashicons dashicons-editor-help"></span>';
+
+		$bulk_actions = preg_replace(
+			'/<input\b[^>]*\bid\s*=\s*["\']doaction["\'][^>]*>/i',
+			'$0' . $help_icon,
+			$bulk_actions
+		);
+		echo $bulk_actions; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	/**
 	 * Populated any cached notifications.
 	 *
 	 * @since 1.2.0
@@ -553,7 +578,7 @@ class Report_Table extends \WP_List_Table {
 		$columns = array(
 			self::COLUMN_CHECKBOX         => '<input type="checkbox" />',
 			self::COLUMN_LINK_URL         => __( 'URL', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_LINK_ARCHIVE     => __( 'Has Archived', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_ARCHIVE     => __( 'Has Archive', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_HEALTH      => __( 'Link Health', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS      => __( 'Times Checked', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'wpcomsp_wayback_link_fixer' ),
@@ -600,8 +625,8 @@ class Report_Table extends \WP_List_Table {
 			<option value="all"><?php esc_html_e( 'Show valid and broken links', 'wpcomsp_wayback_link_fixer' ); ?></option>
 			<?php
 			$statuses = array(
-				Link_Repository::LINK_STATUS_BROKEN => __( 'Show Broken links ', 'wpcomsp_wayback_link_fixer' ),
-				Link_Repository::LINK_STATUS_OK     => __( 'Show Valid links', 'wpcomsp_wayback_link_fixer' ),
+				Link_Repository::LINK_STATUS_BROKEN => __( 'Show broken links ', 'wpcomsp_wayback_link_fixer' ),
+				Link_Repository::LINK_STATUS_OK     => __( 'Show valid links', 'wpcomsp_wayback_link_fixer' ),
 			);
 			foreach ( $statuses as $status => $label ) {
 				printf(
@@ -786,10 +811,10 @@ class Report_Table extends \WP_List_Table {
 	 */
 	protected function get_bulk_actions(): array {
 		return array(
-			'updated_snapshot' => __( 'Update To Latest Snapshot', 'wpcomsp_wayback_link_fixer' ),
-			'new_snapshot'     => __( 'Create New Snapshot', 'wpcomsp_wayback_link_fixer' ),
-			'check'            => __( 'Check Link Status', 'wpcomsp_wayback_link_fixer' ),
-			'validate'         => __( 'Verify Link Allows Checking', 'wpcomsp_wayback_link_fixer' ),
+			'updated_snapshot' => __( 'Update to latest snapshot', 'wpcomsp_wayback_link_fixer' ),
+			'new_snapshot'     => __( 'Create new snapshot', 'wpcomsp_wayback_link_fixer' ),
+			'check'            => __( 'Check link status', 'wpcomsp_wayback_link_fixer' ),
+			'validate'         => __( 'Verify link allows checking', 'wpcomsp_wayback_link_fixer' ),
 		);
 	}
 
@@ -958,7 +983,13 @@ class Report_Table extends \WP_List_Table {
 			return __( 'N/a', 'wpcomsp_wayback_link_fixer' );
 		}
 
-		$last_check_status   = $last_check['http_code'] ?? null;
+		$last_check_status = $last_check['http_code'] ?? null;
+
+		// Replace non-numeric characters from status.
+		if ( null !== $last_check_status ) {
+			$last_check_status = preg_replace( '/[^0-9]/', '', (string) $last_check_status );
+		}
+
 		$last_status_display = $last_check_status
 			? "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/{$last_check_status}\" target=\"_blank\">{$last_check_status}  status</a>"
 			: __( 'No HTTP Code', 'wpcomsp_wayback_link_fixer' );

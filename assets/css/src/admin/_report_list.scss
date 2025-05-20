@@ -4,7 +4,7 @@
     .column-report-link-checks,
     .column-report-link-exclude {
         max-width: 10%;
-        width: 130px;
+        width: 135px;
         text-align: center;
         // from 1200 downwars
         @media (max-width: 1200px) {
@@ -36,4 +36,20 @@
         vertical-align: middle;
         margin-left: 5px;
     }
+}
+
+.contextual-help-tabs-wrap {
+    .wlf_help_tab {
+        h3 {
+            font-size: 1.2em;
+            margin-bottom: 0.25em;
+        }
+        p {
+            margin: 0.25em 0;
+        }
+    }
+}
+
+#wlf_help_info_bulk_actions {
+    cursor: pointer;
 }

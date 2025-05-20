@@ -44,7 +44,7 @@ class Link_Latest_Snapshot_Action {
 	 */
 	public function __construct() {
 		$this->wayback_machine = new Wayback_Machine_Service();
-		$this->repository      = new Link_Repository();
+		$this->link_repository = new Link_Repository();
 	}
 
 	/**
@@ -55,7 +55,7 @@ class Link_Latest_Snapshot_Action {
 	 * @return array{link: Link|null, found: boolean, updated: boolean, message: string}
 	 */
 	public function rescan_link( int $link_id ): array {
-		$link = $this->repository->find_by_id( $link_id );
+		$link = $this->link_repository->find_by_id( $link_id );
 
 		if ( ! $link ) {
 			return array(
@@ -112,7 +112,7 @@ class Link_Latest_Snapshot_Action {
 		$link->set_archived_href( $archive_url );
 
 		// Update the link in the database.
-		$link = $this->repository->upsert( $link );
+		$link = $this->link_repository->upsert( $link );
 
 		return array(
 			'link'    => $link,

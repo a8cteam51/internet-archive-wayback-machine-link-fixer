@@ -93,7 +93,7 @@ class Report_Page {
 	public function register_page(): void {
 		$hook = add_submenu_page(
 			self::PARENT_SLUG,
-			__( 'Link Fixer :: Links', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			__( 'Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			'manage_options',
 			self::SLUG,
@@ -133,6 +133,15 @@ class Report_Page {
 			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
 			array(),
 			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
+		);
+
+		// Enqueue the admin scripts.
+		wp_enqueue_script(
+			self::SLUG,
+			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/link-table.js',
+			array( 'jquery' ),
+			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
+			true
 		);
 	}
 
@@ -198,6 +207,51 @@ class Report_Page {
 		);
 
 		add_screen_option( $option, $args );
+
+		// Add the screen help tab.
+		$screen = get_current_screen();
+		$screen->add_help_tab(
+			array(
+				'id'       => 'wlf_help_bulk_actions',
+				'title'    => __( 'Bulk Actions', 'wpcomsp_wayback_link_fixer' ),
+				'callback' => array( $this, 'render_help_bulk_actions' ),
+			)
+		);
+		$screen->add_help_tab(
+			array(
+				'id'       => 'wlf_help_table_columns',
+				'title'    => __( 'Table Columns', 'wpcomsp_wayback_link_fixer' ),
+				'callback' => array( $this, 'render_help_columns' ),
+			)
+		);
+	}
+
+	/**
+	 * Render the help tab for Bulk Actions
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param \WP_Screen $screen The current screen.
+	 * @param array      $args   The arguments passed to the callback.
+	 *
+	 * @return void
+	 */
+	public function render_help_bulk_actions( \WP_Screen $screen, array $args ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+		wpcomsp_wayback_link_fixer_render_template( 'admin/links-table/help-tab-bulk-actions.php' );
+	}
+
+	/**
+	 * Render the help tab for Table Columns.
+	 *
+	 *  @since 1.3.0
+	 *
+	 * @param \WP_Screen $screen The current screen.
+	 * @param array      $args   The arguments passed to the callback.
+	 *
+	 * @return void
+	 */
+	public function render_help_columns( \WP_Screen $screen, array $args ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+		wpcomsp_wayback_link_fixer_render_template( 'admin/links-table/help-tab-columns.php' );
 	}
 
 	/**
@@ -221,7 +275,7 @@ class Report_Page {
 		echo '<div class="wrap">';
 		printf(
 			'<h1 class="wp-heading-inline">%s</h1>',
-			esc_html__( 'Link Fixer :: Links', 'wpcomsp_wayback_link_fixer' ),
+			esc_html__( 'Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 		);
 
 		echo '<hr class="wp-header-end">';

@@ -1,148 +1,167 @@
-	#wlf_wizard {
-	    padding: 20px 30px;
-	    background: white;
-	    border-radius: 10px;
-	    width: 500px;
-	    min-width: 250px;
-	    max-width: calc(100% - 60px);
-	    margin-left: auto;
-	    margin-right: auto;
-	}
-	
-	#wlf_wizard input[type="checkbox"] {
-	    appearance: none;
-	    width: 40px;
-	    height: 20px;
-	    background: #ccc;
-	    border-radius: 20px;
-	    position: relative;
-	    cursor: pointer;
-	    transition: background 0.3s;
-	    margin: inherit;
-	}
-	
-	#wlf_wizard input[type="checkbox"]::before {
-	    content: "";
-	    position: absolute;
-	    width: 16px;
-	    height: 16px;
-	    background: white;
-	    border-radius: 50%;
-	    top: 1px;
-	    left: 2px;
-	    transition: transform 0.3s;
-	}
-	
-	#wlf_wizard input[type="checkbox"]:checked {
-	    background: #2271b1;
-	}
-	
-	#wlf_wizard input[type="checkbox"]:checked::before {
-	    transform: translateX(20px);
-	    top: 4px;
-	    left: 5px;
-	}
-	
-	#wlf_wizard input[type="text"],
-	#wlf_wizard input[type="password"],
-	#wlf_wizard select {
-	    width: 100%;
-	    padding: 10px;
-	    font-size: 19px;
-	    max-width: unset;
-	}
-	
-	#wlf-wizard__footer {
-	    display: flex;
-	    width: 100%;
-	    align-items: center;
-	    justify-content: space-between;
-	}
-	
-	.wlf-wizard__footer__progress {
-	    flex-grow: 1;
-	    display: flex;
-	    align-items: center;
-	    justify-content: center;
-	    padding: 0 25px;
-	    width: 100%;
-	    // Hide on screens smaller than 500px
-	    @media (max-width: 499px) {
-	        display: none;
-	    }
-	}
-	
-	.wlf-wizard__footer__progress__bar {
-	    width: 100%;
-	    justify-content: center;
-	    align-items: center;
-	    display: inline;
-	    text-align: center;
-	}
-	
+#wlf_wizard {
+    padding: 20px 30px;
+    background: white;
+    border-radius: 10px;
+    width: 500px;
+    min-width: 250px;
+    max-width: calc(100% - 60px);
+    margin-left: auto;
+    margin-right: auto;
+
+    input[type="checkbox"] {
+        appearance: none;
+        width: 40px;
+        height: 20px;
+        background: #ccc;
+        border-radius: 20px;
+        position: relative;
+        cursor: pointer;
+        transition: background 0.3s;
+        margin: inherit;
+
+        &::before {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 1px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        &:checked {
+            background: #2271b1;
+
+            &::before {
+                transform: translateX(20px);
+                top: 4px;
+                left: 5px;
+            }
+        }
+    }
+
+    input[type="text"],
+    input[type="password"],
+    select {
+        width: 100%;
+        padding: 10px;
+        font-size: 19px;
+        max-width: unset;
+    }
+}
+
+#wlf-wizard__footer {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.wlf-wizard__footer__progress {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 25px;
+    width: 100%;
+
+    @media (max-width: 499px) {
+        display: none;
+    }
+}
+
+.wlf-wizard__footer__progress__bar {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    display: inline;
+    text-align: center;
+	position: relative;
+
 	.wlf-wizard__footer__progress__bar__inner {
-	    background-color: #a7a7a7;
-	    height: 5px;
+		background-color: #2271b1;
+		height: 5px;
+		position: relative;
+		z-index: 1;
 	}
-	
-	.wlf-wizard__content form {
-	    display: flex;
-	    flex-direction: column;
+
+	&::before {
+		content: "";
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: 5px;
+		background-color: #f5f5f5;
+		width: 100%;
+		transition: width 0.3s ease-in-out;
+		z-index: 0;
 	}
-	
-	.wlf-wizard__content__field {
-	    display: flex;
-	    flex-direction: column;
-	    margin-bottom: 20px;
-	    justify-content: center;
-	    align-items: flex-start;
-	}
-	
-	.wlf-wizard__content__field label {
-	    font-size: 17px;
-	    line-height: 20px;
-	    margin-bottom: 6px;
-	    font-weight: 400;
-	}
-	
-	.wlf-wizard__content__inner-field .inner-spaced-between__list {
-	    display: flex;
-	    align-items: center;
-	    justify-content: space-between;
-	    padding: 3px 25px;
-	}
-	
-	.wlf-wizard__content__inner-field .inner-spaced-between__list:hover {
-	    background-color: #f9f9f9;
-	}
-	
-	.wlf-wizard__content__inner-field .inner-spaced-between {
-	    display: flex;
-	    align-items: center;
-	    justify-content: space-between;
-	    width: 100%;
-	}
-	
-	.wlf-wizard__content__inner-field.checkbox {
-	    display: flex;
-	    flex-direction: column;
-	    align-items: center;
-	    justify-content: center;
-	    width: 100%;
-	}
-	
-	.wlf-wizard__content__inner-field.checkbox input {
-	    margin: 10px;
-	}
-	
-	.wlf-wizard__content__inner-field.checkboxes {
-	    width: 100%;
-	}
-	
-	.wlf-wizard__content__inner-field p.description {
-	    width: 100%;
-	}
-	
-	.wlf-wizard__content__field.is_optional.disabled {
-	    display: none;
-	}
+}
+
+.wlf-wizard__content {
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+        justify-content: center;
+        align-items: flex-start;
+
+        &.is_optional.disabled {
+            display: none;
+        }
+
+        label {
+            font-size: 17px;
+            line-height: 20px;
+            margin-bottom: 6px;
+            font-weight: 400;
+        }
+    }
+
+    &__inner-field {
+        .inner-spaced-between__list {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 3px 25px;
+
+            &:hover {
+                background-color: #f9f9f9;
+            }
+        }
+
+        .inner-spaced-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        &.checkbox {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+
+            input {
+                margin: 10px;
+            }
+        }
+
+        &.checkboxes {
+            width: 100%;
+        }
+
+        p.description {
+            width: 100%;
+        }
+    }
+}

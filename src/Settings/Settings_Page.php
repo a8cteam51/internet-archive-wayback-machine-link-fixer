@@ -525,7 +525,7 @@ class Settings_Page {
 				value="1"
 				<?php checked( Settings::is_link_processing_enabled() ); ?>
 			/>
-			<?php esc_html_e( 'When active all links found in your content will be added to the Wayback Machine as an alternative if the content is removed in the future.', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'When active, all links found in your content will be added to the Wayback Machine as an alternative if the content is removed in the future.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
 		<?php
 	}
@@ -540,6 +540,9 @@ class Settings_Page {
 	public function render_fixer_post_types_field(): void {
 		echo '<div class="wlf_settings_post_types">';
 		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type ) {
+			if ( 'attachment' === $post_type->name ) {
+				continue;
+			}
 			?>
 			<label for="<?php echo esc_attr( Settings::ALLOWED_POST_TYPES ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
 				<input
@@ -567,6 +570,9 @@ class Settings_Page {
 	public function render_archiver_post_types_field(): void {
 		echo '<div class="wlf_settings_post_types">';
 		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type ) {
+			if ( 'attachment' === $post_type->name ) {
+				continue;
+			}
 			?>
 			<label for="<?php echo esc_attr( Settings::ALLOWED_OWN_CONTENT_POST_TYPES ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
 				<input
@@ -600,7 +606,7 @@ class Settings_Page {
 				name="<?php echo esc_attr( Settings::DROP_TABLES_ON_UNINSTALL_KEY ); ?>"
 				value="1"
 				<?php checked( Settings::drop_tables_on_uninstall() ); ?>
-			/><?php esc_html_e( 'If checked this will remove all local data when plugin is uninstalled. Leave unchecked if you plan to re-install this plugin.', 'wpcomsp_wayback_link_fixer' ); ?>
+			/><?php esc_html_e( 'If checked, this will remove all local data when plugin is uninstalled. Leave unchecked if you plan to re-install this plugin.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
 		<?php
 	}
@@ -644,7 +650,7 @@ class Settings_Page {
 		echo wp_kses(
 			sprintf(
 				'<div><p>%s</p></div>',
-				__( 'Enter a list of URLs to exclude from the link checker. These can be added using <code>*</code> wildcards such as <code>https://x.com*</code> to exclude any x/twitter link', 'wpcomsp_wayback_link_fixer' )
+				__( 'Enter a list of URLs to exclude from the link checker. These can be added using <code>*</code> wildcards such as <code>https://x.com*</code> to exclude any X/Twitter link.', 'wpcomsp_wayback_link_fixer' )
 			),
 			array(
 				'code' => array(),
