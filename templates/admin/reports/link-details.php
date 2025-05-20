@@ -75,7 +75,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 								printf(
 									'<strong>%s</strong>: %s',
 									esc_html__( 'Current Status', 'wpcomsp_wayback_link_fixer' ),
-									$wlf_link->is_broken() ? esc_html__( 'Broken', 'wpcomsp_wayback_link_fixer' ) : $wlf_normal_state_string
+									$wlf_link->is_broken() ? esc_html__( 'Broken', 'wpcomsp_wayback_link_fixer' ) : esc_html( $wlf_normal_state_string )
 								);
 								?>
 							</p>

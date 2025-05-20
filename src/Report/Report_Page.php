@@ -236,7 +236,7 @@ class Report_Page {
 	 *
 	 * @return void
 	 */
-	public function render_help_bulk_actions( \WP_Screen $screen, array $args ): void {
+	public function render_help_bulk_actions( \WP_Screen $screen, array $args ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
 		wpcomsp_wayback_link_fixer_render_template( 'admin/links-table/help-tab-bulk-actions.php' );
 	}
 
@@ -250,7 +250,7 @@ class Report_Page {
 	 *
 	 * @return void
 	 */
-	public function render_help_columns( \WP_Screen $screen, array $args ): void {
+	public function render_help_columns( \WP_Screen $screen, array $args ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
 		wpcomsp_wayback_link_fixer_render_template( 'admin/links-table/help-tab-columns.php' );
 	}
 

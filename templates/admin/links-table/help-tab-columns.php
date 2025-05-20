@@ -5,8 +5,8 @@
  * @since 1.3.0
  */
 
-$wlf_failed_count     = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_failed_count();
-$wlf_check_frequency  = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_link_check_duration();
+$wlf_failed_count    = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_failed_count();
+$wlf_check_frequency = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_link_check_duration();
 ?>
 
 <div id="wlf_help_tab_columns" class="wlf_help_tab">

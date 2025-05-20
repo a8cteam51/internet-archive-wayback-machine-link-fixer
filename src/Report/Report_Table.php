@@ -77,13 +77,15 @@ class Report_Table extends \WP_List_Table {
 		$this->populate_cached_notifications();
 	}
 
-		/**
+	/**
 	 * Displays the bulk actions dropdown.
 	 *
 	 * @since 3.1.0
 	 *
 	 * @param string $which The location of the bulk actions: Either 'top' or 'bottom'.
 	 *                      This is designated as optional for backward compatibility.
+	 *
+	 * @return void
 	 */
 	protected function bulk_actions( $which = '' ) {
 		\ob_start();
