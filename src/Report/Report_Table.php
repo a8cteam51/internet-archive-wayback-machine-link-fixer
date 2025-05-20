@@ -77,6 +77,29 @@ class Report_Table extends \WP_List_Table {
 		$this->populate_cached_notifications();
 	}
 
+		/**
+	 * Displays the bulk actions dropdown.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string $which The location of the bulk actions: Either 'top' or 'bottom'.
+	 *                      This is designated as optional for backward compatibility.
+	 */
+	protected function bulk_actions( $which = '' ) {
+		\ob_start();
+		parent::bulk_actions( $which );
+		$bulk_actions = \ob_get_clean();
+
+		$help_icon = '<span id="wlf_help_info_bulk_actions" class="wlf_bulk_actions_trigger dashicons dashicons-editor-help"></span>';
+
+		$bulk_actions = preg_replace(
+			'/<input\b[^>]*\bid\s*=\s*["\']doaction["\'][^>]*>/i',
+			'$0' . $help_icon,
+			$bulk_actions
+		);
+		echo $bulk_actions; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
 	/**
 	 * Populated any cached notifications.
 	 *
@@ -962,7 +985,7 @@ class Report_Table extends \WP_List_Table {
 
 		// Replace non-numeric characters from status.
 		if ( null !== $last_check_status ) {
-			$last_check_status = preg_replace( '/[^0-9]/', '', $last_check_status );
+			$last_check_status = preg_replace( '/[^0-9]/', '', (string) $last_check_status );
 		}
 
 		$last_status_display = $last_check_status

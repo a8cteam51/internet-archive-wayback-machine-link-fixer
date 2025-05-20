@@ -9,6 +9,8 @@
  * @var string $wlf_back_url The URL to return to the report.
  */
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+
 defined( 'ABSPATH' ) || exit;
 
 // Check if we have any previous links to show.
@@ -63,11 +65,17 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 						<div class="inside">
 							<p class="wlf_link_broken">
 								<?php
-								$normal = ( 0 === count( $wlf_link->get_checks() ) ) ? 'Not Checked' : 'Normal';
-								sprintf(
+								$wlf_normal_state_string = ( 0 === count( $wlf_link->get_checks() ) )
+									? esc_html__( 'Not Checked', 'wpcomsp_wayback_link_fixer' )
+									: sprintf(
+										// translators: %d is the number of consecutive failures required to be considered "Broken".
+										esc_html__( 'Monitoring – Link will be marked as "Broken" after %d consecutive failures.', 'wpcomsp_wayback_link_fixer' ),
+										Settings::get_failed_count()
+									);
+								printf(
 									'<strong>%s</strong>: %s',
 									esc_html__( 'Current Status', 'wpcomsp_wayback_link_fixer' ),
-									$wlf_link->is_broken() ? 'Broken' : $normal
+									$wlf_link->is_broken() ? esc_html__( 'Broken', 'wpcomsp_wayback_link_fixer' ) : $wlf_normal_state_string
 								);
 								?>
 							</p>

@@ -1,0 +1,1 @@
+console.log("link-table.js loaded"),function(){"use strict";jQuery(document).ready((function(){jQuery("#wlf_help_info_bulk_actions").on("click",(function(e){e.preventDefault(),(()=>{const e=jQuery("#contextual-help-link");e.hasClass("screen-meta-active")||e.click()})(),(e=>{const l=jQuery("#tab-link-wlf_help_bulk_actions a");l.length&&l.trigger("click")})()}))}))}();

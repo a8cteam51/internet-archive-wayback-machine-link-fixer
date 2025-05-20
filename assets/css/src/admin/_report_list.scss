@@ -37,3 +37,19 @@
         margin-left: 5px;
     }
 }
+
+.contextual-help-tabs-wrap {
+    .wlf_help_tab {
+        h3 {
+            font-size: 1.2em;
+            margin-bottom: 0.25em;
+        }
+        p {
+            margin: 0.25em 0;
+        }
+    }
+}
+
+#wlf_help_info_bulk_actions {
+    cursor: pointer;
+}
