@@ -1,6 +1,6 @@
 <?php
 /**
- * Template for the tab columns page of the help section.
+ * Template for the tab columns content of the help section.
  *
  * @since 1.3.0
  */
