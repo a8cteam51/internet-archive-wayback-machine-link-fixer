@@ -254,8 +254,6 @@ class Report_Page {
 		wpcomsp_wayback_link_fixer_render_template( 'admin/links-table/help-tab-columns.php' );
 	}
 
-
-
 	/**
 	 * Render the report list page.
 	 *
