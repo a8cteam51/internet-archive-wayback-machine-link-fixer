@@ -174,7 +174,7 @@ function wpcomsp_wayback_link_fixer_scaffold_output_requirements_error( $error )
 						case 'plugin_wp_incompatible':
 							$error_message = wp_sprintf(
 								/* translators: 1: Current WP version, 2: Minimum WP version */
-								__( 'Current <em>WordPress version (%1$s)</em> does not meet minimum required version of %2$s.', 'wpcomsp_wayback_link_fixer' ),
+								__( 'Current <em>WordPress version (%1$s)</em> does not meet the minimum required version of %2$s.', 'wpcomsp_wayback_link_fixer' ),
 								get_bloginfo( 'version' ),
 								$error_data['requires_wp']
 							);
@@ -182,7 +182,7 @@ function wpcomsp_wayback_link_fixer_scaffold_output_requirements_error( $error )
 						case 'plugin_php_incompatible':
 							$error_message = wp_sprintf(
 								/* translators: 1: Current PHP version, 2: Minimum PHP version */
-								__( 'Current <em>PHP version (%1$s)</em> does not meet minimum required version of %2$s.', 'wpcomsp_wayback_link_fixer' ),
+								__( 'Current <em>PHP version (%1$s)</em> does not meet the minimum required version of %2$s.', 'wpcomsp_wayback_link_fixer' ),
 								PHP_VERSION,
 								$error_data['requires_php']
 							);

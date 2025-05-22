@@ -22,7 +22,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 ?>
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php echo esc_html( $wlf_link_title ); ?></h1>
-	<a class="page-title-action" href="<?php echo esc_url( $wlf_back_url ); ?>"><?php esc_html_e( 'Return to Links', 'wpcomsp_wayback_link_fixer' ); ?></a>
+	<a class="page-title-action" href="<?php echo esc_url( $wlf_back_url ); ?>"><?php esc_html_e( 'Back to All Links', 'wpcomsp_wayback_link_fixer' ); ?></a>
 	<hr class="wp-header-end">
 
 
@@ -40,11 +40,11 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 							<?php if ( '' !== $wlf_link->get_archived_href() && ! $wlf_link->is_excluded() ) : ?>
 								<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archived URL', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <a href="<?php echo esc_url( $wlf_link->get_archived_href() ); ?>" target="_blank"><?php echo esc_html( $wlf_link->get_archived_href() ); ?></a></p>
 							<?php else : ?>
-								<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archived URL', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php esc_html_e( 'No Archived Link Found', 'wpcomsp_wayback_link_fixer' ); ?></p>
+								<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archived URL', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php esc_html_e( 'No archived version found.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 							<?php endif; ?>
 
 							<?php if ( '' !== $wlf_link->get_redirect_href() ) : ?>
-								<p class="wlf_link_redirected_url"><strong><?php esc_html_e( 'Has Redirect URL', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php echo esc_html( $wlf_link->get_redirect_href() ); ?></p>
+								<p class="wlf_link_redirected_url"><strong><?php esc_html_e( 'Redirects To', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php echo esc_html( $wlf_link->get_redirect_href() ); ?></p>
 							<?php endif; ?>
 
 							<?php if ( '' !== $wlf_link->get_message() ) : ?>
@@ -52,7 +52,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 							<?php endif; ?>
 
 							<?php if ( $wlf_link->is_excluded() ) : ?>
-								<p class="wlf_link_excluded"><strong><?php esc_html_e( 'Excluded', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php esc_html_e( 'This link does not allow indexing', 'wpcomsp_wayback_link_fixer' ); ?></p>
+								<p class="wlf_link_excluded"><strong><?php esc_html_e( 'Excluded', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php esc_html_e( 'This link is excluded from processing (e.g., by robots.txt or your exclusion settings).', 'wpcomsp_wayback_link_fixer' ); ?></p>
 							<?php endif; ?>
 						</div>
 					</div>
@@ -66,10 +66,10 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 							<p class="wlf_link_broken">
 								<?php
 								$wlf_normal_state_string = ( 0 === count( $wlf_link->get_checks() ) )
-									? esc_html__( 'Not Checked', 'wpcomsp_wayback_link_fixer' )
+									? esc_html__( 'Not yet checked', 'wpcomsp_wayback_link_fixer' )
 									: sprintf(
-										// translators: %d is the number of consecutive failures required to be considered "Broken".
-										esc_html__( 'Monitoring – Link will be marked as "Broken" after %d consecutive failures.', 'wpcomsp_wayback_link_fixer' ),
+										// translators: %d is the number of consecutive failures required to mark a link as 'Broken'.
+										esc_html__( 'Monitoring: Link will be marked as \'Broken\' after %d consecutive failures.', 'wpcomsp_wayback_link_fixer' ),
 										Settings::get_failed_count()
 									);
 								printf(
@@ -90,7 +90,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 								<tbody>
 									<?php if ( 0 === count( $wlf_link->get_checks() ) ) : ?>
 										<tr>
-											<td colspan="2"><?php esc_html_e( 'No checks found for this link.', 'wpcomsp_wayback_link_fixer' ); ?></td>
+											<td colspan="2"><?php esc_html_e( 'No check history for this link yet.', 'wpcomsp_wayback_link_fixer' ); ?></td>
 										</tr>
 									<?php endif; ?>
 
@@ -98,7 +98,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 										<tr id="wlf_reveal_hidden_checks">
 											<td colspan="2">
 												<button class="button" id="wlf_show_hidden_checks">
-													<?php esc_html_e( 'Show Previous Checks', 'wpcomsp_wayback_link_fixer' ); ?>
+													<?php esc_html_e( 'Show Older Checks', 'wpcomsp_wayback_link_fixer' ); ?>
 												</button>
 											</td>
 										</tr>
@@ -126,11 +126,11 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 
 					<div id="wlf_link_posts" class="postbox ">
 						<div class="postbox-header">
-							<h2 class="handle ui-sortable-handle"><?php esc_html_e( 'Places This Link Appears', 'wpcomsp_wayback_link_fixer' ); ?></h2>
+							<h2 class="handle ui-sortable-handle"><?php esc_html_e( 'Found In', 'wpcomsp_wayback_link_fixer' ); ?></h2>
 						</div>
 						<div class="inside">
 							<?php if ( empty( $wlf_posts ) ) : ?>
-								<p><?php esc_html_e( 'No posts found for this link.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+								<p><?php esc_html_e( 'This link has not been found in any posts yet.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 							<?php else : ?>
 								<table class="wp-list-table widefat fixed striped">
 									<thead>
@@ -149,10 +149,10 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 														<?php if ( '' === $wlf_post->post_title ) : ?>
 															<?php
 															printf(
-																// Translators: %1$d is the post ID, %2$s is the post type.
-																'No title [#%1$d - %2$s]',
+																// Translators: %1$s is the post ID, %2$s is the post type label (e.g., "Post", "Page").
+																esc_html__( 'Untitled %2$s (ID: %1$d)', 'wpcomsp_wayback_link_fixer' ),
 																absint( $wlf_post->ID ),
-																esc_html( $wlf_post->post_type )
+																esc_html( get_post_type_object( $wlf_post->post_type )->labels->singular_name )
 															);
 															?>
 														<?php else : ?>

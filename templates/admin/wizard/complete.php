@@ -20,9 +20,9 @@
 	<p>
 	<?php
 	printf(
-		// translators: %1$s is the page title, %2$s is the page URL.
-		esc_html__( 'Setup is now complete, you can edit these settings at any time, %s', 'wpcomsp_wayback_link_fixer' ),
-		'<a href="' . esc_url( menu_page_url( 'wpcomsp_wayback_link_fixer_settings', false ) ) . '">Wayback Link Fixer Settings</a>'
+		// translators: %s is a link to the plugin settings page.
+		esc_html__( 'Setup is now complete! You can edit these settings at any time from the %s page.', 'wpcomsp_wayback_link_fixer' ),
+		'<a href="' . esc_url( menu_page_url( 'wpcomsp_wayback_link_fixer_settings', false ) ) . '">' . esc_html__( 'Wayback Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ) . '</a>'
 	);
 	?>
 	</p>

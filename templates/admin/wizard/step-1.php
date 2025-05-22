@@ -24,19 +24,19 @@ $wlf_secret_type = '' === $settings->get_archive_secret_key() ? 'text' : 'passwo
 </div>
 
 <div class="wlf-wizard__content__intro">
-	<p><?php esc_html_e( 'If you wish to create more than 200 links per month, you will need to get a free account with archive.org and enter the supplied credentials below.', 'wpcomsp_wayback_link_fixer' ); ?>
-		<br /><a href="https://archive.org/account/s3.php" target="_blank"><?php esc_html_e( 'Get your api keys here.', 'wpcomsp_wayback_link_fixer' ); ?></a></p>
+	<p><?php esc_html_e( 'To archive more than 200 links from your site to the Wayback Machine per month, you\'ll need a free archive.org account. Once you have your account, enter the API Access Key and Secret Key below.', 'wpcomsp_wayback_link_fixer' ); ?>
+		<br /><a href="https://archive.org/account/s3.php" target="_blank"><?php esc_html_e( 'Get your API keys here.', 'wpcomsp_wayback_link_fixer' ); ?></a></p>
 </div>
 
 <div class="wlf-wizard__content__field">
 	<label for="wlf_wizard_archive_access_key">
-		<?php esc_html_e( 'Archive.org Access Key', 'wpcomsp_wayback_link_fixer' ); ?>
+		<?php esc_html_e( 'Archive.org API Access Key', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>
 	<input type="<?php echo esc_html( $wlf_access_type ); ?>" name="wlf_wizard_archive_access_key" value="<?php echo esc_attr( $settings->get_archive_access_key() ); ?>" />
 </div>
 <div class="wlf-wizard__content__field">
 	<label for="wlf_wizard_archive_secret_key">
-		<?php esc_html_e( 'Archive.org Secret Key', 'wpcomsp_wayback_link_fixer' ); ?>
+		<?php esc_html_e( 'Archive.org API Secret Key', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>
 	<input type="<?php echo esc_html( $wlf_secret_type ); ?>" name="wlf_wizard_archive_secret_key" value="<?php echo esc_attr( $settings->get_archive_secret_key() ); ?>" />
 </div>
