@@ -36,7 +36,7 @@ $wlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 			</label>
 			<input type="checkbox" id="is_active" name="wlf_wizard_activate_link_fixer" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
 		</div>
-		<p class="description"><?php esc_html_e( 'When enabled, all links withing your content will be indexed.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+		<p class="description"><?php esc_html_e( 'When enabled, all links within your selected post types will be processed for potential archiving by the Link Fixer.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 	</div>
 </div>
 
@@ -65,15 +65,15 @@ $wlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 			</label>
 			<input type="checkbox" id="wlf_is_active" name="wlf_wizard_scan_existing_content" id="wlf_wizard_scan_existing_content" value="1" <?php checked( Settings::should_scan_existing_posts() ); ?> />
 		</div>
-		<p class="description"><?php esc_html_e( 'If enabled, all existing posts will be scanned and processed. Please note this process can take multiple days if you have a lot of content and links.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+		<p class="description"><?php esc_html_e( 'If enabled, all existing posts of the selected types will be scanned and processed. Please note this process can take significant time (potentially hours or days) depending on the amount of content and number of links.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 	</div>
 </div>
 
 <div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $wlf_hide_class ); ?>" >
 	<label for="wlf_wizard_outcome">
-		<?php esc_html_e( 'Broken Link Outcome', 'wpcomsp_wayback_link_fixer' ); ?>
+		<?php esc_html_e( 'Action for Broken Links', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>
-	<p class="description"><?php esc_html_e( 'When a link is considered as broken, what should the outcome be?', 'wpcomsp_wayback_link_fixer' ); ?></p>
+	<p class="description"><?php esc_html_e( 'What should the Link Fixer do when it identifies a broken link?', 'wpcomsp_wayback_link_fixer' ); ?></p>
 	<select
 		id="wlf_wizard_outcome"
 		name="wlf_wizard_outcome"

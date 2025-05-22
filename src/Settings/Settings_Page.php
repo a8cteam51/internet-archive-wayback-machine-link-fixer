@@ -371,7 +371,7 @@ class Settings_Page {
 				'before_section' => '<div id="wlf_settings_ia_section" class="wlf_settings_postbox">',
 				'after_section'  => '<p class="description">' . sprintf(
 						// Translators: %s is the link to the Internet account setup.
-					__( "To get your API key and secret, please visit the <a href='%s' target='_blank'>Internet Archive</a> and create a new S3 access key.", 'wpcomsp_wayback_link_fixer' ),
+					__( "To get your API key and secret, please visit the <a href='%s' target='_blank'>Internet Archive</a> and create a new 'S3 access key' (this is a type of credential used by Archive.org).", 'wpcomsp_wayback_link_fixer' ),
 					esc_url( 'https://archive.org/account/s3.php' )
 				) . '</p></div>',
 			)
@@ -381,7 +381,7 @@ class Settings_Page {
 			self::GROUP_LINK_FIXER,
 			__( 'Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			function () {
-				echo '<p class="description">' . esc_html__( 'Automatically scan all links in your content to detect and replace broken ones. Find or create archived versions on the Internet Archive and ensure your links remain accessible. Keep your content reliable and up-to-date effortlessly.', 'wpcomsp_wayback_link_fixer' ) . '</p>';
+				echo '<p class="description">' . esc_html__( "Enable the Link Fixer to scan links in your selected post types. It will find or create archived versions on the Internet Archive to ensure links remain accessible if they break.", 'wpcomsp_wayback_link_fixer' ) . '</p>';
 			},
 			self::PAGE_SLUG,
 			array(
@@ -405,7 +405,7 @@ class Settings_Page {
 
 		add_settings_field(
 			Settings::PROCESS_LINKS,
-			__( 'Process Links', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Enable Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_process_links_field' ),
 			self::PAGE_SLUG,
 			self::GROUP_LINK_FIXER
@@ -525,7 +525,7 @@ class Settings_Page {
 				value="1"
 				<?php checked( Settings::is_link_processing_enabled() ); ?>
 			/>
-			<?php esc_html_e( 'When active, all links found in your content will be added to the Wayback Machine as an alternative if the content is removed in the future.', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'Enable the Link Fixer to scan links in your selected post types. It will find or create archived versions on the Internet Archive to ensure links remain accessible if they break.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
 		<?php
 	}
@@ -557,7 +557,7 @@ class Settings_Page {
 			</label>
 			<?php
 		}
-		echo '</div><p class="description">' . esc_html__( 'Please choose which post types will have its content checked and links added to the Wayback Machine.', 'wpcomsp_wayback_link_fixer' ) . '</p>';
+		echo '</div><p class="description">' . esc_html__( 'Please choose which post types will have their content checked and links added to the Wayback Machine.', 'wpcomsp_wayback_link_fixer' ) . '</p>';
 	}
 
 	/**
@@ -587,7 +587,7 @@ class Settings_Page {
 			</label>
 			<?php
 		}
-		echo '</div><p class="description">' . esc_html__( 'Please choose which post types will be auto archived on publish, to the Wayback Machine..', 'wpcomsp_wayback_link_fixer' ) . '</p>';
+		echo '</div><p class="description">' . esc_html__( 'Please choose which post types will be automatically archived to the Wayback Machine when they are published.', 'wpcomsp_wayback_link_fixer' ) . '</p>';
 	}
 
 	/**
@@ -606,7 +606,7 @@ class Settings_Page {
 				name="<?php echo esc_attr( Settings::DROP_TABLES_ON_UNINSTALL_KEY ); ?>"
 				value="1"
 				<?php checked( Settings::drop_tables_on_uninstall() ); ?>
-			/><?php esc_html_e( 'If checked, this will remove all local data when plugin is uninstalled. Leave unchecked if you plan to re-install this plugin.', 'wpcomsp_wayback_link_fixer' ); ?>
+			/><?php esc_html_e( 'If checked, this will remove all local data when the plugin is uninstalled. Leave unchecked if you plan to reinstall this plugin.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
 		<?php
 	}
@@ -650,7 +650,7 @@ class Settings_Page {
 		echo wp_kses(
 			sprintf(
 				'<div><p>%s</p></div>',
-				__( 'Enter a list of URLs to exclude from the link checker. These can be added using <code>*</code> wildcards such as <code>https://x.com*</code> to exclude any X/Twitter link.', 'wpcomsp_wayback_link_fixer' )
+				__( "Enter a list of URLs (or parts of URLs) to exclude from link processing. You can use an asterisk (<code>*</code>) as a wildcard. For example, <code>https://example.com/some-path/*</code> would exclude anything after '/some-path/', and <code>*twitter.com*</code> would exclude any URL containing 'twitter.com'.", 'wpcomsp_wayback_link_fixer' )
 			),
 			array(
 				'code' => array(),
@@ -758,7 +758,7 @@ class Settings_Page {
 			style="width:80%;"
 		/>
 		<p class="description">
-			<?php esc_html_e( 'Archive.org S3 Secret Key', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'Archive.org Secret Key', 'wpcomsp_wayback_link_fixer' ); ?>
 		</p>
 		<?php
 	}
@@ -780,7 +780,7 @@ class Settings_Page {
 			style="width:80%;"
 		/>
 		<p class="description">
-			<?php esc_html_e( 'Archive.org S3 Access Key', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'Archive.org Access Key', 'wpcomsp_wayback_link_fixer' ); ?>
 		</p>
 		<?php
 	}
@@ -829,7 +829,7 @@ class Settings_Page {
 				value="1"
 				<?php checked( Settings::add_own_links() ); ?>
 			/>
-			<?php esc_html_e( 'When active, your own content will be archived on the Wayback Machine. This will be updated every time you make changes to your content.', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'When active, your own content will be automatically archived on the Wayback Machine each time you publish or update it.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
 		<?php
 	}
@@ -852,7 +852,7 @@ class Settings_Page {
 				data-group="auto_archiver"
 				<?php checked( Settings::own_link_routinely_update() ); ?>
 			/>
-			<?php esc_html_e( 'Routinely archive own posts in the wayback machine', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'Regularly archive your posts on the Wayback Machine', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
 		<?php
 	}
@@ -877,7 +877,7 @@ class Settings_Page {
 			data-group="auto_archiver"
 		/>
 		<p class="description">
-			<?php esc_html_e( 'The interval between updates in days.', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'Interval in days for regular archiving.', 'wpcomsp_wayback_link_fixer' ); ?>
 		</p>
 		<?php
 	}

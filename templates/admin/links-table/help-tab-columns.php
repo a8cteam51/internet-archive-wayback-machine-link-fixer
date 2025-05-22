@@ -18,8 +18,8 @@ $wlf_check_frequency = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Setting
 		<?php
 		echo esc_html(
 			sprintf(
-				// translators: %d is the number of errors encountered.
-				__( 'Indicates whether the link is active or broken. A link is marked as broken after more than %d errors have been recorded during checks.', 'wpcomsp_wayback_link_fixer' ),
+				// translators: %d is the number of consecutive failed checks required to mark a link as broken.
+				__( 'Indicates whether the live link is active or broken. A link is marked as broken after %d consecutive failed checks.', 'wpcomsp_wayback_link_fixer' ),
 				$wlf_failed_count
 			)
 		);
@@ -40,5 +40,5 @@ $wlf_check_frequency = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Setting
 	</p>
 
 	<h3><?php esc_html_e( 'Last Check', 'wpcomsp_wayback_link_fixer' ); ?></h3>
-	<p><?php esc_html_e( 'Displays the most recent check, including the date and the returned status code, if available.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+	<p><?php esc_html_e( 'Displays the date and result (e.g., HTTP status code) of the most recent check on the live link, if available.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 </div>
