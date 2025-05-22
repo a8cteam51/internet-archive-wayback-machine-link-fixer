@@ -587,7 +587,7 @@ class Settings_Page {
 			</label>
 			<?php
 		}
-		echo '</div><p class="description">' . esc_html__( 'Please choose which post types will be auto archived on publish, to the Wayback Machine..', 'wpcomsp_wayback_link_fixer' ) . '</p>';
+		echo '</div><p class="description">' . esc_html__( 'Please choose which post types will be auto archived on publish, to the Wayback Machine.', 'wpcomsp_wayback_link_fixer' ) . '</p>';
 	}
 
 	/**
@@ -852,7 +852,7 @@ class Settings_Page {
 				data-group="auto_archiver"
 				<?php checked( Settings::own_link_routinely_update() ); ?>
 			/>
-			<?php esc_html_e( 'Routinely archive own posts in the wayback machine', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'Routinely archive own posts in the Wayback Machine', 'wpcomsp_wayback_link_fixer' ); ?>
 		</label>
 		<?php
 	}
