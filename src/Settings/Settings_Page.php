@@ -381,7 +381,7 @@ class Settings_Page {
 			self::GROUP_LINK_FIXER,
 			__( 'Link Fixer', 'wpcomsp_wayback_link_fixer' ),
 			function () {
-				echo '<p class="description">' . esc_html__( "Enable the Link Fixer to scan links in your selected post types. It will find or create archived versions on the Internet Archive to ensure links remain accessible if they break.", 'wpcomsp_wayback_link_fixer' ) . '</p>';
+				echo '<p class="description">' . esc_html__( 'Enable the Link Fixer to scan links in your selected post types. It will find or create archived versions on the Internet Archive to ensure links remain accessible if they break.', 'wpcomsp_wayback_link_fixer' ) . '</p>';
 			},
 			self::PAGE_SLUG,
 			array(
