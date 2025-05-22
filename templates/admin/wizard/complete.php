@@ -21,7 +21,7 @@
 	<?php
 	printf(
 		// translators: %1$s is the page title, %2$s is the page URL.
-		esc_html__( 'Setup is now complete, you can edit these settings at any times, %s', 'wpcomsp_wayback_link_fixer' ),
+		esc_html__( 'Setup is now complete, you can edit these settings at any time, %s', 'wpcomsp_wayback_link_fixer' ),
 		'<a href="' . esc_url( menu_page_url( 'wpcomsp_wayback_link_fixer_settings', false ) ) . '">Wayback Link Fixer Settings</a>'
 	);
 	?>

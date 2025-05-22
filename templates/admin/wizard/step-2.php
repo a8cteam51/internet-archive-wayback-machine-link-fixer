@@ -36,7 +36,7 @@ $wlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 			</label>
 			<input type="checkbox" id="is_active" name="wlf_wizard_activate_link_fixer" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
 		</div>
-		<p class="description"><?php esc_html_e( 'When enabled, all links withing your content will be indexed.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+		<p class="description"><?php esc_html_e( 'When enabled, all links within your content will be indexed.', 'wpcomsp_wayback_link_fixer' ); ?></p>
 	</div>
 </div>
 

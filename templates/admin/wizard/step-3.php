@@ -60,7 +60,7 @@ $wlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 	<div class="wlf-wizard__content__inner-field checkbox">
 		<div class="inner-spaced-between">
 			<label for="wlf_wizard_recurring_backup">
-				<?php esc_html_e( 'Routinely auto archive posts', 'wpcomsp_wayback_link_fixer' ); ?>
+				<?php esc_html_e( 'Schedule regular archives of your posts', 'wpcomsp_wayback_link_fixer' ); ?>
 			</label>
 			<input type="checkbox" name="wlf_wizard_recurring_backup" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
 		</div>

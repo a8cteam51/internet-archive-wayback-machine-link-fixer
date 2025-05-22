@@ -449,7 +449,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function process_new_snapshot( array $links ): void {
 		$action = new Link_New_Snapshot_Action();
-		//Iterate over the links and update them.
+		// Iterate over the links and update them.
 		foreach ( $links as $link_id ) {
 			$result = $action->create_new_snapshot( absint( $link_id ) );
 
@@ -466,7 +466,7 @@ class Report_Table extends \WP_List_Table {
 				continue;
 			}
 
-			// If we dont have a job id, add error and include the  mesage.
+			// If we don't have a job id, add error and include the message.
 			if ( ! $result['job_id'] ) {
 				$this->notices[] = array(
 					'message' => sprintf(
@@ -625,7 +625,7 @@ class Report_Table extends \WP_List_Table {
 			<option value="all"><?php esc_html_e( 'Show valid and broken links', 'wpcomsp_wayback_link_fixer' ); ?></option>
 			<?php
 			$statuses = array(
-				Link_Repository::LINK_STATUS_BROKEN => __( 'Show broken links ', 'wpcomsp_wayback_link_fixer' ),
+				Link_Repository::LINK_STATUS_BROKEN => __( 'Show broken links', 'wpcomsp_wayback_link_fixer' ),
 				Link_Repository::LINK_STATUS_OK     => __( 'Show valid links', 'wpcomsp_wayback_link_fixer' ),
 			);
 			foreach ( $statuses as $status => $label ) {
