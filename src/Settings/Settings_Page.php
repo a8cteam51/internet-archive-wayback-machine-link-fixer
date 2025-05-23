@@ -425,8 +425,7 @@ class Settings_Page {
 			__( 'Wipe Data on Uninstall', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_drop_tables_on_uninstall_field' ),
 			self::PAGE_SLUG,
-			self::GROUP_PLUGIN_SETTINGS,
-			array( 'class' => Settings::is_link_processing_enabled() ? 'wlf_toggle_setting__fixer' : 'wlf_toggle_setting__fixer hidden' )
+			self::GROUP_PLUGIN_SETTINGS
 		);
 
 		add_settings_field(

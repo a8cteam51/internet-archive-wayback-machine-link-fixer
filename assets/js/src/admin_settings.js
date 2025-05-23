@@ -54,7 +54,7 @@
 		 */
 		function toggleElements(isChecked, groupName) {
 
-			// Get the field list, based on teh group name.
+			// Get the field list, based on the group name.
 			const fieldList = 'link_fixer' === groupName
 				? '.wlf_toggle_setting__fixer'
 				: '.wlf_toggle_setting__auto_archiver';
