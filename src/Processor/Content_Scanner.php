@@ -67,13 +67,10 @@ class Content_Scanner {
 			return $this;
 		}
 
-		$dom = new DOMDocument();
-		$dom->loadHTML( $this->content, LIBXML_NOERROR );
+		$dom = new WP_HTML_Tag_Processor( $this->content );
 
-		$anchors = $dom->getElementsByTagName( 'a' );
-
-		foreach ( $anchors as $anchor ) {
-			$href = $anchor->getAttribute( 'href' );
+		while ( $dom->next_tag( 'a' ) ) {
+			$href = $dom->get_attribute( 'href' );
 
 			// If href doesnt start with http or https, skip.
 			if ( ! preg_match( '/^https?:\/\//', $href ) ) {
