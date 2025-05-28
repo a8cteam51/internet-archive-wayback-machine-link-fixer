@@ -238,7 +238,7 @@ class Setup_Wizard {
 		&& '' !== $secret_key
 		&& ! wpcomsp_wayback_link_fixer_get_system_client()->is_valid_user( $access_key, $secret_key )
 		) {
-			$this->add_notice( __( 'Invalid Archive.org API credentials. Please check your Access Key and Secret Key.', 'wpcomsp_wayback_link_fixer' ), 'error' );
+			$this->add_notice( __( 'Invalid Archive.org API credentials. Please verify your Access Key and Secret Key, or leave both fields blank to proceed without authentication.', 'wpcomsp_wayback_link_fixer' ), 'error' );
 			$_POST['wlf_wizard_invalid_keys'] = true; // Set a flag to indicate invalid keys.
 
 			// Hold the entered values in post.
