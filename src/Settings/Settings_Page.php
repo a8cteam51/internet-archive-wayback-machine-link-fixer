@@ -538,12 +538,12 @@ class Settings_Page {
 	 */
 	public function validate_archive_org_keys(): void {
 		// If we are on this page.
-		if ( ! isset( $_GET['page'] ) || self::PAGE_SLUG !== $_GET['page'] ) {
+		if ( ! isset( $_GET['page'] ) || self::PAGE_SLUG !== $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, we are only reading, not using
 			return;
 		}
 
 		// If the settings were updated.
-		if ( isset( $_GET['settings-updated'] ) && 'true' === $_GET['settings-updated'] ) {
+		if ( isset( $_GET['settings-updated'] ) && 'true' === $_GET['settings-updated'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, we are only reading, not using
 			$key        = Settings::get_archive_secret_key();
 			$access_key = Settings::get_archive_access_key();
 

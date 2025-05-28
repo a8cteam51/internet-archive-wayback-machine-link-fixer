@@ -258,7 +258,7 @@ function wpcomsp_wayback_link_fixer_get_date_format(): string {
  * @return void
  */
 function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
-	$in_unauthenticated_mode = __( 'You are using Link Fixer in unauthenticated mode, which restricts you to 200 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wpcomsp_wayback_link_fixer' );
+	$in_unauthenticated_mode = __( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wpcomsp_wayback_link_fixer' );
 
 	// If the archive api is not configured.
 	if ( ! Settings::is_archive_api_configured() ) {
@@ -283,7 +283,7 @@ function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
 				print wp_kses_post(
 					sprintf(
 						// translators: %s is a link to the settings page.
-						__( 'Your Archive.org API credentials are invalid. <a href="%s">Please check your settings.</a>. As a result you are in in unauthenticated mode, which restricts you to 200 new snapshots per day.', 'wpcomsp_wayback_link_fixer' ),
+						__( 'Your Archive.org API credentials are invalid. <a href="%s">Please check your settings.</a>. As a result you are in in unauthenticated mode, which restricts you to 4000 new snapshots per day.', 'wpcomsp_wayback_link_fixer' ),
 						esc_url( admin_url( 'options-general.php?page=' . Settings_Page::PAGE_SLUG ) )
 					)
 				);

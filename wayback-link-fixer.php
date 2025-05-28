@@ -91,12 +91,3 @@ if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
 	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
-
-
-add_action(
-	'init',
-	function () {
-		// $serv = new \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service();
-		// dd( $serv, $serv->get_user_stats( 'bTClFVSTEZadmDN3', 'Nz2AYtidoAn2h3OM' ) );
-	}
-);

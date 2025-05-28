@@ -175,6 +175,9 @@ class Wayback_Machine_Service {
 	 *
 	 * @since 1.3.0
 	 *
+	 * @param string $access_key The access key to check.
+	 * @param string $secret_key The secret key to check.
+	 *
 	 * @return boolean
 	 */
 	public function is_valid_user( string $access_key, string $secret_key ): bool {

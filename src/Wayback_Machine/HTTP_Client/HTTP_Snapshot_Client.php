@@ -175,17 +175,6 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 			)
 		);
 
-		// dd(
-		//  $this->get_headers(),
-		//  esc_url( $snapshot_url ),
-		//  array(
-		//      'timeout'   => apply_filters( 'wlf_create_snapshot_timeout', 1000 ),
-		//      'body'      => array( 'url' => $url ),
-		//      'sslverify' => false,
-		//      'headers'   => $this->get_headers(),
-		//  )
-		// );
-
 		// If we have a wp error, throw invalid response exception.
 		if ( is_wp_error( $response ) ) {
 			throw Invalid_Response_Exception::create( esc_html( $response->get_error_message() ) );

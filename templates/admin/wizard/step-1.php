@@ -13,8 +13,12 @@
  */
 
 // Sets the type for api keys based on the current environment.
-$wlf_access_type = '' === $settings->get_archive_access_key() ? 'text' : 'password';
-$wlf_secret_type = '' === $settings->get_archive_secret_key() ? 'text' : 'password';
+$wlf_access_type = '' === $settings->get_archive_access_key() || isset($_POST['wlf_wizard_invalid_keys'])
+	? 'text'
+	: 'password';
+$wlf_secret_type = '' === $settings->get_archive_secret_key() || isset($_POST['wlf_wizard_invalid_keys'])
+	? 'text'
+	: 'password';
 ?>
 
 <?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
