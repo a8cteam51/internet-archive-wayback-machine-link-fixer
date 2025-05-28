@@ -13,12 +13,17 @@
  */
 
 // Sets the type for api keys based on the current environment.
-$wlf_access_type = '' === $settings->get_archive_access_key() || isset($_POST['wlf_wizard_invalid_keys'])
+$wlf_invalid_keys = isset( $_POST['wlf_wizard_invalid_keys'] );
+$wlf_access_type  = '' === $settings->get_archive_access_key() || $wlf_invalid_keys
 	? 'text'
 	: 'password';
-$wlf_secret_type = '' === $settings->get_archive_secret_key() || isset($_POST['wlf_wizard_invalid_keys'])
+$wlf_secret_type  = '' === $settings->get_archive_secret_key() || $wlf_invalid_keys
 	? 'text'
 	: 'password';
+
+// Get any temp values from the POST request.
+$wlf_existing_access_key = isset( $_POST['wlf_wizard_archive_access_key_temp'] ) ? sanitize_text_field( wp_unslash( $_POST['wlf_wizard_archive_access_key_temp'] ) ) : $settings->get_archive_access_key();
+$wlf_existing_secret_key = isset( $_POST['wlf_wizard_archive_secret_key_temp'] ) ? sanitize_text_field( wp_unslash( $_POST['wlf_wizard_archive_secret_key_temp'] ) ) : $settings->get_archive_secret_key();
 ?>
 
 <?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -36,13 +41,13 @@ $wlf_secret_type = '' === $settings->get_archive_secret_key() || isset($_POST['w
 	<label for="wlf_wizard_archive_access_key">
 		<?php esc_html_e( 'Archive.org API Access Key', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>
-	<input type="<?php echo esc_html( $wlf_access_type ); ?>" name="wlf_wizard_archive_access_key" value="<?php echo esc_attr( $settings->get_archive_access_key() ); ?>" />
+	<input type="<?php echo esc_html( $wlf_access_type ); ?>" name="wlf_wizard_archive_access_key" value="<?php echo esc_attr( $wlf_existing_access_key ); ?>"<?php echo $wlf_invalid_keys ? ' class="invalid"' : ''; ?>/>
 </div>
 <div class="wlf-wizard__content__field">
 	<label for="wlf_wizard_archive_secret_key">
 		<?php esc_html_e( 'Archive.org API Secret Key', 'wpcomsp_wayback_link_fixer' ); ?>
 	</label>
-	<input type="<?php echo esc_html( $wlf_secret_type ); ?>" name="wlf_wizard_archive_secret_key" value="<?php echo esc_attr( $settings->get_archive_secret_key() ); ?>" />
+	<input type="<?php echo esc_html( $wlf_secret_type ); ?>" name="wlf_wizard_archive_secret_key" value="<?php echo esc_attr( $wlf_existing_secret_key ); ?>"<?php echo $wlf_invalid_keys ? ' class="invalid"' : ''; ?>/>
 </div>
 
 

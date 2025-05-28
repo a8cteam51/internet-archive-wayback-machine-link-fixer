@@ -240,6 +240,11 @@ class Setup_Wizard {
 		) {
 			$this->add_notice( __( 'Invalid Archive.org API credentials. Please check your Access Key and Secret Key.', 'wpcomsp_wayback_link_fixer' ), 'error' );
 			$_POST['wlf_wizard_invalid_keys'] = true; // Set a flag to indicate invalid keys.
+
+			// Hold the entered values in post.
+			$_POST['wlf_wizard_archive_access_key_temp'] = $access_key;
+			$_POST['wlf_wizard_archive_secret_key_temp'] = $secret_key;
+
 			return;
 		}
 		// Save the keys.
