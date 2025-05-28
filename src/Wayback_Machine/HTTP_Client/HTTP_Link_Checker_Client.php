@@ -164,35 +164,6 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 	 * @return boolean
 	 */
 	public function is_online(): bool {
-
-		// Compile the url for the live web check service.
-		$url_params = array(
-			'url'         => 'https://www.wordpress.org',
-			'impersonate' => 1,
-		);
-
-		$query_url = add_query_arg(
-			$url_params,
-			apply_filters( 'wlf_link_checker_url_base', 'https://iabot-api.archive.org/livewebcheck' )
-		);
-
-		// Get the response, with a defined timeout.
-		try {
-			$response = wp_remote_get( $query_url, array( 'timeout' => apply_filters( 'wlf_is_online_timeout', 10 ) ) );
-		} catch ( Throwable $e ) {
-			return false;
-		}
-
-		// If we get a 503 or 404 response, the service is offline.
-		if ( 503 === wp_remote_retrieve_response_code( $response ) || 404 === wp_remote_retrieve_response_code( $response ) ) {
-			return false;
-		}
-
-		// If the response is a WP Error, the service is offline.
-		if ( is_wp_error( $response ) ) {
-			return false;
-		}
-
-		return true;
+		return wpcomsp_wayback_link_fixer_is_archive_api_online();
 	}
 }

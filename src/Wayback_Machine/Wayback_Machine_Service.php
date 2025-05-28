@@ -163,6 +163,7 @@ class Wayback_Machine_Service {
 	 * @return array{snapshot:boolean, link_checker:boolean}
 	 */
 	public function is_online(): array {
+
 		// Only return true if both services are online.
 		return array(
 			'snapshot'     => $this->snapshot_client->is_online(),

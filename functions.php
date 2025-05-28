@@ -424,3 +424,27 @@ function wpcomsp_wayback_link_fixer_get_admin_post_type_link( string $post_type,
 	// Return the link.
 	return '<a href="' . esc_url( $url ) . '" target="' . esc_attr( $target ) . '">' . esc_html( $post_type_object->labels->name ) . '</a>';
 }
+
+/**
+ * Checks if the API is online.
+ *
+ * @since 1.3.0
+ *
+ * @param boolean $force If set to true, will force a check of the API status, ignoring the transient.
+ *
+ * @return boolean
+ */
+function wpcomsp_wayback_link_fixer_is_archive_api_online( bool $force = false ): bool {
+	// Try to get from transient.
+	$online = get_transient( 'wlf_archive_api_online' );
+	if ( false !== (bool) $online && false === $force ) {
+		return (bool) $online;
+	}
+
+	// Check if the system client is online.
+	$online = wpcomsp_wayback_link_fixer_get_system_client()->is_online();
+	// Set the transient
+	$duration = apply_filters( 'wlf_archive_api_status_duration', \HOUR_IN_SECONDS );
+	set_transient( 'wlf_archive_api_online', $online, $duration );
+	return (bool) $online;
+}

@@ -65,10 +65,6 @@ class Check_Archive_Services_Online_Event {
 	 */
 	public function __invoke(): void {
 		$this->setup();
-
-		$statues = $this->wayback_machine->is_online();
-
-		// Update the settings.
-		Settings::update_archive_api_status( (bool) $statues['link_checker'], (bool) $statues['snapshot'] );
+		wpcomsp_wayback_link_fixer_is_archive_api_online( true );
 	}
 }

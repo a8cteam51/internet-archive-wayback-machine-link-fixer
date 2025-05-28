@@ -34,7 +34,17 @@ class HTTP_System_Client implements System_Client {
 	 * @return boolean True if the service is online, false otherwise.
 	 */
 	public function is_online(): bool {
-		return true; // Placeholder for actual online check logic.
+		try {
+			$response = wp_remote_get( 'http://web.archive.org/save/status/system' );
+		} catch ( Throwable $e ) {
+			return false;
+		}
+
+		// If we dont have an error or a non 200 response, return false.
+		if ( is_wp_error( $response ) || ! isset( $response['response']['code'] ) || 200 !== (int) $response['response']['code'] ) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

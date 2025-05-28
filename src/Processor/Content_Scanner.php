@@ -67,7 +67,7 @@ class Content_Scanner {
 			return $this;
 		}
 
-		$dom = new WP_HTML_Tag_Processor( $this->content );
+		$dom = new \WP_HTML_Tag_Processor( $this->content );
 
 		while ( $dom->next_tag( 'a' ) ) {
 			$href = $dom->get_attribute( 'href' );
