@@ -58,7 +58,7 @@ class Dashboard_Notifications {
 		if ( ! $api_configured ) {
 			printf(
 				'<p><strong>%s</strong></p>',
-				esc_html__( 'You are using Link Fixer in unauthenticated mode, which restricts you to 200 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wpcomsp_wayback_link_fixer' )
+				esc_html__( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wpcomsp_wayback_link_fixer' )
 			);
 
 			return;
@@ -74,26 +74,7 @@ class Dashboard_Notifications {
 			return;
 		}
 
-		// IF the service is offline.
-		if ( ! $status['is_online'] ) {
-			printf(
-				'<p style="color: #a00;"><strong>%s</strong></p>',
-				esc_html__( 'The link fixer service is currently offline, all checks and snapshot creation processes are paused.', 'wpcomsp_wayback_link_fixer' )
-			);
-		}
-
-		// Print both services with icons.
-		printf(
-			'<p>%s: %s</p>',
-			esc_html__( 'Link Checker', 'wpcomsp_wayback_link_fixer' ),
-			$status['link_checker_online'] ? '<span style="color: #0a0;">&#10004;</span>' : '<span style="color: #a00;">&#10006;</span>'
-		);
-
-		printf(
-			'<p>%s: %s</p>',
-			esc_html__( 'Snapshot Service', 'wpcomsp_wayback_link_fixer' ),
-			$status['snapshot_online'] ? '<span style="color: #0a0;">&#10004;</span>' : '<span style="color: #a00;">&#10006;</span>'
-		);
+		print 'TODO';
 
 		printf(
 			'<p>%s: %s</p>',

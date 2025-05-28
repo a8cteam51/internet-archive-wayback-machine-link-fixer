@@ -33,9 +33,6 @@ tests_add_filter(
 		// include the function file
 		include_once dirname( __DIR__ ) . '/functions.php';
 
-		// Set the service status to online.
-		Settings::update_archive_api_status( true, true );
-
 		// Denote if we should skip live API tests.
 		$GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] = false;
 
