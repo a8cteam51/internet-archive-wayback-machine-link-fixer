@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Plugin;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
@@ -103,6 +104,17 @@ function wpcomsp_wayback_link_fixer_get_snapshot_client(): Snapshot_Client {
  */
 function wpcomsp_wayback_link_fixer_get_link_checker_client(): Link_Checker_Client {
 	return apply_filters( 'wlf_link_checker_client', new HTTP_Link_Checker_Client() );
+}
+
+/**
+ * Get the current System Client.
+ *
+ * @since 1.3.0
+ *
+ * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\System_Client
+ */
+function wpcomsp_wayback_link_fixer_get_system_client(): \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\System_Client {
+	return apply_filters( 'wlf_system_client', new \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_System_Client() );
 }
 
 /**
@@ -246,18 +258,40 @@ function wpcomsp_wayback_link_fixer_get_date_format(): string {
  * @return void
  */
 function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
-	// If we have authentication details for the Wayback Machine, bail.
-	if ( Settings::is_archive_api_configured() ) {
+	$in_unauthenticated_mode = __( 'You are using Link Fixer in unauthenticated mode, which restricts you to 200 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wpcomsp_wayback_link_fixer' );
+
+	// If the archive api is not configured.
+	if ( ! Settings::is_archive_api_configured() ) {
+		?>
+		<div class="notice notice-error">
+			<p>
+				<?php echo esc_html( $in_unauthenticated_mode ); ?>
+			</p>
+		</div>
+		<?php
 		return;
 	}
 
-	?>
-	<div class="notice notice-error">
-		<p>
-			<?php esc_html_e( 'You are using Link Fixer in unauthenticated mode, which restricts you to 200 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wpcomsp_wayback_link_fixer' ); ?>
-		</p>
-	</div>
-	<?php
+	// If the creds are invalid.
+	if ( ! Settings::has_valid_archive_api_credentials() ) {
+		$message  = __( 'Your Archive.org API credentials are invalid. Please check your settings.', 'wpcomsp_wayback_link_fixer' );
+		$message .= ' ' . $in_unauthenticated_mode;
+		?>
+		<div class="notice notice-error">
+			<p>
+				<?php
+				print wp_kses_post(
+					sprintf(
+						// translators: %s is a link to the settings page.
+						__( 'Your Archive.org API credentials are invalid. <a href="%s">Please check your settings.</a>. As a result you are in in unauthenticated mode, which restricts you to 200 new snapshots per day.', 'wpcomsp_wayback_link_fixer' ),
+						esc_url( admin_url( 'options-general.php?page=' . Settings_Page::PAGE_SLUG ) )
+					)
+				);
+				?>
+			</p>
+		</div>
+		<?php
+	}
 }
 
 /**

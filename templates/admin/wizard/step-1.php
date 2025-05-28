@@ -24,7 +24,7 @@ $wlf_secret_type = '' === $settings->get_archive_secret_key() ? 'text' : 'passwo
 </div>
 
 <div class="wlf-wizard__content__intro">
-	<p><?php esc_html_e( 'To archive more than 200 links from your site to the Wayback Machine per month, you\'ll need a free archive.org account. Once you have your account, enter the API Access Key and Secret Key below.', 'wpcomsp_wayback_link_fixer' ); ?>
+	<p><?php esc_html_e( 'To archive more than 4000 links from your site to the Wayback Machine per day, you\'ll need a free archive.org account. Once you have your account, enter the API Access Key and Secret Key below.', 'wpcomsp_wayback_link_fixer' ); ?>
 		<br /><a href="https://archive.org/account/s3.php" target="_blank"><?php esc_html_e( 'Get your API keys here.', 'wpcomsp_wayback_link_fixer' ); ?></a></p>
 </div>
 

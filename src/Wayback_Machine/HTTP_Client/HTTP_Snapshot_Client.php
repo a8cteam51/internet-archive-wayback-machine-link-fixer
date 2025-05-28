@@ -66,7 +66,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$headers = array();
 
 		// Add the auth header if set.
-		if ( Settings::is_archive_api_configured() ) {
+		if ( Settings::is_archive_api_configured() && Settings::has_valid_archive_api_credentials() ) {
 			$headers['Authorization'] = sprintf( 'LOW %s:%s', Settings::get_archive_access_key(), Settings::get_archive_secret_key() );
 		}
 
@@ -174,6 +174,17 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 				'headers'   => $this->get_headers(),
 			)
 		);
+
+		// dd(
+		//  $this->get_headers(),
+		//  esc_url( $snapshot_url ),
+		//  array(
+		//      'timeout'   => apply_filters( 'wlf_create_snapshot_timeout', 1000 ),
+		//      'body'      => array( 'url' => $url ),
+		//      'sslverify' => false,
+		//      'headers'   => $this->get_headers(),
+		//  )
+		// );
 
 		// If we have a wp error, throw invalid response exception.
 		if ( is_wp_error( $response ) ) {

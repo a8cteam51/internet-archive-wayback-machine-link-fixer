@@ -44,6 +44,7 @@ class Settings_Page {
 		add_action( 'admin_init', array( $this, 'register_fields' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'register_page' ), 20, 0 );
+		add_action( 'admin_init', array( $this, 'validate_archive_org_keys' ), 99 );
 	}
 
 	/**
@@ -364,12 +365,12 @@ class Settings_Page {
 
 		add_settings_section(
 			self::GROUP_IA_SETTINGS,
-			__( 'Internet Archive API', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Archive.org API', 'wpcomsp_wayback_link_fixer' ),
 			'__return_empty_string',
 			self::PAGE_SLUG,
 			array(
 				'before_section' => '<div id="wlf_settings_ia_section" class="wlf_settings_postbox">',
-				'after_section'  => '<p class="description">' . sprintf(
+				'after_section'  => $this->render_invalid_api_keys_message() . '<p class="description">' . sprintf(
 						// Translators: %s is the link to the Internet account setup.
 					__( "To get your API key and secret, please visit the <a href='%s' target='_blank'>Internet Archive</a> and create a new 'S3 access key' (this is a type of credential used by Archive.org).", 'wpcomsp_wayback_link_fixer' ),
 					esc_url( 'https://archive.org/account/s3.php' )
@@ -460,7 +461,10 @@ class Settings_Page {
 			__( 'Archive.org Access Key', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_archive_api_access_key' ),
 			self::PAGE_SLUG,
-			self::GROUP_IA_SETTINGS
+			self::GROUP_IA_SETTINGS,
+			array(
+				'class' => Settings::has_valid_archive_api_credentials() ? '' : 'wlf_toggle_setting__invalid_api_keys',
+			)
 		);
 
 		add_settings_field(
@@ -468,7 +472,10 @@ class Settings_Page {
 			__( 'Archive.org Secret Key', 'wpcomsp_wayback_link_fixer' ),
 			array( $this, 'render_archive_api_secret_key' ),
 			self::PAGE_SLUG,
-			self::GROUP_IA_SETTINGS
+			self::GROUP_IA_SETTINGS,
+			array(
+				'class' => Settings::has_valid_archive_api_credentials() ? '' : 'wlf_toggle_setting__invalid_api_keys',
+			)
 		);
 
 		add_settings_field(
@@ -505,6 +512,46 @@ class Settings_Page {
 			self::GROUP_AUTO_ARCHIVER,
 			array( 'class' => Settings::add_own_links() ? 'wlf_toggle_setting__auto_archiver' : 'wlf_toggle_setting__auto_archiver hidden' )
 		);
+	}
+
+	/**
+	 * Renders the invalid API Keys message.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string
+	 */
+	public function render_invalid_api_keys_message(): string {
+		if ( ! Settings::has_valid_archive_api_credentials() ) {
+			return '<div id="invalid_api_creds"><p class="description">' . esc_html__( 'The Archive.org API keys are invalid. Please check your settings.', 'wpcomsp_wayback_link_fixer' ) . '</p></div>';
+		}
+
+		return '';
+	}
+
+	/**
+	 * Validate the Archive.org keys.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return void
+	 */
+	public function validate_archive_org_keys(): void {
+		// If we are on this page.
+		if ( ! isset( $_GET['page'] ) || self::PAGE_SLUG !== $_GET['page'] ) {
+			return;
+		}
+
+		// If the settings were updated.
+		if ( isset( $_GET['settings-updated'] ) && 'true' === $_GET['settings-updated'] ) {
+			$key        = Settings::get_archive_secret_key();
+			$access_key = Settings::get_archive_access_key();
+
+			$system_client = wpcomsp_wayback_link_fixer_get_system_client();
+			$is_valid      = $system_client->is_valid_user( $access_key, $key );
+
+			Settings::update_archive_api_credentials_validity( $is_valid );
+		}
 	}
 
 	/**

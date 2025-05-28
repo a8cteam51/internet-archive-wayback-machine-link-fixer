@@ -71,3 +71,16 @@
     pointer-events: none;
     background-color: #f9f9f9;
 }
+
+.wlf_toggle_setting__invalid_api_keys input {
+    border-color: #dc3232;
+}
+
+#invalid_api_creds {
+    text-align: center;
+    p {
+        color: #dc3232;
+        font-weight: 600;
+        margin: 0;
+    }
+}

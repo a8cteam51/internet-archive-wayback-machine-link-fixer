@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine;
 
+use Throwable;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -32,6 +34,13 @@ class Wayback_Machine_Service {
 	 */
 	private $link_checker_client;
 
+	/**
+	 * The System Client.
+	 *
+	 * @var System_Client
+	 */
+	private $system_client;
+
 
 	/**
 	 * Creates an instance of the Wayback Machine Client.
@@ -39,6 +48,7 @@ class Wayback_Machine_Service {
 	public function __construct() {
 		$this->snapshot_client     = wpcomsp_wayback_link_fixer_get_snapshot_client();
 		$this->link_checker_client = wpcomsp_wayback_link_fixer_get_link_checker_client();
+		$this->system_client       = wpcomsp_wayback_link_fixer_get_system_client();
 	}
 
 	/**
@@ -158,5 +168,38 @@ class Wayback_Machine_Service {
 			'snapshot'     => $this->snapshot_client->is_online(),
 			'link_checker' => $this->link_checker_client->is_online(),
 		);
+	}
+
+	/**
+	 * Check a users account details.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public function is_valid_user( string $access_key, string $secret_key ): bool {
+		try {
+			return $this->system_client->is_valid_user( $access_key, $secret_key );
+		} catch ( Throwable $e ) {
+			return false; // If the service is offline, we cannot validate the user.
+		}
+	}
+
+	/**
+	 * Get a users account stats.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param string $access_key The access key to check.
+	 * @param string $secret_key The secret key to check.
+	 *
+	 * @return array{available:int, daily_captures:int, daily_captures_limit:int, processing:int}|null
+	 */
+	public function get_user_stats( string $access_key, string $secret_key ): ?array {
+		try {
+			return $this->system_client->get_user_stats( $access_key, $secret_key );
+		} catch ( Throwable $e ) {
+			return null; // If the service is offline or the response is invalid.
+		}
 	}
 }
