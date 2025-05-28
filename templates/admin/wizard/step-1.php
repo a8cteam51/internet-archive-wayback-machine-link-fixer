@@ -13,7 +13,7 @@
  */
 
 // Sets the type for api keys based on the current environment.
-$wlf_invalid_keys = isset( $_POST['wlf_wizard_invalid_keys'] );
+$wlf_invalid_keys = isset( $_POST['wlf_wizard_invalid_keys'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 $wlf_access_type  = '' === $settings->get_archive_access_key() || $wlf_invalid_keys
 	? 'text'
 	: 'password';
@@ -22,8 +22,8 @@ $wlf_secret_type  = '' === $settings->get_archive_secret_key() || $wlf_invalid_k
 	: 'password';
 
 // Get any temp values from the POST request.
-$wlf_existing_access_key = isset( $_POST['wlf_wizard_archive_access_key_temp'] ) ? sanitize_text_field( wp_unslash( $_POST['wlf_wizard_archive_access_key_temp'] ) ) : $settings->get_archive_access_key();
-$wlf_existing_secret_key = isset( $_POST['wlf_wizard_archive_secret_key_temp'] ) ? sanitize_text_field( wp_unslash( $_POST['wlf_wizard_archive_secret_key_temp'] ) ) : $settings->get_archive_secret_key();
+$wlf_existing_access_key = isset( $_POST['wlf_wizard_archive_access_key_temp'] ) ? sanitize_text_field( wp_unslash( $_POST['wlf_wizard_archive_access_key_temp'] ) ) : $settings->get_archive_access_key(); // phpcs:ignore
+$wlf_existing_secret_key = isset( $_POST['wlf_wizard_archive_secret_key_temp'] ) ? sanitize_text_field( wp_unslash( $_POST['wlf_wizard_archive_secret_key_temp'] ) ) : $settings->get_archive_secret_key(); // phpcs:ignore
 ?>
 
 <?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
