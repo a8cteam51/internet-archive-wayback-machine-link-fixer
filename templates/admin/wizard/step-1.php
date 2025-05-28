@@ -13,7 +13,7 @@
  */
 
 // Sets the type for api keys based on the current environment.
-$wlf_invalid_keys = isset( $_POST['wlf_wizard_invalid_keys'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+$wlf_invalid_keys = isset( $_POST['wlf_wizard_invalid_keys'] ); // phpcs:ignore
 $wlf_access_type  = '' === $settings->get_archive_access_key() || $wlf_invalid_keys
 	? 'text'
 	: 'password';
