@@ -109,6 +109,5 @@ class Test_Content_Scanner extends \WP_UnitTestCase {
 		$scanner = new Content_Scanner( $content );
 		$links   = $scanner->scan()->get_links();
 		$this->assertCount( 2, $links );
-		dd($links, $content);
 	}
 }
