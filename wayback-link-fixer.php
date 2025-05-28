@@ -92,11 +92,3 @@ if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
 
-add_action(
-	'init',
-	function () {
-		// $serv = new WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_System_Client();
-		// $serv->is_online();
-		// dd(1);
-	}
-);
