@@ -95,6 +95,12 @@ class Content_Scanner {
 	 * @return string[]
 	 */
 	public function get_links(): array {
-		return $this->links;
+		// Remove any links that are from the Wayback Machine.
+		return array_filter(
+			$this->links,
+			function ( string $link ): bool {
+				return ! wpcomsp_wayback_link_fixer_is_archive_link( $link );
+			}
+		);
 	}
 }
