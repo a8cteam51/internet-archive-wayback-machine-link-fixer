@@ -35,7 +35,7 @@ class Settings {
 	public const ARCHIVE_ORG_ACCESS_KEY       = self::SETTINGS_PREFIX . 'archive_api_access';
 	public const FIXER_OPTION                 = self::SETTINGS_PREFIX . 'fixer_option';
 	public const ARCHIVE_ORG_STATUS_KEY       = self::SETTINGS_PREFIX . 'archive_api_status';
-
+	public const ARCHIVE_ORG_CREDS_VALID_KEY  = self::SETTINGS_PREFIX . 'archive_api_creds_valid';
 	// Table names.
 	public const LINK_TABLE = self::SETTINGS_PREFIX . 'link_archive';
 
@@ -400,5 +400,29 @@ class Settings {
 	 */
 	public static function show_link_table_debug_data(): bool {
 		return (bool) apply_filters( 'wlf_show_link_table_debug_data', false );
+	}
+
+	/**
+	 * Check if we have valid credentials for the archive.org API.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return boolean
+	 */
+	public static function has_valid_archive_api_credentials(): bool {
+		return get_option( self::ARCHIVE_ORG_CREDS_VALID_KEY, false ) === true;
+	}
+
+	/**
+	 * Updates the archive.org API credentials validity.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param boolean $valid True if the credentials are valid, false otherwise.
+	 *
+	 * @return void
+	 */
+	public static function update_archive_api_credentials_validity( bool $valid ): void {
+		update_option( self::ARCHIVE_ORG_CREDS_VALID_KEY, $valid, false );
 	}
 }

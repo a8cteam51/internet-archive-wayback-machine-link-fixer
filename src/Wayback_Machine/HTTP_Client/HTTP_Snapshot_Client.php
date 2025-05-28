@@ -66,7 +66,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$headers = array();
 
 		// Add the auth header if set.
-		if ( Settings::is_archive_api_configured() ) {
+		if ( Settings::is_archive_api_configured() && Settings::has_valid_archive_api_credentials() ) {
 			$headers['Authorization'] = sprintf( 'LOW %s:%s', Settings::get_archive_access_key(), Settings::get_archive_secret_key() );
 		}
 

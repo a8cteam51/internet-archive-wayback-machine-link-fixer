@@ -233,9 +233,26 @@ class Setup_Wizard {
 		$access_key = sanitize_text_field( wp_unslash( $_POST['wlf_wizard_archive_access_key'] ) );
 		$secret_key = sanitize_text_field( wp_unslash( $_POST['wlf_wizard_archive_secret_key'] ) );
 
+		// Check the users api credentials.
+		if ( '' !== $access_key
+		&& '' !== $secret_key
+		&& ! wpcomsp_wayback_link_fixer_get_system_client()->is_valid_user( $access_key, $secret_key )
+		) {
+			$this->add_notice( __( 'Invalid Archive.org API credentials. Please verify your Access Key and Secret Key, or leave both fields blank to proceed without authentication.', 'wpcomsp_wayback_link_fixer' ), 'error' );
+			$_POST['wlf_wizard_invalid_keys'] = true; // Set a flag to indicate invalid keys.
+
+			// Hold the entered values in post.
+			$_POST['wlf_wizard_archive_access_key_temp'] = $access_key;
+			$_POST['wlf_wizard_archive_secret_key_temp'] = $secret_key;
+
+			return;
+		}
 		// Save the keys.
 		update_option( Settings::ARCHIVE_ORG_ACCESS_KEY, $access_key );
 		update_option( Settings::ARCHIVE_ORG_SECRET_KEY, $secret_key );
+
+		// Mark the keys as valid.
+		Settings::update_archive_api_credentials_validity( true );
 
 		// Update the step.
 		$next = sanitize_text_field( wp_unslash( $_POST['wlf-next-step'] ) );
