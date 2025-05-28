@@ -246,6 +246,9 @@ class Setup_Wizard {
 		update_option( Settings::ARCHIVE_ORG_ACCESS_KEY, $access_key );
 		update_option( Settings::ARCHIVE_ORG_SECRET_KEY, $secret_key );
 
+		// Mark the keys as valid.
+		Settings::update_archive_api_credentials_validity( true );
+
 		// Update the step.
 		$next = sanitize_text_field( wp_unslash( $_POST['wlf-next-step'] ) );
 		update_option( self::OPTION_NAME, $next );
