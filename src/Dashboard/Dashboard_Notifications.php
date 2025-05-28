@@ -11,6 +11,9 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Page;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,12 +23,35 @@ defined( 'ABSPATH' ) || exit;
 class Dashboard_Notifications {
 
 	/**
+	 * The page slug.
+	 */
+	const PAGE_SLUG = 'wayback_link_fixer_dashboard';
+
+	/**
 	 * Initialize the dashboard notifications.
 	 *
 	 * @return void
 	 */
 	public function initialize(): void {
 		add_action( 'wp_dashboard_setup', array( $this, 'register_widgets' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+	}
+
+	/**
+	 * Enqueue the dashboard styles.
+	 *
+	 * @return void
+	 */
+	public function enqueue_styles(): void {
+		$screen = get_current_screen();
+		if ( $screen && 'dashboard' === $screen->id ) {
+			wp_enqueue_style(
+				self::PAGE_SLUG,
+				WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
+				array(),
+				WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
+			);
+		}
 	}
 
 	/**
@@ -51,70 +77,51 @@ class Dashboard_Notifications {
 	 * @return void
 	 */
 	public function render_widget(): void {
-		$status         = $this->get_status_update();
-		$api_configured = Settings::is_archive_api_configured();
-
-		// If the api is not configured, show a message.
-		if ( ! $api_configured ) {
-			printf(
-				'<p><strong>%s</strong></p>',
-				esc_html__( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wpcomsp_wayback_link_fixer' )
-			);
-
-			return;
-		}
-
-		// if the status is pending, show a message.
-		if ( $status['pending'] ) {
-			printf(
-				'<p>%s</p>',
-				esc_html__( 'The status of the link fixer is currently pending, please check again shortly', 'wpcomsp_wayback_link_fixer' )
-			);
-
-			return;
-		}
-
-		print 'TODO';
-
-		printf(
-			'<p>%s: %s</p>',
-			esc_html__( 'Last Checked', 'wpcomsp_wayback_link_fixer' ),
-			$status['last_checked'] ? esc_html( $status['last_checked']->format( wpcomsp_wayback_link_fixer_get_date_format() ) ) : esc_html__( 'Never', 'wpcomsp_wayback_link_fixer' )
+		wpcomsp_wayback_link_fixer_render_template(
+			'admin/dashboard/widget.php',
+			array(
+				'wlf_details'                 => $this->get_account_details(),
+				'wlf_api_configured'          => Settings::is_archive_api_configured(),
+				'wlf_is_online'               => wpcomsp_wayback_link_fixer_is_archive_api_online(),
+				'wlf_link_to_settings'        => Settings_Page::get_page_url(),
+				'wlf_link_table'              => Report_Page::get_page_url(),
+				'wlf_total_links'             => ( new Link_Repository() )->query_links( PHP_INT_MAX ),
+				'wlf_auto_archiver_enabled'   => Settings::add_own_links(),
+				'wlf_scan_existing_enabled'   => Settings::should_scan_existing_posts(),
+				'wlf_link_processing_enabled' => Settings::is_link_processing_enabled(),
+			)
 		);
 	}
 
 	/**
-	 * Get the current status update.
+	 * Get the sites account details from Archive.org.
 	 *
-	 * @return array{
-	 * 'is_online' => bool,
-	 * 'last_checked' => \DateTimeImmutable|null,
-	 * 'pending' => bool,
-	 * 'link_checker_online => bool,
-	 * 'snapshot_online' => bool,}
+	 * @return array{available:int, daily_captures:int, daily_captures_limit:int, processing:int}|null
 	 */
-	public static function get_status_update(): array {
-		// Get the status.
-		$status = Settings::get_archive_api_status();
-
-		// if the status is null, return a default status.
-		if ( null === $status ) {
-			return array(
-				'is_online'           => false,
-				'last_checked'        => null,
-				'pending'             => true,
-				'link_checker_online' => false,
-				'snapshot_online'     => false,
-			);
-		} else {
-			$time = \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $status['last-checked'] );
-			return array(
-				'is_online'           => 'online' === $status['status'],
-				'last_checked'        => $time ? $time : null,
-				'pending'             => false,
-				'link_checker_online' => (bool) $status['link_checker'],
-				'snapshot_online'     => (bool) $status['snapshot'],
-			);
+	public static function get_account_details(): ?array {
+		$cached = get_transient( 'wayback_link_fixer_account_details' );
+		if ( false !== $cached ) {
+			return $cached;
 		}
+		try {
+			$details = \wpcomsp_wayback_link_fixer_get_system_client()->get_user_stats(
+				Settings::get_archive_access_key(),
+				Settings::get_archive_secret_key()
+			);
+
+			if ( is_array( $details ) ) {
+				set_transient( 'wayback_link_fixer_account_details', $details, HOUR_IN_SECONDS );
+				return array(
+					'available'            => isset( $details['available'] ) ? (int) $details['available'] : 0,
+					'daily_captures'       => isset( $details['daily_captures'] ) ? (int) $details['daily_captures'] : 0,
+					'daily_captures_limit' => isset( $details['daily_captures_limit'] ) ? (int) $details['daily_captures_limit'] : 0,
+					'processing'           => isset( $details['processing'] ) ? (int) $details['processing'] : 0,
+				);
+			}
+		} catch ( \Exception $e ) {
+			return null;
+		}
+
+		return null;
 	}
 }
