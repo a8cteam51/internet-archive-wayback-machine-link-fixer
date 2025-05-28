@@ -169,7 +169,7 @@ class Test_Process_Local_Post_Event extends TestCase {
 		} finally {
 			// Check that the action has been added to the queue.
 			$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions where status='pending'" );
-dump( $actions );
+
 			$this->assertCount( 1, $actions );
 		}
 	}
