@@ -89,6 +89,8 @@ class Dashboard_Notifications {
 				'wlf_auto_archiver_enabled'   => Settings::add_own_links(),
 				'wlf_scan_existing_enabled'   => Settings::should_scan_existing_posts(),
 				'wlf_link_processing_enabled' => Settings::is_link_processing_enabled(),
+				'wlf_link_check_duration'     => Settings::get_link_check_duration(),
+				'wlf_failed_check_count'      => Settings::get_failed_count(),
 			)
 		);
 	}

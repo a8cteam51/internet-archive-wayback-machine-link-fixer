@@ -13,6 +13,8 @@
  * @param bool   $wlf_auto_archiver_enabled   Whether auto archiver is enabled.
  * @param bool   $wlf_scan_existing_enabled   Whether scanning existing posts is enabled.
  * @param bool   $wlf_link_processing_enabled Whether link processing is enabled.
+ * @param int    $wlf_link_check_duration     Number of days between link checks.
+ * @param int    $wlf_failed_check_count      Number of failed checks before marking as broken.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -78,7 +80,7 @@ defined( 'ABSPATH' ) || exit;
 				</span>
 				<div class="wlf_dashboard-features-content">
 					<span class="wlf_dashboard-features-label"><?php esc_html_e( 'Link Processing', 'wpcomsp_wayback_link_fixer' ); ?></span>
-					<div class="wlf_dashboard-features-description"><?php esc_html_e( 'Create snapshots of external links in your content', 'wpcomsp_wayback_link_fixer' ); ?></div>
+					<div class="wlf_dashboard-features-description"><?php esc_html_e( 'Create snapshots of external links when posts are created or updated', 'wpcomsp_wayback_link_fixer' ); ?></div>
 				</div>
 			</div>
 			<div class="wlf_dashboard-features-item">
@@ -97,6 +99,35 @@ defined( 'ABSPATH' ) || exit;
 				<div class="wlf_dashboard-features-content">
 					<span class="wlf_dashboard-features-label"><?php esc_html_e( 'Scan Existing Posts', 'wpcomsp_wayback_link_fixer' ); ?></span>
 					<div class="wlf_dashboard-features-description"><?php esc_html_e( 'Process links in previously published content', 'wpcomsp_wayback_link_fixer' ); ?></div>
+				</div>
+			</div>
+			<div class="wlf_dashboard-features-item">
+				<span class="wlf_dashboard-features-status <?php echo esc_attr( $wlf_link_processing_enabled ? 'enabled' : 'disabled' ); ?>">
+					<span class="dashicons dashicons-clock"></span>
+				</span>
+				<div class="wlf_dashboard-features-content">
+					<span class="wlf_dashboard-features-label"><?php esc_html_e( 'Link Checking', 'wpcomsp_wayback_link_fixer' ); ?></span>
+					<div class="wlf_dashboard-features-description">
+						<?php if ( $wlf_link_processing_enabled ) : ?>
+							<?php
+							printf(
+								/* translators: 1: number of days between checks, 2: number of failed checks before marking as broken */
+								esc_html__( 'Links are checked every %1$d days and marked as broken after %2$d consecutive failures', 'wpcomsp_wayback_link_fixer' ),
+								absint( $wlf_link_check_duration ),
+								absint( $wlf_failed_check_count )
+							);
+							?>
+						<?php else : ?>
+							<?php
+							printf(
+								/* translators: 1: opening link tag, 2: closing link tag */
+								esc_html__( 'Links are not being checked. %1$sEnable Link Processing%2$s to turn this back on.', 'wpcomsp_wayback_link_fixer' ),
+								'<a href="' . esc_url( $wlf_link_to_settings ) . '">',
+								'</a>'
+							);
+							?>
+						<?php endif; ?>
+					</div>
 				</div>
 			</div>
 		</div>
