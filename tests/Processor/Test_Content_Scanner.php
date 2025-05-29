@@ -95,4 +95,19 @@ class Test_Content_Scanner extends \WP_UnitTestCase {
 
 		$this->assertCount( 0, $links );
 	}
+
+	/**
+	 * @testdox Ensure that any wayback links are excluded from the list of links found in a post.
+	 *
+	 * @see https://github.com/a8cteam51/wayback-link-fixer/issues/148
+	 *
+	 * @return void
+	 */
+	public function test_wayback_links_are_excluded(): void {
+		// Content with 4 links, http, https from web.archive.org, and a wayback link.
+		$content = 'This is a post with a link to <a href="https://not-from.post/content">example</a><br>And another link to <a href="https://not-from.post/content_twice">example</a><br>And a wayback link to <a href="https://web.archive.org/web/20231001000000/https://from.post/content">wayback example</a><br>And a http link to <a href="http://web.archive.org/web/20231001000000/https://from.post/content">http example</a>';
+		$scanner = new Content_Scanner( $content );
+		$links   = $scanner->scan()->get_links();
+		$this->assertCount( 2, $links );
+	}
 }
