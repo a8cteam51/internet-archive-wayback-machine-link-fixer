@@ -1136,4 +1136,27 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 			$this->assertEquals( $link->get_href(), $expected[ $index ] );
 		}
 	}
+
+	/**
+	 * It should be possible to delete a link using the link model.
+	 *
+	 * @testdox It should be possible to delete a link using the link model.
+	 */
+	public function test_can_delete_link(): void {
+		// Create a link.
+		$link = new Link( 'https://example.com' );
+
+		// Insert the link.
+		$link = $this->link_repository->upsert( $link );
+
+		// Check the link exists.
+		$this->assertNotNull( $link->get_id() );
+
+		// Delete the link.
+		$this->link_repository->delete_link( $link );
+
+		// Check the link no longer exists.
+		$deleted_link = $this->link_repository->find_by_id( $link->get_id() );
+		$this->assertNull( $deleted_link );
+	}
 }

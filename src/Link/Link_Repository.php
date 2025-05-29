@@ -614,4 +614,33 @@ class Link_Repository {
 
 		return $return;
 	}
+
+	/**
+	 * Remove a link from the database.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param Link $link The link to remove.
+	 *
+	 * @return boolean True on success, false on failure.
+	 */
+	public function delete_link( Link $link ): bool {
+		// If the link has no id, return false.
+		if ( null === $link->get_id() ) {
+			return false;
+		}
+
+		// Prepare the delete.
+		$result = $this->wpdb->delete(
+			$this->table_name,
+			array(
+				'id' => $link->get_id(),
+			),
+			array(
+				'%d',
+			)
+		);
+
+		return (bool) $result;
+	}
 }

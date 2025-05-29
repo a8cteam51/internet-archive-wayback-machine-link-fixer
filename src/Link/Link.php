@@ -22,6 +22,9 @@ class Link implements \JsonSerializable {
 
 	public const LINK_STATUS_VALID   = 'valid_link';
 	public const LINK_STATUS_INVALID = 'invalid_link';
+	public const PROCESS_NEW         = 'new';
+	public const PROCESS_PENDING     = 'pending';
+	public const PROCESS_DONE        = 'done';
 
 	/**
 	 * The database row id.
@@ -78,6 +81,13 @@ class Link implements \JsonSerializable {
 	 * @var boolean
 	 */
 	private $is_excluded = false;
+
+	/**
+	 * The process status of the link.
+	 *
+	 * @var string
+	 */
+	private $archive_process = self::PROCESS_NEW;
 
 	/**
 	 * Creates a new instance of the link model.
@@ -340,6 +350,45 @@ class Link implements \JsonSerializable {
 	}
 
 	/**
+	 * Get the process status of the link.
+	 *
+	 * @return string
+	 */
+	public function get_archive_process(): string {
+		return $this->archive_process;
+	}
+
+	/**
+	 * Mark the link as pending.
+	 *
+	 * @return self
+	 */
+	public function set_pending(): self {
+		$this->archive_process = self::PROCESS_PENDING;
+		return $this;
+	}
+
+	/**
+	 * Mark the link as done.
+	 *
+	 * @return self
+	 */
+	public function set_done(): self {
+		$this->archive_process = self::PROCESS_DONE;
+		return $this;
+	}
+
+	/**
+	 * Mark the link as new.
+	 *
+	 * @return self
+	 */
+	public function set_new(): self {
+		$this->archive_process = self::PROCESS_NEW;
+		return $this;
+	}
+
+	/**
 	 * Unpack from JSON
 	 *
 	 * @param string $json The JSON string.
@@ -374,6 +423,17 @@ class Link implements \JsonSerializable {
 			);
 		}
 
+		// Set the process.
+		$process = $data['archive_process'];
+		// If the process is pending, set it.
+		if ( self::PROCESS_PENDING === $process ) {
+			$link->set_pending();
+		} elseif ( self::PROCESS_DONE === $process ) {
+			$link->set_done();
+		} else {
+			$link->set_new();
+		}
+
 		return $link;
 	}
 
@@ -393,6 +453,7 @@ class Link implements \JsonSerializable {
 			'checks'        => $this->checks,
 			'broken'        => $this->is_broken,
 			'last_checked'  => $this->get_last_check(),
+			'process'       => $this->archive_process,
 		);
 	}
 }

@@ -10,10 +10,13 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Link;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
 use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Abstract_Migration;
+use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_3;
 
 /**
  * Test_Migrations
@@ -81,8 +84,8 @@ class Test_Migrations extends \WP_UnitTestCase {
 		$post_id_2 = \WP_UnitTestCase_Base::factory()->post->create( array( 'post_type' => 'page' ) );
 
 		// Add the meta.
-		update_post_meta( $post_id_1, Settings::LINK_META_KEY, array( 1,2,3 ) );
-		update_post_meta( $post_id_2, Settings::LINK_META_KEY, array( 4,5,6 ) );
+		update_post_meta( $post_id_1, Settings::LINK_META_KEY, array( 1, 2, 3 ) );
+		update_post_meta( $post_id_2, Settings::LINK_META_KEY, array( 4, 5, 6 ) );
 
 		// Enable the drop tables on uninstall.
 		update_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY, true );
@@ -93,7 +96,6 @@ class Test_Migrations extends \WP_UnitTestCase {
 		// Check the meta has been removed.
 		$this->assertEmpty( get_post_meta( $post_id_1, Settings::LINK_META_KEY ) );
 		$this->assertEmpty( get_post_meta( $post_id_2, Settings::LINK_META_KEY ) );
-
 	}
 
 	/**
@@ -110,8 +112,8 @@ class Test_Migrations extends \WP_UnitTestCase {
 		$post_id_2 = \WP_UnitTestCase_Base::factory()->post->create( array( 'post_type' => 'page' ) );
 
 		// Add the meta.
-		update_post_meta( $post_id_1, Settings::LINK_META_KEY, array( 1,2,3 ) );
-		update_post_meta( $post_id_2, Settings::LINK_META_KEY, array( 4,5,6 ) );
+		update_post_meta( $post_id_1, Settings::LINK_META_KEY, array( 1, 2, 3 ) );
+		update_post_meta( $post_id_2, Settings::LINK_META_KEY, array( 4, 5, 6 ) );
 
 		// Disable the drop tables on uninstall.
 		update_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY, false );
@@ -133,15 +135,14 @@ class Test_Migrations extends \WP_UnitTestCase {
 		// Enable the drop tables on uninstall.
 		update_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY, true );
 
-		$migration = $this->createMock(Abstract_Migration::class);
-		$migration_class = get_class($migration);
+		$migration       = $this->createMock( Abstract_Migration::class );
+		$migration_class = get_class( $migration );
 
 		// Add to the previously run migrations.
 		Settings::update_migrations( array( $migration_class ) );
 
 		// Add the migration to the list of migrations
 		Migrations::$migrations[] = $migration_class;
-
 
 		// Trigger the down process.
 		Migrations::down();
@@ -159,8 +160,8 @@ class Test_Migrations extends \WP_UnitTestCase {
 		// Disable the drop tables on uninstall.
 		update_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY, false );
 
-		$migration = $this->createMock(Abstract_Migration::class);
-		$migration_class = get_class($migration);
+		$migration       = $this->createMock( Abstract_Migration::class );
+		$migration_class = get_class( $migration );
 
 		// Add to the previously run migrations.
 		Settings::update_migrations( array( $migration_class ) );
@@ -173,7 +174,7 @@ class Test_Migrations extends \WP_UnitTestCase {
 
 		// Check the migration is still in the list.
 		$this->assertNotEmpty( Settings::migrations() );
-		$this->assertContains($migration_class, Settings::migrations());
+		$this->assertContains( $migration_class, Settings::migrations() );
 	}
 
 	/**
@@ -190,7 +191,7 @@ class Test_Migrations extends \WP_UnitTestCase {
 		$this->assertNotNull( $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'excluded' ) ) );
 
 		// Get the column details.
-		$details = $wpdb->get_results( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'excluded' ));
+		$details = $wpdb->get_results( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'excluded' ) );
 
 		// Check the column is not null.
 		$this->assertEquals( 'NO', $details[0]->Null );
@@ -198,4 +199,53 @@ class Test_Migrations extends \WP_UnitTestCase {
 		$this->assertEquals( 'tinyint(1)', $details[0]->Type );
 	}
 
+	/**
+	 * @testdox Ensure the archive_process column was added with the 3rd migration.
+	 *
+	 * @return void
+	 */
+	public function test_migration_3(): void {
+		global $wpdb;
+
+		$table = Settings::get_link_table_name();
+
+		// Check the column exists.
+		$this->assertNotNull( $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'archive_process' ) ) );
+
+		// Get the column details.
+		$details = $wpdb->get_results( $wpdb->prepare( "SHOW COLUMNS FROM $table LIKE %s", 'archive_process' ) );
+
+		// Check the column is not null.
+		$this->assertEquals( 'NO', $details[0]->Null );
+		$this->assertEquals( 'new', $details[0]->Default );
+		$this->assertEquals( 'varchar(36)', $details[0]->Type );
+	}
+
+	/**
+	 * @testdpc With Migration 3 all IA links should have been removed from the database and any post meta should be cleared.
+	 *
+	 * @return void
+	 */
+	public function test_migration_3_remove_ia_links(): void {
+		// Create a link that is an IA link.
+		$link_repos = new Link_Repository();
+		$link       = new Link( 'https://web.archive.org/web/20230101000000/https://example.com' );
+
+		// Save the link.
+		$link = $link_repos->upsert( $link );
+
+		// Create a post and add as a link to meta.
+		$post_id = \WP_UnitTestCase_Base::factory()->post->create();
+		update_post_meta( $post_id, Settings::LINK_META_KEY, array( $link->get_id() ) );
+
+		// Run the migration to remove IA links.
+		( new Migration_3() )->remove_ia_links();
+
+		// Check the link has been removed from the database.
+		$this->assertEmpty( $link_repos->find_by_id( $link->get_id() ) );
+		// Check the post meta has been cleared.
+		$this->assertEmpty( get_post_meta( $post_id, Settings::LINK_META_KEY ) );
+		// Check the post still exists.
+		$this->assertNotEmpty( get_post( $post_id ) );
+	}
 }
