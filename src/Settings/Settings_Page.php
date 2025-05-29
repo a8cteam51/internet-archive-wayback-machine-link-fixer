@@ -48,6 +48,17 @@ class Settings_Page {
 	}
 
 	/**
+	 * Get the settings page URL.
+	 *
+	 * @since   1.3.0
+	 *
+	 * @return  string
+	 */
+	public static function get_page_url(): string {
+		return admin_url( 'options-general.php?page=' . self::PAGE_SLUG );
+	}
+
+	/**
 	 * Register the settings page.
 	 *
 	 * @since   1.0.0

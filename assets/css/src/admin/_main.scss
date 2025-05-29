@@ -81,9 +81,8 @@
     background-color: #e6e6e6;
 }
 
-// Create css colours for each http code.
-@import "meta_box_runner.scss";
+// Import admin styles
 @import "settings.scss";
-@import "events.scss";
 @import "report_list.scss";
 @import "wizard.scss";
+@import "dashboard";

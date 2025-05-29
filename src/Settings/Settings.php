@@ -370,7 +370,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function has_valid_archive_api_credentials(): bool {
-		return get_option( self::ARCHIVE_ORG_CREDS_VALID_KEY, false ) === true;
+		return (bool) get_option( self::ARCHIVE_ORG_CREDS_VALID_KEY, false ) === true;
 	}
 
 	/**
