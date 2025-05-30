@@ -34,11 +34,6 @@ class Test_Migrations extends \WP_UnitTestCase {
 		// Clear all migrations.
 		update_option( Settings::MIGRATIONS_KEY, array() );
 		Migrations::$migrations = array();
-
-		// Clear all posts and postmeta
-		global $wpdb;
-		// $wpdb->query( "TRUNCATE TABLE {$wpdb->posts}" );
-		// $wpdb->query( "TRUNCATE TABLE {$wpdb->postmeta}" );
 	}
 
 	/**
