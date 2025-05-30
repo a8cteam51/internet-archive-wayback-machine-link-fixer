@@ -36,6 +36,7 @@ class Settings {
 	public const FIXER_OPTION                 = self::SETTINGS_PREFIX . 'fixer_option';
 	public const ARCHIVE_ORG_STATUS_KEY       = self::SETTINGS_PREFIX . 'archive_api_status';
 	public const ARCHIVE_ORG_CREDS_VALID_KEY  = self::SETTINGS_PREFIX . 'archive_api_creds_valid';
+
 	// Table names.
 	public const LINK_TABLE = self::SETTINGS_PREFIX . 'link_archive';
 

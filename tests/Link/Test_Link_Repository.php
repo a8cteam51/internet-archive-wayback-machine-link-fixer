@@ -47,9 +47,6 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 
 		$this->link_repository = new Link_Repository();
 		$this->link_ids        = array();
-
-		// Empty the table.
-		$GLOBALS['wpdb']->query( 'TRUNCATE TABLE ' . Settings::get_link_table_name() );
 	}
 
 	/**
@@ -58,7 +55,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_add_link(): void {
-		$link = new Link( 'https://example.com' );
+		$link = new Link( 'https://test_can_add_link.com' );
 		$link = $this->link_repository->upsert( $link );
 
 		$this->assertNotNull( $link->get_id() );
@@ -83,12 +80,12 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_find_link_by_url(): void {
-		$link = new Link( 'https://example.com' );
+		$link = new Link( 'https://test_can_find_link_by_url.com' );
 
 		$link = $this->link_repository->upsert( $link );
 
 		// Check the link is in the repository.
-		$found_link = $this->link_repository->find_by_url( 'https://example.com' );
+		$found_link = $this->link_repository->find_by_url( 'https://test_can_find_link_by_url.com' );
 
 		// Ignore deprecation warning.
 		$this->assertSame( $link->get_id(), $found_link->get_id() );
@@ -101,7 +98,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_find_link_by_id(): void {
-		$link = new Link( 'https://example.com' );
+		$link = new Link( 'https://test_can_find_link_by_id.com' );
 
 		$link = $this->link_repository->upsert( $link );
 
@@ -131,13 +128,13 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	 */
 	public function test_can_find_or_create_link_by_url(): void {
 		// Create a link.
-		$link = $this->link_repository->find_or_create( 'https://example.com' );
+		$link = $this->link_repository->find_or_create( 'https://test_can_find_or_create_link_by_url.com' );
 
 		$this->assertNotNull( $link->get_id() );
-		$this->assertSame( 'https://example.com', $link->get_href() );
+		$this->assertSame( 'https://test_can_find_or_create_link_by_url.com', $link->get_href() );
 
 		// Call again to ensure we get the same link.
-		$found_link = $this->link_repository->find_or_create( 'https://example.com' );
+		$found_link = $this->link_repository->find_or_create( 'https://test_can_find_or_create_link_by_url.com' );
 
 		$this->assertSame( $link->get_id(), $found_link->get_id() );
 		$this->assertSame( $link->get_href(), $found_link->get_href() );
@@ -378,6 +375,11 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	public function populate_database(): void {
 		$links = $this->link_provider();
 
+		// Trtuncate the table first.
+		global $wpdb;
+		$table_name = Settings::get_link_table_name();
+		$wpdb->query( "TRUNCATE TABLE {$table_name}" );
+
 		foreach ( $links as $link ) {
 			$inserted         = $this->link_repository->upsert( $link );
 			$this->link_ids[] = $inserted->get_id();
@@ -476,13 +478,16 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	 */
 	public function test_can_get_posts_for_link(): void {
 		// Create the link.
-		$link = new Link( 'https://example.com' );
+		$link = new Link( 'https://test_can_get_posts_for_link.com' );
 
 		// Insert the link.
 		$link = $this->link_repository->upsert( $link );
 
 		// Create 2 mock posts.
-		$post_ids = array( 1, 2 );
+		$post_ids = array(
+			\WP_UnitTestCase_Base::factory()->post->create(),
+			\WP_UnitTestCase_Base::factory()->post->create(),
+		);
 
 		// Add the link to the posts.
 		foreach ( $post_ids as $post_id ) {
@@ -605,16 +610,16 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_update_existing_link(): void {
-		$link = new Link( 'https://example.com' );
+		$link = new Link( 'https://test_can_update_existing_link.com' );
 		$link = $this->link_repository->upsert( $link );
 
 		$this->assertNotNull( $link->get_id() );
 
 		// Update the link.
-		$link->set_archived_href( 'https://example.com/updated' );
+		$link->set_archived_href( 'https://test_can_update_existing_link.com/updated' );
 		$link = $this->link_repository->upsert( $link );
 
-		$this->assertSame( 'https://example.com/updated', $link->get_archived_href() );
+		$this->assertSame( 'https://test_can_update_existing_link.com/updated', $link->get_archived_href() );
 	}
 
 	/**
@@ -781,7 +786,6 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 			Link_Repository::ORDER_DATE_ASC
 		);
 
-		// dd($queried_links);
 
 		// We should have the first two links
 		$expected = array(
@@ -1121,7 +1125,6 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 			'https://zebra.zoo',  // archive_url = 'https://archive.com/https://zebra.zoo'
 			'https://glynn.com',  // archive_url = 'https://archive.com/https://glynn.com'
 
-
 			'https://walnut.org',  // archive_url = ''
 			'https://jump.uk',    // archive_url = ''
 			'https://hello.you',  // archive_url = ''
@@ -1144,7 +1147,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	 */
 	public function test_can_delete_link(): void {
 		// Create a link.
-		$link = new Link( 'https://example.com' );
+		$link = new Link( 'https://test_can_delete_link.com' );
 
 		// Insert the link.
 		$link = $this->link_repository->upsert( $link );

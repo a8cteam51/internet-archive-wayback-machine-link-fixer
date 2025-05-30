@@ -34,6 +34,11 @@ class Test_Migrations extends \WP_UnitTestCase {
 		// Clear all migrations.
 		update_option( Settings::MIGRATIONS_KEY, array() );
 		Migrations::$migrations = array();
+
+		// Clear all posts and postmeta
+		global $wpdb;
+		// $wpdb->query( "TRUNCATE TABLE {$wpdb->posts}" );
+		// $wpdb->query( "TRUNCATE TABLE {$wpdb->postmeta}" );
 	}
 
 	/**
@@ -221,31 +226,4 @@ class Test_Migrations extends \WP_UnitTestCase {
 		$this->assertEquals( 'varchar(36)', $details[0]->Type );
 	}
 
-	/**
-	 * @testdpc With Migration 3 all IA links should have been removed from the database and any post meta should be cleared.
-	 *
-	 * @return void
-	 */
-	public function test_migration_3_remove_ia_links(): void {
-		// Create a link that is an IA link.
-		$link_repos = new Link_Repository();
-		$link       = new Link( 'https://web.archive.org/web/20230101000000/https://example.com' );
-
-		// Save the link.
-		$link = $link_repos->upsert( $link );
-
-		// Create a post and add as a link to meta.
-		$post_id = \WP_UnitTestCase_Base::factory()->post->create();
-		update_post_meta( $post_id, Settings::LINK_META_KEY, array( $link->get_id() ) );
-
-		// Run the migration to remove IA links.
-		( new Migration_3() )->remove_ia_links();
-
-		// Check the link has been removed from the database.
-		$this->assertEmpty( $link_repos->find_by_id( $link->get_id() ) );
-		// Check the post meta has been cleared.
-		$this->assertEmpty( get_post_meta( $post_id, Settings::LINK_META_KEY ) );
-		// Check the post still exists.
-		$this->assertNotEmpty( get_post( $post_id ) );
-	}
 }

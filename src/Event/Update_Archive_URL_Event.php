@@ -127,6 +127,9 @@ class Update_Archive_URL_Event {
 
 		// If we have reached the maximum number of attempts, then mark the link as broken.
 		if ( $attempt > $this->max_attempts ) {
+			// Mark the link as done, but failed.
+			$link->set_done();
+			$this->repository->upsert( $link );
 			throw new Exception( esc_attr( "Reached maximum number of attempts for link with ID {$link_id}" ), 1 );
 		}
 
@@ -178,6 +181,7 @@ class Update_Archive_URL_Event {
 	 */
 	private function add_archive_url( Link $link, string $archive_url ): void {
 		$link->set_archived_href( $archive_url );
+		$link->set_done();
 		$this->repository->upsert( $link );
 	}
 }

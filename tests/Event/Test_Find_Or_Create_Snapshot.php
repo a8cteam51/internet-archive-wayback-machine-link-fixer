@@ -142,6 +142,9 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		// Get the link from the repository.
 		$link = $repo->find_by_id( $link->get_id() );
 
+		// Check the link status is now done.
+		$this->assertEquals( Link::PROCESS_DONE, $link->get_archive_process() );
+
 		$this->assertEquals( 'https://web.archive.org/web/wlf_glynn/https://example.com', $link->get_archived_href() );
 
 		// Remove the filter.
@@ -182,6 +185,9 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 
 		// Get the link from the repository.
 		$link = $repo->find_by_id( $link->get_id() );
+
+		// The links status should now be set to pending.
+		$this->assertEquals( Link::PROCESS_PENDING, $link->get_archive_process() );
 
 		// Check if event added to actionscheduler_actions  table.
 		global $wpdb;

@@ -359,6 +359,29 @@ class Link implements \JsonSerializable {
 	}
 
 	/**
+	 * Sets the archive process status.
+	 *
+	 * @param string $status The status to set.
+	 *
+	 * @return self
+	 */
+	public function set_archive_process( string $status ): self {
+		$allowed_statuses = array(
+			self::PROCESS_NEW,
+			self::PROCESS_PENDING,
+			self::PROCESS_DONE,
+		);
+
+		if ( ! in_array( $status, $allowed_statuses, true ) ) {
+			$this->archive_process = self::PROCESS_NEW;
+			return $this;
+		}
+
+		$this->archive_process = $status;
+		return $this;
+	}
+
+	/**
 	 * Mark the link as pending.
 	 *
 	 * @return self
@@ -389,6 +412,15 @@ class Link implements \JsonSerializable {
 	}
 
 	/**
+	 * Checks of a link has been processed.
+	 *
+	 * @return boolean
+	 */
+	public function is_processed(): bool {
+		return self::PROCESS_DONE === $this->archive_process;
+	}
+
+	/**
 	 * Unpack from JSON
 	 *
 	 * @param string $json The JSON string.
@@ -414,7 +446,6 @@ class Link implements \JsonSerializable {
 		if ( isset( $data['id'] ) ) {
 			$link->set_id( absint( $data['id'] ) );
 		}
-				$link->set_id( $data['id'] );
 
 		foreach ( $data['checks'] as $check ) {
 			$link->add_check(
@@ -424,15 +455,7 @@ class Link implements \JsonSerializable {
 		}
 
 		// Set the process.
-		$process = $data['archive_process'];
-		// If the process is pending, set it.
-		if ( self::PROCESS_PENDING === $process ) {
-			$link->set_pending();
-		} elseif ( self::PROCESS_DONE === $process ) {
-			$link->set_done();
-		} else {
-			$link->set_new();
-		}
+		$link->set_archive_process( $data['archive_process'] ?? self::PROCESS_NEW );
 
 		return $link;
 	}

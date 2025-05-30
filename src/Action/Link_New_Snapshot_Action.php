@@ -51,6 +51,22 @@ class Link_New_Snapshot_Action {
 	}
 
 	/**
+	 * Maybe mark this as pending.
+	 *
+	 * This is used to mark the link as pending if it is not already.
+	 *
+	 * @param Link $link The link to check.
+	 *
+	 * @return void
+	 */
+	public function maybe_mark_as_pending( Link $link ): void {
+		if ( ! $link->is_processed() ) {
+			$link->set_pending();
+			$this->link_repository->upsert( $link );
+		}
+	}
+
+	/**
 	 * Create new snapshot and update the link.
 	 *
 	 * @param integer $link_id The ID of the link to update with new snapshot.
@@ -67,6 +83,9 @@ class Link_New_Snapshot_Action {
 				'message' => __( 'Link not found', 'wpcomsp_wayback_link_fixer' ),
 			);
 		}
+
+		// Maybe mark as pending.
+		$this->maybe_mark_as_pending( $link );
 
 		// If the service is offline, we can't check the link.
 		if ( ! $this->wayback_machine->is_online() ) {
@@ -107,7 +126,7 @@ class Link_New_Snapshot_Action {
 		}
 
 		// Add the Check Snapshot Event to the queue.
-		Check_Snapshot_Status_Event::add_to_queue( $link_id, $job_id );
+		Check_Snapshot_Status_Event::add_to_queue( $link_id, $job_id, 0, 15 * MINUTE_IN_SECONDS );
 
 		return array(
 			'link'    => $link,

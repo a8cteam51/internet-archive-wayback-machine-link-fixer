@@ -120,6 +120,13 @@ class Find_Or_Create_Snapshot_Event {
 		// If we have no snapshot, create one.
 		if ( null === $snapshot ) {
 			Create_New_Snapshot_Event::add_to_queue( $link_id );
+
+			// Mark the link as pending, if not marked as done.
+			if ( ! $link->is_processed() ) {
+				$link->set_pending();
+				$this->link_repository->upsert( $link );
+			}
+
 			return;
 		}
 
@@ -130,6 +137,9 @@ class Find_Or_Create_Snapshot_Event {
 
 		// Add to the link.
 		$link->add_check( $status );
+
+		// Mark the status as done.
+		$link->set_done();
 
 		// Update the link.
 		$this->link_repository->upsert( $link );
