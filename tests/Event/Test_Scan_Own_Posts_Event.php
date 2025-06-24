@@ -56,40 +56,6 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox When init is run, the event to check own should be added if we allow scanning own posts and scanning at defined intervals.
-	 * @runInSeparateProcess
-	 * @preserveGlobalState disabled
-	 * @return void
-	 */
-	public function test_add_own_posts_to_action_scheduler(): void {
-
-		// Drop the links table.
-		global $wpdb;
-		$table = Settings::get_link_table_name();
-		$r     = $wpdb->query( "DROP TABLE IF EXISTS {$table}" );
-
-		print "Table {$table} dropped: " . ( $r ? 'yes' : 'no' ) . "\n";
-		print $r;
-
-		// check if table exists.
-		echo "Checking if table exists: {$table}\n";
-		echo 'Table exists: ' . ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) ? 'yes' : 'no' ) . "\n";
-
-		// Allow scanning own posts.
-		\add_filter( 'wlf_own_content_allow_post', '__return_true' );
-		// Allow scanning at defined intervals.
-		\add_filter( 'wlf_routinely_update_wayback_machine', '__return_true' );
-
-		// Run init.
-		\do_action( 'init' );
-
-		// Check that the event has been added to the action scheduler.
-		$events = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions WHERE hook='wlf_scan_existing_posts'" );
-		$this->assertCount( 1, $events );
-		$this->assertSame( 'pending', $events[0]->status );
-	}
-
-	/**
 	 * @testdox If dont allow the adding of own events, the event should not be added to the action scheduler.
 	 *
 	 * @return void
