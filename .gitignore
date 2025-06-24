@@ -3,7 +3,6 @@
 wordpress/
 tests/.env
 
-composer.lock
 vendor/
 
 # Do not track the project workspace for VSCode
