@@ -42,21 +42,11 @@ jobs:
       - name: Check PHP Version
         run: php -v
 
-      - name: Clear existing composer
-        run: >
-          sudo rm -rf vendor
-          && rm -rf composer.lock
       - name: Validate composer.json and composer.lock
         run: composer validate
 
       - name: Install dependencies
-        run: >
-          rm -rf composer.lock
-          && composer clearcache
-          && composer require php-stubs/wordpress-stubs:6.8.* --dev --no-update
-          && composer require roots/wordpress:6.8.* --dev --no-update
-          && composer require wp-phpunit/wp-phpunit:6.8.* --dev --no-update
-          && composer update --no-cache
+        run: composer update --no-cache
 
       - name: Run Tests on Latest Version - WP6.8
         env:
