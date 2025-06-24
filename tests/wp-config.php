@@ -1,7 +1,7 @@
 <?php
 
 /* Path to the WordPress codebase you'd like to test. Add a forward slash in the end. */
-define( 'ABSPATH', dirname( dirname( __FILE__ ) ) . '/wordpress/' );
+define( 'ABSPATH', dirname( __DIR__ ) . '/wordpress/' );
 
 /*
  * Path to the theme to test with.
@@ -23,7 +23,7 @@ define( 'WP_DEFAULT_THEME', 'default' );
 define( 'WP_DEBUG', true );
 
 // Set the custom dir for the plugins, so we can enable this.
-define("WP_PLUGIN_DIR", dirname( __DIR__, 2 ));
+define( 'WP_PLUGIN_DIR', dirname( __DIR__, 2 ) );
 
 // ** MySQL settings ** //
 
@@ -35,9 +35,9 @@ define("WP_PLUGIN_DIR", dirname( __DIR__, 2 ));
 // DO NOT use a production database or one that is shared with something else.
 // If being ran by github CLI use these DB values.
 if ( getenv( 'environment_github' ) ) {
-	define( 'DB_NAME', 'wlf_' );
+	define( 'DB_NAME', 'wlf_tests' );
 	define( 'DB_USER', 'root' );
-	define( 'DB_PASSWORD', 'crab' );
+	define( 'DB_PASSWORD', 'poetry' );
 	define( 'DB_HOST', '0.0.0.0' );
 	define( 'DB_CHARSET', 'utf8' );
 	define( 'DB_COLLATE', '' );
@@ -48,10 +48,10 @@ if ( getenv( 'environment_github' ) ) {
 	define( 'DB_PASSWORD', getenv( 'WP_DB_PASS' ) );
 	define( 'DB_HOST', getenv( 'WP_DB_HOST' ) );
 	define( 'DB_CHARSET', 'utf8' );
-	define( 'DB_COLLATE', '' );
 }
 
-/**#@+
+/**
+* #@+
  * Authentication Unique Keys and Salts.
  *
  * Change these to different unique phrases!

@@ -49,7 +49,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 										if ( Link::PROCESS_NEW === $wlf_archive_process ) {
 											esc_html_e( 'NEW - This link has been queued and will be processed by the Internet Archive as soon as possible', 'wpcomsp_wayback_link_fixer' );
 										} else {
-											esc_html_e( 'PENDING - Currently being processed by the Internet Archive. This may take a few minutes to complete', 'wpcomsp_wayback_link_fixer' );
+											esc_html_e( 'PENDING – Queued for submission to the Internet Archive. Processing time varies based on queue size.', 'wpcomsp_wayback_link_fixer' );
 										}
 									} elseif ( '' !== $wlf_link->get_archived_href() ) {
 										printf(
