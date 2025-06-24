@@ -147,13 +147,14 @@ class Link_Repository {
 	 */
 	private function insert( Link $link ): Link {
 		// Extract the values.
-		$href          = $link->get_href();
-		$archived_href = $link->get_archived_href();
-		$checks        = $link->get_checks();
-		$redirect_href = $link->get_redirect_href();
-		$is_broken     = $link->is_broken();
-		$message       = $link->get_message();
-		$is_excluded   = $link->is_excluded();
+		$href            = $link->get_href();
+		$archived_href   = $link->get_archived_href();
+		$checks          = $link->get_checks();
+		$redirect_href   = $link->get_redirect_href();
+		$is_broken       = $link->is_broken();
+		$message         = $link->get_message();
+		$is_excluded     = $link->is_excluded();
+		$archive_process = $link->get_archive_process();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -162,13 +163,14 @@ class Link_Repository {
 		$result = $this->wpdb->insert(
 			$this->table_name,
 			array(
-				'url'          => $href,
-				'archived'     => $archived_href,
-				'checks'       => $checks,
-				'redirect_url' => $redirect_href,
-				'is_broken'    => $is_broken,
-				'message'      => $message,
-				'excluded'     => $is_excluded ? 1 : 0,
+				'url'             => $href,
+				'archived'        => $archived_href,
+				'checks'          => $checks,
+				'redirect_url'    => $redirect_href,
+				'is_broken'       => $is_broken,
+				'message'         => $message,
+				'excluded'        => $is_excluded ? 1 : 0,
+				'archive_process' => $archive_process,
 			),
 			array(
 				'%s',
@@ -178,6 +180,7 @@ class Link_Repository {
 				'%d',
 				'%s',
 				'%d',
+				'%s',
 			)
 		);
 
@@ -204,14 +207,15 @@ class Link_Repository {
 	 */
 	private function update( Link $link ): Link {
 		// Extract the values.
-		$id            = $link->get_id();
-		$href          = $link->get_href();
-		$archived_href = $link->get_archived_href();
-		$checks        = $link->get_checks();
-		$redirect_href = $link->get_redirect_href();
-		$is_broken     = $link->is_broken();
-		$message       = $link->get_message();
-		$is_excluded   = $link->is_excluded();
+		$id              = $link->get_id();
+		$href            = $link->get_href();
+		$archived_href   = $link->get_archived_href();
+		$checks          = $link->get_checks();
+		$redirect_href   = $link->get_redirect_href();
+		$is_broken       = $link->is_broken();
+		$message         = $link->get_message();
+		$is_excluded     = $link->is_excluded();
+		$archive_process = $link->get_archive_process();
 
 		// Json encode the checks.
 		$checks = wp_json_encode( $checks );
@@ -220,13 +224,14 @@ class Link_Repository {
 		$result = $this->wpdb->update(
 			$this->table_name,
 			array(
-				'url'          => $href,
-				'archived'     => $archived_href,
-				'checks'       => $checks,
-				'redirect_url' => $redirect_href,
-				'is_broken'    => $is_broken,
-				'message'      => $message,
-				'excluded'     => $is_excluded ? 1 : 0,
+				'url'             => $href,
+				'archived'        => $archived_href,
+				'checks'          => $checks,
+				'redirect_url'    => $redirect_href,
+				'is_broken'       => $is_broken,
+				'message'         => $message,
+				'excluded'        => $is_excluded ? 1 : 0,
+				'archive_process' => $archive_process,
 			),
 			array(
 				'id' => $id,
@@ -239,6 +244,7 @@ class Link_Repository {
 				'%d',
 				'%s',
 				'%d',
+				'%s',
 			),
 			array(
 				'%d',
@@ -292,6 +298,20 @@ class Link_Repository {
 			->set_redirect_href( $row->redirect_url ?? '' )
 			->set_message( esc_attr( $row->message ?? '' ) )
 			->set_excluded( (bool) $row->excluded );
+
+		// Set archive process status
+		if ( isset( $row->archive_process ) ) {
+			switch ( $row->archive_process ) {
+				case Link::PROCESS_PENDING:
+					$link->set_pending();
+					break;
+				case Link::PROCESS_DONE:
+					$link->set_done();
+					break;
+				default:
+					$link->set_new();
+			}
+		}
 
 		// Iterate through the checks and add them to the link.
 		$checks = json_decode( $row->checks, true );
@@ -541,6 +561,7 @@ class Link_Repository {
 				return ' ORDER BY archived ASC, url ASC';
 			case self::ORDER_HAS_ARCHIVE_DESC:
 				return ' ORDER BY archived DESC, url DESC';
+
 			case self::ORDER_LINK_HEALTH_ASC:
 				return ' ORDER BY is_broken ASC, url ASC';
 			case self::ORDER_LINK_HEALTH_DESC:
@@ -549,6 +570,7 @@ class Link_Repository {
 				return ' ORDER BY excluded ASC, url ASC';
 			case self::ORDER_LINK_EXCLUDED_DESC:
 				return ' ORDER BY excluded DESC, url DESC';
+
 			case self::ORDER_LINK_CHECKS_ASC:
 				return ' ORDER BY JSON_LENGTH(`checks`) ASC, url ASC';
 			case self::ORDER_LINK_CHECKS_DESC:
@@ -613,5 +635,34 @@ class Link_Repository {
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Remove a link from the database.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param Link $link The link to remove.
+	 *
+	 * @return boolean True on success, false on failure.
+	 */
+	public function delete_link( Link $link ): bool {
+		// If the link has no id, return false.
+		if ( null === $link->get_id() ) {
+			return false;
+		}
+
+		// Prepare the delete.
+		$result = $this->wpdb->delete(
+			$this->table_name,
+			array(
+				'id' => $link->get_id(),
+			),
+			array(
+				'%d',
+			)
+		);
+
+		return (bool) $result;
 	}
 }

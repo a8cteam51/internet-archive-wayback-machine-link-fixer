@@ -93,10 +93,11 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 
 		// Check the message is set.
 		$this->assertEquals( 'Error message', $updated_link->get_message() );
+		$this->assertEquals(Link::PROCESS_PENDING, $updated_link->get_archive_process() );
 	}
 
 	/**
-	 * @testdox If the link has a the no access status, the link should be set as excluded.
+	 * @testdox If the link has a the no access status, the link should be set as excluded. This should also mark the link as done.
 	 *
 	 * @return void
 	 */
@@ -127,6 +128,7 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 
 		// Check the message is set.
 		$this->assertTrue( $updated_link->is_excluded() );
+		$this->assertEquals(Link::PROCESS_DONE, $updated_link->get_archive_process() );
 	}
 
 	/**
@@ -153,6 +155,10 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 		} catch ( \Throwable $th ) {
 			$this->assertEquals( "Max attempts reached for id:{$link->get_id()}", $th->getMessage() );
 		}
+
+		$link = $this->link_repository->find_by_id( $link->get_id() );
+		// Check the link is marked as done.
+		$this->assertEquals( Link::PROCESS_DONE, $link->get_archive_process() );
 	}
 
 	/**
@@ -180,7 +186,7 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox If the status is pending, it should be added to the queue again with the attempt incremented.
+	 * @testdox If the status is pending, it should be added to the queue again with the attempt incremented. When this happens if the status was new, it should change to pending
 	 *
 	 * @return void
 	 */
@@ -216,6 +222,33 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 			),
 			$actions[0]->args
 		);
+
+		// Status shoudl be pending.
+		$this->assertEquals( Link::PROCESS_PENDING, $updated_link->get_archive_process() );
+	}
+
+	/**
+	 * @testdox If the status is pending, it should be added to the queue again with the attempt incremented. When this happens if the status was done, it should not change to pending
+	 *
+	 * @return void
+	 */
+	public function test_pending_status_does_not_change_done_status(): void {
+		$this->set_snapshot_client_response( array( 'status' => 'pending' ) );
+
+		$link = $this->link_repository->upsert( new Link( 'https://example.com' ) );
+		$link->set_archive_process( Link::PROCESS_DONE );
+		$this->link_repository->upsert( $link );
+
+		$event = new Check_Snapshot_Status_Event();
+		$event->setup();
+
+		$event( $link->get_id(), 'fake-id', 0 );
+
+		// Get the link from the repository.
+		$updated_link = $this->link_repository->find_by_id( $link->get_id() );
+
+		// Status should still be done.
+		$this->assertEquals( Link::PROCESS_DONE, $updated_link->get_archive_process() );
 	}
 
 	/**
@@ -238,6 +271,9 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 
 		// Check the link is not excluded.
 		$this->assertFalse( $updated_link->is_excluded() );
+
+		// Link should be marked as pending.
+		$this->assertEquals( Link::PROCESS_PENDING, $updated_link->get_archive_process() );
 
 		// Check the link is in the queue.
 		$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions" );

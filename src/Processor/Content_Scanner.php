@@ -73,7 +73,7 @@ class Content_Scanner {
 			$href = $dom->get_attribute( 'href' );
 
 			// If href doesnt start with http or https, skip.
-			if ( ! preg_match( '/^https?:\/\//', $href ) ) {
+			if ( ! preg_match( '/^https?:\/\//', $href ?? '' ) ) {
 				continue;
 			}
 

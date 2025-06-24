@@ -70,7 +70,7 @@ class Test_Link_Collection extends \WP_UnitTestCase {
 		$collection->add( $link );
 
 		$this->assertSame(
-			'[{"id":null,"href":"https:\/\/example.com","archived_href":null,"redirect_href":null,"checks":[],"broken":false,"last_checked":null}]',
+			'[{"id":null,"href":"https:\/\/example.com","archived_href":null,"redirect_href":null,"checks":[],"broken":false,"last_checked":null,"process":"new"}]',
 			$collection->to_json()
 		);
 	}

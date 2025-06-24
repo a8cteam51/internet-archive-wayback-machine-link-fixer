@@ -10,6 +10,7 @@
  */
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -37,10 +38,34 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 						<div class="inside">
 							<p class="wlf_link_url"><strong><?php esc_html_e( 'URL', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <a href="<?php echo esc_url( $wlf_link->get_href() ); ?>" target="_blank"><?php echo esc_html( $wlf_link->get_href() ); ?></a></p>
 
-							<?php if ( '' !== $wlf_link->get_archived_href() && ! $wlf_link->is_excluded() ) : ?>
-								<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archived URL', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <a href="<?php echo esc_url( $wlf_link->get_archived_href() ); ?>" target="_blank"><?php echo esc_html( $wlf_link->get_archived_href() ); ?></a></p>
+							<?php if ( $wlf_link->is_excluded() ) : ?>
+								<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archive Status', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php esc_html_e( 'EXCLUDED', 'wpcomsp_wayback_link_fixer' ); ?></p>
 							<?php else : ?>
-								<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archived URL', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php esc_html_e( 'No archived version found.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+								<p class="wlf_link_archived_url">
+									<strong><?php esc_html_e( 'Archive Status', 'wpcomsp_wayback_link_fixer' ); ?></strong>:
+									<?php
+									if ( ! $wlf_link->is_processed() ) {
+										$wlf_archive_process = $wlf_link->get_archive_process();
+										if ( Link::PROCESS_NEW === $wlf_archive_process ) {
+											esc_html_e( 'NEW - This link has been queued and will be processed by the Internet Archive as soon as possible', 'wpcomsp_wayback_link_fixer' );
+										} else {
+											esc_html_e( 'PENDING - Currently being processed by the Internet Archive. This may take a few minutes to complete', 'wpcomsp_wayback_link_fixer' );
+										}
+									} elseif ( '' !== $wlf_link->get_archived_href() ) {
+										printf(
+											/* translators: %s: The archived URL */
+											esc_html__( 'HAS ARCHIVE - A snapshot of this link is available on the Internet Archive: %s', 'wpcomsp_wayback_link_fixer' ),
+											'<a href="' . esc_url( $wlf_link->get_archived_href() ) . '" target="_blank">' . esc_html__( 'View Snapshot', 'wpcomsp_wayback_link_fixer' ) . '</a>'
+										);
+									} else {
+										esc_html_e( 'NO ARCHIVE - Unable to create or find a snapshot. This can happen if the URL is blocked by robots.txt, requires authentication, or is no longer accessible', 'wpcomsp_wayback_link_fixer' );
+									}
+									?>
+								</p>
+
+								<?php if ( '' !== $wlf_link->get_archived_href() ) : ?>
+									<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archived URL', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <a href="<?php echo esc_url( $wlf_link->get_archived_href() ); ?>" target="_blank"><?php echo esc_html( $wlf_link->get_archived_href() ); ?></a></p>
+								<?php endif; ?>
 							<?php endif; ?>
 
 							<?php if ( '' !== $wlf_link->get_redirect_href() ) : ?>

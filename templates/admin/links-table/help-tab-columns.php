@@ -10,8 +10,14 @@ $wlf_check_frequency = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Setting
 ?>
 
 <div id="wlf_help_tab_columns" class="wlf_help_tab">
-	<h3><?php esc_html_e( 'Has Archive', 'wpcomsp_wayback_link_fixer' ); ?></h3>
+	<h3><?php esc_html_e( 'Archive Status', 'wpcomsp_wayback_link_fixer' ); ?></h3>
 	<p><?php esc_html_e( 'Indicates whether the link has a valid snapshot from the Internet Archive associated with it.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+	<p>
+		<span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e( 'Has a valid archive snapshot', 'wpcomsp_wayback_link_fixer' ); ?><br>
+		<span class="dashicons dashicons-plus-alt"></span> <?php esc_html_e( 'New link, not yet processed', 'wpcomsp_wayback_link_fixer' ); ?><br>
+		<span class="dashicons dashicons-clock"></span> <?php esc_html_e( 'Processing in progress', 'wpcomsp_wayback_link_fixer' ); ?><br>
+		<span class="dashicons dashicons-dismiss"></span> <?php esc_html_e( 'No archive available', 'wpcomsp_wayback_link_fixer' ); ?>
+	</p>
 
 	<h3><?php esc_html_e( 'Link Health', 'wpcomsp_wayback_link_fixer' ); ?></h3>
 	<p>
@@ -24,6 +30,11 @@ $wlf_check_frequency = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Setting
 			)
 		);
 		?>
+	</p>
+	<p>
+		<span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e( 'Link is active', 'wpcomsp_wayback_link_fixer' ); ?><br>
+		<span class="dashicons dashicons-clock"></span> <?php esc_html_e( 'Link status pending verification', 'wpcomsp_wayback_link_fixer' ); ?><br>
+		<span class="dashicons dashicons-dismiss"></span> <?php esc_html_e( 'Link is broken', 'wpcomsp_wayback_link_fixer' ); ?>
 	</p>
 
 	<h3><?php esc_html_e( 'Times Checked', 'wpcomsp_wayback_link_fixer' ); ?></h3>

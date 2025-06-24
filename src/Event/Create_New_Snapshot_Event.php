@@ -99,6 +99,50 @@ class Create_New_Snapshot_Event {
 	}
 
 	/**
+	 * Marks a link as done from its id.
+	 *
+	 * @param integer $link_id The link id.
+	 *
+	 * @return void
+	 */
+	private function mark_as_done( int $link_id ): void {
+		$link = $this->link_repository->find_by_id( $link_id );
+		// if we dont have a link, return early.
+		if ( ! $link ) {
+			return;
+		}
+		// Set the link as done.
+		$link = $link->set_done();
+		// Update the link in the repository.
+		$this->link_repository->upsert( $link );
+	}
+
+	/**
+	 * Mark a link as pending from its ID.
+	 *
+	 * @param integer $link_id The link Id.
+	 *
+	 * @return void
+	 */
+	private function mark_as_pending( int $link_id ): void {
+		$link = $this->link_repository->find_by_id( $link_id );
+		// if we dont have a link, return early.
+		if ( ! $link ) {
+			return;
+		}
+
+		// If the link is done, bail.
+		if ( $link->is_processed() ) {
+			return;
+		}
+
+		// Set the link as pending.
+		$link = $link->set_pending();
+		// Update the link in the repository.
+		$this->link_repository->upsert( $link );
+	}
+
+	/**
 	 * The invocation of the event.
 	 *
 	 * @param integer $link_id The link id.
@@ -111,8 +155,11 @@ class Create_New_Snapshot_Event {
 		// Set up
 		$this->setup();
 
+		// Mark the link as pending.
+		$this->mark_as_pending( $link_id );
 		// If the attempt is greater than or equal to the max attempts, return early.
-		if ( $attempt >= $this->attempt ) {
+		if ( $attempt > $this->attempt ) {
+			$this->mark_as_done( $link_id );
 			throw new Exception( esc_html( 'Max attempts reached for link ' . $link_id ) );
 		}
 
@@ -143,15 +190,11 @@ class Create_New_Snapshot_Event {
 			throw new Exception( esc_html( 'Link not found with id ' . $link_id ) ); //
 		}
 
-		// If the link already has a archived link, return early.
-		if ( $link->has_archived_href() && '' !== $link->get_archived_href() ) {
-			return;
-		}
-
 		// Ensure we are working with the final link, incase its been redirected.
 		try {
 			$link_url = $this->wayback_machine->get_final_url( $link->get_href() );
 		} catch ( Throwable $th ) {
+			$this->mark_as_pending( $link_id );
 			self::add_delayed_to_queue( $link_id, $attempt + 1 );
 			throw new Exception(
 				esc_html(
@@ -167,77 +210,43 @@ class Create_New_Snapshot_Event {
 		// If the link url is different to the href, update the link.
 		if ( $link_url !== $link->get_href() ) {
 			$link = $this->link_repository->upsert(
-				$link->set_redirect_href( $link->get_href() )
+				$link->set_redirect_href( $link_url )
 			);
 		}
 
-		// Attempt to get the archived link
+		// Attempt to create a snapshot
 		try {
-			$archive_url = $this->get_archived_link( $link_url );
+			$job_id = $this->wayback_machine->create_snapshot( $link_url );
 		} catch ( Throwable $th ) {
-			self::add_delayed_to_queue( $link_id, $attempt + 1 );
-			throw new Exception(
-				esc_html(
-					sprintf(
-						'Error getting archive URL for link id: %d, error: %s',
-						absint( $link_id ),
-						esc_html( $th->getMessage() )
+			// If this is the last attempt, re throw the error for the logs.
+			if ( $attempt === $this->attempt
+			) {
+				$this->mark_as_done( $link_id );
+				throw new Exception(
+					esc_html(
+						sprintf(
+							'Error creating snapshot (Last attempt) for link id: %d, error: %s',
+							absint( $link_id ),
+							esc_html( $th->getMessage() )
+						)
 					)
-				)
-			);
-		}
-
-		// If we don't have an archived link, create a snapshot
-		if ( null === $archive_url ) {
-
-			// Attempt to create a snapshot
-			try {
-				$job_id = $this->wayback_machine->create_snapshot( $link_url );
-			} catch ( Throwable $th ) {
-				// If this is the last attempt, re throw the error.
-				if ( $th instanceof Exceeded_Snapshot_Limit_Exception
-				|| $attempt >= $this->attempt
-				) {
-					throw $th;
-				}
-
-				self::add_delayed_to_queue( $link_id, $attempt + 1 );
-				return;
+				);
 			}
 
-			// Add check snapshot status event.
-			Check_Snapshot_Status_Event::add_to_queue( $link_id, $job_id );
+			// Set the delay.
+			$delay = $th instanceof Exceeded_Snapshot_Limit_Exception
+				? 24 * \HOUR_IN_SECONDS
+				: 15 * \MINUTE_IN_SECONDS;
+
+			$this->mark_as_pending( $link_id );
+			// Add the link to the queue for retry.
+			self::add_delayed_to_queue( $link_id, $attempt + 1, $delay );
 			return;
 		}
 
-		// Update the link with the archive URL
-		$link->set_archived_href( $archive_url );
+			$this->mark_as_pending( $link_id );
 
-		// If the link_url is not the same as the href, set the redirect href
-		if ( $link_url !== $link->get_href() ) {
-			$link->set_redirect_href( $link_url );
-		}
-
-		// Save the link
-		$this->link_repository->upsert( $link );
-	}
-
-	/**
-	 * Get the archived link.
-	 *
-	 * @param string $url The URL to archive.
-	 *
-	 * @return string|null The URL of the archived link.
-	 */
-	private function get_archived_link( string $url ): ?string {
-		$archive_url = $this->wayback_machine->get_latest_snapshot( $url );
-
-		// if we dont have an archive url, return null
-		if ( null === $archive_url ) {
-			return null;
-		}
-
-		// return the archive url
-		return $archive_url['url'] ?? '';
+			// Add check snapshot status event.
+			Check_Snapshot_Status_Event::add_to_queue( $link_id, $job_id );
 	}
 }

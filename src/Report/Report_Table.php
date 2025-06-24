@@ -484,7 +484,7 @@ class Report_Table extends \WP_List_Table {
 			$this->notices[] = array(
 				'message' => sprintf(
 					// translators: %s is the link url.
-					__( 'Link %s added to the queue for updating, please wait.', 'wpcomsp_wayback_link_fixer' ),
+					__( 'Link %s added to the queue and a new snapshot will be created and added as the archived url in the coming minutes..', 'wpcomsp_wayback_link_fixer' ),
 					wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 )
 				),
 				'type'    => 'success',
@@ -578,7 +578,7 @@ class Report_Table extends \WP_List_Table {
 		$columns = array(
 			self::COLUMN_CHECKBOX         => '<input type="checkbox" />',
 			self::COLUMN_LINK_URL         => __( 'URL', 'wpcomsp_wayback_link_fixer' ),
-			self::COLUMN_LINK_ARCHIVE     => __( 'Has Archive', 'wpcomsp_wayback_link_fixer' ),
+			self::COLUMN_LINK_ARCHIVE     => __( 'Archive Status', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_HEALTH      => __( 'Link Health', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS      => __( 'Times Checked', 'wpcomsp_wayback_link_fixer' ),
 			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'wpcomsp_wayback_link_fixer' ),
@@ -844,8 +844,6 @@ class Report_Table extends \WP_List_Table {
 		);
 	}
 
-
-
 	/**
 	 * Prepare the items for the table to process
 	 *
@@ -922,16 +920,29 @@ class Report_Table extends \WP_List_Table {
 					$this->compile_link_name( $item )
 				);
 			case self::COLUMN_LINK_ARCHIVE:
-				return $item->has_archived_href()
-					? sprintf(
+				if ( $item->has_archived_href() ) {
+					return sprintf(
 						'<a href="%s" target="_blank"><span class="dashicons dashicons-yes-alt"></span></a>',
 						$item->get_archived_href()
-					)
-					: '<span class="dashicons dashicons-dismiss"></span>';
+					);
+				}
+				$process = $item->get_archive_process();
+				if ( Link::PROCESS_NEW === $process ) {
+					return '<span class="dashicons dashicons-plus-alt"></span>';
+				} elseif ( Link::PROCESS_PENDING === $process ) {
+					return '<span class="dashicons dashicons-clock"></span>';
+				} else {
+					return '<span class="dashicons dashicons-dismiss"></span>';
+				}
+
 			case self::COLUMN_LINK_HEALTH:
-				return ! $item->is_broken()
-					? '<span class="dashicons dashicons-yes-alt"></span>'
-					: '<span class="dashicons dashicons-dismiss"></span>';
+				if ( $item->has_archived_href() || Link::PROCESS_DONE === $item->get_archive_process() ) {
+					return ! $item->is_broken()
+						? '<span class="dashicons dashicons-yes-alt"></span>'
+						: '<span class="dashicons dashicons-dismiss"></span>';
+				} else {
+					return '<span class="dashicons dashicons-clock"></span>';
+				}
 			case self::COLUMN_LINK_CHECKS:
 				return count( $item->get_checks() );
 
@@ -966,7 +977,6 @@ class Report_Table extends \WP_List_Table {
 			'<span class="dashicons dashicons-external"></span>'
 		);
 	}
-
 
 	/**
 	 * Compile the details cell for link.
