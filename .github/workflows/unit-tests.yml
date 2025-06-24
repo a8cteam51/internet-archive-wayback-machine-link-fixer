@@ -55,5 +55,5 @@ jobs:
       - name: Run Tests on Latest Version - WP6.8
         env:
           environment_github: true
-        run: composer all
+        run: composer test:php
 
