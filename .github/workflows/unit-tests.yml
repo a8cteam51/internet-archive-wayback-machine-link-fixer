@@ -1,4 +1,4 @@
-name: WP6.8 [PHP7.4-8.4] Tests
+name: WP PHPUnit Tests
 
 on:
   push:
