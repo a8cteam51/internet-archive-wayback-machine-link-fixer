@@ -42,7 +42,8 @@ if ( ! function_exists( 'action_scheduler_register_3_dot_9_dot_2' ) && function_
 	/**
 	 * Registers this version of Action Scheduler.
 	 */
-	function action_scheduler_register_3_dot_9_dot_2() { // WRCS: DEFINED_VERSION.
+	function action_scheduler_register_3_dot_9_dot_2() {
+		// WRCS: DEFINED_VERSION.
 		$versions = ActionScheduler_Versions::instance();
 		$versions->register( '3.9.2', 'action_scheduler_initialize_3_dot_9_dot_2' ); // WRCS: DEFINED_VERSION.
 	}
@@ -51,7 +52,8 @@ if ( ! function_exists( 'action_scheduler_register_3_dot_9_dot_2' ) && function_
 	/**
 	 * Initializes this version of Action Scheduler.
 	 */
-	function action_scheduler_initialize_3_dot_9_dot_2() { // WRCS: DEFINED_VERSION.
+	function action_scheduler_initialize_3_dot_9_dot_2() {
+		// WRCS: DEFINED_VERSION.
 		// A final safety check is required even here, because historic versions of Action Scheduler
 		// followed a different pattern (in some unusual cases, we could reach this point and the
 		// ActionScheduler class is already defined—so we need to guard against that).
