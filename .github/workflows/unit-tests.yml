@@ -1,0 +1,65 @@
+name: WP6.8 [PHP7.4-8.4] Tests
+
+on:
+  push:
+    branches: [ trunk ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: [ '7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
+    runs-on: ${{ matrix.operating-system }}
+    services:
+      # Setup MYSQL
+      mysql-service:
+        image: 'mysql:5.7'
+        env:
+          MYSQL_ROOT_PASSWORD: 'poetry'
+          MYSQL_DATABASE: wlf_tests
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, intl, pcov
+          ini-values: post_max_size=256M, log_errors=1
+          tools: pecl
+
+      - name: Check PHP Version
+        run: php -v
+
+      - name: Clear existing composer
+        run: >
+          sudo rm -rf vendor
+          && rm -rf composer.lock
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install dependencies
+        run: >
+          rm -rf composer.lock
+          && composer clearcache
+          && composer require php-stubs/wordpress-stubs:6.8.* --dev --no-update
+          && composer require roots/wordpress:6.8.* --dev --no-update
+          && composer require wp-phpunit/wp-phpunit:6.8.* --dev --no-update
+          && composer update --no-cache
+
+      - name: Run Tests on Latest Version - WP6.8
+        env:
+          environment_github: true
+        run: composer all
+
