@@ -41,7 +41,12 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		$this->clear_clients();
 
 				// Get all existing posts.
-		$all = \get_posts( array( 'post_type' => 'any', 'posts_per_page' => -1 ) );
+		$all = \get_posts(
+			array(
+				'post_type'      => 'any',
+				'posts_per_page' => -1,
+			)
+		);
 		// Iterate through all posts and remove them.
 		foreach ( $all as $post ) {
 			\wp_delete_post( $post->ID, true );
@@ -57,6 +62,19 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_add_own_posts_to_action_scheduler(): void {
+
+		// Drop the links table.
+		global $wpdb;
+		$table = Settings::get_link_table_name();
+		$r     = $wpdb->query( "DROP TABLE IF EXISTS {$table}" );
+
+		print "Table {$table} dropped: " . ( $r ? 'yes' : 'no' ) . "\n";
+		print $r;
+
+		// check if table exists.
+		echo "Checking if table exists: {$table}\n";
+		echo 'Table exists: ' . ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) ? 'yes' : 'no' ) . "\n";
+
 		// Allow scanning own posts.
 		\add_filter( 'wlf_own_content_allow_post', '__return_true' );
 		// Allow scanning at defined intervals.
@@ -116,7 +134,6 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 	 */
 	public function test_set_allowed_post_types(): void {
 
-
 		// Allow with the filters.
 		\add_filter( 'wlf_own_content_allow_post', '__return_true' );
 		\add_filter( 'wlf_routinely_update_wayback_machine', '__return_true' );
@@ -133,8 +150,6 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		$post_id = $this->factory->post->create( array( 'post_type' => 'post' ) );
 		$page_id = $this->factory->post->create( array( 'post_type' => 'page' ) );
 
-
-
 		// Run the event.
 		$event = new Scan_Own_Posts_Event();
 		$event();
@@ -146,7 +161,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		$this->assertCount( 1, $actions );
 
 		// Check that the action is for the post.
-		$this->assertSame($post_id, json_decode($actions[0]->args)->post_id);
+		$this->assertSame( $post_id, json_decode( $actions[0]->args )->post_id );
 	}
 
 	/**
@@ -161,7 +176,6 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		// Set the interval to 24 hours.
 		\add_filter( 'wlf_routinely_update_wayback_machine_interval', fn() => 1 );
 
-
 		// Create 2 posts.
 		$post_id_1 = $this->factory->post->create( array( 'post_type' => 'post' ) );
 		$post_id_2 = $this->factory->post->create( array( 'post_type' => 'post' ) );
@@ -169,8 +183,8 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		$time_1 = time() - 2 * DAY_IN_SECONDS;
 		$time_2 = time() - 1 * HOUR_IN_SECONDS;
 
-		update_post_meta($post_id_1, Settings::OWN_LINK_LAST_PROCESSED, $time_1);
-		update_post_meta($post_id_2, Settings::OWN_LINK_LAST_PROCESSED, $time_2);
+		update_post_meta( $post_id_1, Settings::OWN_LINK_LAST_PROCESSED, $time_1 );
+		update_post_meta( $post_id_2, Settings::OWN_LINK_LAST_PROCESSED, $time_2 );
 
 		// Run the event.
 		$event = new Scan_Own_Posts_Event();
@@ -183,6 +197,6 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		$this->assertCount( 1, $actions );
 
 		// Check that the action is for the post 1.
-		$this->assertSame($post_id_1, json_decode($actions[0]->args)->post_id);
+		$this->assertSame( $post_id_1, json_decode( $actions[0]->args )->post_id );
 	}
 }
