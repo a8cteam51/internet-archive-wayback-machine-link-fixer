@@ -4,8 +4,8 @@
 **Tags:** \
 **Requires at least:** 6.4 \
 **Tested up to:** 6.5 \
-**Requires PHP:** 8.0 \
-**Stable tag:** 1.0.0   \
+**Requires PHP:** 7.4 \
+**Stable tag:** 1.2.0   \
 **License:** GPLv3 or later \
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,7 +14,7 @@
 
 ## Description
 
-Welcome to **Wayback Link Fixer**, a powerful tool designed to enhance your WordPress site by automatically scanning posts for links, retrieving the latest snapshots from the Wayback Machine, and seamlessly replacing broken links with archived versions. This innovative solution ensures that your posts remain resilient against `BITROT` , preserving the integrity of linked content over time.
+Welcome to **Wayback Link Fixer**, a powerful tool designed to enhance your WordPress site by automatically scanning posts for links, retrieving the latest snapshots from the Wayback Machine, and seamlessly replacing broken links with archived versions. This innovative solution ensures that your posts remain resilient against `LINKROT` , preserving the integrity of linked content over time.
 
 ## Installation
 
