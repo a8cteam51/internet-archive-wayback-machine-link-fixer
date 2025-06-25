@@ -99,7 +99,7 @@ class Content_Scanner {
 		return array_filter(
 			$this->links,
 			function ( string $link ): bool {
-				return ! wpcomsp_wayback_link_fixer_is_archive_link( $link );
+				return ! wpcomsp_wayback_link_fixer_is_archive_link( $link ) && ! wpcomsp_wayback_link_fixer_is_current_site_link( $link );
 			}
 		);
 	}
