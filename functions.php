@@ -340,6 +340,33 @@ function wpcomsp_wayback_link_fixer_is_archive_link( string $url ): bool {
 }
 
 /**
+ * Checks if a link is from the current site.
+ *
+ * @since 1.3.0
+ *
+ * @param string $url The URL to check.
+ *
+ * @return boolean
+ */
+function wpcomsp_wayback_link_fixer_is_current_site_link( string $url ): bool {
+	// Get the site urls with all protocols.
+	$site_urls = array(
+		get_site_url( null, '', 'https' ),
+		get_site_url( null, '', 'http' ),
+	);
+	// Normalize the URL.
+	$normalized_url = wpcomsp_wayback_link_fixer_normalize_url( $url );
+
+	// Check if the URL starts with any of the site URLs.
+	foreach ( $site_urls as $site_url ) {
+		if ( 0 === strpos( $normalized_url, $site_url ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
  * Normalize a URL.
  *
  * Will urldecode, remove trailing slashes, and lowercase the URL.

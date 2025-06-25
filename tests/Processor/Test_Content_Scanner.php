@@ -110,4 +110,55 @@ class Test_Content_Scanner extends \WP_UnitTestCase {
 		$links   = $scanner->scan()->get_links();
 		$this->assertCount( 2, $links );
 	}
+
+	/**
+	 * @testdox Ensure links from the current site should be excluded from the list of links found in a post.
+	 *
+	 * @dataProvider data_provider_exclude_links_from_current_site
+	 *
+	 * @param string $content        The content to scan.
+	 * @param array  $expected_links The expected links after scanning.
+	 *
+	 * @return void
+	 */
+	public function test_exclude_links_from_current_site( string $content, array $expected_links ): void {
+		$scanner = new Content_Scanner( $content );
+		$links   = $scanner->scan()->get_links();
+
+		// Check the count.
+		$this->assertCount( count( $expected_links ), $links, 'The number of links found does not match the expected count.' );
+
+		// Itearate through the expected links and check they are in the links array.
+		foreach ( $expected_links as $expected_link ) {
+			$this->assertContains( $expected_link, $links, "The expected link {$expected_link} was not found in the links array." );
+		}
+	}
+
+	/**
+	 * Data provider for test_exclude_links_from_current_site.
+	 *
+	 * @return array
+	 */
+	public static function data_provider_exclude_links_from_current_site(): array {
+		// example.org is the current so,
+
+		// exclude links from https://example.org and http://example.org
+		// allow links from https://sub.example.org and http://sub.example.org
+		// allow links from https://not-from.post and http://not-from.post
+
+		return array(
+			'Links from current site'              => array(
+				'content'        => 'This is a post with a link to <a href="https://example.org/content">example</a><br>And another link to <a href="http://example.org/content_twice">example</a>',
+				'expected_links' => array(),
+			),
+			'Links from subdomain of current site' => array(
+				'content'        => 'This is a post with a link to <a href="https://sub.example.org/content">example</a><br>And another link to <a href="http://sub.example.org/content_twice">example</a>',
+				'expected_links' => array( 'https://sub.example.org/content', 'http://sub.example.org/content_twice' ),
+			),
+			'Links from different site'            => array(
+				'content'        => 'This is a post with a link to <a href="https://not-from.post/content">example</a><br>And another link to <a href="http://not-from.post/content_twice">example</a>',
+				'expected_links' => array( 'https://not-from.post/content', 'http://not-from.post/content_twice' ),
+			),
+		);
+	}
 }
