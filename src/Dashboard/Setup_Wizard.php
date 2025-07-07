@@ -55,6 +55,15 @@ class Setup_Wizard {
 	}
 
 	/**
+	 * Get the wizard URL.
+	 *
+	 * @since 1.3.0
+	 */
+	public static function get_wizard_url(): string {
+		return admin_url( 'admin.php?page=' . self::PAGE_SLUG );
+	}
+
+	/**
 	 * Render the admin notice.
 	 *
 	 * @return void
@@ -71,7 +80,7 @@ class Setup_Wizard {
 		$message = sprintf(
 		// translators: %s is the URL to the setup wizard.
 			__( 'The Wayback Link Fixer plugin is almost ready. Please <a href="%s">run the setup wizard</a> to complete the installation.', 'wpcomsp_wayback_link_fixer' ),
-			esc_url( admin_url( 'admin.php?page=wayback-link-fixer-setup-wizard' ) )
+			esc_url( self::get_wizard_url() )
 		);
 
 		add_action(
@@ -174,6 +183,7 @@ class Setup_Wizard {
 
 		// Get the current step.
 		$current = sanitize_text_field( wp_unslash( $_POST['wlf-current-step'] ?? '' ) );
+
 
 		// If current is not set, bail.
 		if ( empty( $current ) ) {

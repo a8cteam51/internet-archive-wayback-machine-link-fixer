@@ -21,6 +21,13 @@
     }
 }
 
+#wlf_settings_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
 .wlf_settings_postbox {
     position: relative;
     min-width: 255px;

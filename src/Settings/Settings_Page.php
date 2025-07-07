@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
 
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Setup_Wizard;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -147,7 +149,30 @@ class Settings_Page {
 	public function render_page(): void {
 		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
 
-		echo '<div class="wrap"><h1>' . esc_html__( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ) . '</h1><form action="options.php" method="post">';
+		// Check if the wizard has been completed.
+		$wizard_link = '';
+		if ( Setup_Wizard::is_setup_complete() ) {
+			$wizard_link = \sprintf(
+				'<a href="%s" class="button button-primary">%s</a>',
+				esc_url( Setup_Wizard::get_wizard_url() . '&rerun-wizard=1' ),
+				esc_html__( 'Rerun The Setup Wizard', 'wpcomsp_wayback_link_fixer' )
+			);
+		}
+
+		echo '<div class="wrap">';
+		printf(
+			'<div id="wlf_settings_header" class="wlf-settings__header">
+			<h1 class="wp-heading-inline wlf-settings__header">%s</h1>
+			%s
+			</div>',
+			esc_html__( 'Wayback Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ),
+			$wizard_link
+		);
+
+		echo '<hr class="wp-header-end">';
+
+
+		// <h1>' . esc_html__( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' )  . $wizard_link . '</h1>'. '<form action="options.php" method="post">';
 
 		do_settings_sections( self::PAGE_SLUG );
 		settings_fields( self::PAGE_SLUG );
