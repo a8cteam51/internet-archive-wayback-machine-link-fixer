@@ -171,9 +171,6 @@ class Settings_Page {
 
 		echo '<hr class="wp-header-end">';
 
-
-		// <h1>' . esc_html__( 'Link Fixer Settings', 'wpcomsp_wayback_link_fixer' )  . $wizard_link . '</h1>'. '<form action="options.php" method="post">';
-
 		do_settings_sections( self::PAGE_SLUG );
 		settings_fields( self::PAGE_SLUG );
 
