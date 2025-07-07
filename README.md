@@ -33,8 +33,6 @@ Welcome to **Wayback Link Fixer**, a powerful tool designed to enhance your Word
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Configure the plugin settings by navigating to the 'Wayback Link Fixer' menu in the WordPress admin dashboard.
 
-Certainly! Here’s a more polished version for a WordPress plugin readme:
-
 ## Configuration
 
 ### Post Types
