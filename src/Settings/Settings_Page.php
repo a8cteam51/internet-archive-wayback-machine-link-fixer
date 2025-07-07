@@ -166,7 +166,7 @@ class Settings_Page {
 			%s
 			</div>',
 			esc_html__( 'Wayback Link Fixer Settings', 'wpcomsp_wayback_link_fixer' ),
-			$wizard_link
+			$wizard_link // phpcs:ignore
 		);
 
 		echo '<hr class="wp-header-end">';

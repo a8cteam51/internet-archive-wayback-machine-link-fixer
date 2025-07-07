@@ -58,6 +58,8 @@ class Setup_Wizard {
 	 * Get the wizard URL.
 	 *
 	 * @since 1.3.0
+	 *
+	 * @return string
 	 */
 	public static function get_wizard_url(): string {
 		return admin_url( 'admin.php?page=' . self::PAGE_SLUG );
@@ -183,7 +185,6 @@ class Setup_Wizard {
 
 		// Get the current step.
 		$current = sanitize_text_field( wp_unslash( $_POST['wlf-current-step'] ?? '' ) );
-
 
 		// If current is not set, bail.
 		if ( empty( $current ) ) {
