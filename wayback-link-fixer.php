@@ -43,9 +43,9 @@ add_action(
 	'init',
 	static function () {
 		load_plugin_textdomain(
-			wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( 'TextDomain' ),
+			wpcomsp_wayback_link_fixer_get_plugin_metadata( 'TextDomain' ),
 			false,
-			dirname( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME ) . wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( 'DomainPath' )
+			dirname( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME ) . wpcomsp_wayback_link_fixer_get_plugin_metadata( 'DomainPath' )
 		);
 	}
 );
@@ -62,16 +62,16 @@ add_action(
 
 // Load the autoloader.
 if ( ! is_file( WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/vendor/autoload.php' ) ) {
-	wpcomsp_wayback_link_fixer_scaffold_output_requirements_error( new WP_Error( 'missing_autoloader' ) );
+	wpcomsp_wayback_link_fixer_output_requirements_error( new WP_Error( 'missing_autoloader' ) );
 	return;
 }
 require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/vendor/autoload.php';
 
-define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', wpcomsp_wayback_link_fixer_scaffold_validate_requirements() );
+define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', wpcomsp_wayback_link_fixer_validate_requirements() );
 
 
 if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
-	wpcomsp_wayback_link_fixer_scaffold_output_requirements_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS );
+	wpcomsp_wayback_link_fixer_output_requirements_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS );
 } else {
 	// Include the action scheduler integration.
 	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'lib/action-scheduler/action-scheduler.php';

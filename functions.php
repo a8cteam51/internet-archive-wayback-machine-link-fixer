@@ -59,18 +59,6 @@ function wpcomsp_wayback_link_fixer_deactivate(): void {
 
 
 /**
- * Returns the plugin's slug.
- *
- * @since   1.0.0
- * @version 1.0.0
- *
- * @return  string
- */
-function wpcomsp_wayback_link_fixer_get_plugin_slug(): string {
-	return sanitize_key( WPCOMSP_WAYBACK_LINK_FIXER_METADATA['TextDomain'] );
-}
-
-/**
  * Escape a HTTP status code.
  *
  * @since 1.0.0

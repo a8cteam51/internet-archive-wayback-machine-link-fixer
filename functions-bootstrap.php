@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return  ($property is null ? PluginMetaData : ($property is PluginMetaKey ? PluginMetaData[PluginMetaKey] : null))
  */
-function wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( $property = null ) {
+function wpcomsp_wayback_link_fixer_get_plugin_metadata( $property = null ) {
 	static $plugin_data = null;
 
 	$can_translate = 0 < did_action( 'init' );
@@ -55,8 +55,8 @@ function wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( $property = nu
  *
  * @return  string
  */
-function wpcomsp_wayback_link_fixer_scaffold_get_plugin_slug(): string {
-	$text_domain = wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( 'TextDomain' );
+function wpcomsp_wayback_link_fixer_get_plugin_slug(): string {
+	$text_domain = wpcomsp_wayback_link_fixer_get_plugin_metadata( 'TextDomain' );
 	return sanitize_key( $text_domain );
 }
 
@@ -68,8 +68,8 @@ function wpcomsp_wayback_link_fixer_scaffold_get_plugin_slug(): string {
  *
  * @return  string
  */
-function wpcomsp_wayback_link_fixer_scaffold_get_plugin_name(): string {
-	return wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( 'Name' );
+function wpcomsp_wayback_link_fixer_get_plugin_name(): string {
+	return wpcomsp_wayback_link_fixer_get_plugin_metadata( 'Name' );
 }
 
 /**
@@ -80,8 +80,8 @@ function wpcomsp_wayback_link_fixer_scaffold_get_plugin_name(): string {
  *
  * @return  string
  */
-function wpcomsp_wayback_link_fixer_scaffold_get_plugin_version(): string {
-	return wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( 'Version' );
+function wpcomsp_wayback_link_fixer_get_plugin_version(): string {
+	return wpcomsp_wayback_link_fixer_get_plugin_metadata( 'Version' );
 }
 
 /**
@@ -91,7 +91,7 @@ function wpcomsp_wayback_link_fixer_scaffold_get_plugin_version(): string {
  *
  * @return  boolean
  */
-function wpcomsp_wayback_link_fixer_scaffold_is_wp_version_compatible( $min_wp_version ) {
+function wpcomsp_wayback_link_fixer_is_wp_version_compatible( $min_wp_version ) {
 	if ( ! function_exists( 'is_wp_version_compatible' ) ) {
 		return false;
 	}
@@ -106,7 +106,7 @@ function wpcomsp_wayback_link_fixer_scaffold_is_wp_version_compatible( $min_wp_v
  *
  * @return  boolean
  */
-function wpcomsp_wayback_link_fixer_scaffold_is_php_version_compatible( $min_php_version ) {
+function wpcomsp_wayback_link_fixer_is_php_version_compatible( $min_php_version ) {
 	if ( ! function_exists( 'is_php_version_compatible' ) ) {
 		return false;
 	}
@@ -119,17 +119,17 @@ function wpcomsp_wayback_link_fixer_scaffold_is_php_version_compatible( $min_php
  *
  * @return  true|\WP_Error
  */
-function wpcomsp_wayback_link_fixer_scaffold_validate_requirements() {
-	$plugin_metadata = wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata();
+function wpcomsp_wayback_link_fixer_validate_requirements() {
+	$plugin_metadata = wpcomsp_wayback_link_fixer_get_plugin_metadata();
 	if ( ! isset( $plugin_metadata['RequiresPHP'] ) || '' === $plugin_metadata['RequiresPHP'] ) {
-		$plugin_metadata['RequiresPHP'] = '8.3';
+		$plugin_metadata['RequiresPHP'] = '7.4';
 	}
 	if ( ! isset( $plugin_metadata['RequiresWP'] ) || '' === $plugin_metadata['RequiresWP'] ) {
 		$plugin_metadata['RequiresWP'] = '6.7';
 	}
 
-	$is_php_compatible = wpcomsp_wayback_link_fixer_scaffold_is_php_version_compatible( $plugin_metadata['RequiresPHP'] );
-	$is_wp_compatible  = wpcomsp_wayback_link_fixer_scaffold_is_wp_version_compatible( $plugin_metadata['RequiresWP'] );
+	$is_php_compatible = wpcomsp_wayback_link_fixer_is_php_version_compatible( $plugin_metadata['RequiresPHP'] );
+	$is_wp_compatible  = wpcomsp_wayback_link_fixer_is_wp_version_compatible( $plugin_metadata['RequiresWP'] );
 
 	$wp_error = new \WP_Error();
 	if ( ! $is_wp_compatible ) {
@@ -149,15 +149,15 @@ function wpcomsp_wayback_link_fixer_scaffold_validate_requirements() {
  *
  * @return  void
  */
-function wpcomsp_wayback_link_fixer_scaffold_output_requirements_error( $error ) {
+function wpcomsp_wayback_link_fixer_output_requirements_error( $error ) {
 	add_action(
 		'admin_notices',
 		static function () use ( $error ) {
 			$requirements_error = wp_sprintf(
 				/* translators: 1: Plugin name, 2: Plugin version */
 				__( '<strong>%1$s (version %2$s)</strong> could not be initialized.', 'wpcomsp_wayback_link_fixer' ),
-				wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( 'Name' ),
-				wpcomsp_wayback_link_fixer_scaffold_get_plugin_metadata( 'Version' )
+				wpcomsp_wayback_link_fixer_get_plugin_metadata( 'Name' ),
+				wpcomsp_wayback_link_fixer_get_plugin_metadata( 'Version' )
 			);
 
 			if ( $error->has_errors() ) {
