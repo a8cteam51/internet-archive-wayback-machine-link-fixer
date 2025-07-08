@@ -2,35 +2,23 @@ name: WP PHPUnit Tests
 
 on:
   push:
-    branches: [trunk]
+    branches: [ trunk ]
   pull_request:
-    branches: [trunk, develop]
+    branches: [ trunk, develop ]
 
 jobs:
   build:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php: [ '7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ]
-        mbstring: [ true, false ]
-        exclude:
-          - php: '7.4'
-            mbstring: false
-          - php: '8.0'
-            mbstring: false
-          - php: '8.1'
-            mbstring: false
-          - php: '8.2'
-            mbstring: false
-          - php: '8.4'
-            mbstring: false
+        php-versions: [ '7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
     runs-on: ${{ matrix.operating-system }}
     services:
       # Setup MYSQL
       mysql-service:
-        image: "mysql:5.7"
+        image: 'mysql:5.7'
         env:
-          MYSQL_ROOT_PASSWORD: "poetry"
+          MYSQL_ROOT_PASSWORD: 'poetry'
           MYSQL_DATABASE: wlf_tests
         ports:
           - 3306:3306
@@ -42,13 +30,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup PHP ${{ matrix.php }} (mbstring = ${{ matrix.mbstring }})
+      - name: Setup proper PHP version
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           tools: composer
-          extensions: ${{ matrix.mbstring && 'mbstring' || '' }}
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
@@ -70,3 +56,4 @@ jobs:
         env:
           environment_github: true
         run: composer test:php
+
