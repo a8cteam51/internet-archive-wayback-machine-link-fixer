@@ -53,4 +53,28 @@ class Test_Functions extends \WP_UnitTestCase {
 	public function test_can_normalize_url( string $url, string $expected ): void {
 		$this->assertSame( $expected, \wpcomsp_wayback_link_fixer_normalize_url( $url ) );
 	}
+
+	/**
+	 * Check if mb_strimwidth and  mb_strlen are available.
+	 *
+	 * @testdox It should be possible to check if mb_strimwidth and mb_strlen are available.
+	 */
+	public function test_mb_strimwidth_and_mb_strlen_available(): void {
+		// Get the current php extensions installed.
+		$extensions = get_loaded_extensions();
+		// Check if mbstring is available and just show a notice.
+		if ( ! in_array( 'mbstring', $extensions, true ) ) {
+
+			echo PHP_EOL . '********************************************' . PHP_EOL;
+			echo PHP_EOL . '********************************************' . PHP_EOL;
+			echo PHP_EOL . '  The mbstring extension is not available.' . PHP_EOL;
+			echo PHP_EOL . '********************************************' . PHP_EOL;
+			echo PHP_EOL . '********************************************' . PHP_EOL;
+		}
+
+		// Check if mb_strimwidth and mb_strlen are available.
+		$this->assertTrue( function_exists( 'mb_strimwidth' ), 'The mb_strimwidth function is not available.' );
+		$this->assertTrue( function_exists( 'mb_strlen' ), 'The mb_strlen function is not available.' );
+	}
+
 }
