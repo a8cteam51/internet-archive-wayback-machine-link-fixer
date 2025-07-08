@@ -37,10 +37,6 @@ jobs:
           extensions: ${{ matrix.php != '8.1' && 'mbstring' || '' }}
           tools: composer
 
-      - name: Remove mbstring for PHP 8.1
-        if: matrix.php == '8.1'
-        run: sudo phpdismod mbstring || echo "mbstring not enabled"
-
       - name: Show PHP version
         run: php -v
 
@@ -64,3 +60,4 @@ jobs:
         env:
           environment_github: true
         run: composer test:php
+
