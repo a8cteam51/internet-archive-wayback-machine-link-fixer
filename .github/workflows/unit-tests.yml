@@ -2,9 +2,9 @@ name: WP PHPUnit Tests
 
 on:
   push:
-    branches: [ trunk ]
+    branches: [trunk]
   pull_request:
-    branches: [ trunk, develop ]
+    branches: [trunk, develop]
 
 jobs:
   build:
@@ -12,27 +12,27 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest]
         include:
-          - php: '7.4'
+          - php: "7.4"
             mbstring: true
-          - php: '8.0'
+          - php: "8.0"
             mbstring: true
-          - php: '8.1'
+          - php: "8.1"
             mbstring: true
-          - php: '8.2'
+          - php: "8.2"
             mbstring: true
-          - php: '8.3'
+          - php: "8.3"
             mbstring: true
-          - php: '8.3'
-            mbstring: false  # This is the special case
-          - php: '8.4'
+          - php: "8.3"
+            mbstring: false # This is the special case
+          - php: "8.4"
             mbstring: true
     runs-on: ${{ matrix.operating-system }}
     services:
       # Setup MYSQL
       mysql-service:
-        image: 'mysql:5.7'
+        image: "mysql:5.7"
         env:
-          MYSQL_ROOT_PASSWORD: 'poetry'
+          MYSQL_ROOT_PASSWORD: "poetry"
           MYSQL_DATABASE: wlf_tests
         ports:
           - 3306:3306
@@ -44,7 +44,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-       - name: Setup PHP ${{ matrix.php }} (mbstring = ${{ matrix.mbstring }})
+
+      - name: Setup PHP ${{ matrix.php }} (mbstring = ${{ matrix.mbstring }})
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -71,4 +72,3 @@ jobs:
         env:
           environment_github: true
         run: composer test:php
-
