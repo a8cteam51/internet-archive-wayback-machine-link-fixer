@@ -19,6 +19,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Check_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Validate_Link_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_New_Snapshot_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Latest_Snapshot_Action;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Util\List_Table_Action_Notification_Cache;
 
 /**
@@ -52,7 +53,7 @@ class Report_Table extends \WP_List_Table {
 	 *
 	 * @var array{message:string, type:string}[]
 	 */
-	private array $notices = array();
+	protected array $notices = array();
 
 	/**
 	 * Create instance of Report_List_Table.
@@ -449,6 +450,12 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function process_new_snapshot( array $links ): void {
 		$action = new Link_New_Snapshot_Action();
+		// If we have more than 5 links, we will process them in a batch.
+		if ( count( $links ) > 5 ) {
+			$this->delay_new_snapshot_processing( $links );
+			return;
+		}
+
 		// Iterate over the links and update them.
 		foreach ( $links as $link_id ) {
 			$result = $action->create_new_snapshot( absint( $link_id ) );
@@ -491,6 +498,136 @@ class Report_Table extends \WP_List_Table {
 			);
 		}
 	}
+
+	/**
+	 * Batch process new snapshot requests.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param integer[] $links The links to process.
+	 *
+	 * @return void
+	 */
+	private function delay_new_snapshot_processing( array $links ): void {
+		$link_not_found = array();
+		$own_links      = array();
+		$archived_links = array();
+		$added_links    = array();
+
+		//Iterate over the links and update them.
+		foreach ( $links as $link_id ) {
+			// Check the link exists.
+			$link = $this->links->find_by_id( $link_id );
+
+			if ( ! $link ) {
+				// Add a notice.
+				$link_not_found[] = absint( $link_id );
+				continue;
+			}
+
+			if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+				// Add a notice.
+				$archived_links[] = $link;
+				continue;
+			}
+
+			if ( wpcomsp_wayback_link_fixer_is_current_site_link( $link->get_href() ) ) {
+				// Add a notice.
+				$own_links[] = $link;
+				continue;
+			}
+
+			// Add the task to the queue.
+			Create_New_Snapshot_Event::add_to_queue( $link_id );
+			$added_links[] = $link;
+		}
+
+		// Create the report to show.
+		$notice = '';
+
+		$error_icon = '<span style="color: red;">❌</span>';
+
+		// If we have any where the link could not be found, add a notice.
+		if ( ! empty( $link_not_found ) ) {
+			$notice .= sprintf(
+				// translators: %s is the icon for error, %d is the number of links that could not be found.
+				__( '%1$s - %2$d links could not be found.', 'wpcomsp_wayback_link_fixer' ),
+				$error_icon,
+				count( $link_not_found )
+			);
+		}
+
+		// If we have any where the link is an archived link, add a notice.
+		if ( ! empty( $archived_links ) ) {
+			$notice .= sprintf(
+				// translators: %s is the icon for error, %d is the number of links that are archived.
+				__( '%1$s - %2$d links that are already snapshots and will be skipped', 'wpcomsp_wayback_link_fixer' ),
+				$error_icon,
+				count( $archived_links )
+			);
+
+			// List the urls.
+			$notice .= '<ul>';
+			foreach ( $archived_links as $link ) {
+				$notice .= sprintf(
+					'<li>%s</li>',
+					wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+				);
+			}
+			$notice .= '</ul>';
+		}
+
+		// If we have any where the link is an own link, add a notice.
+		if ( ! empty( $own_links ) ) {
+			$notice .= sprintf(
+				// translators: %s is the icon for error, , %d is the number of links that are own links.
+				__( '%1$s - %2$d links are from this site and will not be processed. Please enable the Auto Archiver to archive your own content.', 'wpcomsp_wayback_link_fixer' ),
+				$error_icon,
+				count( $own_links )
+			);
+
+			// List the urls.
+			$notice .= '<ul>';
+			foreach ( $own_links as $link ) {
+				$notice .= sprintf(
+					'<li>%s</li>',
+					wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+				);
+			}
+			$notice .= '</ul>';
+		}
+
+		$success_notice = __( '✅ - The following links were added to the queue for a new snapshot to be created:', 'wpcomsp_wayback_link_fixer' );
+		// If we have any where the link was added to the queue, add a notice.
+		if ( ! empty( $added_links ) ) {
+
+			// List the urls.
+			$success_notice .= '<ul>';
+			foreach ( $added_links as $link ) {
+				$success_notice .= sprintf(
+					'<li>%s</li>',
+					wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+				);
+			}
+			$success_notice .= '</ul>';
+			$success_notice .= '<p>' . __( 'Snapshots are being queued for processing and will appear soon. Thanks for your patience!', 'wpcomsp_wayback_link_fixer' ) . '</p>';
+		}
+
+		// Add the notices.
+		if ( '' !== $notice ) {
+			$this->notices[] = array(
+				'message' => $notice,
+				'type'    => 'error',
+			);
+		}
+		// Add the success notice.
+		$this->notices[] = array(
+			'message' => $success_notice,
+			'type'    => 'success',
+		);
+	}
+
+
 
 	/**
 	 * Process the Link Exclusion action.
@@ -561,7 +698,7 @@ class Report_Table extends \WP_List_Table {
 		foreach ( $this->notices as $notice ) {
 			?>
 			<div class="notice notice-<?php echo esc_attr( $notice['type'] ); ?> is-dismissible">
-				<p><?php echo esc_html( $notice['message'] ); ?></p>
+				<p><?php echo \wp_kses_post( $notice['message'] ); ?></p>
 			</div>
 			<?php
 		}
