@@ -22,6 +22,63 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Lin
 // region
 
 /**
+ * Polyfill for mb_strimwidth.
+ */
+if ( ! function_exists( 'mb_strimwidth' ) ) {
+	/**
+	 * Polyfill for mb_strimwidth.
+	 *
+	 * @param string  $source      The string to trim.
+	 * @param integer $start       The starting position.
+	 * @param integer $width       The width to trim to.
+	 * @param string  $trim_marker The marker to append if the string is trimmed.
+	 * @param string  $encoding    The character encoding.
+	 *
+	 * @return string
+	 */
+	function mb_strimwidth( $source, $start, $width, $trim_marker = '', $encoding = 'UTF-8' ) {
+		// Fallback using mb_substr if available
+		if ( function_exists( 'mb_substr' ) ) {
+			$substr = mb_substr( $source, $start, $width, $encoding );
+			if ( mb_strlen( $source, $encoding ) > $width ) {
+				return $substr . $trim_marker;
+			}
+			return $substr;
+		} else {
+			// Rough fallback using substr (not multibyte-safe!)
+			$substr = substr( $source, $start, $width );
+			if ( strlen( $source ) > $width ) {
+				return $substr . $trim_marker;
+			}
+			return $substr;
+		}
+	}
+}
+
+/**
+ * Polyfill for mb_strlen.
+ */
+if ( ! function_exists( 'mb_strlen' ) ) {
+	/**
+	 * Polyfill for mb_strlen.
+	 *
+	 * @param string $source   The string to measure.
+	 * @param string $encoding The character encoding.
+	 *
+	 * @return integer
+	 */
+	function mb_strlen( $source, $encoding = 'UTF-8' ) {
+		// Use preg_match_all to count UTF-8 characters
+		if ( 'UTF-8' === $encoding ) {
+			return preg_match_all( '/./u', $source, $matches );
+		}
+
+		// Fallback: use strlen (not multibyte-safe!)
+		return strlen( $source );
+	}
+}
+
+/**
  * Returns the plugin's main class instance.
  *
  * @since   1.0.0
