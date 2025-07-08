@@ -1,34 +1,31 @@
 <?php
 
 /**
- * Tests for Check Snapshot Status Event
+ * Tests for the bulk action on the report table
  *
  * @since 1.3.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Snapshot_Status_Event
+ * @coversDefaultClass WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Table
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Event;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Report;
 
 use Gin0115\WPUnit_Helpers\Objects;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Table;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_New_Snapshot_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Snapshot_Status_Event;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 
 /**
- * Test_Link_New_Snapshot_Action
+ * Test_Report_Table_Actions
  *
  * @group Action
- * @group Link_New_Snapshot_Action
+ * @group Test_Report_Table_Actions
  */
-class Test_Link_New_Snapshot_Action extends \WP_UnitTestCase {
+class Test_Report_Table_Actions extends \WP_UnitTestCase {
 
 	private $wpdb;
 	private $link_repository;
