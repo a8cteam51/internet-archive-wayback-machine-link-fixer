@@ -11,21 +11,19 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        include:
-          - php: "7.4"
-            mbstring: true
-          - php: "8.0"
-            mbstring: true
-          - php: "8.1"
-            mbstring: true
-          - php: "8.2"
-            mbstring: true
-          - php: "8.3"
-            mbstring: true
-          - php: "8.3"
-            mbstring: false # This is the special case
-          - php: "8.4"
-            mbstring: true
+        php: [ '7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ]
+        mbstring: [ true, false ]
+        exclude:
+          - php: '7.4'
+            mbstring: false
+          - php: '8.0'
+            mbstring: false
+          - php: '8.1'
+            mbstring: false
+          - php: '8.2'
+            mbstring: false
+          - php: '8.4'
+            mbstring: false
     runs-on: ${{ matrix.operating-system }}
     services:
       # Setup MYSQL
