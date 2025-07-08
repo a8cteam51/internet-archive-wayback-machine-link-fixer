@@ -34,7 +34,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: ${{ matrix.php != '8.1' && 'mbstring' || '' }}
           tools: composer
+
+      - name: Show PHP version
+        run: php -v
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
