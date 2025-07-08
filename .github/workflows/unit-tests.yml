@@ -56,6 +56,11 @@ jobs:
 
       - name: Install dependencies
         run: composer run-script packages-install
+
+      - name: Override PHPUnit version for PHP 7.4
+        if: ${{ matrix.php == '7.4' }}
+        run: composer require --dev phpunit/phpunit:^8.5
+
       - name: Run Tests on Latest Version - WP6.8
         env:
           environment_github: true
