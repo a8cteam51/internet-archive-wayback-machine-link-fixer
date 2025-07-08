@@ -80,7 +80,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	public function test_can_set_and_get_migrations(): void {
 		$migration_1 = $this->createMock( Abstract_Migration::class );
 		$migration_2 = $this->createMock( Abstract_Migration::class );
-		$migrations  = array( $migration_1::class, $migration_2::class );
+		$migrations = [get_class($migration_1), get_class($migration_2)];
 		Settings::update_migrations( $migrations );
 		$this->assertEquals( $migrations, Settings::migrations() );
 	}
