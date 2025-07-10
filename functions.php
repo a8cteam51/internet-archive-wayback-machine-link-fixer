@@ -402,6 +402,9 @@ function wpcomsp_wayback_link_fixer_is_current_site_link( string $url ): bool {
 	// Normalize the URL.
 	$normalized_url = wpcomsp_wayback_link_fixer_normalize_url( $url );
 
+	// Noprmalize the site URLs.
+	$site_urls = array_map( 'wpcomsp_wayback_link_fixer_normalize_url', $site_urls );
+
 	// Check if the URL starts with any of the site URLs.
 	foreach ( $site_urls as $site_url ) {
 		if ( 0 === strpos( $normalized_url, $site_url ) ) {
