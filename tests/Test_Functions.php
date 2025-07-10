@@ -24,19 +24,19 @@ class Test_Functions extends \WP_UnitTestCase {
 	 */
 	public static function normalize_url_provider(): array {
 		return array(
-			'HTTPs simple' => array( 'https://example.com', 'https://example.com' ),
-			'HTTP simple' => array( 'http://example.com', 'http://example.com' ),
-			'HTTP with trailing slash' => array( 'http://example.com/', 'http://example.com' ),
-			'URL with special characters in path' => array( 'http://example.com/wiki/Help:Executive+Bios', 'http://example.com/wiki/Help%3AExecutive%2BBios' ),
-			'HTTP URL with basic path' => array( 'http://example.com/path/to/resource', 'http://example.com/path/to/resource' ),
-			'HTTP URL with path and trailing slash' => array( 'http://example.com/path/to/resource/', 'http://example.com/path/to/resource' ),
-			'HTTP URL with spaces in path' => array( 'http://example.com/path with space/to/resource', 'http://example.com/path%20with%20space/to/resource' ),
-			'HTTP URL with query parameters' => array( 'http://example.com/path/to/resource?foo=bar', 'http://example.com/path/to/resource?foo%3Dbar' ),
-			'HTTP URL with fragment' => array( 'http://example.com/path/to/resource#section1', 'http://example.com/path/to/resource#section1' ),
-			'HTTP URL with port' => array( 'http://example.com:8080/path/to/resource', 'http://example.com:8080/path/to/resource' ),
-			'HTTP URL with query containing spaces' => array( 'http://example.com/?query with spaces', 'http://example.com/?query%20with%20spaces' ),
-			'HTTPs URL with special characters' => array( 'https://example.com/path/to/special&chars', 'https://example.com/path/to/special%26chars' ),
-			'HTTP URL with hashbang fragment' => array( 'http://example.com/#!special_characters', 'http://example.com/#!special_characters' ),
+			'HTTPs simple' => array( 'https://example.com', 'https%3A%2F%2Fexample.com' ),
+			'HTTP simple' => array( 'http://example.com', 'http%3A%2F%2Fexample.com' ),
+			'HTTP with trailing slash' => array( 'http://example.com/', 'http%3A%2F%2Fexample.com' ),
+			'URL with special characters in path' => array( 'http://example.com/wiki/Help:Executive+Bios', 'http%3A%2F%2Fexample.com%2Fwiki%2FHelp%253AExecutive%252BBios' ),
+			'HTTP URL with basic path' => array( 'http://example.com/path/to/resource', 'http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fresource' ),
+			'HTTP URL with path and trailing slash' => array( 'http://example.com/path/to/resource/', 'http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fresource' ),
+			'HTTP URL with spaces in path' => array( 'http://example.com/path with space/to/resource', 'http%3A%2F%2Fexample.com%2Fpath%2520with%2520space%2Fto%2Fresource' ),
+			'HTTP URL with query parameters' => array( 'http://example.com/path/to/resource?foo=bar', 'http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fresource?foo%3Dbar' ),
+			'HTTP URL with fragment' => array( 'http://example.com/path/to/resource#section1', 'http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fresource#section1' ),
+			'HTTP URL with port' => array( 'http://example.com:8080/path/to/resource', 'http%3A%2F%2Fexample.com:8080%2Fpath%2Fto%2Fresource' ),
+			'HTTP URL with query containing spaces' => array( 'http://example.com/?query with spaces', 'http%3A%2F%2Fexample.com%2F?query%20with%20spaces' ),
+			'HTTPs URL with special characters' => array( 'https://example.com/path/to/special&chars', 'https%3A%2F%2Fexample.com%2Fpath%2Fto%2Fspecial%2526chars' ),
+			'HTTP URL with hashbang fragment' => array( 'http://example.com/#!special_characters', 'http%3A%2F%2Fexample.com%2F#!special_characters' ),
 		);
 	}
 

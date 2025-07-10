@@ -402,6 +402,9 @@ function wpcomsp_wayback_link_fixer_is_current_site_link( string $url ): bool {
 	// Normalize the URL.
 	$normalized_url = wpcomsp_wayback_link_fixer_normalize_url( $url );
 
+	// Noprmalize the site URLs.
+	$site_urls = array_map( 'wpcomsp_wayback_link_fixer_normalize_url', $site_urls );
+
 	// Check if the URL starts with any of the site URLs.
 	foreach ( $site_urls as $site_url ) {
 		if ( 0 === strpos( $normalized_url, $site_url ) ) {
@@ -433,7 +436,7 @@ function wpcomsp_wayback_link_fixer_normalize_url( string $url ): string {
 		// Split path by /
 		$path_parts        = explode( '/', $url_parts['path'] );
 		$path_parts        = array_map( 'rawurlencode', $path_parts );
-		$url_parts['path'] = implode( '/', $path_parts );
+		$url_parts['path'] = rawurlencode( implode( '/', $path_parts ) );
 	}
 
 	// If we have a query, encode it.
@@ -449,6 +452,9 @@ function wpcomsp_wayback_link_fixer_normalize_url( string $url ): string {
 	// Rebuild the scheme and host
 	$url  = isset( $url_parts['scheme'] ) ? $url_parts['scheme'] . '://' : '';
 	$url .= isset( $url_parts['host'] ) ? $url_parts['host'] : '';
+
+	// URL encode the host
+	$url = rawurlencode( $url );
 
 	// Add port if specified
 	if ( isset( $url_parts['port'] ) ) {

@@ -61,7 +61,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		add_filter(
 			'pre_http_request',
 			function ( $response, $args, $url ) {
-				$this->assertStringEndsWith( 'http://example.com', $url );
+				$this->assertStringEndsWith( 'http%3A%2F%2Fexample.com', $url );
 				return new \WP_Error( 'http_request_failed', 'Error' );
 			},
 			10,
@@ -270,7 +270,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		add_filter(
 			'pre_http_request',
 			function ( $response, $args, $url ) {
-				$this->assertEquals( 'http://custom-snapshot.com?url=http://example.com&timestamp=20240422', $url );
+				$this->assertEquals( 'http://custom-snapshot.com?url=http%3A%2F%2Fexample.com&timestamp=20240422', $url );
 				return new \WP_Error( 'http_request_failed', 'Error' );
 			},
 			10,
@@ -309,7 +309,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 				$this->assertStringStartsWith( 'https://web.archive.org/save', $url );
 				$this->assertArrayHasKey( 'body', $args );
 				$this->assertArrayHasKey( 'url', $args['body'] );
-				$this->assertEquals( 'http://example.com', $args['body']['url'] );
+				$this->assertEquals( 'http%3A%2F%2Fexample.com', $args['body']['url'] );
 
 				// Mock a valid response.
 				return array(
