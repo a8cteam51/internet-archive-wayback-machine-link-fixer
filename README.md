@@ -14,7 +14,11 @@
 
 ## Description
 
-Welcome to **Wayback Link Fixer**, a powerful tool designed to enhance your WordPress site by automatically scanning posts for links, retrieving the latest snapshots from the Wayback Machine, and seamlessly replacing broken links with archived versions. This innovative solution ensures that your posts remain resilient against `LINKROT` , preserving the integrity of linked content over time.
+Welcome to **Internet Archive Wayback Machine Link Fixer**, a WordPress plugin that helps protect your site from **LINKROT**—the slow death of links as web pages change or disappear over time. This plugin automatically scans your post content, both when saving and across existing posts, to find outbound links. For each one, it checks the Wayback Machine for an archived version and creates a new snapshot if none exists.
+
+As original content on the web vanishes, the plugin steps in to keep your links alive by redirecting users to reliable archived versions. It also proactively archives your own posts whenever they’re updated, ensuring your content has a consistent and preserved history.
+
+Maintain link integrity, preserve your content, and let the plugin handle it—automatically.
 
 ## Installation
 
@@ -35,15 +39,13 @@ Welcome to **Wayback Link Fixer**, a powerful tool designed to enhance your Word
 
 ## Configuration
 
-### Post Types
+When the plugin is first installed it will give the option to launch the setup wizard, this will guide you through the initial setup of the plugin. Once this has been done, you will be access the settings again to make any changes.
 
-![image](./_docs/settings--post-types.png)
+## Settings
 
-Choose which post types should be checked whenever a post is saved, updated, or when existing posts are scanned.
+### General Plugin Settings
 
-> By default, `post` and `page` are selected.
-
-### Remove Data on Uninstall
+#### Wipe Data on Uninstall
 
 ![image](./_docs/settings--drop-tables.png)
 
@@ -51,15 +53,35 @@ Enable this option to remove all plugin data from the database when the plugin i
 
 > Enabled by default.
 
-### Scan Existing Posts
+### Archive.org API
+![image](./_docs/settings--archive-api.png)
+
+To increase your daily link processing limit, you can enter your free **Archive.org API credentials** in the plugin settings. Just visit [archive.org/account/s3.php](https://archive.org/account/s3.php) to generate your `Access Key` and `Secret Key`.
+
+### Link Fixer Settings
+
+#### Enable Link Fixer
+![image](./_docs/settings--enable-link-fixer.png)
+
+Enable this option to activate the Link Fixer. Once enabled, additional settings will appear to let you customize how links are scanned, archived, and redirected.
+
+#### Post Types
+
+![image](./_docs/settings--post-types.png)
+
+Choose which post types should be checked whenever a post is saved, updated, or when existing posts are scanned.
+
+> By default, `post` and `page` are selected.
+
+#### Scan Existing Posts
 
 ![image](./_docs/settings--scan-existing.png)
 
 Enable this option to scan all existing posts for broken links. Only posts that haven't been previously scanned will be checked.
 
-> Enabled by default.
+> Disabled by default.
 
-### Link Exclusions
+#### Link Exclusions
 
 ![image](./_docs/settings--link-exclusions.png)
 
@@ -68,73 +90,80 @@ Specify links to exclude from being checked. This is useful for links known to b
 * `https://example.com/*` - Excludes all links starting with `https://example.com/`
 * `https://x.com*` - Excludes all links containing `x/twitter` in the domain name
 
-### Archive.org API Key
-
-![image](./_docs/settings--archive-api-key.png)
-
-You can use this plugin without an API key, but you will be limited to 200 new snapshots per day. Any new snapshots which need to created after this limit is reached will fail.
-
-> Visit [https://archive.org/account/s3.php](https://archive.org/account/s3.php) to get your API key.
-
-### Fixer Option
+#### Fixer Option
 
 ![image](./_docs/settings--fixer-option.png)
 
-### Add Own Content to Wayback Machine
+You can choose what outcome you want to happen when a link is found to be broken. The options are:
+ * **Do Nothing** - This will not change the link at all, but useful for monitoring content.
+ * **Replace Link (No Notification)** - This will replace the broken link with the archived version, if one exists. If no archived version exists, the link will not be changed. No notice will be given to the user that the link has been replaced.
 
-You can allow all posts to be added to the Wayback Machine. This will ensure that all posts are archived and can be accessed at a later date. By turning on this setting, every time a post is created or updated, it will be added to the Wayback Machine.
 
-![image](./_docs/settings--add-own-posts.png)
+[comment]: # (This actually is the most platform independent comment)
 
-### Routine Update own Content
+### Auto Archiver
 
-You can allow all posts to be routinely updated in the Wayback Machine. This will ensure that all posts are archived and can be accessed at a later date. By turning on this setting, every post will be updated every 14 days.
+![image](./_docs/settings--auto-archiver.png)
 
-![image](./_docs/settings--routinelyh-add-own-posts.png)
+The Auto Archiver automatically creates Wayback Machine snapshots of your own content whenever it’s created or updated (based on allowed post types). You can also enable scheduled archiving to routinely update snapshots over time.
 
-You can use this setting to choose how the plugin should handle broken links. Either do nothing or replace the broken link with the archived version (if available).
+#### Routinely Auto Archive
 
-### Internet Archive Status
+![image](./_docs/settings--routinely-auto-archive.png)
 
-Following the 2024 incident, we have added some checks that run routinely to check if the Internet Archive is still running. If it is not, the plugin will not be able to create new snapshots or check the status of existing links. Any pending checks or links to be created, will be delayed but should still run later onces things are back up an running.
+Enable this option to routinely update your posts in the Wayback Machine. This ensures all posts remain archived and up to date. You can also set how many days to wait between each snapshot.
 
-You can tell when things of offline with the following notice 
-![image](./_docs/ia-offline.png)
+#### Allowed Post Types
 
-## Links 
+![image](./_docs/settings--allowed-auto-archive-post-types.png)
 
-Every link which is scanned, is added to the Link Table, this can be accessed under `Links` in the `Tools` menu.
+Select which post types should be automatically archived when they are created or updated. Only the selected types will trigger the Auto Archiver on save.
 
-![image](./_docs/links--table.png)
+
+## Dashboard Widget
+
+![image](./_docs/dashboard--widget.png)
+
+The Dashboard Widget gives you a quick overview of the plugin’s current activity and settings. If you've connected your Archive.org account, it will display how many snapshots have been created today, how many are still pending (waiting to be processed by the Internet Archive), and the current status of various features.
+
+You’ll see whether Link Processing and Auto Archiving are active, whether the plugin is scanning existing posts for broken links, the interval (in days) between routine link checks, and how many consecutive failures are required before a link is considered broken. This widget provides a convenient way to monitor the health and performance of your link preservation setup at a glance.
+
+
+## Link Fixer
+
+Every link which is scanned, is added to the Link Table, this can be accessed under `Link Fixer` in the `Tools` menu.
+
+![image](./_docs/link-fixer-table--overview.png)
 
 Here you can see the status of each link, the number of snapshots available, and the date of the last snapshot.
+
+You can open the help context at any time for additional information.
+
+![image](./_docs/link-fixer-table--help.png)
 
 
 ### URL
 
-The URL of the link, clicking it will show more details about the link.
+You can access the report for the link by clicking on the URL. This will take you to the link report page, which gives more information about the link and its status. You can also access the links target in a new tab by clicking the link icon next to the URL.
 
-### Has Archived Link
+### Archive Status
 
 | | |
 |---|---|
 | ![image](./_docs/check-icon.png) | A checkmark indicates that we have a defined archived link for this URL. Clicking this will access the archived snapshot. |
 | ![image](./_docs/cross-icon.png) | A cross indicates that we do not have an archived link for this URL. |
+| ![image](./_docs/clock-icon.png) | A clock indicates that we are currently trying to create a new snapshot for this URL. |
+| ![image](./_docs/plus-icon.png) | A plus indicates that this is a new link that has not started the process yet. This will happen ASAP |
 
 
 ### Link Health
 
 | | |
 |---|---|
-| ![image](./_docs/heart-icon.png) | A heart implies that the link is still pointing to a valid target. |
-| ![image](./_docs/error-icon.png) | A broken heart indicates that the link is broken. |
+| ![image](./_docs/check-icon.png) | A checkmark implies that the link was valid on the last check. |
+| ![image](./_docs/cross-icon.png) | A cross indicates that the link is broken |
+| ![image](./_docs/clock-icon.png) | A clock indicates that the link has not yet been checked. It might still be being processed. |
 
-### Is Excluded
-
-| | |
-|---|---|
-| ![image](./_docs/check-icon.png) | A checkmark indicates that the link is excluded from being checked. |
-| ![image](./_docs/cross-icon.png) | A cross indicates that the link is not excluded from being checked. |
 
 
 ### Check Count
