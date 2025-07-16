@@ -158,7 +158,7 @@ You can access the report for the link by clicking on the URL. This will take yo
 
 ### Link Health
 
-| | |
+| Icon | Meaning |
 |---|---|
 | ![image](./_docs/check-icon.png) | A checkmark implies that the link was valid on the last check. |
 | ![image](./_docs/cross-icon.png) | A cross indicates that the link is broken |
