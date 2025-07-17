@@ -363,10 +363,18 @@ This event scans existing posts for links that haven't been processed yet. It ru
 
 *This event takes no arguments.*
 
-| **Configuration** | **Filter/Setting** | **Default** | **Description** |
-|-------------------|-------------------|-------------|-----------------|
+**Filters:**
+
+| **Configuration** | **Filter** | **Default** | **Description** |
+|-------------------|------------|-------------|-----------------|
 | Batch size | [`wlf_posts_per_batch`](#wlf_posts_per_batch) | 10 | Number of posts processed per batch |
 | Frequency | [`wlf_scan_posts_interval`](#wlf_scan_posts_interval) | 10 minutes | How often to run the scan |
+
+**Settings:**
+
+| **Configuration** | **Setting** | **Default** | **Description** |
+|-------------------|-------------|-------------|-----------------|
+| Allowed post types | [Post Types](#post-types) | - | Which post types to scan |
 | Enable/disable | [Scan Existing Posts](#scan-existing-posts) | - | Whether scanning is enabled |
 
 ---
@@ -416,8 +424,10 @@ This event is called by the `Link_Access_Validator_Event` to check the status of
 | `job_id` | string | Job ID returned by the archive service |
 | `attempt` | int | Current attempt number (starts at 0) |
 
-| **Configuration** | **Filter/Setting** | **Default** | **Description** |
-|-------------------|-------------------|-------------|-----------------|
+**Filters:**
+
+| **Configuration** | **Filter** | **Default** | **Description** |
+|-------------------|------------|-------------|-----------------|
 | Max attempts | [`wlf_check_validator_status_attempts`](#wlf_check_validator_status_attempts) | 3 | Maximum number of retry attempts |
 | Retry interval | [`wlf_check_validator_status_interval`](#wlf_check_validator_status_interval) | 2 minutes | Delay between status checks |
 
@@ -439,11 +449,18 @@ This event scans existing posts on the site to find those that either do not hav
 
 *This event takes no arguments.*
 
-| **Configuration** | **Filter/Setting** | **Default** | **Description** |
-|-------------------|-------------------|-------------|-----------------|
+**Filters:**
+
+| **Configuration** | **Filter** | **Default** | **Description** |
+|-------------------|------------|-------------|-----------------|
 | Posts per batch | [`wlf_posts_per_batch`](#wlf_posts_per_batch) | 10 | Number of posts processed per batch |
-| Allowed post types | [Post Types](#post-types) | - | Which post types to scan |
 | Scan interval | [`wlf_scan_posts_interval`](#wlf_scan_posts_interval) | 10 minutes | How often to run the scan |
+
+**Settings:**
+
+| **Configuration** | **Setting** | **Default** | **Description** |
+|-------------------|-------------|-------------|-----------------|
+| Allowed post types | [Post Types](#post-types) | - | Which post types to scan |
 | Enable/disable | [Scan Existing Posts](#scan-existing-posts) | - | Whether scanning is enabled |
 
 ---
