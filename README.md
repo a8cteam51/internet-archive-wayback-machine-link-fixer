@@ -259,9 +259,11 @@ This event attempts to locate the most recent snapshot of a link using the Wayba
 **Process:**
 If a snapshot is found, it's saved to the link record. If not, the link is marked as pending, and the `Create_New_Snapshot_Event` is queued to create one. The plugin also checks the current status of the original URL and stores that status. If the URL returns a `403 Forbidden`, it is added to the `Link_Access_Validator_Event` queue for further checking.
 
-| **Action** | **Arguments** |
-|------------|---------------|
-| `wlf_find_or_create_snapshot` | `link_id` (int) - The ID of the link to process |
+**Action:** `wlf_find_or_create_snapshot`
+
+| **Argument** | **Type** | **Description** |
+|--------------|----------|-----------------|
+| `link_id` | int | The ID of the link to process |
 
 ---
 
@@ -276,14 +278,18 @@ When a snapshot for a link doesn't already exist, this event is used to request 
 - Marks links as `pending` or `done` depending on the outcome
 - Avoids duplicate retries once the maximum attempts are reached
 
-| **Action** | **Arguments** |
-|------------|---------------|
-| `wlf_create_new_snapshot` | `link_id` (int) - The ID of the link to process<br/>`attempt` (int) - Current attempt number |
+This process is retried automatically if it fails, with up to 3 attempts by default. Each retry is delayed by 15 minutes, unless the failure is due to hitting the snapshot rate limit, in which case the delay is 24 hours.
+
+**Action:** `wlf_create_new_snapshot`
+
+| **Argument** | **Type** | **Description** |
+|--------------|----------|-----------------|
+| `link_id` | int | The ID of the link to process |
+| `attempt` | int | Current attempt number |
 
 | **Configuration** | **Filter/Setting** | **Default** | **Description** |
 |-------------------|-------------------|-------------|-----------------|
-| Max attempts | `wlf_create_new_snapshot_attempts` | 3 | Number of retry attempts |
-| Retry delay | Hard-coded | 15 minutes | Delay between retries (24 hours if rate limited) |
+| Max attempts | [`wlf_create_new_snapshot_attempts`](#wlf_create_new_snapshot_attempts) | 3 | Number of retry attempts |
 
 ---
 
@@ -299,15 +305,20 @@ Once a snapshot job has been created, this event checks the status of that snaps
 - Marks links as `done` if the snapshot ultimately fails or reaches maximum retries
 - Triggers `wlf_update_archive_url` if the snapshot is successfully created
 
-| **Action** | **Arguments** |
-|------------|---------------|
-| `wlf_check_snapshot_status` | `link_id` (int) - The ID of the link being checked<br/>`job_id` (string) - Job ID from the Wayback Machine<br/>`attempt` (int) - Current attempt number |
+This process is retried automatically until the snapshot is complete or the maximum number of attempts is reached. Each retry is delayed by 5 minutes by default. If the Wayback Machine service is offline, the event will retry after 1 hour.
+
+**Action:** `wlf_check_snapshot_status`
+
+| **Argument** | **Type** | **Description** |
+|--------------|----------|-----------------|
+| `link_id` | int | The ID of the link being checked |
+| `job_id` | string | Job ID from the Wayback Machine |
+| `attempt` | int | Current attempt number |
 
 | **Configuration** | **Filter/Setting** | **Default** | **Description** |
 |-------------------|-------------------|-------------|-----------------|
-| Max attempts | `wlf_check_snapshot_status_attempts` | 3 | Number of retry attempts |
-| Retry interval | `wlf_check_snapshot_status_interval` | 5 minutes | Delay between status checks |
-| Service offline retry | Hard-coded | 1 hour | Delay when Wayback Machine is offline |
+| Max attempts | [`wlf_check_snapshot_status_attempts`](#wlf_check_snapshot_status_attempts) | 3 | Number of retry attempts |
+| Retry interval | [`wlf_check_snapshot_status_interval`](#wlf_check_snapshot_status_interval) | 5 minutes | Delay between status checks |
 
 ---
 
@@ -321,14 +332,18 @@ After a snapshot has been created, this event attempts to fetch the final archiv
 - Retries if the URL is not yet available or if an error occurs
 - Marks the link as `done` if the maximum number of attempts is exceeded
 
-| **Action** | **Arguments** |
-|------------|---------------|
-| `wlf_update_archive_url` | `link_id` (int) - The ID of the link to update<br/>`attempt` (int) - Current attempt number |
+This process is retried automatically with up to 3 attempts by default. Each retry is delayed by 15 minutes.
+
+**Action:** `wlf_update_archive_url`
+
+| **Argument** | **Type** | **Description** |
+|--------------|----------|-----------------|
+| `link_id` | int | The ID of the link to update |
+| `attempt` | int | Current attempt number |
 
 | **Configuration** | **Filter/Setting** | **Default** | **Description** |
 |-------------------|-------------------|-------------|-----------------|
-| Max attempts | `wlf_update_archive_url_attempts` | 3 | Number of retry attempts |
-| Retry delay | Hard-coded | 15 minutes | Delay between retry attempts |
+| Max attempts | [`wlf_update_archive_url_attempts`](#wlf_update_archive_url_attempts) | 3 | Number of retry attempts |
 
 ---
 
@@ -344,14 +359,14 @@ This event scans existing posts for links that haven't been processed yet. It ru
 
 > **Note:** This ensures imported or legacy posts are eventually scanned and included in snapshot coverage.
 
-| **Action** | **Arguments** |
-|------------|---------------|
-| `wlf_scan_existing_posts` | None |
+**Action:** `wlf_scan_existing_posts`
+
+*This event takes no arguments.*
 
 | **Configuration** | **Filter/Setting** | **Default** | **Description** |
 |-------------------|-------------------|-------------|-----------------|
-| Batch size | `wlf_posts_per_batch` | 10 | Number of posts processed per batch |
-| Frequency | `wlf_scan_posts_interval` | 10 minutes | How often to run the scan |
+| Batch size | [`wlf_posts_per_batch`](#wlf_posts_per_batch) | 10 | Number of posts processed per batch |
+| Frequency | [`wlf_scan_posts_interval`](#wlf_scan_posts_interval) | 10 minutes | How often to run the scan |
 | Enable/disable | `should_scan_existing_posts` (setting) | - | Whether scanning is enabled |
 
 ---
@@ -368,13 +383,11 @@ This event is triggered after an archived link has been found, and is responsibl
 
 > **Note:** If the job creation fails or the archive service is unreachable, the system retries with exponential delay logic (via `wlf_check_validator_status`).
 
-| **Action** | **Arguments** |
-|------------|---------------|
-| `wlf_link_access_validator` | `link_id` (int) - The ID of the link to validate |
+**Action:** `wlf_link_access_validator`
 
-| **Configuration** | **Filter/Setting** | **Default** | **Description** |
-|-------------------|-------------------|-------------|-----------------|
-| Service offline retry | Hard-coded | 1 hour | Delay when archive service is offline |
+| **Argument** | **Type** | **Description** |
+|--------------|----------|-----------------|
+| `link_id` | int | The ID of the link to validate |
 
 **Scheduling Options:**
 - Immediate: `Link_Access_Validator_Event::add_to_queue( $link_id )`
@@ -395,15 +408,18 @@ This event is called by the `Link_Access_Validator_Event` to check the status of
   - If still **pending**, the event is rescheduled with an incremented attempt count
 - If the Wayback Machine is offline, it retries after 1 hour
 
-| **Action** | **Arguments** |
-|------------|---------------|
-| `wlf_check_validator_status` | `link_id` (int) - ID of the link being validated<br/>`job_id` (string) - Job ID returned by the archive service<br/>`attempt` (int) - Current attempt number (starts at 0) |
+**Action:** `wlf_check_validator_status`
+
+| **Argument** | **Type** | **Description** |
+|--------------|----------|-----------------|
+| `link_id` | int | ID of the link being validated |
+| `job_id` | string | Job ID returned by the archive service |
+| `attempt` | int | Current attempt number (starts at 0) |
 
 | **Configuration** | **Filter/Setting** | **Default** | **Description** |
 |-------------------|-------------------|-------------|-----------------|
-| Max attempts | `wlf_check_validator_status_attempts` | 3 | Maximum number of retry attempts |
-| Retry interval | `wlf_check_validator_status_interval` | 2 minutes | Delay between status checks |
-| Service offline retry | Hard-coded | 1 hour | Delay when Wayback Machine is offline |
+| Max attempts | [`wlf_check_validator_status_attempts`](#wlf_check_validator_status_attempts) | 3 | Maximum number of retry attempts |
+| Retry interval | [`wlf_check_validator_status_interval`](#wlf_check_validator_status_interval) | 2 minutes | Delay between status checks |
 
 ---
 
@@ -419,15 +435,15 @@ This event scans existing posts on the site to find those that either do not hav
 
 > **Relationship:** This event serves as the "discovery" phase, identifying posts that need link processing and queuing them for the `Process_Local_Post_Event`.
 
-| **Action** | **Arguments** |
-|------------|---------------|
-| `wlf_scan_existing_posts` | None |
+**Action:** `wlf_scan_existing_posts`
+
+*This event takes no arguments.*
 
 | **Configuration** | **Filter/Setting** | **Default** | **Description** |
 |-------------------|-------------------|-------------|-----------------|
 | Posts per batch | `wlf_posts_per_batch` (setting) | 10 | Number of posts processed per batch |
 | Allowed post types | `wlf_allowed_post_types` (setting) | - | Which post types to scan |
-| Scan interval | `wlf_scan_posts_interval` | 10 minutes | How often to run the scan |
+| Scan interval | [`wlf_scan_posts_interval`](#wlf_scan_posts_interval) | 10 minutes | How often to run the scan |
 | Enable/disable | `should_scan_existing_posts` (setting) | - | Whether scanning is enabled |
 
 ---
@@ -446,13 +462,11 @@ This event processes a single post to create a Wayback Machine snapshot of its p
 
 > **Relationship:** This event handles the actual archival snapshot creation for posts discovered and queued by the `Scan_Posts_Event`.
 
-| **Action** | **Arguments** |
-|------------|---------------|
-| `wlf_process_local_post` | `post_id` (int) - ID of the post to process |
+**Action:** `wlf_process_local_post`
 
-| **Configuration** | **Filter/Setting** | **Default** | **Description** |
-|-------------------|-------------------|-------------|-----------------|
-| Service offline retry | Hard-coded | 1 hour | Delay when service is offline |
+| **Argument** | **Type** | **Description** |
+|--------------|----------|-----------------|
+| `post_id` | int | ID of the post to process |
 
 ---
 
@@ -465,15 +479,17 @@ This event verifies the availability of the archive API services, primarily the 
 - Forces an immediate check of the archive API status, ignoring cached results
 - Updates a transient cache to store the current online/offline status for use by other events and processes
 
+The API status check result is cached for 1 hour by default.
+
 > **Relationship:** This event supports all other events by providing a centralized mechanism to confirm the archive service's availability. Events such as `Scan_Posts_Event` and `Process_Local_Post_Event` rely on this status check to decide whether to proceed or delay their operations.
 
-| **Action** | **Arguments** |
-|------------|---------------|
-| `wlf_check_archive_services_online` | None |
+**Action:** `wlf_check_archive_services_online`
+
+*This event takes no arguments.*
 
 | **Configuration** | **Filter/Setting** | **Default** | **Description** |
 |-------------------|-------------------|-------------|-----------------|
-| Cache duration | `wlf_archive_api_status_duration` | 1 hour | How long to cache the API status check result |
+| Cache duration | [`wlf_archive_api_status_duration`](#wlf_archive_api_status_duration) | 1 hour | How long to cache the API status check result |
 
 
 ### Hooks
