@@ -510,6 +510,72 @@ The API status check result is cached for 1 hour by default.
 
 The plugin is designed to be extensible, with a number of hooks and filters available for developers to use.
 
+---
+
+#### Setting Override Filters
+
+These filters allow you to programmatically override admin panel settings. **Filters take precedence over WordPress admin settings.**
+
+#### `wlf_add_own_content_to_wayback_machine`
+
+This filter overrides the admin setting that controls whether your own content is added to the Wayback Machine. The default is false.
+
+```php
+add_filter( 'wlf_add_own_content_to_wayback_machine', function( bool $add_own_content ): bool {
+	return true;
+});
+```
+
+> Please note when a post is added, a 10 minute delay is added before the post is added to the Wayback Machine. This will prevent the internet archive from blocking the request and creating lots of snapshots with no real changes.
+
+#### `wlf_own_content_post_types`
+
+This filter overrides the admin setting that controls which post types are allowed to be added to the Wayback Machine. The default is `post` and `page`.
+
+```php
+add_filter( 'wlf_own_content_post_types', function( array $post_types ): array {
+	$post_types[] = 'custom_post_type';
+	return $post_types;
+});
+```
+
+#### `wlf_routinely_update_wayback_machine`
+
+This filter overrides the admin setting that controls whether posts are routinely updated in the Wayback Machine. The default is false.
+
+```php
+add_filter( 'wlf_routinely_update_wayback_machine', function( bool $routinely_update ): bool {
+	return true;
+});
+```
+
+#### `wlf_routinely_update_wayback_machine_interval`
+
+This filter overrides the admin setting that controls how long between each routine update. The default is 14 days. The time is given in seconds.
+
+```php
+add_filter( 'wlf_routinely_update_wayback_machine_interval', function( int $interval ): int {
+	return 7 * \DAY_IN_SECONDS; // 7 days
+});
+```
+
+#### `wlf_link_exclusions`
+
+This filter enhances the link exclusions defined in admin settings by adding additional exclusions to the link checker.
+
+```php
+add_filter( 'wlf_link_exclusions', function( array $exclusions ): array {
+   $exclusions[] = 'https://example.com/*';
+   return $exclusions;
+});
+```
+
+---
+
+#### Configuration Filters
+
+These filters control various aspects of plugin behavior and performance.
+
 #### `wlf_link_checker_timeout`
 
 This is used to determine how long we should wait when checking if a link is still valid. The default is 5000ms (5 seconds).
@@ -517,17 +583,6 @@ This is used to determine how long we should wait when checking if a link is sti
 ```php
 add_filter( 'wlf_link_checker_timeout', function( int $timeout ): int {
    return 10000; // 10 seconds
-});
-```
-
-#### `wlf_link_exclusions`
-
-This is used to add additional exclusions to the link checker. This is fired with the defined exclusions from settings.
-
-```php
-add_filter( 'wlf_link_exclusions', function( array $exclusions ): array {
-   $exclusions[] = 'https://example.com/*';
-   return $exclusions;
 });
 ```
 
@@ -641,6 +696,41 @@ add_filter( 'wlf_check_validator_status_attempts', function( int $attempts ): in
 });
 ```
 
+#### `wlf_scan_own_posts_event_interval`
+
+This is used to define how often the scan own posts event should run. The default is 15 minutes.
+
+```php
+add_filter( 'wlf_scan_own_posts_event_interval', function( int $interval ): int {
+	return 30 * \MINUTE_IN_SECONDS; // 30 minutes
+});
+```
+
+#### `wlf_scan_own_posts_per_call`
+
+This is used to define how many posts should be processed per call when scanning own posts. The default is 10.
+
+```php
+add_filter( 'wlf_scan_own_posts_per_call', function( int $posts_per_call ): int {
+	return 20;
+});
+```
+
+#### `wlf_show_link_table_debug_data`
+
+This is used to show additional debug data in the link table. This is for debugging purposes only. The default is false.
+
+```php
+add_filter( 'wlf_show_link_table_debug_data', function( bool $show_debug ): bool {
+	return true;
+});
+```
+
+---
+
+#### Advanced Customization
+
+These filters allow advanced customization of URLs, timeouts, and client implementations.
 
 #### `wlf_is_valid_check`
 
@@ -673,6 +763,19 @@ add_filter( 'wlf_exclude_link_from_post', function( bool $exclude, Link $link, i
 
 > Please note if a link is already being excluded, this is likely due to the site blocking any uptime checking bots and allowing these links to be checked will likely result in false positives.
 
+#### `wlf_own_content_allow_post`
+
+This filter allows a final decision to be made on if a post should be added to the Wayback Machine. The default is to allow all posts.
+
+```php
+add_filter( 'wlf_own_content_allow_post', function( bool $allow, int $post_id ): bool {
+	if ( get_post_meta( $post_id, 'do_not_archive', true ) ) {
+		return false;
+	}
+	return $allow;
+});
+```
+
 #### `wlf_link_checker_url_params`
 
 This is the array of parameters which are passed to the `wp_remote_get` function when checking if a link is still valid.
@@ -693,7 +796,6 @@ to impersonate Chrome 110 and potentially avoid TLS fingerprinting blockers.
 * `skip_cache=1`: The service caches results for 5 minutes. Use this param to skip the cache.
 * `kip_wbm_blocker=1`: The service blocks Wayback Machine URLs by default. Use this parameter to skip it
 * `user_agent=<str>`: Use a custom `user-agent` HTTP header
-
 
 #### `wlf_link_checker_url_base`
 
@@ -777,87 +879,6 @@ add_filter( 'wlf_create_snapshot_timeout', function( int $timeout ): int {
 });
 ```
 
-#### `wlf_scan_own_posts_event_interval`
-
-This is used to define how often the scan own posts event should run. The default is 15 minutes.
-
-```php
-add_filter( 'wlf_scan_own_posts_event_interval', function( int $interval ): int {
-	return 30 * \MINUTE_IN_SECONDS; // 30 minutes
-});
-```
-
-#### `wlf_scan_own_posts_per_call`
-
-This is used to define how many posts should be processed per call when scanning own posts. The default is 10.
-
-```php
-add_filter( 'wlf_scan_own_posts_per_call', function( int $posts_per_call ): int {
-	return 20;
-});
-```
-
-#### `wlf_show_link_table_debug_data`
-
-This is used to show additional debug data in the link table. This is for debugging purposes only. The default is false.
-
-```php
-add_filter( 'wlf_show_link_table_debug_data', function( bool $show_debug ): bool {
-	return true;
-});
-```
-
-#### `wlf_add_own_content_to_wayback_machine`
-This filter is applied to the setting which allows the user to add their own content to the Wayback Machine. The default is false and can be controlled via settings also.
-
-```php
-add_filter( 'wlf_add_own_content_to_wayback_machine', function( bool $add_own_content ): bool {
-	return true;
-});
-```
-
-> Please note when a post is added, a 10 minute delay is added before the post is added to the Wayback Machine. This will prevent the internet archive from blocking the request and creating lots of snapshots with no real changes.
-
-#### `wlf_own_content_post_types`
-This allows control over which post types are allowed to be added. The default is `post` and `page`.
-
-```php
-add_filter( 'wlf_own_content_post_types', function( array $post_types ): array {
-	$post_types[] = 'custom_post_type';
-	return $post_types;
-});
-```
-
-#### `wlf_routinely_update_wayback_machine`
-When this is set to retturn true, all posts in the allowed post types will be routinely updated in the Wayback Machine. The default is false.
-
-```php
-add_filter( 'wlf_routinely_update_wayback_machine', function( bool $routinely_update ): bool {
-	return true;
-});
-```
-
-#### `wlf_routinely_update_wayback_machine_interval`
-This is used to denote how long between each routine update. The default is 14 days. `The time is give in seconds.`
-
-```php
-add_filter( 'wlf_routinely_update_wayback_machine_interval', function( int $interval ): int {
-	return 7 * \DAY_IN_SECONDS; // 7 days
-});
-```
-
-#### `wlf_own_content_allow_post`
-This filter allows a final decision to be made on if a post should be added to the Wayback Machine. The default is to allow all posts.
-
-```php
-add_filter( 'wlf_own_content_allow_post', function( bool $allow, int $post_id ): bool {
-	if ( get_post_meta( $post_id, 'do_not_archive', true ) ) {
-		return false;
-	}
-	return $allow;
-});
-```
-
 ### Internet Archive / Wayback Link Fixer Instances.
 
 Both the Link Checker and Snapshot clients are all extended from the following interfaces:  
@@ -892,6 +913,7 @@ add_filter( 'wlf_snapshot_client', function( Snapshot_Client $client ): Snapshot
    return new My_Custom_Snapshot_Client();
 });
 ```
+
 ### Contribute
 
 If you would like to contribute to the this plugin, feel free to do so. There are a number of tools which can be used to help in your development.
