@@ -372,10 +372,10 @@ This event scans existing posts for links that haven't been processed yet. It ru
 
 **Settings:**
 
-| **Configuration** | **Setting** | **Default** | **Description** |
-|-------------------|-------------|-------------|-----------------|
-| Allowed post types | [Post Types](#post-types) | - | Which post types to scan |
-| Enable/disable | [Scan Existing Posts](#scan-existing-posts) | - | Whether scanning is enabled |
+| **Configuration** | **Setting** | **Description** |
+|-------------------|-------------|-----------------|
+| Allowed post types | [Post Types](#post-types) | Which post types to scan |
+| Enable/disable | [Scan Existing Posts](#scan-existing-posts) | Whether scanning is enabled |
 
 ---
 
@@ -458,10 +458,10 @@ This event scans existing posts on the site to find those that either do not hav
 
 **Settings:**
 
-| **Configuration** | **Setting** | **Default** | **Description** |
-|-------------------|-------------|-------------|-----------------|
-| Allowed post types | [Post Types](#post-types) | - | Which post types to scan |
-| Enable/disable | [Scan Existing Posts](#scan-existing-posts) | - | Whether scanning is enabled |
+| **Configuration** | **Setting** | **Description** |
+|-------------------|-------------|-----------------|
+| Allowed post types | [Post Types](#post-types) | Which post types to scan |
+| Enable/disable | [Scan Existing Posts](#scan-existing-posts) | Whether scanning is enabled |
 
 ---
 
@@ -614,12 +614,12 @@ add_filter( 'wlf_update_archive_url_attempts', function( int $attempts ): int {
 });
 ```
 
-#### `wlf_scan_existing_posts_interval`
+#### `wlf_scan_posts_interval`
 
 This is used to define how often we should check for posts which have not been scanned. The default is 10 minutes.
 
 ```php
-add_filter( 'wlf_scan_existing_posts_interval', function( int $interval ): int {
+add_filter( 'wlf_scan_posts_interval', function( int $interval ): int {
    return 5 * \MINUTE_IN_SECONDS; // 5 minutes
 });
 ```
