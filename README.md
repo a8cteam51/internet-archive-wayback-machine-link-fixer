@@ -441,7 +441,7 @@ This event scans existing posts on the site to find those that either do not hav
 
 | **Configuration** | **Filter/Setting** | **Default** | **Description** |
 |-------------------|-------------------|-------------|-----------------|
-| Posts per batch | `wlf_posts_per_batch` (setting) | 10 | Number of posts processed per batch |
+| Posts per batch | [`wlf_posts_per_batch`](#wlf_posts_per_batch) | 10 | Number of posts processed per batch |
 | Allowed post types | `wlf_allowed_post_types` (setting) | - | Which post types to scan |
 | Scan interval | [`wlf_scan_posts_interval`](#wlf_scan_posts_interval) | 10 minutes | How often to run the scan |
 | Enable/disable | `should_scan_existing_posts` (setting) | - | Whether scanning is enabled |
