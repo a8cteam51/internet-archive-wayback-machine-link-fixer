@@ -243,60 +243,213 @@ The link count is clickable, this will access a filtered link list for that post
 The plugin uses the following dependencies:
 * Action Scheduler - This is added using the defined loader, so any later version will be used in its place gracefully.
 
-### Process (Action Scheduler Events)
+### Events (Action Scheduler Events)
 
 Almost all operations are carried out using the Action Scheduler, this allows for the plugin to be more performant and not cause issues with timeouts.
 
 #### Find or Create Snapshot
 
-When a new link is encountered in the content, we check if `Wayback Machine` has a snapshot of the link. If it does we store the snapshot URL. If it does not we attempt to create a new snapshot.
+This event attempts to locate the most recent snapshot of a link using the `Wayback Machine`. If no snapshot is found, it queues a new snapshot request.
 
-Action : `wlf_find_or_create_snapshot`
+Before doing so, it checks that:
+- The link exists and is valid.
+- The `Wayback Machine` service is online.
+- The link is **not already** an archive.org URL (those are skipped).
 
-Args: [Link ID]
+If a snapshot is found, it's saved to the link record. If not, the link is marked as pending, and the `Create_New_Snapshot_Event` is queued to create one. The plugin also checks the current status of the original URL and stores that status. If the URL returns a `403 Forbidden`, it is added to the `Link_Access_Validator_Event` queue for further checking.
+
+**Action**: `wlf_find_or_create_snapshot`  
+**Args**: `[ 'link_id' => (int) ]`
 
 #### Create New Snapshot
 
-If we need to create a new snapshot, we attempt to create one. If we are successful we get a snapshot event id from the "Wayback Machine" and store it.
+When a snapshot for a link doesn't already exist, this event is used to request a new one from the **Wayback Machine**. If successful, it retrieves a snapshot job ID and queues a separate event to check the status of that snapshot.
 
-> We attempt to do this 3 times, with a 15 minute pause between attempts. If we fail we store the error message.
+This process is retried automatically if it fails:
+- By default, up to **3 attempts** are made (configurable via the [`wlf_create_new_snapshot_attempts`](#wlf_create_new_snapshot_attempts) filter).
+- Each retry is delayed by **15 minutes**, unless the failure is due to hitting the snapshot rate limit, in which case the delay is **24 hours**.
 
-Action: `wlf_create_new_snapshot`
+The event will:
+- Attempt to resolve the final URL (following redirects).
+- Update the stored link if it has been redirected.
+- Respect `Wayback Machine` service availability.
+- Mark links as `pending` or `done` depending on the outcome.
+- Avoid duplicate retries once the maximum attempts are reached.
 
-Args: [Link ID, Attempt Number]
+**Action**: `wlf_create_new_snapshot`  
+**Args**: `[ 'link_id' => (int), 'attempt' => (int) ]`
 
-> The number of retires can be changed by using the [`wlf_create_new_snapshot_attempts`](#wlf_create_new_snapshot_attempts) filter.
 
 #### Check Snapshot Status
 
-Once we have a snapshot event id, we check the status of the snapshot. If it is successful we update the link with the new snapshot URL.
+Once a snapshot job has been created, this event is used to check the status of that snapshot in the **Wayback Machine**. If the snapshot is ready, it queues a follow-up event to update the link with the archived URL.
 
-Action: `wlf_check_snapshot_status`
+This process is retried automatically until the snapshot is complete or the maximum number of attempts is reached:
+- By default, up to **3 attempts** are made (configurable via the [`wlf_check_snapshot_status_attempts`](#wlf_check_snapshot_status_attempts) filter).
+- Each retry is delayed by **5 minutes** (configurable via the [`wlf_check_snapshot_status_interval`](#wlf_check_snapshot_status_interval) filter).
+- If the Wayback Machine service is offline, the event will retry after **1 hour**.
 
-Args [Link ID, Wayback Event ID, Attempt Number]
+The event will:
+- Verify the snapshot status using the Wayback Machine job ID.
+- Requeue itself if the snapshot is still pending.
+- Capture and store error messages when the snapshot fails.
+- Mark links as `excluded` when access is denied (`error:no-access`).
+- Mark links as `done` if the snapshot ultimately fails or reaches the maximum number of retries.
+- Trigger `wlf_update_archive_url` if the snapshot is successfully created.
 
-> The number of retires can be changed by using the [`wlf_check_snapshot_status_attempts`](#wlf_check_snapshot_status_attempts) filter.
+**Action**: `wlf_check_snapshot_status`  
+**Args**: `[ 'link_id' => (int), 'job_id' => (string), 'attempt' => (int) ]`
 
-> The time between retries can be changed by using the [`wlf_check_snapshot_status_interval`](#wlf_check_snapshot_status_interval) filter. (Time in seconds)
 
 #### Update Archive URL
 
-Once a snapshot has been created, we attempt to update the link with the new snapshot URL. As it can sometimes take some time for the archives to appear this is checked with a delay between attempts.
+After a snapshot has been created, this event attempts to fetch the final archive URL from the **Wayback Machine** and update the link with it. Since the archive might not be immediately available, the event retries with a delay until successful or until the maximum number of attempts is reached.
 
-Hook: `wlf_update_archive_url`
+This process is retried automatically:
+- By default, up to **3 attempts** are made (configurable via the [`wlf_update_archive_url_attempts`](#wlf_update_archive_url_attempts) filter).
+- Each retry is delayed by **15 minutes**.
 
-Args: [Link ID, Attempt Number]
+The event will:
+- Attempt to retrieve the archived URL based on the final resolved link.
+- Update the link with the archived URL if available.
+- Retry if the URL is not yet available or if an error occurs.
+- Mark the link as `done` if the maximum number of attempts is exceeded.
 
-> The number of retires can be changed by using the [`wlf_update_archive_url_attempts`](#wlf_update_archive_url_attempts) filter (3 by default)
+**Action**: `wlf_update_archive_url`  
+**Args**: `[ 'link_id' => (int), 'attempt' => (int) ]`
 
 
 #### Scan Existing Posts
 
-When the plugin is activated, we check all existing posts for links. This is done using the `wlf_scan_existing_posts` action. Every 10 minutes we check if there are any posts which has not been scanned. If we find any, 10 will processed at 1 time.
+This event scans existing posts for links that haven't been processed yet. It runs on a repeating schedule, as long as the feature is enabled in the plugin settings.
 
-> You can control how many posts are processed per batch using the [`wlf_posts_per_batch`](#wlf_posts_per_batch) filter (defaults to 10)
+Every time it runs:
+- It queries for posts that **lack the link metadata**.
+- A fixed number of posts are processed per batch.
+- The event reschedules itself after each run.
+- It skips processing if the archive API is offline.
 
-> You can control how often the scan is run using the [`wlf_scan_existing_posts_interval`](#wlf_scan_existing_posts_interval) filter (defaults to 10 minutes)
+**Note**: This ensures imported or legacy posts are eventually scanned and included in snapshot coverage.
+
+You can control:
+- **Batch size** via the [`wlf_posts_per_batch`](#wlf_posts_per_batch) filter (defaults to 10).
+- **Frequency** via the [`wlf_scan_posts_interval`](#wlf_scan_posts_interval) filter (defaults to every 10 minutes).
+
+**Action**: `wlf_scan_existing_posts`  
+**Args**: `[]` (none)
+
+#### Link Access Validator
+
+This event is triggered **after an archived link has been found**, and is responsible for determining whether the link allows validation via the Wayback Machine.
+
+The process works as follows:
+- The event retrieves the link by its `link_id`.
+- It attempts to initiate a snapshot validation by calling the archive service (`create_snapshot()`).
+- If successful, a `job_id` is returned and passed to the [`wlf_check_validator_status`](#check-validator-status) event, which will poll the status until it's complete.
+- If the archive service is offline, this event is **rescheduled with a 1-hour delay**.
+
+**Action**: `wlf_link_access_validator`  
+**Args**:
+- `link_id` *(int)* – The ID of the link to validate.
+
+**Scheduling Options**:
+- You can enqueue it immediately using `Link_Access_Validator_Event::add_to_queue( $link_id )`
+- Or with a delay using `Link_Access_Validator_Event::add_to_queue_with_delay( $link_id, $delay_in_seconds )`
+
+This event ensures that a job is created for link validation before the periodic status check begins.
+
+> Note: If the job creation fails or the archive service is unreachable, the system retries with exponential delay logic (via `wlf_check_validator_status`).
+
+
+#### Check Validator Status
+
+This is called by the `Link_Access_Validator_Event` to check the status of a link validation request against the **Wayback Machine**.
+
+This event is responsible for polling the Wayback Machine to check the status of a snapshot validation request.
+
+When a link is sent to the archive service for validation, a `job_id` is returned. This event will be scheduled to periodically check the status of that job until it's either successful, fails, or the maximum number of attempts is reached.
+
+Each run of the event:
+- Attempts to retrieve the link from the database using its `link_id`.
+- Queries the Wayback Machine for the status of the snapshot using the `job_id`.
+- Based on the result:
+  - If **`success`**, the link is marked as not broken.
+  - If **`error`**, the link is updated with the error message. If it's a `no-access` error, the link is excluded from further checks.
+  - If still **pending**, the event is rescheduled with an incremented attempt count.
+- If the **Wayback Machine is offline**, it retries after 1 hour.
+- Retries are limited to a configurable number of attempts (default: `3`).
+
+**Action**: `wlf_check_validator_status`  
+**Args**:
+- `link_id` *(int)* – ID of the link being validated.
+- `job_id` *(string)* – Job ID returned by the archive service.
+- `attempt` *(int)* – Current attempt number (starts at 0).
+
+You can control:
+- **Retry interval** using the [`wlf_check_validator_status_interval`](#wlf_check_validator_status_interval) filter (defaults to 2 minutes).
+- **Max attempts** using the [`wlf_check_validator_status_attempts`](#wlf_check_validator_status_attempts) filter (defaults to 3).
+
+#### Scan Posts Event
+
+This event scans existing posts on the site to find those that either do not have link metadata or require reprocessing. It batches the posts (default 10 per run) and queues them for link processing.
+
+Each run of the event:
+- Queries posts of allowed types without the link meta or with outdated meta.
+- For each post found, triggers the `Process_Local_Post_Event` by adding it to the queue.
+- Reschedules itself to run again after a configurable interval (default 10 minutes).
+- Checks if the Wayback Machine API service is online before scanning; if offline, reschedules the scan to try later.
+
+**Relationship:** This event serves as the "discovery" phase, identifying posts that need link processing and queuing them for the `Process_Local_Post_Event`.
+
+**Action:** `wlf_scan_existing_posts`  
+**Args:** None
+
+You can control:
+- **Posts per batch** using the `wlf_posts_per_batch` setting (default 10).
+- **Allowed post types** using the `wlf_allowed_post_types` setting.
+- **Scan interval** using the [`wlf_scan_posts_interval`](#wlf_scan_posts_interval) filter (default 10 minutes).
+- **Enable/disable scanning** using the `should_scan_existing_posts` setting.
+
+
+#### Process Local Post Event
+
+This event processes a single post to create a Wayback Machine snapshot of its permalink. It is triggered by the `Scan_Posts_Event` for each post identified.
+
+Each run of the event:
+- Checks if the Wayback Machine snapshot service is online; if offline, it reschedules itself to retry after 1 hour.
+- Retrieves the post by ID and validates its existence.
+- Retrieves the permalink for the post.
+- Attempts to create a snapshot using the Wayback Machine service.
+- On success, updates post meta with the timestamp of the last processing.
+- Throws exceptions if critical steps fail (e.g., post not found, permalink missing, snapshot failure).
+
+**Relationship:** This event handles the actual archival snapshot creation for posts discovered and queued by the `Scan_Posts_Event`.
+
+**Action:** `wlf_process_local_post`  
+**Args:**
+- `post_id` *(int)* – ID of the post to process.
+
+You can control:
+- **Retry delay on failure** using the default delay of 1 hour before retrying if the service is offline.
+
+#### Check Archive Services Online Event
+
+This event verifies the availability of the archive API services, primarily the Wayback Machine, to determine if they are online and responsive.
+
+Each run of the event:
+- Instantiates the Wayback Machine service client.
+- Forces an immediate check of the archive API status, ignoring cached results.
+- Updates a transient cache to store the current online/offline status for use by other events and processes.
+
+**Relationship:**  
+This event supports all other events by providing a centralized mechanism to confirm the archive service’s availability. Events such as `Scan_Posts_Event` and `Process_Local_Post_Event` rely on this status check to decide whether to proceed or delay their operations.
+
+**Action:** `wlf_check_archive_services_online`  
+**Args:** None
+
+You can control:  
+- **Cache duration** for the API status check result using the [`wlf_archive_api_status_duration`](#wlf_archive_api_status_duration) filter (default 1 hour).
+
 
 ### Hooks
 
