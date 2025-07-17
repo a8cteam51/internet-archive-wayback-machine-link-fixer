@@ -504,10 +504,7 @@ The API status check result is cached for 1 hour by default.
 
 *This event takes no arguments.*
 
-| **Configuration** | **Filter/Setting** | **Default** | **Description** |
-|-------------------|-------------------|-------------|-----------------|
-| Cache duration | [`wlf_archive_api_status_duration`](#wlf_archive_api_status_duration) | 1 hour | How long to cache the API status check result |
-
+---
 
 ### Hooks
 
@@ -740,13 +737,73 @@ add_filter( 'wlf_get_closest_snapshot_url', function( string $base_url, string $
 });
 ```
 
-#### `wlf_archive_api_status_duration`
+#### `wlf_get_latest_snapshot_timeout`
 
-This set how long the wait should be between checking the status of the archive API. The default is 1 hour.
+This is used to set the timeout for getting the latest snapshot of a link. The default is 10 seconds.
 
 ```php
-add_filter( 'wlf_archive_api_status_duration', function( int $url ): int {
+add_filter( 'wlf_get_latest_snapshot_timeout', function( int $timeout ): int {
+	return 30; // 30 seconds
+});
+```
+
+#### `wlf_get_closest_snapshot_timeout`
+
+This is used to set the timeout for getting the closest snapshot to a defined date. The default is 10 seconds.
+
+```php
+add_filter( 'wlf_get_closest_snapshot_timeout', function( int $timeout ): int {
+	return 30; // 30 seconds
+});
+```
+
+#### `wlf_create_snapshot_url`
+
+This is the url which is used when creating a new snapshot. This should not need changing unless you are running tests or have your own custom endpoint.
+
+```php
+add_filter( 'wlf_create_snapshot_url', function( string $url ): string {
+	return 'https://my-custom-snapshot-creator.com';
+});
+```
+
+#### `wlf_create_snapshot_timeout`
+
+This is used to set the timeout for creating a new snapshot. The default is 1000 seconds (16.7 minutes).
+
+```php
+add_filter( 'wlf_create_snapshot_timeout', function( int $timeout ): int {
+	return 2000; // 33+ minutes
+});
+```
+
+#### `wlf_scan_own_posts_event_interval`
+
+This is used to define how often the scan own posts event should run. The default is 15 minutes.
+
+```php
+add_filter( 'wlf_scan_own_posts_event_interval', function( int $interval ): int {
 	return 30 * \MINUTE_IN_SECONDS; // 30 minutes
+});
+```
+
+#### `wlf_scan_own_posts_per_call`
+
+This is used to define how many posts should be processed per call when scanning own posts. The default is 10.
+
+```php
+add_filter( 'wlf_scan_own_posts_per_call', function( int $posts_per_call ): int {
+	return 20;
+});
+```
+
+#### `wlf_show_link_table_debug_data`
+
+This is used to show additional debug data in the link table. This is for debugging purposes only. The default is false.
+
+```php
+add_filter( 'wlf_show_link_table_debug_data', function( bool $show_debug ): bool {
+	return true;
 });
 ```
 
