@@ -21,7 +21,7 @@
  * Author URI:              https://wpspecialprojects.wordpress.com
  * License:                 GPL-3.0-or-later
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:             wpcomsp_wayback_link_fixer
+ * Text Domain:             wayback-link-fixer
  * Domain Path:             /languages
  */
 

@@ -62,7 +62,7 @@ class Link_Latest_Snapshot_Action {
 				'link'    => null,
 				'found'   => false,
 				'updated' => false,
-				'message' => __( 'Link not found.', 'wpcomsp_wayback_link_fixer' ),
+				'message' => __( 'Link not found.', 'wayback-link-fixer' ),
 			);
 		}
 
@@ -72,7 +72,7 @@ class Link_Latest_Snapshot_Action {
 				'link'    => $link,
 				'found'   => false,
 				'updated' => false,
-				'message' => __( 'Service is offline.', 'wpcomsp_wayback_link_fixer' ),
+				'message' => __( 'Service is offline.', 'wayback-link-fixer' ),
 			);
 		}
 
@@ -82,7 +82,7 @@ class Link_Latest_Snapshot_Action {
 				'link'    => $link,
 				'found'   => true,
 				'updated' => false,
-				'message' => __( 'Link is already an archived link.', 'wpcomsp_wayback_link_fixer' ),
+				'message' => __( 'Link is already an archived link.', 'wayback-link-fixer' ),
 			);
 		}
 
@@ -94,7 +94,7 @@ class Link_Latest_Snapshot_Action {
 				'link'    => $link,
 				'found'   => false,
 				'updated' => false,
-				'message' => __( 'No archive URL found.', 'wpcomsp_wayback_link_fixer' ),
+				'message' => __( 'No archive URL found.', 'wayback-link-fixer' ),
 			);
 		}
 
@@ -104,7 +104,7 @@ class Link_Latest_Snapshot_Action {
 				'link'    => $link,
 				'found'   => true,
 				'updated' => false,
-				'message' => __( 'Archive URL is the same.', 'wpcomsp_wayback_link_fixer' ),
+				'message' => __( 'Archive URL is the same.', 'wayback-link-fixer' ),
 			);
 		}
 
@@ -118,7 +118,7 @@ class Link_Latest_Snapshot_Action {
 			'link'    => $link,
 			'found'   => true,
 			'updated' => true,
-			'message' => __( 'Link updated.', 'wpcomsp_wayback_link_fixer' ),
+			'message' => __( 'Link updated.', 'wayback-link-fixer' ),
 		);
 	}
 }

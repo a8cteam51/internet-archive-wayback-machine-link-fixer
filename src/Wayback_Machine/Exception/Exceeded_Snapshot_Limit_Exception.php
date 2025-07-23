@@ -27,6 +27,6 @@ class Exceeded_Snapshot_Limit_Exception extends Exception {
 	 * @return Exceeded_Snapshot_Limit_Exception
 	 */
 	public static function create(): Exceeded_Snapshot_Limit_Exception {
-		return new Exceeded_Snapshot_Limit_Exception( esc_html( __( 'Snapshot creation limit exceeded', 'wpcomsp_wayback_link_fixer' ) ) );
+		return new Exceeded_Snapshot_Limit_Exception( esc_html( __( 'Snapshot creation limit exceeded', 'wayback-link-fixer' ) ) );
 	}
 }

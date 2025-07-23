@@ -21,30 +21,30 @@ $wlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 <?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 <div class="wlf-wizard__content__header">
-	<h2><?php esc_html_e( 'Step 2: Configure the Link Fixer', 'wpcomsp_wayback_link_fixer' ); ?></h2>
+	<h2><?php esc_html_e( 'Step 2: Configure the Link Fixer', 'wayback-link-fixer' ); ?></h2>
 </div>
 
 <div class="wlf-wizard__content__intro">
-	<p><?php esc_html_e( 'You can set the Link Fixer to work only with specific post types and apply it to existing posts.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+	<p><?php esc_html_e( 'You can set the Link Fixer to work only with specific post types and apply it to existing posts.', 'wayback-link-fixer' ); ?></p>
 </div>
 
 <div class="wlf-wizard__content__field">
 	<div class="wlf-wizard__content__inner-field checkbox">
 		<div class="inner-spaced-between">
 			<label for="wlf_wizard_activate_link_fixer">
-				<?php esc_html_e( 'Enable Link Fixer', 'wpcomsp_wayback_link_fixer' ); ?>
+				<?php esc_html_e( 'Enable Link Fixer', 'wayback-link-fixer' ); ?>
 			</label>
 			<input type="checkbox" id="is_active" name="wlf_wizard_activate_link_fixer" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
 		</div>
-		<p class="description"><?php esc_html_e( 'When enabled, all links within your selected post types will be processed for potential archiving by the Link Fixer.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+		<p class="description"><?php esc_html_e( 'When enabled, all links within your selected post types will be processed for potential archiving by the Link Fixer.', 'wayback-link-fixer' ); ?></p>
 	</div>
 </div>
 
 <div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $wlf_hide_class ); ?>" >
 	<label for="wlf_wizard_post_types">
-		<?php esc_html_e( 'Post Types', 'wpcomsp_wayback_link_fixer' ); ?>
+		<?php esc_html_e( 'Post Types', 'wayback-link-fixer' ); ?>
 	</label>
-	<p class="description"><?php esc_html_e( 'Select the post types you want to enable the link fixer for.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+	<p class="description"><?php esc_html_e( 'Select the post types you want to enable the link fixer for.', 'wayback-link-fixer' ); ?></p>
 	<div class="wlf-wizard__content__inner-field checkboxes">
 		<?php foreach ( $post_types as $wlf_pt_slug => $wlf_pt_name ) : ?>
 			<div class="inner-spaced-between__list">
@@ -61,28 +61,28 @@ $wlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 	<div class="wlf-wizard__content__inner-field checkbox">
 		<div class="inner-spaced-between">
 			<label for="wlf_wizard_scan_existing_content">
-				<?php esc_html_e( 'Scan Existing Content', 'wpcomsp_wayback_link_fixer' ); ?>
+				<?php esc_html_e( 'Scan Existing Content', 'wayback-link-fixer' ); ?>
 			</label>
 			<input type="checkbox" id="wlf_is_active" name="wlf_wizard_scan_existing_content" id="wlf_wizard_scan_existing_content" value="1" <?php checked( Settings::should_scan_existing_posts() ); ?> />
 		</div>
-		<p class="description"><?php esc_html_e( 'If enabled, all existing posts of the selected types will be scanned and processed. Please note this process can take significant time (potentially hours or days) depending on the amount of content and number of links.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+		<p class="description"><?php esc_html_e( 'If enabled, all existing posts of the selected types will be scanned and processed. Please note this process can take significant time (potentially hours or days) depending on the amount of content and number of links.', 'wayback-link-fixer' ); ?></p>
 	</div>
 </div>
 
 <div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $wlf_hide_class ); ?>" >
 	<label for="wlf_wizard_outcome">
-		<?php esc_html_e( 'Action for Broken Links', 'wpcomsp_wayback_link_fixer' ); ?>
+		<?php esc_html_e( 'Action for Broken Links', 'wayback-link-fixer' ); ?>
 	</label>
-	<p class="description"><?php esc_html_e( 'What should the Link Fixer do when it identifies a broken link?', 'wpcomsp_wayback_link_fixer' ); ?></p>
+	<p class="description"><?php esc_html_e( 'What should the Link Fixer do when it identifies a broken link?', 'wayback-link-fixer' ); ?></p>
 	<select
 		id="wlf_wizard_outcome"
 		name="wlf_wizard_outcome"
 	>
 		<option value="<?php echo esc_attr( Settings::FIXER_OPTION_REPLACE_LINK ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_REPLACE_LINK ); ?>>
-			<?php esc_html_e( 'Replace Link (No Notification)', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'Replace Link (No Notification)', 'wayback-link-fixer' ); ?>
 		</option>
 		<option value="<?php echo esc_attr( Settings::FIXER_OPTION_DO_NOTHING ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_DO_NOTHING ); ?>>
-			<?php esc_html_e( 'Do Nothing', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'Do Nothing', 'wayback-link-fixer' ); ?>
 		</option>
 	</select>
 </div>

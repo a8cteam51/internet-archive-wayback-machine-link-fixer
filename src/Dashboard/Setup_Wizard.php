@@ -81,7 +81,7 @@ class Setup_Wizard {
 
 		$message = sprintf(
 		// translators: %s is the URL to the setup wizard.
-			__( 'The Wayback Link Fixer plugin is almost ready. Please <a href="%s">run the setup wizard</a> to complete the installation.', 'wpcomsp_wayback_link_fixer' ),
+			__( 'The Wayback Link Fixer plugin is almost ready. Please <a href="%s">run the setup wizard</a> to complete the installation.', 'wayback-link-fixer' ),
 			esc_url( self::get_wizard_url() )
 		);
 
@@ -101,8 +101,8 @@ class Setup_Wizard {
 	public function register_setup_wizard(): void {
 		$this->page_hook = add_submenu_page(
 			Settings_Page::PAGE_SLUG,
-			__( 'Setup Wizard', 'wpcomsp_wayback_link_fixer' ),
-			__( 'Setup Wizard', 'wpcomsp_wayback_link_fixer' ),
+			__( 'Setup Wizard', 'wayback-link-fixer' ),
+			__( 'Setup Wizard', 'wayback-link-fixer' ),
 			'manage_options',
 			self::PAGE_SLUG,
 			function () {
@@ -261,7 +261,7 @@ class Setup_Wizard {
 
 		// Check the users api credentials.
 		if ( ! wpcomsp_wayback_link_fixer_get_system_client()->is_valid_user( $access_key, $secret_key ) ) {
-			$this->add_notice( __( 'Invalid Archive.org API credentials. Please verify your Access Key and Secret Key, or leave both fields blank to proceed without authentication.', 'wpcomsp_wayback_link_fixer' ), 'error' );
+			$this->add_notice( __( 'Invalid Archive.org API credentials. Please verify your Access Key and Secret Key, or leave both fields blank to proceed without authentication.', 'wayback-link-fixer' ), 'error' );
 			$_POST['wlf_wizard_invalid_keys'] = true; // Set a flag to indicate invalid keys.
 
 			// Hold the entered values in post.
@@ -339,7 +339,7 @@ class Setup_Wizard {
 
 		echo '<div class="wrap">';
 		echo '<h1>';
-		esc_html_e( 'Link Fixer Setup Wizard', 'wpcomsp_wayback_link_fixer' );
+		esc_html_e( 'Link Fixer Setup Wizard', 'wayback-link-fixer' );
 		echo '</h1>';
 
 		$step_data = $this->get_step_data();

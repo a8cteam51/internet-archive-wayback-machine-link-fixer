@@ -23,7 +23,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 ?>
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php echo esc_html( $wlf_link_title ); ?></h1>
-	<a class="page-title-action" href="<?php echo esc_url( $wlf_back_url ); ?>"><?php esc_html_e( 'Back to All Links', 'wpcomsp_wayback_link_fixer' ); ?></a>
+	<a class="page-title-action" href="<?php echo esc_url( $wlf_back_url ); ?>"><?php esc_html_e( 'Back to All Links', 'wayback-link-fixer' ); ?></a>
 	<hr class="wp-header-end">
 
 
@@ -33,51 +33,51 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 				<div id="normal-sortables" class="meta-box-sortables ui-sortable">
 					<div id="wlf_link_details" class="postbox ">
 						<div class="postbox-header">
-							<h2 class="handle ui-sortable-handle"><?php esc_html_e( 'Link Details', 'wpcomsp_wayback_link_fixer' ); ?></h2>
+							<h2 class="handle ui-sortable-handle"><?php esc_html_e( 'Link Details', 'wayback-link-fixer' ); ?></h2>
 						</div>
 						<div class="inside">
-							<p class="wlf_link_url"><strong><?php esc_html_e( 'URL', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <a href="<?php echo esc_url( $wlf_link->get_href() ); ?>" target="_blank"><?php echo esc_html( $wlf_link->get_href() ); ?></a></p>
+							<p class="wlf_link_url"><strong><?php esc_html_e( 'URL', 'wayback-link-fixer' ); ?></strong>: <a href="<?php echo esc_url( $wlf_link->get_href() ); ?>" target="_blank"><?php echo esc_html( $wlf_link->get_href() ); ?></a></p>
 
 							<?php if ( $wlf_link->is_excluded() ) : ?>
-								<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archive Status', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php esc_html_e( 'EXCLUDED', 'wpcomsp_wayback_link_fixer' ); ?></p>
+								<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archive Status', 'wayback-link-fixer' ); ?></strong>: <?php esc_html_e( 'EXCLUDED', 'wayback-link-fixer' ); ?></p>
 							<?php else : ?>
 								<p class="wlf_link_archived_url">
-									<strong><?php esc_html_e( 'Archive Status', 'wpcomsp_wayback_link_fixer' ); ?></strong>:
+									<strong><?php esc_html_e( 'Archive Status', 'wayback-link-fixer' ); ?></strong>:
 									<?php
 									if ( ! $wlf_link->is_processed() ) {
 										$wlf_archive_process = $wlf_link->get_archive_process();
 										if ( Link::PROCESS_NEW === $wlf_archive_process ) {
-											esc_html_e( 'NEW - This link has been queued and will be processed by the Internet Archive as soon as possible', 'wpcomsp_wayback_link_fixer' );
+											esc_html_e( 'NEW - This link has been queued and will be processed by the Internet Archive as soon as possible', 'wayback-link-fixer' );
 										} else {
-											esc_html_e( 'PENDING – Queued for submission to the Internet Archive. Processing time varies based on queue size.', 'wpcomsp_wayback_link_fixer' );
+											esc_html_e( 'PENDING – Queued for submission to the Internet Archive. Processing time varies based on queue size.', 'wayback-link-fixer' );
 										}
 									} elseif ( '' !== $wlf_link->get_archived_href() ) {
 										printf(
 											/* translators: %s: The archived URL */
-											esc_html__( 'HAS ARCHIVE - A snapshot of this link is available on the Internet Archive: %s', 'wpcomsp_wayback_link_fixer' ),
-											'<a href="' . esc_url( $wlf_link->get_archived_href() ) . '" target="_blank">' . esc_html__( 'View Snapshot', 'wpcomsp_wayback_link_fixer' ) . '</a>'
+											esc_html__( 'HAS ARCHIVE - A snapshot of this link is available on the Internet Archive: %s', 'wayback-link-fixer' ),
+											'<a href="' . esc_url( $wlf_link->get_archived_href() ) . '" target="_blank">' . esc_html__( 'View Snapshot', 'wayback-link-fixer' ) . '</a>'
 										);
 									} else {
-										esc_html_e( 'NO ARCHIVE - Unable to create or find a snapshot. This can happen if the URL is blocked by robots.txt, requires authentication, or is no longer accessible', 'wpcomsp_wayback_link_fixer' );
+										esc_html_e( 'NO ARCHIVE - Unable to create or find a snapshot. This can happen if the URL is blocked by robots.txt, requires authentication, or is no longer accessible', 'wayback-link-fixer' );
 									}
 									?>
 								</p>
 
 								<?php if ( '' !== $wlf_link->get_archived_href() ) : ?>
-									<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archived URL', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <a href="<?php echo esc_url( $wlf_link->get_archived_href() ); ?>" target="_blank"><?php echo esc_html( $wlf_link->get_archived_href() ); ?></a></p>
+									<p class="wlf_link_archived_url"><strong><?php esc_html_e( 'Archived URL', 'wayback-link-fixer' ); ?></strong>: <a href="<?php echo esc_url( $wlf_link->get_archived_href() ); ?>" target="_blank"><?php echo esc_html( $wlf_link->get_archived_href() ); ?></a></p>
 								<?php endif; ?>
 							<?php endif; ?>
 
 							<?php if ( '' !== $wlf_link->get_redirect_href() ) : ?>
-								<p class="wlf_link_redirected_url"><strong><?php esc_html_e( 'Redirects To', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php echo esc_html( $wlf_link->get_redirect_href() ); ?></p>
+								<p class="wlf_link_redirected_url"><strong><?php esc_html_e( 'Redirects To', 'wayback-link-fixer' ); ?></strong>: <?php echo esc_html( $wlf_link->get_redirect_href() ); ?></p>
 							<?php endif; ?>
 
 							<?php if ( '' !== $wlf_link->get_message() ) : ?>
-								<p class="wlf_link_message"><strong><?php esc_html_e( 'Message', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php echo esc_html( $wlf_link->get_message() ); ?></p>
+								<p class="wlf_link_message"><strong><?php esc_html_e( 'Message', 'wayback-link-fixer' ); ?></strong>: <?php echo esc_html( $wlf_link->get_message() ); ?></p>
 							<?php endif; ?>
 
 							<?php if ( $wlf_link->is_excluded() ) : ?>
-								<p class="wlf_link_excluded"><strong><?php esc_html_e( 'Excluded', 'wpcomsp_wayback_link_fixer' ); ?></strong>: <?php esc_html_e( 'This link is excluded from processing (e.g., by robots.txt or your exclusion settings).', 'wpcomsp_wayback_link_fixer' ); ?></p>
+								<p class="wlf_link_excluded"><strong><?php esc_html_e( 'Excluded', 'wayback-link-fixer' ); ?></strong>: <?php esc_html_e( 'This link is excluded from processing (e.g., by robots.txt or your exclusion settings).', 'wayback-link-fixer' ); ?></p>
 							<?php endif; ?>
 						</div>
 					</div>
@@ -85,22 +85,22 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 
 					<div id="wlf_link_checks" class="postbox ">
 						<div class="postbox-header">
-							<h2 class="handle ui-sortable-handle"><?php esc_html_e( 'Link Checks', 'wpcomsp_wayback_link_fixer' ); ?></h2>
+							<h2 class="handle ui-sortable-handle"><?php esc_html_e( 'Link Checks', 'wayback-link-fixer' ); ?></h2>
 						</div>
 						<div class="inside">
 							<p class="wlf_link_broken">
 								<?php
 								$wlf_normal_state_string = ( 0 === count( $wlf_link->get_checks() ) )
-									? esc_html__( 'Not yet checked', 'wpcomsp_wayback_link_fixer' )
+									? esc_html__( 'Not yet checked', 'wayback-link-fixer' )
 									: sprintf(
 										// translators: %d is the number of consecutive failures required to mark a link as 'Broken'.
-										esc_html__( 'Monitoring: Link will be marked as \'Broken\' after %d consecutive failures.', 'wpcomsp_wayback_link_fixer' ),
+										esc_html__( 'Monitoring: Link will be marked as \'Broken\' after %d consecutive failures.', 'wayback-link-fixer' ),
 										Settings::get_failed_count()
 									);
 								printf(
 									'<strong>%s</strong>: %s',
-									esc_html__( 'Current Status', 'wpcomsp_wayback_link_fixer' ),
-									$wlf_link->is_broken() ? esc_html__( 'Broken', 'wpcomsp_wayback_link_fixer' ) : esc_html( $wlf_normal_state_string )
+									esc_html__( 'Current Status', 'wayback-link-fixer' ),
+									$wlf_link->is_broken() ? esc_html__( 'Broken', 'wayback-link-fixer' ) : esc_html( $wlf_normal_state_string )
 								);
 								?>
 							</p>
@@ -108,14 +108,14 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 							<table class="wp-list-table widefat fixed striped">
 								<thead>
 									<tr>
-										<th><?php esc_html_e( 'Date', 'wpcomsp_wayback_link_fixer' ); ?></th>
-										<th><?php esc_html_e( 'Status', 'wpcomsp_wayback_link_fixer' ); ?></th>
+										<th><?php esc_html_e( 'Date', 'wayback-link-fixer' ); ?></th>
+										<th><?php esc_html_e( 'Status', 'wayback-link-fixer' ); ?></th>
 									</tr>
 								</thead>
 								<tbody>
 									<?php if ( 0 === count( $wlf_link->get_checks() ) ) : ?>
 										<tr>
-											<td colspan="2"><?php esc_html_e( 'No check history for this link yet.', 'wpcomsp_wayback_link_fixer' ); ?></td>
+											<td colspan="2"><?php esc_html_e( 'No check history for this link yet.', 'wayback-link-fixer' ); ?></td>
 										</tr>
 									<?php endif; ?>
 
@@ -123,7 +123,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 										<tr id="wlf_reveal_hidden_checks">
 											<td colspan="2">
 												<button class="button" id="wlf_show_hidden_checks">
-													<?php esc_html_e( 'Show Older Checks', 'wpcomsp_wayback_link_fixer' ); ?>
+													<?php esc_html_e( 'Show Older Checks', 'wayback-link-fixer' ); ?>
 												</button>
 											</td>
 										</tr>
@@ -140,7 +140,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 												<?php if ( is_numeric( $wlf_check['http_code'] ) ) : ?>
 													<td class="wlf-archived__http-code"><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/<?php echo esc_attr( $wlf_check['http_code'] ); ?>" target="_blank"><?php echo esc_html( $wlf_check['http_code'] ); ?></a></td>
 												<?php else : ?>
-													<td class="wlf-archived__error"><?php esc_html_e( 'Error', 'wpcomsp_wayback_link_fixer' ); ?></td>
+													<td class="wlf-archived__error"><?php esc_html_e( 'Error', 'wayback-link-fixer' ); ?></td>
 												<?php endif; ?>
 											</tr>
 									<?php endforeach; ?>
@@ -151,19 +151,19 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 
 					<div id="wlf_link_posts" class="postbox ">
 						<div class="postbox-header">
-							<h2 class="handle ui-sortable-handle"><?php esc_html_e( 'Found In', 'wpcomsp_wayback_link_fixer' ); ?></h2>
+							<h2 class="handle ui-sortable-handle"><?php esc_html_e( 'Found In', 'wayback-link-fixer' ); ?></h2>
 						</div>
 						<div class="inside">
 							<?php if ( empty( $wlf_posts ) ) : ?>
-								<p><?php esc_html_e( 'This link has not been found in any posts yet.', 'wpcomsp_wayback_link_fixer' ); ?></p>
+								<p><?php esc_html_e( 'This link has not been found in any posts yet.', 'wayback-link-fixer' ); ?></p>
 							<?php else : ?>
 								<table class="wp-list-table widefat fixed striped">
 									<thead>
 										<tr>
-											<th><?php esc_html_e( 'Post', 'wpcomsp_wayback_link_fixer' ); ?></th>
-											<th><?php esc_html_e( 'Post Type', 'wpcomsp_wayback_link_fixer' ); ?></th>
-											<th><?php esc_html_e( 'Status', 'wpcomsp_wayback_link_fixer' ); ?></th>
-											<th><?php esc_html_e( 'Actions', 'wpcomsp_wayback_link_fixer' ); ?></th>
+											<th><?php esc_html_e( 'Post', 'wayback-link-fixer' ); ?></th>
+											<th><?php esc_html_e( 'Post Type', 'wayback-link-fixer' ); ?></th>
+											<th><?php esc_html_e( 'Status', 'wayback-link-fixer' ); ?></th>
+											<th><?php esc_html_e( 'Actions', 'wayback-link-fixer' ); ?></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -175,7 +175,7 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 															<?php
 															printf(
 																// Translators: %1$s is the post ID, %2$s is the post type label (e.g., "Post", "Page").
-																esc_html__( 'Untitled %2$s (ID: %1$d)', 'wpcomsp_wayback_link_fixer' ),
+																esc_html__( 'Untitled %2$s (ID: %1$d)', 'wayback-link-fixer' ),
 																absint( $wlf_post->ID ),
 																esc_html( get_post_type_object( $wlf_post->post_type )->labels->singular_name )
 															);
@@ -192,24 +192,24 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 													$wlf_post_status = get_post_status( $wlf_post->ID );
 													?>
 													<?php if ( 'publish' === $wlf_post_status ) : ?>
-														<span class="wlf-archived__redirect"><?php esc_html_e( 'Published', 'wpcomsp_wayback_link_fixer' ); ?></span>
+														<span class="wlf-archived__redirect"><?php esc_html_e( 'Published', 'wayback-link-fixer' ); ?></span>
 													<?php elseif ( 'draft' === $wlf_post_status ) : ?>
-														<span class="wlf-archived__redirect"><?php esc_html_e( 'Draft', 'wpcomsp_wayback_link_fixer' ); ?></span>
+														<span class="wlf-archived__redirect"><?php esc_html_e( 'Draft', 'wayback-link-fixer' ); ?></span>
 													<?php elseif ( 'pending' === $wlf_post_status ) : ?>
-														<span class="wlf-archived__redirect"><?php esc_html_e( 'Pending', 'wpcomsp_wayback_link_fixer' ); ?></span>
+														<span class="wlf-archived__redirect"><?php esc_html_e( 'Pending', 'wayback-link-fixer' ); ?></span>
 													<?php elseif ( 'future' === $wlf_post_status ) : ?>
-														<span class="wlf-archived__redirect"><?php esc_html_e( 'Scheduled', 'wpcomsp_wayback_link_fixer' ); ?></span>
+														<span class="wlf-archived__redirect"><?php esc_html_e( 'Scheduled', 'wayback-link-fixer' ); ?></span>
 													<?php else : ?>
 														<span class="wlf-archived__redirect"><?php echo esc_html( $wlf_post_status ); ?></span>
 													<?php endif; ?>
 												</td>
 												<td>
 													<a href="<?php echo esc_url( get_edit_post_link( $wlf_post->ID ) ); ?>">
-														<?php esc_html_e( 'Edit', 'wpcomsp_wayback_link_fixer' ); ?>
+														<?php esc_html_e( 'Edit', 'wayback-link-fixer' ); ?>
 													</a>
 													|
 													<a href="<?php echo esc_url( get_permalink( $wlf_post->ID ) ); ?>">
-														<?php esc_html_e( 'View', 'wpcomsp_wayback_link_fixer' ); ?>
+														<?php esc_html_e( 'View', 'wayback-link-fixer' ); ?>
 													</a>
 												</td>
 											</tr>
