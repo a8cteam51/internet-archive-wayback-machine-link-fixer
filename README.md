@@ -1,24 +1,34 @@
-# Team 51 Wayback Link Fixer Plugin
+# Internet Archive Wayback Machine Link Fixer
 
-**Contributors:** wpcomspecialprojects \
-**Tags:** \
-**Requires at least:** 6.4 \
-**Tested up to:** 6.5 \
-**Requires PHP:** 7.4 \
-**Stable tag:** 1.2.0   \
-**License:** GPLv3 or later \
-**License URI:** http://www.gnu.org/licenses/gpl-3.0.html
+**Contributors:** wpcomspecialprojects  
+**Tags:** wayback machine, internet archive, broken links, archive links  
+**Requires at least:** 6.4  
+**Tested up to:** 6.8  
+**Requires PHP:** 7.4  
+**Stable tag:** 1.3.0  
+**License:** GPL-3.0-or-later  
+**License URI:** https://www.gnu.org/licenses/gpl-3.0.html
 
 [![Unit Tests](https://github.com/a8cteam51/wayback-link-fixer/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/a8cteam51/wayback-link-fixer/actions/workflows/unit-tests.yml)
 
 
 ## Description
 
-Welcome to **Internet Archive Wayback Machine Link Fixer**, a WordPress plugin that helps protect your site from **LINKROT**—the slow death of links as web pages change or disappear over time. This plugin automatically scans your post content, both when saving and across existing posts, to find outbound links. For each one, it checks the Wayback Machine for an archived version and creates a new snapshot if none exists.
+**Internet Archive Wayback Machine Link Fixer** is a WordPress plugin designed to combat **link rot**—the gradual decay of web links as pages are moved, changed, or taken down. It automatically scans your post content—on save and across existing posts—to detect outbound links. For each one, it checks the Internet Archive’s Wayback Machine for an archived version and creates a snapshot if one isn’t available.
 
-As original content on the web vanishes, the plugin steps in to keep your links alive by redirecting users to reliable archived versions. It also proactively archives your own posts whenever they’re updated, ensuring your content has a consistent and preserved history.
+When a linked page disappears, the plugin helps preserve your user experience by redirecting visitors to a reliable archived version. It also works proactively by archiving your own posts every time they’re updated, creating a consistent backup of your content’s history.
 
-Maintain link integrity, preserve your content, and let the plugin handle it—automatically.
+Protect your links, preserve your content, and automate the archiving process—all with minimal effort.
+
+## Key Features
+
+- Automatically scans for outbound links in post content
+- Checks the Wayback Machine for existing archives
+- Creates new snapshots if no archive exists
+- Redirects broken or missing links to archived versions
+- Archives your own posts on updates
+- Works on both new and existing content
+- Helps maintain long-term content reliability and SEO
 
 ## Installation
 

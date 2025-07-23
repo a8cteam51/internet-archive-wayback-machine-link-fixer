@@ -183,7 +183,7 @@ function wpcomsp_wayback_link_fixer_render_template( string $template, array $ar
 			__FUNCTION__,
 			sprintf(
 				/* translators: %s: template path */
-				esc_html__( 'The template %s does not exist.', 'wpcomsp_wayback_link_fixer' ),
+				esc_html__( 'The template %s does not exist.', 'wayback-link-fixer' ),
 				'<code>' . esc_attr( $path ) . '</code>'
 			),
 			'1.0.0'
@@ -211,21 +211,6 @@ function wpcomsp_wayback_link_fixer_render_template( string $template, array $ar
 }
 
 
-
-/**
- * Enqueue select2 assets.
- *
- * @since 1.1.0
- *
- * @param array<string> $deps The dependencies.
- *
- * @return void
- */
-function wpcomsp_wayback_link_fixer_enqueue_select2_assets( array $deps = array() ): void {
-	wp_enqueue_style( 'select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', $deps, '4.1.0-rc.0' );
-	wp_enqueue_script( 'select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', 'jquery', '4.1.0-rc.0', true );
-}
-
 /**
  * Render the CSS used for archived links in the header.
  *
@@ -234,17 +219,16 @@ function wpcomsp_wayback_link_fixer_enqueue_select2_assets( array $deps = array(
  * @return void
  */
 function wpcomsp_wayback_link_fixer_render_archived_link_css(): void {
-	$css = <<<CSS
-		.wlf-archived__redirect{
-			    color: var(--wp--preset--color--primary) !important;
-    			padding: 0 8px;
-    			font-size: 75%;
-		}
-		.wlf-archived__redirect:hover {
-			color: #005f7b;
-		}
+	$css = '
+.wlf-archived__redirect {
+    color: var(--wp--preset--color--primary) !important;
+    padding: 0 8px;
+    font-size: 75%;
 }
-CSS;
+.wlf-archived__redirect:hover {
+    color: #005f7b;
+}
+';
 
 	// Filter the css.
 	$css = apply_filters( 'wlf_archived_link_css', $css );
@@ -303,7 +287,7 @@ function wpcomsp_wayback_link_fixer_get_date_format(): string {
  * @return void
  */
 function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
-	$in_unauthenticated_mode = __( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wpcomsp_wayback_link_fixer' );
+	$in_unauthenticated_mode = __( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wayback-link-fixer' );
 
 	// If the archive api is not configured.
 	if ( ! Settings::is_archive_api_configured() ) {
@@ -319,7 +303,7 @@ function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
 
 	// If the creds are invalid.
 	if ( ! Settings::has_valid_archive_api_credentials() ) {
-		$message  = __( 'Your Archive.org API credentials are invalid. Please check your settings.', 'wpcomsp_wayback_link_fixer' );
+		$message  = __( 'Your Archive.org API credentials are invalid. Please check your settings.', 'wayback-link-fixer' );
 		$message .= ' ' . $in_unauthenticated_mode;
 		?>
 		<div class="notice notice-error">
@@ -328,7 +312,7 @@ function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
 				print wp_kses_post(
 					sprintf(
 						// translators: %s is a link to the settings page.
-						__( 'Your Archive.org API credentials are invalid. <a href="%s">Please check your settings.</a>. As a result you are in in unauthenticated mode, which restricts you to 4000 new snapshots per day.', 'wpcomsp_wayback_link_fixer' ),
+						__( 'Your Archive.org API credentials are invalid. <a href="%s">Please check your settings.</a>. As a result you are in in unauthenticated mode, which restricts you to 4000 new snapshots per day.', 'wayback-link-fixer' ),
 						esc_url( admin_url( 'options-general.php?page=' . Settings_Page::PAGE_SLUG ) )
 					)
 				);
@@ -355,7 +339,7 @@ function wpcomsp_wayback_link_fixer_render_wayback_offline_notice(): void {
 	?>
 	<div class="notice notice-error">
 		<p>
-			<?php esc_html_e( 'The Wayback Machine is currently offline. Please try again later.', 'wpcomsp_wayback_link_fixer' ); ?>
+			<?php esc_html_e( 'The Wayback Machine is currently offline. Please try again later.', 'wayback-link-fixer' ); ?>
 		</p>
 	</div>
 	<?php

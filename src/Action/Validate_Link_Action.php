@@ -65,7 +65,7 @@ class Validate_Link_Action {
 			return array(
 				'link'    => $link,
 				'job_id'  => null,
-				'message' => __( 'Service is offline', 'wpcomsp_wayback_link_fixer' ),
+				'message' => __( 'Service is offline', 'wayback-link-fixer' ),
 			);
 		}
 
@@ -73,7 +73,7 @@ class Validate_Link_Action {
 			return array(
 				'link'    => null,
 				'job_id'  => null,
-				'message' => __( 'Link not found', 'wpcomsp_wayback_link_fixer' ),
+				'message' => __( 'Link not found', 'wayback-link-fixer' ),
 			);
 		}
 
@@ -82,7 +82,7 @@ class Validate_Link_Action {
 			return array(
 				'link'    => $link,
 				'job_id'  => null,
-				'message' => __( 'Link is an archive link already', 'wpcomsp_wayback_link_fixer' ),
+				'message' => __( 'Link is an archive link already', 'wayback-link-fixer' ),
 			);
 		}
 
@@ -95,7 +95,7 @@ class Validate_Link_Action {
 				return array(
 					'link'    => $link,
 					'job_id'  => null,
-					'message' => __( 'Exceeded snapshot limit', 'wpcomsp_wayback_link_fixer' ),
+					'message' => __( 'Exceeded snapshot limit', 'wayback-link-fixer' ),
 				);
 			} else {
 				return array(
@@ -112,7 +112,7 @@ class Validate_Link_Action {
 		return array(
 			'link'    => $link,
 			'job_id'  => $job_id,
-			'message' => __( 'Validation request created, link will be updated ASAP', 'wpcomsp_wayback_link_fixer' ),
+			'message' => __( 'Validation request created, link will be updated ASAP', 'wayback-link-fixer' ),
 		);
 	}
 }

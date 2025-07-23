@@ -1,18 +1,18 @@
 # Copyright (C) 2025 WordPress.com Special Projects
-# This file is distributed under the GPL v3 or later.
+# This file is distributed under the GPL-3.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Internet Archive Wayback Machine Link Fixer 1.3.0-RC5\n"
+"Project-Id-Version: Internet Archive Wayback Machine Link Fixer 1.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wayback-link-fixer\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-17T09:35:14+00:00\n"
+"POT-Creation-Date: 2025-07-23T11:10:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: wpcomsp_wayback_link_fixer\n"
+"X-Domain: wayback-link-fixer\n"
 
 #. Plugin Name of the plugin
 #: wayback-link-fixer.php
@@ -103,18 +103,34 @@ msgstr ""
 msgid "Setup Wizard"
 msgstr ""
 
-#: src/Dashboard/Setup_Wizard.php:264
+#: src/Dashboard/Setup_Wizard.php:182
+msgid "Nonce verification failed"
+msgstr ""
+
+#: src/Dashboard/Setup_Wizard.php:191
+msgid "Current step is not set"
+msgstr ""
+
+#: src/Dashboard/Setup_Wizard.php:240
+msgid "Missing archive.org credentials"
+msgstr ""
+
+#: src/Dashboard/Setup_Wizard.php:246
+msgid "Next step is not set"
+msgstr ""
+
+#: src/Dashboard/Setup_Wizard.php:270
 msgid "Invalid Archive.org API credentials. Please verify your Access Key and Secret Key, or leave both fields blank to proceed without authentication."
 msgstr ""
 
-#: src/Dashboard/Setup_Wizard.php:342
+#: src/Dashboard/Setup_Wizard.php:348
 msgid "Link Fixer Setup Wizard"
 msgstr ""
 
 #: src/Report/Report_Page.php:96
 #: src/Report/Report_Page.php:97
-#: src/Report/Report_Page.php:278
-#: src/Settings/Settings_Page.php:416
+#: src/Report/Report_Page.php:281
+#: src/Settings/Settings_Page.php:413
 msgid "Link Fixer"
 msgstr ""
 
@@ -136,20 +152,20 @@ msgid "Table Columns"
 msgstr ""
 
 #. translators: %1$s is the post title, %2$s is the link to view all links.
-#: src/Report/Report_Page.php:294
+#: src/Report/Report_Page.php:297
 #, php-format
 msgid "Showing links for %1$s <a href=\"%2$s\">(Show all links)</a>"
 msgstr ""
 
-#: src/Report/Report_Page.php:311
+#: src/Report/Report_Page.php:314
 msgid "Search"
 msgstr ""
 
-#: src/Report/Report_Page.php:334
+#: src/Report/Report_Page.php:339
 msgid "The link does not exist."
 msgstr ""
 
-#: src/Report/Report_Page.php:346
+#: src/Report/Report_Page.php:351
 msgid "The link is not valid."
 msgstr ""
 
@@ -393,167 +409,167 @@ msgstr ""
 msgid "Link Fixer Settings"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:158
+#: src/Settings/Settings_Page.php:155
 msgid "Rerun The Setup Wizard"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:168
+#: src/Settings/Settings_Page.php:165
 #: templates/admin/wizard/complete.php:25
 msgid "Wayback Link Fixer Settings"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:177
+#: src/Settings/Settings_Page.php:174
 msgid "Save Changes"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:390
+#: src/Settings/Settings_Page.php:387
 msgid "Plugin Settings"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:401
+#: src/Settings/Settings_Page.php:398
 msgid "Archive.org API"
 msgstr ""
 
 #. Translators: %s is the link to the Internet account setup.
-#: src/Settings/Settings_Page.php:408
+#: src/Settings/Settings_Page.php:405
 #, php-format
 msgid "To get your API key and secret, please visit the <a href='%s' target='_blank'>Internet Archive</a> and create a new 'S3 access key' (this is a type of credential used by Archive.org)."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:418
-#: src/Settings/Settings_Page.php:607
+#: src/Settings/Settings_Page.php:415
+#: src/Settings/Settings_Page.php:604
 msgid "Enable the Link Fixer to scan links in your selected post types. It will find or create archived versions on the Internet Archive to ensure links remain accessible if they break."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:429
+#: src/Settings/Settings_Page.php:426
 #: templates/admin/dashboard/widget.php:91
 msgid "Auto Archiver"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:431
+#: src/Settings/Settings_Page.php:428
 msgid "Keep your content securely archived with the Auto Archiver. Each time you update a post, a fresh copy is saved to the Wayback Machine. Ensure your work remains accessible and preserved over time."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:442
+#: src/Settings/Settings_Page.php:439
 #: templates/admin/wizard/step-2.php:35
 msgid "Enable Link Fixer"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:450
+#: src/Settings/Settings_Page.php:447
 #: templates/admin/wizard/step-2.php:45
 #: templates/admin/wizard/step-3.php:44
 msgid "Post Types"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:459
+#: src/Settings/Settings_Page.php:456
 msgid "Wipe Data on Uninstall"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:467
+#: src/Settings/Settings_Page.php:464
 msgid "Existing Posts"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:476
+#: src/Settings/Settings_Page.php:473
 msgid "Fixer Option"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:485
+#: src/Settings/Settings_Page.php:482
 msgid "Link Exclusions"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:494
-#: src/Settings/Settings_Page.php:862
+#: src/Settings/Settings_Page.php:491
+#: src/Settings/Settings_Page.php:859
 msgid "Archive.org Access Key"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:505
-#: src/Settings/Settings_Page.php:840
+#: src/Settings/Settings_Page.php:502
+#: src/Settings/Settings_Page.php:837
 msgid "Archive.org Secret Key"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:516
+#: src/Settings/Settings_Page.php:513
 msgid "Auto Archive Posts"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:524
+#: src/Settings/Settings_Page.php:521
 msgid "Routinely Archive"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:533
+#: src/Settings/Settings_Page.php:530
 msgid "Routine Interval"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:542
+#: src/Settings/Settings_Page.php:539
 msgid "Allowed Post Types"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:559
+#: src/Settings/Settings_Page.php:556
 msgid "The Archive.org API keys are invalid. Please check your settings."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:639
+#: src/Settings/Settings_Page.php:636
 msgid "Please choose which post types will have their content checked and links added to the Wayback Machine."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:669
+#: src/Settings/Settings_Page.php:666
 msgid "Please choose which post types will be automatically archived to the Wayback Machine when they are published."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:688
+#: src/Settings/Settings_Page.php:685
 msgid "If checked, this will remove all local data when the plugin is uninstalled. Leave unchecked if you plan to reinstall this plugin."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:711
+#: src/Settings/Settings_Page.php:708
 msgid "When enabled, all posts of the allowed types will be scanned, and their links will be archived in the Wayback Machine."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:714
+#: src/Settings/Settings_Page.php:711
 msgid "This runs in the background and may take hours or days, depending on post and link count."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:732
+#: src/Settings/Settings_Page.php:729
 msgid "Enter a list of URLs (or parts of URLs) to exclude from link processing. You can use an asterisk (<code>*</code>) as a wildcard. For example, <code>https://example.com/some-path/*</code> would exclude anything after '/some-path/', and <code>*twitter.com*</code> would exclude any URL containing 'twitter.com'."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:747
+#: src/Settings/Settings_Page.php:744
 msgid "Add a new exclusion (https://x.com*)"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:750
+#: src/Settings/Settings_Page.php:747
 msgid "Add"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:755
+#: src/Settings/Settings_Page.php:752
 msgid "No exclusions found."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:819
+#: src/Settings/Settings_Page.php:816
 msgid "Remove"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:882
+#: src/Settings/Settings_Page.php:879
 #: templates/admin/wizard/step-2.php:82
 msgid "Replace Link (No Notification)"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:885
+#: src/Settings/Settings_Page.php:882
 #: templates/admin/wizard/step-2.php:85
 msgid "Do Nothing"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:889
+#: src/Settings/Settings_Page.php:886
 msgid "Choose how to handle broken links."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:911
+#: src/Settings/Settings_Page.php:908
 msgid "When active, your own content will be automatically archived on the Wayback Machine each time you publish or update it."
 msgstr ""
 
-#: src/Settings/Settings_Page.php:934
+#: src/Settings/Settings_Page.php:931
 msgid "Regularly archive your posts on the Wayback Machine"
 msgstr ""
 
-#: src/Settings/Settings_Page.php:959
+#: src/Settings/Settings_Page.php:956
 msgid "Interval in days for regular archiving."
 msgstr ""
 
