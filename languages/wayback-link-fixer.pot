@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-23T10:09:45+00:00\n"
+"POT-Creation-Date: 2025-07-23T11:10:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wayback-link-fixer\n"
@@ -103,17 +103,33 @@ msgstr ""
 msgid "Setup Wizard"
 msgstr ""
 
-#: src/Dashboard/Setup_Wizard.php:264
+#: src/Dashboard/Setup_Wizard.php:182
+msgid "Nonce verification failed"
+msgstr ""
+
+#: src/Dashboard/Setup_Wizard.php:191
+msgid "Current step is not set"
+msgstr ""
+
+#: src/Dashboard/Setup_Wizard.php:240
+msgid "Missing archive.org credentials"
+msgstr ""
+
+#: src/Dashboard/Setup_Wizard.php:246
+msgid "Next step is not set"
+msgstr ""
+
+#: src/Dashboard/Setup_Wizard.php:270
 msgid "Invalid Archive.org API credentials. Please verify your Access Key and Secret Key, or leave both fields blank to proceed without authentication."
 msgstr ""
 
-#: src/Dashboard/Setup_Wizard.php:342
+#: src/Dashboard/Setup_Wizard.php:348
 msgid "Link Fixer Setup Wizard"
 msgstr ""
 
 #: src/Report/Report_Page.php:96
 #: src/Report/Report_Page.php:97
-#: src/Report/Report_Page.php:278
+#: src/Report/Report_Page.php:281
 #: src/Settings/Settings_Page.php:413
 msgid "Link Fixer"
 msgstr ""
@@ -136,20 +152,20 @@ msgid "Table Columns"
 msgstr ""
 
 #. translators: %1$s is the post title, %2$s is the link to view all links.
-#: src/Report/Report_Page.php:294
+#: src/Report/Report_Page.php:297
 #, php-format
 msgid "Showing links for %1$s <a href=\"%2$s\">(Show all links)</a>"
 msgstr ""
 
-#: src/Report/Report_Page.php:311
+#: src/Report/Report_Page.php:314
 msgid "Search"
 msgstr ""
 
-#: src/Report/Report_Page.php:334
+#: src/Report/Report_Page.php:339
 msgid "The link does not exist."
 msgstr ""
 
-#: src/Report/Report_Page.php:346
+#: src/Report/Report_Page.php:351
 msgid "The link is not valid."
 msgstr ""
 
