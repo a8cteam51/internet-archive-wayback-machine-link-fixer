@@ -69,6 +69,10 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		add_filter(
 			'pre_http_request',
 			function ( $response, $args, $url ) use ( &$called_url ) {
+				// The header should be set.
+				$this->assertArrayHasKey( 'headers', $args );
+				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
+
 				$called_url = $url;
 				return false;
 			},

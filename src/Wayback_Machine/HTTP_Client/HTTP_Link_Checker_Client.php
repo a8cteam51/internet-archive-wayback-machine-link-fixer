@@ -79,8 +79,18 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 			apply_filters( 'wlf_link_checker_url_base', 'https://iabot-api.archive.org/livewebcheck' )
 		);
 
+		$headers = array(
+			'WP-Wayback-Link-Fixer' => WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
+		);
+
 		// Get the response.
-		$response = wp_remote_get( $query_url, array( 'timeout' => $this->timeout ) );
+		$response = wp_remote_get(
+			$query_url,
+			array(
+				'timeout' => $this->timeout,
+				'headers' => $headers,
+			)
+		);
 
 		// If we dont have a valid response, throw exception
 		if ( is_wp_error( $response ) ) {
