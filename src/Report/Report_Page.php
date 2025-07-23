@@ -272,6 +272,9 @@ class Report_Page {
 		$table->render_notices();
 		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
 
+		// Get the current page.
+		$current_page = isset( $_REQUEST['page'] ) ? \sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) : self::SLUG; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+
 		echo '<div class="wrap">';
 		printf(
 			'<h1 class="wp-heading-inline">%s</h1>',
@@ -282,7 +285,7 @@ class Report_Page {
 
 		// If we have a post id in params, show a message.
 		if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
-			$post_id = sanitize_text_field( $_GET['wlf_filtered_post_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+			$post_id = sanitize_text_field( wp_unslash( $_GET['wlf_filtered_post_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
 
 			// Get the post title.
 			$post = get_post( $post_id );
@@ -307,7 +310,7 @@ class Report_Page {
 		// Render the table.
 		$table->prepare_items();
 		echo '<form method="get">';
-		echo '<input type="hidden" name="page" value="' . esc_attr( $_REQUEST['page'] ) . '">'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+		echo '<input type="hidden" name="page" value="' . esc_attr( $current_page ) . '">'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
 		$table->search_box( __( 'Search', 'wayback-link-fixer' ), 'wlf-link-search' );
 		$table->display();
 		echo '</form>';
@@ -325,7 +328,9 @@ class Report_Page {
 	private function render_single_page(): void {
 
 		// Get the link.
-		$link_id = absint( $_GET['wlf_link_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+		$link_id = isset( $_GET['wlf_link_id'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+			? absint( wp_unslash( $_GET['wlf_link_id'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible
+			: 0;
 
 		// If the link does not exist, show an error.
 		if ( 0 === $link_id ) {

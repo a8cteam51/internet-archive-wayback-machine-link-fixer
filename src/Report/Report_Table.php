@@ -121,8 +121,8 @@ class Report_Table extends \WP_List_Table {
 			return;
 		}
 
-		$key    = sanitize_text_field( $_GET['wlf_notification'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-		$action = sanitize_text_field( $_GET['wlf_completed_action'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		$key    = sanitize_text_field( wp_unslash( $_GET['wlf_notification'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		$action = sanitize_text_field( wp_unslash( $_GET['wlf_completed_action'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 
 		// Get the cache and populate the notices.
 		$cache         = new List_Table_Action_Notification_Cache( $action );
@@ -178,7 +178,7 @@ class Report_Table extends \WP_List_Table {
 		}
 
 		// Verify the nonce and referrer.
-		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) && check_admin_referer( 'bulk-' . $this->_args['plural'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-' . $this->_args['plural'] ) && check_admin_referer( 'bulk-' . $this->_args['plural'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			// Add a notice.
 			$this->notices[] = array(
 				'message' => __( 'Something went wrong, please try again', 'wayback-link-fixer' ),
@@ -817,7 +817,7 @@ class Report_Table extends \WP_List_Table {
 		<?php endif; ?>
 
 		<?php if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>
-			<input type="hidden" name="wlf_filtered_post_id" value="<?php echo esc_attr( $_GET['wlf_filtered_post_id'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>" />
+			<input type="hidden" name="wlf_filtered_post_id" value="<?php echo absint( \sanitize_text_field( wp_unslash( $_GET['wlf_filtered_post_id'] ) ) ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>" />
 		<?php endif; ?>
 
 		<input type="submit" class="button" value="<?php esc_attr_e( 'Filter', 'wayback-link-fixer' ); ?>"  />
@@ -834,7 +834,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_status_from_url(): ?string {
 		return array_key_exists( 'wlf_status', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? sanitize_text_field( $_GET['wlf_status'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( wp_unslash( $_GET['wlf_status'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: '';
 	}
 
@@ -845,7 +845,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_excluded_status_from_url(): ?string {
 		return array_key_exists( 'wlf_is_excluded', $_GET ) && '' !== $_GET['wlf_is_excluded'] // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? sanitize_text_field( $_GET['wlf_is_excluded'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( wp_unslash( $_GET['wlf_is_excluded'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: null;
 	}
 
@@ -856,7 +856,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_archived_status_from_url(): ?string {
 		return array_key_exists( 'wlf_has_archive', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? sanitize_text_field( $_GET['wlf_has_archive'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( wp_unslash( $_GET['wlf_has_archive'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: '';
 	}
 
@@ -898,7 +898,7 @@ class Report_Table extends \WP_List_Table {
 			return Link_Repository::ORDER_ID_DESC;
 		}
 
-		$order_by = sanitize_text_field( $_GET['orderby'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		$order_by = sanitize_text_field( wp_unslash( $_GET['orderby'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 
 		// If orderby is not a valid column, return default.
 		if ( ! in_array( $order_by, array( self::COLUMN_LINK_URL, self::COLUMN_LINK_CHECKS_LAST, self::COLUMN_LINK_ARCHIVE, self::COLUMN_LINK_CHECKS, self::COLUMN_LINK_EXCLUDE, self::COLUMN_LINK_HEALTH ), true ) ) {
@@ -907,7 +907,7 @@ class Report_Table extends \WP_List_Table {
 
 		// Get the direction.
 		$order = array_key_exists( 'order', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? sanitize_text_field( $_GET['order'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( wp_unslash( $_GET['order'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: 'asc';
 
 		$asc_map = array(
@@ -1018,7 +1018,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_search_term(): string {
 		return array_key_exists( 's', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? sanitize_text_field( $_GET['s'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( wp_unslash( $_GET['s'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: '';
 	}
 

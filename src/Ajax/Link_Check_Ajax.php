@@ -89,7 +89,7 @@ class Link_Check_Ajax {
 		}
 
 		// Find the link.
-		$link = $this->link_repository->find_by_url( sanitize_text_field( untrailingslashit( $_POST['link'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, Checked above.
+		$link = $this->link_repository->find_by_url( untrailingslashit( sanitize_text_field( wp_unslash( $_POST['link'] ) ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, Checked above.
 
 		// If the link does not exist, send an error.
 		if ( null === $link ) {
@@ -206,7 +206,7 @@ class Link_Check_Ajax {
 		}
 
 		// Verify the nonce.
-		if ( ! wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), self::ACTION ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), self::ACTION ) ) {
 			throw new Exception( 'Invalid nonce.' );
 		}
 	}

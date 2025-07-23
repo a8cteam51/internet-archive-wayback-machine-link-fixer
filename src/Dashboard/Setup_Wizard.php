@@ -179,7 +179,7 @@ class Setup_Wizard {
 
 		// verify nonce and referer
 		if ( ! check_admin_referer( 'wlf_wizard_nonce', 'wlf_wizard_nonce' ) ) {
-			$this->add_notice( 'Nonce verification failed' );
+			$this->add_notice( __( 'Nonce verification failed', 'wayback-link-fixer' ) );
 			return;
 		}
 
@@ -188,7 +188,7 @@ class Setup_Wizard {
 
 		// If current is not set, bail.
 		if ( empty( $current ) ) {
-			$this->add_notice( 'Current step is not set' );
+			$this->add_notice( __( 'Current step is not set', 'wayback-link-fixer' ) );
 			return;
 		}
 
@@ -237,7 +237,13 @@ class Setup_Wizard {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		// Check we have the 2 api creds.
 		if ( ! isset( $_POST['wlf_wizard_archive_access_key'], $_POST['wlf_wizard_archive_secret_key'] ) ) {
-			$this->add_notice( 'Missing archive.org credentials', 'error' );
+			$this->add_notice( __( 'Missing archive.org credentials', 'wayback-link-fixer' ), 'error' );
+			return;
+		}
+
+		// If next step is not set, bail.
+		if ( ! isset( $_POST['wlf-next-step'] ) ) {
+			$this->add_notice( __( 'Next step is not set', 'wayback-link-fixer' ), 'error' );
 			return;
 		}
 
