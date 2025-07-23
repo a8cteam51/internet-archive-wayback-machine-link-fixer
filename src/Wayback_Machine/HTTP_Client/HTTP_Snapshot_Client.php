@@ -63,7 +63,9 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	 * @return array<string, string> The headers.
 	 */
 	private function get_headers(): array {
-		$headers = array();
+		$headers = array(
+			'WP-Wayback-Link-Fixer' => WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
+		);
 
 		// Add the auth header if set.
 		if ( Settings::is_archive_api_configured() && Settings::has_valid_archive_api_credentials() ) {
@@ -97,6 +99,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$response = wp_remote_get(
 			$url,
 			array(
+				'headers'  => $this->get_headers(),
 				'timeout'   => apply_filters( 'wlf_get_latest_snapshot_timeout', 10 ),
 				'sslverify' => false,
 			)
@@ -133,6 +136,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$response = wp_remote_get(
 			$api_url,
 			array(
+				'headers'  => $this->get_headers(),
 				'timeout'   => apply_filters( 'wlf_get_closest_snapshot_timeout', 10 ),
 				'sslverify' => false,
 			)
@@ -299,7 +303,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$query_url = 'https://web.archive.org/save/status/' . $job_id;
 
 		// Get the status of the job.
-		$response = wp_remote_get( $query_url );
+		$response = wp_remote_get( $query_url, array( 'headers' => $this->get_headers() ) );
 
 		// If we have a wp error, throw invalid response exception.
 		if ( is_wp_error( $response ) ) {

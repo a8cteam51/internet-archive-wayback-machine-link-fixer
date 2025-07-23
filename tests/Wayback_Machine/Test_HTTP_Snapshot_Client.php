@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests;
 
 use DateTime;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
 
 /**
@@ -242,6 +243,10 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		add_filter(
 			'pre_http_request',
 			function ( $response, $args, $url ) {
+				// Check we have the headers set.
+				$this->assertArrayHasKey( 'headers', $args );
+				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
+
 				// Check url has timestamp={Ymd}
 				$this->assertStringContainsString( 'timestamp=20240422', $url );
 				return new \WP_Error( 'http_request_failed', 'Error' );
@@ -310,13 +315,13 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 				$this->assertArrayHasKey( 'body', $args );
 				$this->assertArrayHasKey( 'url', $args['body'] );
 				$this->assertEquals( 'http%3A%2F%2Fexample.com', $args['body']['url'] );
+				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
 
 				// Mock a valid response.
 				return array(
 					'body'     => 'spn.watchJob("some id")',
 					'response' => array( 'code' => 200 ),
 				);
-
 			},
 			10,
 			3
@@ -374,6 +379,10 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		add_filter(
 			'pre_http_request',
 			function ( $response, $args, $url ) {
+				// Check we have the headers set.
+				$this->assertArrayHasKey( 'headers', $args );
+				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
+
 				return array(
 					'body' => json_encode(
 						array(
@@ -419,5 +428,107 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 
 		$client = new HTTP_Snapshot_Client();
 		$this->assertFalse( ( $client->has_snapshot( 'http://example.com' ) ) );
+	}
+
+	/**
+	 * @testdox When a request is made the correct headers should be set. (NO API KEYS)
+	 *
+	 * @return void
+	 */
+	public function test_should_set_correct_headers_no_api_keys() {
+		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+			$this->markTestSkipped( 'Skipping live API tests' );
+		}
+
+		add_filter(
+			'pre_http_request',
+			function ( $response, $args, $url ) {
+				$this->assertArrayHasKey( 'headers', $args );
+				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
+				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'], $args['headers']['WP-Wayback-Link-Fixer'] );
+				return new \WP_Error( 'http_request_failed', 'Error' );
+			},
+			10,
+			3
+		);
+
+		$client = new HTTP_Snapshot_Client();
+		$client->get_latest_snapshot( 'http://example.com' );
+	}
+
+	/**
+	 * @testdox When a request is made the correct headers should be set. (WITH API KEYS)
+	 *
+	 * @return void
+	 */
+	public function test_should_set_correct_headers_with_api_keys() {
+		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+			$this->markTestSkipped( 'Skipping live API tests' );
+		}
+
+		// Get the current options.
+		$archive_access_key = get_option( Settings::ARCHIVE_ORG_ACCESS_KEY, '' );
+		$archive_secret_key = get_option( Settings::ARCHIVE_ORG_SECRET_KEY, '' );
+		$is_valid           = get_option( Settings::ARCHIVE_ORG_CREDS_VALID_KEY, false );
+
+		// Set some garbage keys.
+		update_option( Settings::ARCHIVE_ORG_ACCESS_KEY, 'test_access_key' );
+		update_option( Settings::ARCHIVE_ORG_SECRET_KEY, 'test_secret_key' );
+		update_option( Settings::ARCHIVE_ORG_CREDS_VALID_KEY, true );
+
+		add_filter(
+			'pre_http_request',
+			function ( $response, $args, $url ) {
+				$this->assertArrayHasKey( 'headers', $args );
+				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
+				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'], $args['headers']['WP-Wayback-Link-Fixer'] );
+				$this->assertArrayHasKey( 'Authorization', $args['headers'] );
+				$this->assertEquals( 'LOW test_access_key:test_secret_key', $args['headers']['Authorization'] );
+				return new \WP_Error( 'http_request_failed', 'Error' );
+			},
+			10,
+			3
+		);
+
+		try {
+			$client = new HTTP_Snapshot_Client();
+			$client->create_snapshot( 'http://example.com' );
+		} catch ( \Throwable $th ) {
+			//throw $th;
+		} finally {
+			// Reset the options.
+			update_option( Settings::ARCHIVE_ORG_ACCESS_KEY, $archive_access_key );
+			update_option( Settings::ARCHIVE_ORG_SECRET_KEY, $archive_secret_key );
+			update_option( Settings::ARCHIVE_ORG_CREDS_VALID_KEY, $is_valid );
+		}
+	}
+
+	/**
+	 * @testdox When we check if a snapshot has finished, it should have the correct headers.
+	 *
+	 * @return void
+	 */
+	public function test_should_check_snapshot_status_with_correct_headers() {
+		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+			$this->markTestSkipped( 'Skipping live API tests' );
+		}
+
+		add_filter(
+			'pre_http_request',
+			function ( $response, $args, $url ) {
+				$this->assertArrayHasKey( 'headers', $args );
+				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
+				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'], $args['headers']['WP-Wayback-Link-Fixer'] );
+				return array(
+					'body'     => json_encode( array( 'status' => 'success', 'job_id' => '12345' ) ),
+					'response' => array( 'code' => 200 ),
+				);
+			},
+			10,
+			3
+		);
+
+		$client = new HTTP_Snapshot_Client();
+		$result = $client->get_snapshot_status( '12345' );
 	}
 }

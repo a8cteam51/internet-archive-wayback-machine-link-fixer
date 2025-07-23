@@ -69,7 +69,6 @@ require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/vendor/autoload.php';
 
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', wpcomsp_wayback_link_fixer_validate_requirements() );
 
-
 if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
 	wpcomsp_wayback_link_fixer_output_requirements_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS );
 } else {
