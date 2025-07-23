@@ -109,9 +109,6 @@ class Settings_Page {
 			return;
 		}
 
-		// Register select2
-		wpcomsp_wayback_link_fixer_enqueue_select2_assets( array( self::PAGE_SLUG ) );
-
 		wp_register_script(
 			self::PAGE_SLUG,
 			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/admin_settings.js',

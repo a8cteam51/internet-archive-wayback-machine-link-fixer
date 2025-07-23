@@ -211,21 +211,6 @@ function wpcomsp_wayback_link_fixer_render_template( string $template, array $ar
 }
 
 
-
-/**
- * Enqueue select2 assets.
- *
- * @since 1.1.0
- *
- * @param array<string> $deps The dependencies.
- *
- * @return void
- */
-function wpcomsp_wayback_link_fixer_enqueue_select2_assets( array $deps = array() ): void {
-	wp_enqueue_style( 'select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', $deps, '4.1.0-rc.0' );
-	wp_enqueue_script( 'select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', 'jquery', '4.1.0-rc.0', true );
-}
-
 /**
  * Render the CSS used for archived links in the header.
  *
@@ -234,17 +219,16 @@ function wpcomsp_wayback_link_fixer_enqueue_select2_assets( array $deps = array(
  * @return void
  */
 function wpcomsp_wayback_link_fixer_render_archived_link_css(): void {
-	$css = <<<CSS
-		.wlf-archived__redirect{
-			    color: var(--wp--preset--color--primary) !important;
-    			padding: 0 8px;
-    			font-size: 75%;
-		}
-		.wlf-archived__redirect:hover {
-			color: #005f7b;
-		}
+	$css = '
+.wlf-archived__redirect {
+    color: var(--wp--preset--color--primary) !important;
+    padding: 0 8px;
+    font-size: 75%;
 }
-CSS;
+.wlf-archived__redirect:hover {
+    color: #005f7b;
+}
+';
 
 	// Filter the css.
 	$css = apply_filters( 'wlf_archived_link_css', $css );
