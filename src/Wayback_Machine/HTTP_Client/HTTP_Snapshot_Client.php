@@ -99,9 +99,8 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$response = wp_remote_get(
 			$url,
 			array(
-				'headers'   => $this->get_headers(),
-				'timeout'   => apply_filters( 'wlf_get_latest_snapshot_timeout', 10 ),
-				'sslverify' => false,
+				'headers' => $this->get_headers(),
+				'timeout' => apply_filters( 'wlf_get_latest_snapshot_timeout', 10 ),
 			)
 		);
 		return $this->extract_response( $response );
@@ -136,9 +135,8 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$response = wp_remote_get(
 			$api_url,
 			array(
-				'headers'   => $this->get_headers(),
-				'timeout'   => apply_filters( 'wlf_get_closest_snapshot_timeout', 10 ),
-				'sslverify' => false,
+				'headers' => $this->get_headers(),
+				'timeout' => apply_filters( 'wlf_get_closest_snapshot_timeout', 10 ),
 			)
 		);
 
