@@ -101,7 +101,6 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 			array(
 				'headers'   => $this->get_headers(),
 				'timeout'   => apply_filters( 'wlf_get_latest_snapshot_timeout', 10 ),
-				'sslverify' => false,
 			)
 		);
 		return $this->extract_response( $response );
@@ -138,7 +137,6 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 			array(
 				'headers'   => $this->get_headers(),
 				'timeout'   => apply_filters( 'wlf_get_closest_snapshot_timeout', 10 ),
-				'sslverify' => false,
 			)
 		);
 
