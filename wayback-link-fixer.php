@@ -38,18 +38,6 @@ define( 'WPCOMSP_WAYBACK_LINK_FIXER_URL', plugin_dir_url( __FILE__ ) );
 // Load the rest of the bootstrap functions.
 require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/functions-bootstrap.php';
 
-// Load plugin translations so they are available even for the error admin notices.
-add_action(
-	'init',
-	static function () {
-		load_plugin_textdomain(
-			wpcomsp_wayback_link_fixer_get_plugin_metadata( 'TextDomain' ),
-			false,
-			dirname( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME ) . wpcomsp_wayback_link_fixer_get_plugin_metadata( 'DomainPath' )
-		);
-	}
-);
-
 // Declare compatibility with WC features.
 add_action(
 	'before_woocommerce_init',
