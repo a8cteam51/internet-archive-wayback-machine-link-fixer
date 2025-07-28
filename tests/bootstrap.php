@@ -28,7 +28,7 @@ tests_add_filter(
 	function () {
 		// Activate the plugin.
 		include_once ABSPATH . 'wp-admin/includes/plugin.php';
-		activate_plugin( 'wayback-link-fixer/wayback-link-fixer.php' );
+		activate_plugin( 'internet-archive-wayback-machine-link-fixer/internet-archive-wayback-machine-link-fixer.php' );
 
 		// include the function file
 		include_once dirname( __DIR__ ) . '/functions.php';
@@ -46,7 +46,7 @@ tests_add_filter(
 		}
 
 		// Ensure the settings to process links is enabled.
-		update_option(Settings::PROCESS_LINKS, true);
+		update_option( Settings::PROCESS_LINKS, true );
 	}
 );
 
