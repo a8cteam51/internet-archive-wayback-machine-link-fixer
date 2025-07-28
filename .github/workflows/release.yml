@@ -27,8 +27,7 @@ jobs:
       - name: Zip Folder
         run: |
           zip -r ${{ github.event.repository.name }}.zip . \
-          -x "composer.json" \
-            "composer.lock" \
+          -x "composer.lock" \
             "coverage/*" \
             "coverage-report/*" \
             ".editorconfig" \
