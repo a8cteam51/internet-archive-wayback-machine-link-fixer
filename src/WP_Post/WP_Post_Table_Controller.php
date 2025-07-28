@@ -111,7 +111,7 @@ class WP_Post_Table_Controller {
 		}
 
 		// Add the column.
-		$columns[ self::LINK_COLUMN_KEY ] = __( 'Links', 'wayback-link-fixer' );
+		$columns[ self::LINK_COLUMN_KEY ] = __( 'Links', 'internet-archive-wayback-machine-link-fixer' );
 
 		return $columns;
 	}
@@ -148,14 +148,14 @@ class WP_Post_Table_Controller {
 
 		// If we have no links, show a message.
 		if ( empty( $stats['total'] ) ) {
-			echo esc_html__( 'No links found', 'wayback-link-fixer' );
+			echo esc_html__( 'No links found', 'internet-archive-wayback-machine-link-fixer' );
 			return;
 		}
 
 		print wp_kses(
 			sprintf(
 			// translators: %2$s is the url to view the links in a report, %2$s is the number of broken links, %3$s is the total number of links.
-				__( '<a href="%1$s"><strong>%2$s</strong> broken out of <strong>%3$s</strong></a>', 'wayback-link-fixer' ),
+				__( '<a href="%1$s"><strong>%2$s</strong> broken out of <strong>%3$s</strong></a>', 'internet-archive-wayback-machine-link-fixer' ),
 				$this->generate_report_page_url( $links, $post_id ),
 				absint( $stats['broken'] ),
 				absint( $stats['total'] )

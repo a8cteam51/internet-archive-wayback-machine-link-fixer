@@ -62,7 +62,7 @@ class Link_Latest_Snapshot_Action {
 				'link'    => null,
 				'found'   => false,
 				'updated' => false,
-				'message' => __( 'Link not found.', 'wayback-link-fixer' ),
+				'message' => __( 'Link not found.', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 		}
 
@@ -72,7 +72,7 @@ class Link_Latest_Snapshot_Action {
 				'link'    => $link,
 				'found'   => false,
 				'updated' => false,
-				'message' => __( 'Service is offline.', 'wayback-link-fixer' ),
+				'message' => __( 'Service is offline.', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 		}
 
@@ -82,7 +82,7 @@ class Link_Latest_Snapshot_Action {
 				'link'    => $link,
 				'found'   => true,
 				'updated' => false,
-				'message' => __( 'Link is already an archived link.', 'wayback-link-fixer' ),
+				'message' => __( 'Link is already an archived link.', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 		}
 
@@ -94,7 +94,7 @@ class Link_Latest_Snapshot_Action {
 				'link'    => $link,
 				'found'   => false,
 				'updated' => false,
-				'message' => __( 'No archive URL found.', 'wayback-link-fixer' ),
+				'message' => __( 'No archive URL found.', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 		}
 
@@ -104,7 +104,7 @@ class Link_Latest_Snapshot_Action {
 				'link'    => $link,
 				'found'   => true,
 				'updated' => false,
-				'message' => __( 'Archive URL is the same.', 'wayback-link-fixer' ),
+				'message' => __( 'Archive URL is the same.', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 		}
 
@@ -118,7 +118,7 @@ class Link_Latest_Snapshot_Action {
 			'link'    => $link,
 			'found'   => true,
 			'updated' => true,
-			'message' => __( 'Link updated.', 'wayback-link-fixer' ),
+			'message' => __( 'Link updated.', 'internet-archive-wayback-machine-link-fixer' ),
 		);
 	}
 }

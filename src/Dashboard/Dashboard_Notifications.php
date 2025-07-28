@@ -62,7 +62,7 @@ class Dashboard_Notifications {
 	public function register_widgets(): void {
 		wp_add_dashboard_widget(
 			'wayback_link_fixer_dashboard_widget',
-			__( 'Wayback Link Fixer', 'wayback-link-fixer' ),
+			__( 'Wayback Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),
 			array( $this, 'render_widget' ),
 			null,
 			null,

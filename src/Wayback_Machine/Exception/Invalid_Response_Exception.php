@@ -28,6 +28,6 @@ class Invalid_Response_Exception extends Exception {
 	 * @return Invalid_Response_Exception
 	 */
 	public static function create( string $message = ' ' ): Invalid_Response_Exception {
-		return new Invalid_Response_Exception( esc_html( __( 'The response is invalid.', 'wayback-link-fixer' ) . $message ) );
+		return new Invalid_Response_Exception( esc_html( __( 'The response is invalid.', 'internet-archive-wayback-machine-link-fixer' ) . $message ) );
 	}
 }

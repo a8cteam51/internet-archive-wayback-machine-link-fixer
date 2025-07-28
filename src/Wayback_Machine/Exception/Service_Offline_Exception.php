@@ -30,7 +30,7 @@ class Service_Offline_Exception extends Exception {
 		return new Service_Offline_Exception(
 			sprintf(
 				// translators: %s is the message.
-				__( 'The service is offline.%s', 'wayback-link-fixer' ),
+				__( 'The service is offline.%s', 'internet-archive-wayback-machine-link-fixer' ),
 				'' !== $message ? esc_html( ' ' . $message ) : ''
 			)
 		);

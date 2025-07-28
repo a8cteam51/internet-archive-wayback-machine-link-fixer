@@ -11,12 +11,12 @@
 $wlf_previous_state = 'step-1' === $step_data['step'] ? 'DISABLED' : '';
 $wlf_next_state     = 'complete' === $step_data['step'] ? 'DISABLED' : '';
 $wlf_next_label     = 'complete' === $step_data['next']
-	? esc_html__( 'Finish', 'wayback-link-fixer' )
-	: esc_html__( 'Next Step', 'wayback-link-fixer' );
+	? esc_html__( 'Finish', 'internet-archive-wayback-machine-link-fixer' )
+	: esc_html__( 'Next Step', 'internet-archive-wayback-machine-link-fixer' );
 
 $wlf_progress_string = sprintf(
 	/* translators: 1: current step, 2: total steps */
-	esc_html__( 'Step %1$d of %2$d', 'wayback-link-fixer' ),
+	esc_html__( 'Step %1$d of %2$d', 'internet-archive-wayback-machine-link-fixer' ),
 	$step_data['progress']['current'],
 	$step_data['progress']['total']
 );
@@ -27,7 +27,7 @@ $wlf_progress_pc = ( $step_data['progress']['current'] / $step_data['progress'][
 	<div id="wlf-wizard__footer">
 		<div class="wlf-wizard__footer__previous">
 			<?php if ( 'complete' !== $step_data['step'] || (isset($_GET['rerun-wizard']) && '1' === sanitize_text_field($_GET['rerun-wizard']) ) ) : // phpcs:ignore ?>
-				<button class="button button-primary" type="submit" name="wlf-previous-step" <?php echo esc_attr( $wlf_previous_state ); ?>><?php esc_html_e( 'Previous Step', 'wayback-link-fixer' ); ?></button>
+				<button class="button button-primary" type="submit" name="wlf-previous-step" <?php echo esc_attr( $wlf_previous_state ); ?>><?php esc_html_e( 'Previous Step', 'internet-archive-wayback-machine-link-fixer' ); ?></button>
 			<?php endif; ?>
 		</div>
 		<div class="wlf-wizard__footer__progress">

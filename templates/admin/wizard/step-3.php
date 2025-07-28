@@ -21,29 +21,29 @@ $wlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 <?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 <div class="wlf-wizard__content__header">
-	<h2><?php esc_html_e( 'Step 3: Configure the Auto Archiver', 'wayback-link-fixer' ); ?></h2>
+	<h2><?php esc_html_e( 'Step 3: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
 </div>
 
 <div class="wlf-wizard__content__intro">
-	<p><?php esc_html_e( 'Easily preserve your website’s content by enabling automatic archiving with the Internet Archive, setting up regular archiving, and choosing which post types to include.', 'wayback-link-fixer' ); ?></p>
+	<p><?php esc_html_e( 'Easily preserve your website’s content by enabling automatic archiving with the Internet Archive, setting up regular archiving, and choosing which post types to include.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 </div>
 
 <div class="wlf-wizard__content__field">
 	<div class="wlf-wizard__content__inner-field checkbox">
 		<div class="inner-spaced-between">
 			<label for="wlf_wizard_activate_auto_archiver">
-				<?php esc_html_e( 'Enable Auto Archiver', 'wayback-link-fixer' ); ?>
+				<?php esc_html_e( 'Enable Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ); ?>
 			</label>
 			<input type="checkbox" id="is_active" name="wlf_wizard_activate_auto_archiver" value="1" <?php checked( Settings::add_own_links() ); ?> />
 		</div>
-		<p class="description"><?php esc_html_e( 'When the Auto Archiver is enabled, your content is automatically archived on the Internet Archive each time you publish or save changes to a post of the selected types.', 'wayback-link-fixer' ); ?></p>
+		<p class="description"><?php esc_html_e( 'When the Auto Archiver is enabled, your content is automatically archived on the Internet Archive each time you publish or save changes to a post of the selected types.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	</div>
 </div>
 <div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $wlf_hide_class ); ?>" >
 	<label for="wlf_wizard_post_types">
-		<?php esc_html_e( 'Post Types', 'wayback-link-fixer' ); ?>
+		<?php esc_html_e( 'Post Types', 'internet-archive-wayback-machine-link-fixer' ); ?>
 	</label>
-	<p class="description"><?php esc_html_e( 'Select which post types should be archived on the Wayback Machine.', 'wayback-link-fixer' ); ?></p>
+	<p class="description"><?php esc_html_e( 'Select which post types should be archived on the Wayback Machine.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	<div class="wlf-wizard__content__inner-field checkboxes">
 		<?php foreach ( $post_types as $wlf_pt_slug => $wlf_pt_name ) : ?>
 			<div class="inner-spaced-between__list">
@@ -60,11 +60,11 @@ $wlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 	<div class="wlf-wizard__content__inner-field checkbox">
 		<div class="inner-spaced-between">
 			<label for="wlf_wizard_recurring_backup">
-				<?php esc_html_e( 'Enable Scheduled Archiving', 'wayback-link-fixer' ); ?>
+				<?php esc_html_e( 'Enable Scheduled Archiving', 'internet-archive-wayback-machine-link-fixer' ); ?>
 			</label>
 			<input type="checkbox" name="wlf_wizard_recurring_backup" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
 		</div>
-		<p class="description"><?php esc_html_e( 'If enabled, your posts of selected types will be regularly archived on the Wayback Machine according to the interval set in the main plugin settings.', 'wayback-link-fixer' ); ?></p>
+		<p class="description"><?php esc_html_e( 'If enabled, your posts of selected types will be regularly archived on the Wayback Machine according to the interval set in the main plugin settings.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	</div>
 </div>
 

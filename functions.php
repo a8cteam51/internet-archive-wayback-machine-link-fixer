@@ -183,7 +183,7 @@ function wpcomsp_wayback_link_fixer_render_template( string $template, array $ar
 			__FUNCTION__,
 			sprintf(
 				/* translators: %s: template path */
-				esc_html__( 'The template %s does not exist.', 'wayback-link-fixer' ),
+				esc_html__( 'The template %s does not exist.', 'internet-archive-wayback-machine-link-fixer' ),
 				'<code>' . esc_attr( $path ) . '</code>'
 			),
 			'1.0.0'
@@ -287,7 +287,7 @@ function wpcomsp_wayback_link_fixer_get_date_format(): string {
  * @return void
  */
 function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
-	$in_unauthenticated_mode = __( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'wayback-link-fixer' );
+	$in_unauthenticated_mode = __( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'internet-archive-wayback-machine-link-fixer' );
 
 	// If the archive api is not configured.
 	if ( ! Settings::is_archive_api_configured() ) {
@@ -303,7 +303,7 @@ function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
 
 	// If the creds are invalid.
 	if ( ! Settings::has_valid_archive_api_credentials() ) {
-		$message  = __( 'Your Archive.org API credentials are invalid. Please check your settings.', 'wayback-link-fixer' );
+		$message  = __( 'Your Archive.org API credentials are invalid. Please check your settings.', 'internet-archive-wayback-machine-link-fixer' );
 		$message .= ' ' . $in_unauthenticated_mode;
 		?>
 		<div class="notice notice-error">
@@ -312,7 +312,7 @@ function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
 				print wp_kses_post(
 					sprintf(
 						// translators: %s is a link to the settings page.
-						__( 'Your Archive.org API credentials are invalid. <a href="%s">Please check your settings.</a>. As a result you are in in unauthenticated mode, which restricts you to 4000 new snapshots per day.', 'wayback-link-fixer' ),
+						__( 'Your Archive.org API credentials are invalid. <a href="%s">Please check your settings.</a>. As a result you are in in unauthenticated mode, which restricts you to 4000 new snapshots per day.', 'internet-archive-wayback-machine-link-fixer' ),
 						esc_url( admin_url( 'options-general.php?page=' . Settings_Page::PAGE_SLUG ) )
 					)
 				);
@@ -339,7 +339,7 @@ function wpcomsp_wayback_link_fixer_render_wayback_offline_notice(): void {
 	?>
 	<div class="notice notice-error">
 		<p>
-			<?php esc_html_e( 'The Wayback Machine is currently offline. Please try again later.', 'wayback-link-fixer' ); ?>
+			<?php esc_html_e( 'The Wayback Machine is currently offline. Please try again later.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</p>
 	</div>
 	<?php

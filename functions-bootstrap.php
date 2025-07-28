@@ -155,13 +155,13 @@ function wpcomsp_wayback_link_fixer_output_requirements_error( $error ) {
 		static function () use ( $error ) {
 			$requirements_error = wp_sprintf(
 				/* translators: 1: Plugin name, 2: Plugin version */
-				__( '<strong>%1$s (version %2$s)</strong> could not be initialized.', 'wayback-link-fixer' ),
+				__( '<strong>%1$s (version %2$s)</strong> could not be initialized.', 'internet-archive-wayback-machine-link-fixer' ),
 				wpcomsp_wayback_link_fixer_get_plugin_metadata( 'Name' ),
 				wpcomsp_wayback_link_fixer_get_plugin_metadata( 'Version' )
 			);
 
 			if ( $error->has_errors() ) {
-				$requirements_error .= ' ' . \__( 'Your environment does not meet all the system requirements listed below:', 'wayback-link-fixer' );
+				$requirements_error .= ' ' . \__( 'Your environment does not meet all the system requirements listed below:', 'internet-archive-wayback-machine-link-fixer' );
 				$requirements_error .= '<ul class="ul-disc">';
 
 				foreach ( $error->get_error_codes() as $error_code ) {
@@ -174,7 +174,7 @@ function wpcomsp_wayback_link_fixer_output_requirements_error( $error ) {
 						case 'plugin_wp_incompatible':
 							$error_message = wp_sprintf(
 								/* translators: 1: Current WP version, 2: Minimum WP version */
-								__( 'Current <em>WordPress version (%1$s)</em> does not meet the minimum required version of %2$s.', 'wayback-link-fixer' ),
+								__( 'Current <em>WordPress version (%1$s)</em> does not meet the minimum required version of %2$s.', 'internet-archive-wayback-machine-link-fixer' ),
 								get_bloginfo( 'version' ),
 								$error_data['requires_wp']
 							);
@@ -182,13 +182,13 @@ function wpcomsp_wayback_link_fixer_output_requirements_error( $error ) {
 						case 'plugin_php_incompatible':
 							$error_message = wp_sprintf(
 								/* translators: 1: Current PHP version, 2: Minimum PHP version */
-								__( 'Current <em>PHP version (%1$s)</em> does not meet the minimum required version of %2$s.', 'wayback-link-fixer' ),
+								__( 'Current <em>PHP version (%1$s)</em> does not meet the minimum required version of %2$s.', 'internet-archive-wayback-machine-link-fixer' ),
 								PHP_VERSION,
 								$error_data['requires_php']
 							);
 							break;
 						case 'missing_autoloader':
-							$error_message = __( 'The autoloader file is missing. Please run <code>composer install</code> to generate it.', 'wayback-link-fixer' );
+							$error_message = __( 'The autoloader file is missing. Please run <code>composer install</code> to generate it.', 'internet-archive-wayback-machine-link-fixer' );
 							break;
 						default:
 							$error_message = $error->get_error_message( $error_code );
