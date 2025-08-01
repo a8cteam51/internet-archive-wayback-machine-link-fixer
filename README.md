@@ -889,6 +889,16 @@ add_filter( 'wlf_create_snapshot_timeout', function( int $timeout ): int {
 });
 ```
 
+#### `wlf_reporting_page_capability`
+
+This filter allows you to change the required capability for accessing the reporting page. The default is `manage_options`.
+
+```php
+add_filter( 'wlf_reporting_page_capability', function( string $capability ): string {
+	return 'edit_posts'; // Allow editors to access the reporting page
+});
+```
+
 ### Internet Archive / Wayback Link Fixer Instances.
 
 Both the Link Checker and Snapshot clients are all extended from the following interfaces:  

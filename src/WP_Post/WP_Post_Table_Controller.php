@@ -53,6 +53,10 @@ class WP_Post_Table_Controller {
 	 * @return void
 	 */
 	private function register_hooks(): void {
+		// If logged in users is not allowed to view the links, return.
+		if ( ! current_user_can( Settings::get_reporting_page_capability() ) ) {
+			return;
+		}
 		add_filter( 'manage_posts_columns', array( $this, 'add_column' ) );
 		add_filter( 'manage_pages_columns', array( $this, 'add_column' ) );
 		add_action( 'manage_pages_custom_column', array( $this, 'render_link_column' ), 10, 2 );
