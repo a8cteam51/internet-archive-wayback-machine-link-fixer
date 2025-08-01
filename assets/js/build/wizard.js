@@ -1,1 +1,31 @@
-!function(){const e=document.getElementById("is_active");e&&e.addEventListener("change",(function(){document.querySelectorAll(".is_optional").forEach((function(c){c.querySelectorAll("input, select").forEach((function(c){c.disabled=!e.checked})),c.classList.toggle("disabled",!e.checked)}))}))}();
+/******/ (function() { // webpackBootstrap
+var __webpack_exports__ = {};
+/*!*********************************!*\
+  !*** ./assets/js/src/wizard.js ***!
+  \*********************************/
+(function () {
+  // If #wlf_wizard form has an input with the id of is_active, add an event listenter when its toggled.
+  const isActive = document.getElementById('is_active');
+  if (isActive) {
+    // Add event listener to the is_active checkbox, and make fields disabled.
+    isActive.addEventListener('change', function () {
+      const optionalFields = document.querySelectorAll('.is_optional');
+
+      // Iterate over the optional fields and find the inputs/selects.
+      optionalFields.forEach(function (field) {
+        const inputs = field.querySelectorAll('input, select');
+
+        // Iterate over the inputs and set the disabled state.
+        inputs.forEach(function (input) {
+          input.disabled = !isActive.checked;
+        });
+
+        // Add or remove the disabled class from the field.
+        field.classList.toggle('disabled', !isActive.checked);
+      });
+    });
+  }
+})();
+/******/ })()
+;
+//# sourceMappingURL=wizard.js.map

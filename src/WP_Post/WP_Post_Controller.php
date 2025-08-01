@@ -284,7 +284,8 @@ class WP_Post_Controller {
 		if ( empty( $links ) ) {
 			return $block_content;
 		}
-		$json      = wp_json_encode( $links );
+
+		$json      = esc_attr( wp_json_encode( $links ) );
 		$html_data = "<div class='__wlf-post-loop-links' style='display:none;' data-wlf-post-links='{$json}'></div>";
 
 		return $html_data . $block_content;
