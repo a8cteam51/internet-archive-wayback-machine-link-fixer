@@ -1110,7 +1110,7 @@ class Report_Table extends \WP_List_Table {
 		return sprintf(
 			'%s <a href="%s" target="_blank">%s</a>',
 			esc_html( wpcomsp_wayback_link_fixer_trim_string( $item->get_href(), 200 ) ),
-			$item->get_href(),
+			esc_url( $item->get_href() ),
 			'<span class="dashicons dashicons-external"></span>'
 		);
 	}
