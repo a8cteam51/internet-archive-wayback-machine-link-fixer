@@ -96,7 +96,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 
 		$url = apply_filters( 'wlf_get_latest_snapshot_url', $url, $api_url );
 
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$url,
 			array(
 				'headers' => $this->get_headers(),
@@ -132,7 +132,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		// Allow the url to be filtered.
 		$api_url = apply_filters( 'wlf_get_closest_snapshot_url', $api_url, $url, $date );
 
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'headers' => $this->get_headers(),
@@ -167,7 +167,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$snapshot_url = apply_filters( 'wlf_create_snapshot_url', $base_url );
 
 		// Trigger a post request with URL as a body param.
-		$response = wp_remote_post(
+		$response = wp_safe_remote_post(
 			esc_url( $snapshot_url ),
 			array(
 				'timeout'   => apply_filters( 'wlf_create_snapshot_timeout', 1000 ),
@@ -301,7 +301,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$query_url = 'https://web.archive.org/save/status/' . $job_id;
 
 		// Get the status of the job.
-		$response = wp_remote_get( $query_url, array( 'headers' => $this->get_headers() ) );
+		$response = wp_safe_remote_get( $query_url, array( 'headers' => $this->get_headers() ) );
 
 		// If we have a wp error, throw invalid response exception.
 		if ( is_wp_error( $response ) ) {

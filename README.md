@@ -788,7 +788,7 @@ add_filter( 'wlf_own_content_allow_post', function( bool $allow, int $post_id ):
 
 #### `wlf_link_checker_url_params`
 
-This is the array of parameters which are passed to the `wp_remote_get` function when checking if a link is still valid.
+This is the array of parameters which are passed to the `wp_safe_remote_get` function when checking if a link is still valid.
 
 > Please note url=https://the-url-to-check.com should always passed.
 
