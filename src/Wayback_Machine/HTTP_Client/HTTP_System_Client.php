@@ -35,7 +35,7 @@ class HTTP_System_Client implements System_Client {
 	 */
 	public function is_online(): bool {
 		try {
-			$response = wp_safe_remote_get( 'http://web.archive.org/save/status/system' );
+			$response = wp_safe_remote_get( 'https://web.archive.org/save/status/system' );
 		} catch ( Throwable $e ) {
 			return false;
 		}
@@ -91,7 +91,7 @@ class HTTP_System_Client implements System_Client {
 		);
 		$headers['Accept']        = 'application/json';
 
-		$url = 'http://web.archive.org/save/status/user?_t=' . time();
+		$url = 'https://web.archive.org/save/status/user?_t=' . time();
 
 		try {
 			$response = wp_safe_remote_get( $url, array( 'headers' => $headers ) );
