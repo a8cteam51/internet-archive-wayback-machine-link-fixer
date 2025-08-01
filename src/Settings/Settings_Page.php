@@ -166,7 +166,7 @@ class Settings_Page {
 			$wizard_link // phpcs:ignore
 		);
 
-		echo '<hr class="wp-header-end">';
+		echo '<hr class="wp-header-end"><form action="options.php" method="post">';
 
 		do_settings_sections( self::PAGE_SLUG );
 		settings_fields( self::PAGE_SLUG );
