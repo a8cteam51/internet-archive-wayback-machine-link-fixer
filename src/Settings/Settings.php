@@ -386,4 +386,18 @@ class Settings {
 	public static function update_archive_api_credentials_validity( bool $valid ): void {
 		update_option( self::ARCHIVE_ORG_CREDS_VALID_KEY, $valid, false );
 	}
+
+	/**
+	 * Gets the required capability for the reporting page.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string
+	 */
+	public static function get_reporting_page_capability(): string {
+		return apply_filters(
+			'wlf_reporting_page_capability',
+			'manage_options'
+		);
+	}
 }

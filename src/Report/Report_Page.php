@@ -93,8 +93,8 @@ class Report_Page {
 	public function register_page(): void {
 		$hook = add_submenu_page(
 			self::PARENT_SLUG,
-			__( 'Link Fixer', 'wayback-link-fixer' ),
-			__( 'Link Fixer', 'wayback-link-fixer' ),
+			__( 'Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),
+			__( 'Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),
 			'manage_options',
 			self::SLUG,
 			array( $this, 'render_page' )
@@ -159,7 +159,7 @@ class Report_Page {
 		// If the API is not online, make all options disabled.
 		if ( ! $is_online ) {
 			$actions = array(
-				'no-op' => __( 'API Offline, options disabled', 'wayback-link-fixer' ),
+				'no-op' => __( 'API Offline, options disabled', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 			return $actions;
 		}
@@ -201,7 +201,7 @@ class Report_Page {
 		// Links per page option.
 		$option = 'per_page';
 		$args   = array(
-			'label'   => __( 'Links', 'wayback-link-fixer' ),
+			'label'   => __( 'Links', 'internet-archive-wayback-machine-link-fixer' ),
 			'default' => 20,
 			'option'  => 'links_per_page',
 		);
@@ -213,14 +213,14 @@ class Report_Page {
 		$screen->add_help_tab(
 			array(
 				'id'       => 'wlf_help_bulk_actions',
-				'title'    => __( 'Bulk Actions', 'wayback-link-fixer' ),
+				'title'    => __( 'Bulk Actions', 'internet-archive-wayback-machine-link-fixer' ),
 				'callback' => array( $this, 'render_help_bulk_actions' ),
 			)
 		);
 		$screen->add_help_tab(
 			array(
 				'id'       => 'wlf_help_table_columns',
-				'title'    => __( 'Table Columns', 'wayback-link-fixer' ),
+				'title'    => __( 'Table Columns', 'internet-archive-wayback-machine-link-fixer' ),
 				'callback' => array( $this, 'render_help_columns' ),
 			)
 		);
@@ -278,7 +278,7 @@ class Report_Page {
 		echo '<div class="wrap">';
 		printf(
 			'<h1 class="wp-heading-inline">%s</h1>',
-			esc_html__( 'Link Fixer', 'wayback-link-fixer' ),
+			esc_html__( 'Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),
 		);
 
 		echo '<hr class="wp-header-end">';
@@ -294,7 +294,7 @@ class Report_Page {
 			if ( $post ) {
 				$body = sprintf(
 					// translators: %1$s is the post title, %2$s is the link to view all links.
-					__( 'Showing links for %1$s <a href="%2$s">(Show all links)</a>', 'wayback-link-fixer' ),
+					__( 'Showing links for %1$s <a href="%2$s">(Show all links)</a>', 'internet-archive-wayback-machine-link-fixer' ),
 					esc_html( $post->post_title ),
 					esc_url( self::get_page_url() ?? '' )
 				);
@@ -311,7 +311,7 @@ class Report_Page {
 		$table->prepare_items();
 		echo '<form method="get">';
 		echo '<input type="hidden" name="page" value="' . esc_attr( $current_page ) . '">'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
-		$table->search_box( __( 'Search', 'wayback-link-fixer' ), 'wlf-link-search' );
+		$table->search_box( __( 'Search', 'internet-archive-wayback-machine-link-fixer' ), 'wlf-link-search' );
 		$table->display();
 		echo '</form>';
 
@@ -336,7 +336,7 @@ class Report_Page {
 		if ( 0 === $link_id ) {
 			printf(
 				'<div class="notice notice-error"><p>%s</p></div>',
-				esc_html__( 'The link does not exist.', 'wayback-link-fixer' )
+				esc_html__( 'The link does not exist.', 'internet-archive-wayback-machine-link-fixer' )
 			);
 			return;
 		}
@@ -348,7 +348,7 @@ class Report_Page {
 		if ( ! $link ) {
 			printf(
 				'<div class="notice notice-error"><p>%s</p></div>',
-				esc_html__( 'The link is not valid.', 'wayback-link-fixer' )
+				esc_html__( 'The link is not valid.', 'internet-archive-wayback-machine-link-fixer' )
 			);
 			return;
 		}

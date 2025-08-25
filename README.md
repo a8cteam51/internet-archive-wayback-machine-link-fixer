@@ -788,7 +788,7 @@ add_filter( 'wlf_own_content_allow_post', function( bool $allow, int $post_id ):
 
 #### `wlf_link_checker_url_params`
 
-This is the array of parameters which are passed to the `wp_remote_get` function when checking if a link is still valid.
+This is the array of parameters which are passed to the `wp_safe_remote_get` function when checking if a link is still valid.
 
 > Please note url=https://the-url-to-check.com should always passed.
 
@@ -886,6 +886,16 @@ This is used to set the timeout for creating a new snapshot. The default is 1000
 ```php
 add_filter( 'wlf_create_snapshot_timeout', function( int $timeout ): int {
 	return 2000; // 33+ minutes
+});
+```
+
+#### `wlf_reporting_page_capability`
+
+This filter allows you to change the required capability for accessing the reporting page. The default is `manage_options`.
+
+```php
+add_filter( 'wlf_reporting_page_capability', function( string $capability ): string {
+	return 'edit_posts'; // Allow editors to access the reporting page
 });
 ```
 

@@ -13,7 +13,7 @@
 <?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 <div class="wlf-wizard__content__header">
-	<h2><?php esc_html_e( 'Setup complete.', 'wayback-link-fixer' ); ?></h2>
+	<h2><?php esc_html_e( 'Setup complete.', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
 </div>
 
 <div class="wlf-wizard__content__intro">
@@ -21,8 +21,8 @@
 	<?php
 	printf(
 		// translators: %s is a link to the plugin settings page.
-		esc_html__( 'Setup is now complete! You can edit these settings at any time from the %s page.', 'wayback-link-fixer' ),
-		'<a href="' . esc_url( menu_page_url( 'wpcomsp_wayback_link_fixer_settings', false ) ) . '">' . esc_html__( 'Wayback Link Fixer Settings', 'wayback-link-fixer' ) . '</a>'
+		esc_html__( 'Setup is now complete! You can edit these settings at any time from the %s page.', 'internet-archive-wayback-machine-link-fixer' ),
+		'<a href="' . esc_url( menu_page_url( 'wpcomsp_wayback_link_fixer_settings', false ) ) . '">' . esc_html__( 'Wayback Link Fixer Settings', 'internet-archive-wayback-machine-link-fixer' ) . '</a>'
 	);
 	?>
 	</p>

@@ -11,7 +11,6 @@
  *
  * @wordpress-plugin
  * Plugin Name:             Internet Archive Wayback Machine Link Fixer
- * Plugin URI:              https://wpspecialprojects.wordpress.com
  * Description:             This plugin scans your content for links, replacing broken ones with archived versions from the Wayback Machine. It also features Auto Archiving, which automatically creates snapshots of your own pages and any other links on your site that aren’t yet archived, ensuring long-term accessibility.
  * Version:                 1.3.0
  * Requires at least:       6.4
@@ -21,7 +20,7 @@
  * Author URI:              https://wpspecialprojects.wordpress.com
  * License:                 GPL-3.0-or-later
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:             wayback-link-fixer
+ * Text Domain:             internet-archive-wayback-machine-link-fixer
  * Domain Path:             /languages
  */
 
@@ -37,18 +36,6 @@ define( 'WPCOMSP_WAYBACK_LINK_FIXER_URL', plugin_dir_url( __FILE__ ) );
 
 // Load the rest of the bootstrap functions.
 require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/functions-bootstrap.php';
-
-// Load plugin translations so they are available even for the error admin notices.
-add_action(
-	'init',
-	static function () {
-		load_plugin_textdomain(
-			wpcomsp_wayback_link_fixer_get_plugin_metadata( 'TextDomain' ),
-			false,
-			dirname( WPCOMSP_WAYBACK_LINK_FIXER_BASENAME ) . wpcomsp_wayback_link_fixer_get_plugin_metadata( 'DomainPath' )
-		);
-	}
-);
 
 // Declare compatibility with WC features.
 add_action(
@@ -74,7 +61,6 @@ if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
 } else {
 	// Include the action scheduler integration.
 	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'lib/action-scheduler/action-scheduler.php';
-
 	// Add all migrations.
 	\WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations::$migrations = array( //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1::class,

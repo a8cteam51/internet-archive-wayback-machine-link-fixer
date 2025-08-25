@@ -33,6 +33,11 @@ class Dashboard_Notifications {
 	 * @return void
 	 */
 	public function initialize(): void {
+		// If user can not access the reporting page, return.
+		if ( ! current_user_can( Settings::get_reporting_page_capability() ) ) {
+			return;
+		}
+
 		add_action( 'wp_dashboard_setup', array( $this, 'register_widgets' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
 	}
@@ -62,7 +67,7 @@ class Dashboard_Notifications {
 	public function register_widgets(): void {
 		wp_add_dashboard_widget(
 			'wayback_link_fixer_dashboard_widget',
-			__( 'Wayback Link Fixer', 'wayback-link-fixer' ),
+			__( 'Wayback Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),
 			array( $this, 'render_widget' ),
 			null,
 			null,

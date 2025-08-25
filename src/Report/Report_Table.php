@@ -181,7 +181,7 @@ class Report_Table extends \WP_List_Table {
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-' . $this->_args['plural'] ) && check_admin_referer( 'bulk-' . $this->_args['plural'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			// Add a notice.
 			$this->notices[] = array(
-				'message' => __( 'Something went wrong, please try again', 'wayback-link-fixer' ),
+				'message' => __( 'Something went wrong, please try again', 'internet-archive-wayback-machine-link-fixer' ),
 				'type'    => 'error',
 			);
 
@@ -200,7 +200,7 @@ class Report_Table extends \WP_List_Table {
 
 		if ( empty( $links ) ) {
 			$this->notices[] = array(
-				'message' => __( 'No links selected.', 'wayback-link-fixer' ),
+				'message' => __( 'No links selected.', 'internet-archive-wayback-machine-link-fixer' ),
 				'type'    => 'error',
 			);
 			return;
@@ -229,7 +229,7 @@ class Report_Table extends \WP_List_Table {
 
 			case 'no-op':
 				$this->notices[] = array(
-					'message' => __( 'No action selected, are services offline?', 'wayback-link-fixer' ),
+					'message' => __( 'No action selected, are services offline?', 'internet-archive-wayback-machine-link-fixer' ),
 					'type'    => 'error',
 				);
 				$this->redirect_after_action();
@@ -238,7 +238,7 @@ class Report_Table extends \WP_List_Table {
 			default:
 				// Generate an error notification unknown action.
 				$this->notices[] = array(
-					'message' => __( 'Unknown action.', 'wayback-link-fixer' ),
+					'message' => __( 'Unknown action.', 'internet-archive-wayback-machine-link-fixer' ),
 					'type'    => 'error',
 				);
 				break;
@@ -312,7 +312,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %d is the link id.
-						__( 'Link not found with id:%d', 'wayback-link-fixer' ),
+						__( 'Link not found with id:%d', 'internet-archive-wayback-machine-link-fixer' ),
 						absint( $link_id )
 					),
 					'type'    => 'error',
@@ -325,7 +325,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
-						__( 'It was not possible to check %s', 'wayback-link-fixer' ),
+						__( 'It was not possible to check %s', 'internet-archive-wayback-machine-link-fixer' ),
 						esc_html( wpcomsp_wayback_link_fixer_trim_string( $results['link']->get_href(), 54 ) )
 					),
 					'type'    => 'error',
@@ -341,7 +341,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
-						__( 'Link %s has no checks.', 'wayback-link-fixer' ),
+						__( 'Link %s has no checks.', 'internet-archive-wayback-machine-link-fixer' ),
 						esc_html( wpcomsp_wayback_link_fixer_trim_string( $link_url, 54 ) )
 					),
 					'type'    => 'error',
@@ -353,7 +353,7 @@ class Report_Table extends \WP_List_Table {
 			$this->notices[] = array(
 				'message' => sprintf(
 					// translators: %1$s is the link url, %2$s is the last check date, %3$s is the last check http code.
-					__( 'Link %1$s checked successfully on %2$s with %3$s status', 'wayback-link-fixer' ),
+					__( 'Link %1$s checked successfully on %2$s with %3$s status', 'internet-archive-wayback-machine-link-fixer' ),
 					esc_html( wpcomsp_wayback_link_fixer_trim_string( $link_url, 54 ) ),
 					DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) ),
 					esc_html( $last_check['http_code'] )
@@ -382,7 +382,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %d is the link id.
-						__( 'Link not found with id:%d', 'wayback-link-fixer' ),
+						__( 'Link not found with id:%d', 'internet-archive-wayback-machine-link-fixer' ),
 						absint( $link_id )
 					),
 					'type'    => 'error',
@@ -395,7 +395,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
-						__( 'Link %s is already an archived link.', 'wayback-link-fixer' ),
+						__( 'Link %s is already an archived link.', 'internet-archive-wayback-machine-link-fixer' ),
 						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
 					),
 					'type'    => 'notice',
@@ -408,7 +408,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
-						__( 'No archived link found for %s', 'wayback-link-fixer' ),
+						__( 'No archived link found for %s', 'internet-archive-wayback-machine-link-fixer' ),
 						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
 					),
 					'type'    => 'error',
@@ -421,7 +421,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
-						__( 'It was not possible to update %s, the latest archive link is the same', 'wayback-link-fixer' ),
+						__( 'It was not possible to update %s, the latest archive link is the same', 'internet-archive-wayback-machine-link-fixer' ),
 						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
 					),
 					'type'    => 'notice',
@@ -433,7 +433,7 @@ class Report_Table extends \WP_List_Table {
 			$this->notices[] = array(
 				'message' => sprintf(
 					// translators: %s is the link url.
-					__( 'Link %s updated successfully', 'wayback-link-fixer' ),
+					__( 'Link %s updated successfully', 'internet-archive-wayback-machine-link-fixer' ),
 					esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
 				),
 				'type'    => 'success',
@@ -465,7 +465,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %d is the link id.
-						__( 'Link not found with id:%d', 'wayback-link-fixer' ),
+						__( 'Link not found with id:%d', 'internet-archive-wayback-machine-link-fixer' ),
 						absint( $link_id )
 					),
 					'type'    => 'error',
@@ -478,7 +478,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
-						__( 'Link %1$s could not have a new snapshot created: %2$s', 'wayback-link-fixer' ),
+						__( 'Link %1$s could not have a new snapshot created: %2$s', 'internet-archive-wayback-machine-link-fixer' ),
 						wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ),
 						esc_html( $result['message'] )
 					),
@@ -491,7 +491,7 @@ class Report_Table extends \WP_List_Table {
 			$this->notices[] = array(
 				'message' => sprintf(
 					// translators: %s is the link url.
-					__( 'Link %s added to the queue and a new snapshot will be created and added as the archived url in the coming minutes..', 'wayback-link-fixer' ),
+					__( 'Link %s added to the queue and a new snapshot will be created and added as the archived url in the coming minutes..', 'internet-archive-wayback-machine-link-fixer' ),
 					wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 )
 				),
 				'type'    => 'success',
@@ -551,7 +551,7 @@ class Report_Table extends \WP_List_Table {
 		if ( ! empty( $link_not_found ) ) {
 			$notice .= sprintf(
 				// translators: %s is the icon for error, %d is the number of links that could not be found.
-				__( '%1$s - %2$d links could not be found.', 'wayback-link-fixer' ),
+				__( '%1$s - %2$d links could not be found.', 'internet-archive-wayback-machine-link-fixer' ),
 				$error_icon,
 				count( $link_not_found )
 			);
@@ -561,7 +561,7 @@ class Report_Table extends \WP_List_Table {
 		if ( ! empty( $archived_links ) ) {
 			$notice .= sprintf(
 				// translators: %s is the icon for error, %d is the number of links that are archived.
-				__( '%1$s - %2$d links that are already snapshots and will be skipped', 'wayback-link-fixer' ),
+				__( '%1$s - %2$d links that are already snapshots and will be skipped', 'internet-archive-wayback-machine-link-fixer' ),
 				$error_icon,
 				count( $archived_links )
 			);
@@ -581,7 +581,7 @@ class Report_Table extends \WP_List_Table {
 		if ( ! empty( $own_links ) ) {
 			$notice .= sprintf(
 				// translators: %s is the icon for error, , %d is the number of links that are own links.
-				__( '%1$s - %2$d links are from this site and will not be processed. Please enable the Auto Archiver to archive your own content.', 'wayback-link-fixer' ),
+				__( '%1$s - %2$d links are from this site and will not be processed. Please enable the Auto Archiver to archive your own content.', 'internet-archive-wayback-machine-link-fixer' ),
 				$error_icon,
 				count( $own_links )
 			);
@@ -597,7 +597,7 @@ class Report_Table extends \WP_List_Table {
 			$notice .= '</ul>';
 		}
 
-		$success_notice = __( '✅ - The following links were added to the queue for a new snapshot to be created:', 'wayback-link-fixer' );
+		$success_notice = __( '✅ - The following links were added to the queue for a new snapshot to be created:', 'internet-archive-wayback-machine-link-fixer' );
 		// If we have any where the link was added to the queue, add a notice.
 		if ( ! empty( $added_links ) ) {
 
@@ -610,7 +610,7 @@ class Report_Table extends \WP_List_Table {
 				);
 			}
 			$success_notice .= '</ul>';
-			$success_notice .= '<p>' . __( 'Snapshots are being queued for processing and will appear soon. Thanks for your patience!', 'wayback-link-fixer' ) . '</p>';
+			$success_notice .= '<p>' . __( 'Snapshots are being queued for processing and will appear soon. Thanks for your patience!', 'internet-archive-wayback-machine-link-fixer' ) . '</p>';
 		}
 
 		// Add the notices.
@@ -647,7 +647,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %d is the link id.
-						__( 'Link not found with id:%d', 'wayback-link-fixer' ),
+						__( 'Link not found with id:%d', 'internet-archive-wayback-machine-link-fixer' ),
 						absint( $link_id )
 					),
 					'type'    => 'error',
@@ -659,7 +659,7 @@ class Report_Table extends \WP_List_Table {
 			$this->notices[] = array(
 				'message' => sprintf(
 					// translators: %s is the link url.
-					__( 'Validating %s to ensure we can check its current status', 'wayback-link-fixer' ),
+					__( 'Validating %s to ensure we can check its current status', 'internet-archive-wayback-machine-link-fixer' ),
 					esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
 				),
 				'type'    => 'success',
@@ -714,16 +714,16 @@ class Report_Table extends \WP_List_Table {
 	public function get_columns() {
 		$columns = array(
 			self::COLUMN_CHECKBOX         => '<input type="checkbox" />',
-			self::COLUMN_LINK_URL         => __( 'URL', 'wayback-link-fixer' ),
-			self::COLUMN_LINK_ARCHIVE     => __( 'Archive Status', 'wayback-link-fixer' ),
-			self::COLUMN_LINK_HEALTH      => __( 'Link Health', 'wayback-link-fixer' ),
-			self::COLUMN_LINK_CHECKS      => __( 'Times Checked', 'wayback-link-fixer' ),
-			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'wayback-link-fixer' ),
+			self::COLUMN_LINK_URL         => __( 'URL', 'internet-archive-wayback-machine-link-fixer' ),
+			self::COLUMN_LINK_ARCHIVE     => __( 'Archive Status', 'internet-archive-wayback-machine-link-fixer' ),
+			self::COLUMN_LINK_HEALTH      => __( 'Link Health', 'internet-archive-wayback-machine-link-fixer' ),
+			self::COLUMN_LINK_CHECKS      => __( 'Times Checked', 'internet-archive-wayback-machine-link-fixer' ),
+			self::COLUMN_LINK_CHECKS_LAST => __( 'Last Check', 'internet-archive-wayback-machine-link-fixer' ),
 		);
 
 		if ( Settings::show_link_table_debug_data() ) {
 			$exclude = array(
-				self::COLUMN_LINK_EXCLUDE => __( 'Link Excluded', 'wayback-link-fixer' ),
+				self::COLUMN_LINK_EXCLUDE => __( 'Link Excluded', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 
 			// Add exclude after health.
@@ -757,13 +757,13 @@ class Report_Table extends \WP_List_Table {
 			return;
 		}
 		?>
-		<label for="wlf_status" class="screen-reader-text"><?php esc_html_e( 'Filter by status', 'wayback-link-fixer' ); ?></label>
+		<label for="wlf_status" class="screen-reader-text"><?php esc_html_e( 'Filter by status', 'internet-archive-wayback-machine-link-fixer' ); ?></label>
 		<select name="wlf_status" id="wlf_status">
-			<option value="all"><?php esc_html_e( 'Show valid and broken links', 'wayback-link-fixer' ); ?></option>
+			<option value="all"><?php esc_html_e( 'Show valid and broken links', 'internet-archive-wayback-machine-link-fixer' ); ?></option>
 			<?php
 			$statuses = array(
-				Link_Repository::LINK_STATUS_BROKEN => __( 'Show broken links', 'wayback-link-fixer' ),
-				Link_Repository::LINK_STATUS_OK     => __( 'Show valid links', 'wayback-link-fixer' ),
+				Link_Repository::LINK_STATUS_BROKEN => __( 'Show broken links', 'internet-archive-wayback-machine-link-fixer' ),
+				Link_Repository::LINK_STATUS_OK     => __( 'Show valid links', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 			foreach ( $statuses as $status => $label ) {
 				printf(
@@ -776,13 +776,13 @@ class Report_Table extends \WP_List_Table {
 			?>
 		</select>
 
-		<label for="wlf_has_archive" class="screen-reader-text"><?php esc_html_e( 'Filter by archived link', 'wayback-link-fixer' ); ?></label>
+		<label for="wlf_has_archive" class="screen-reader-text"><?php esc_html_e( 'Filter by archived link', 'internet-archive-wayback-machine-link-fixer' ); ?></label>
 		<select name="wlf_has_archive" id="wlf_has_archive">
-			<option value=""><?php esc_html_e( 'Show with or without archived link', 'wayback-link-fixer' ); ?></option>
+			<option value=""><?php esc_html_e( 'Show with or without archived link', 'internet-archive-wayback-machine-link-fixer' ); ?></option>
 			<?php
 			$has_archive = array(
-				Link_Repository::LINK_HAS_ARCHIVE => __( 'Show links with archived link', 'wayback-link-fixer' ),
-				Link_Repository::LINK_NO_ARCHIVE  => __( 'Show links without archived link', 'wayback-link-fixer' ),
+				Link_Repository::LINK_HAS_ARCHIVE => __( 'Show links with archived link', 'internet-archive-wayback-machine-link-fixer' ),
+				Link_Repository::LINK_NO_ARCHIVE  => __( 'Show links without archived link', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 			foreach ( $has_archive as $archive => $label ) {
 				printf(
@@ -796,13 +796,13 @@ class Report_Table extends \WP_List_Table {
 		</select>
 
 		<?php if ( Settings::show_link_table_debug_data() ) : ?>
-			<label for="wlf_is_excluded" class="screen-reader-text"><?php esc_html_e( 'Filter by excluded', 'wayback-link-fixer' ); ?></label>
+			<label for="wlf_is_excluded" class="screen-reader-text"><?php esc_html_e( 'Filter by excluded', 'internet-archive-wayback-machine-link-fixer' ); ?></label>
 			<select name="wlf_is_excluded" id="wlf_is_excluded">
-				<option value=""><?php esc_html_e( 'Show with or without excluded link', 'wayback-link-fixer' ); ?></option>
+				<option value=""><?php esc_html_e( 'Show with or without excluded link', 'internet-archive-wayback-machine-link-fixer' ); ?></option>
 				<?php
 				$has_archive = array(
-					Link_Repository::LINK_IS_EXCLUDED  => __( 'Show links that are excluded', 'wayback-link-fixer' ),
-					Link_Repository::LINK_NOT_EXCLUDED => __( 'Show links that are not excluded', 'wayback-link-fixer' ),
+					Link_Repository::LINK_IS_EXCLUDED  => __( 'Show links that are excluded', 'internet-archive-wayback-machine-link-fixer' ),
+					Link_Repository::LINK_NOT_EXCLUDED => __( 'Show links that are not excluded', 'internet-archive-wayback-machine-link-fixer' ),
 				);
 				foreach ( $has_archive as $archive => $label ) {
 					printf(
@@ -820,7 +820,7 @@ class Report_Table extends \WP_List_Table {
 			<input type="hidden" name="wlf_filtered_post_id" value="<?php echo absint( \sanitize_text_field( wp_unslash( $_GET['wlf_filtered_post_id'] ) ) ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>" />
 		<?php endif; ?>
 
-		<input type="submit" class="button" value="<?php esc_attr_e( 'Filter', 'wayback-link-fixer' ); ?>"  />
+		<input type="submit" class="button" value="<?php esc_attr_e( 'Filter', 'internet-archive-wayback-machine-link-fixer' ); ?>"  />
 
 		<?php
 	}
@@ -948,10 +948,10 @@ class Report_Table extends \WP_List_Table {
 	 */
 	protected function get_bulk_actions(): array {
 		return array(
-			'updated_snapshot' => __( 'Update to latest snapshot', 'wayback-link-fixer' ),
-			'new_snapshot'     => __( 'Create new snapshot', 'wayback-link-fixer' ),
-			'check'            => __( 'Check link status', 'wayback-link-fixer' ),
-			'validate'         => __( 'Verify link allows checking', 'wayback-link-fixer' ),
+			'updated_snapshot' => __( 'Update to latest snapshot', 'internet-archive-wayback-machine-link-fixer' ),
+			'new_snapshot'     => __( 'Create new snapshot', 'internet-archive-wayback-machine-link-fixer' ),
+			'check'            => __( 'Check link status', 'internet-archive-wayback-machine-link-fixer' ),
+			'validate'         => __( 'Verify link allows checking', 'internet-archive-wayback-machine-link-fixer' ),
 		);
 	}
 
@@ -1110,7 +1110,7 @@ class Report_Table extends \WP_List_Table {
 		return sprintf(
 			'%s <a href="%s" target="_blank">%s</a>',
 			esc_html( wpcomsp_wayback_link_fixer_trim_string( $item->get_href(), 200 ) ),
-			$item->get_href(),
+			esc_url( $item->get_href() ),
 			'<span class="dashicons dashicons-external"></span>'
 		);
 	}
@@ -1127,7 +1127,7 @@ class Report_Table extends \WP_List_Table {
 
 		// If we have no checks, return N/a.
 		if ( ! $last_check ) {
-			return __( 'N/a', 'wayback-link-fixer' );
+			return __( 'N/a', 'internet-archive-wayback-machine-link-fixer' );
 		}
 
 		$last_check_status = $last_check['http_code'] ?? null;
@@ -1139,17 +1139,17 @@ class Report_Table extends \WP_List_Table {
 
 		$last_status_display = $last_check_status
 			? "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/{$last_check_status}\" target=\"_blank\">{$last_check_status}  status</a>"
-			: __( 'No HTTP Code', 'wayback-link-fixer' );
+			: __( 'No HTTP Code', 'internet-archive-wayback-machine-link-fixer' );
 
 		return sprintf(
 			// translators: %1$s is the last check date, %2$s is the last check http code.
-			__( '%1$s with %2$s', 'wayback-link-fixer' ),
+			__( '%1$s with %2$s', 'internet-archive-wayback-machine-link-fixer' ),
 			$last_check['date']
 				? DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) )
-				: __( 'Missing date', 'wayback-link-fixer' ),
+				: __( 'Missing date', 'internet-archive-wayback-machine-link-fixer' ),
 			$last_check
 				? $last_status_display
-				: __( 'No HTTP Code', 'wayback-link-fixer' )
+				: __( 'No HTTP Code', 'internet-archive-wayback-machine-link-fixer' )
 		);
 	}
 
@@ -1161,6 +1161,6 @@ class Report_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public function no_items() {
-		echo esc_html__( 'No links have been created yet.', 'wayback-link-fixer' );
+		echo esc_html__( 'No links have been created yet.', 'internet-archive-wayback-machine-link-fixer' );
 	}
 }

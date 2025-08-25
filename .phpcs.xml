@@ -17,7 +17,7 @@
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="wayback-link-fixer"/>
+				<element value="internet-archive-wayback-machine-link-fixer"/>
 			</property>
 		</properties>
 	</rule>
