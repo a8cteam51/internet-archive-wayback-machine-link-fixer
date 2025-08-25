@@ -17,6 +17,8 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Table_Controller;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Setup_Wizard;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Dashboard_Page;
+
 
 defined( 'ABSPATH' ) || exit;
 
@@ -36,6 +38,7 @@ final class Integrations {
 	private $report_page;
 	private $dashboard_notification;
 	private $setup_wizard;
+	private $dashboard_page;
 
 	/**
 	 * Creates a new instance of the integrations component.
@@ -49,6 +52,7 @@ final class Integrations {
 		$this->report_page              = new Report\Report_Page();
 		$this->dashboard_notification   = new Dashboard_Notifications();
 		$this->setup_wizard             = new Setup_Wizard();
+		$this->dashboard_page           = new Dashboard_Page();
 	}
 
 
@@ -73,6 +77,7 @@ final class Integrations {
 		$this->report_page->initialize();
 		$this->dashboard_notification->initialize();
 		$this->setup_wizard->initialize();
+		$this->dashboard_page->initialize();
 	}
 
 	// endregion
