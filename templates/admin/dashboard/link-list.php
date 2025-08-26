@@ -55,7 +55,7 @@ defined( 'ABSPATH' ) || exit;
 
 									if ( $wlf_date_time && $wlf_clean_http_code ) {
 										printf(
-											/* translators: %1$s: last checked date, %2$s: HTTP status code with link */
+											/* translators: %1$s is the last check date, %2$s is the last check http code. */
 											esc_html__( '%1$s with %2$s', 'internet-archive-wayback-machine-link-fixer' ),
 											esc_html( $wlf_date_time->format( 'j M Y' ) ),
 											$wlf_http_status_display // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, already escaped above
