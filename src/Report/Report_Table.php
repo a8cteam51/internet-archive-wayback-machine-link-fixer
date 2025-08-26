@@ -75,9 +75,6 @@ class Report_Table extends \WP_List_Table {
 
 		// Attempt to get any cached notifications.
 		$this->populate_cached_notifications();
-
-		// dd($_GET,$this->_args, \wp_create_nonce('bulk-' . $this->_args['plural']) );
-
 	}
 
 	/**

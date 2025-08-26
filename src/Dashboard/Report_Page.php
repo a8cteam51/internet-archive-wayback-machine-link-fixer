@@ -95,7 +95,6 @@ class Report_Page {
 	public function register_page(): void {
 		$hook = add_submenu_page(
 			Dashboard_Page::DASHBOARD_SLUG,
-			// self::PARENT_SLUG,
 			__( 'Wayback Link Fixer - Links', 'internet-archive-wayback-machine-link-fixer' ),
 			__( 'Links', 'internet-archive-wayback-machine-link-fixer' ),
 			'manage_options',

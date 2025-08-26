@@ -60,226 +60,34 @@ $wlf_still_processing      = $wlf_process_new + $wlf_process_pending;
 							</div>
 
 							<!-- Recent Link Checks Content -->
-							<div class="wlf_dashboard-accordion-content wlf_dashboard-accordion-content--active" id="recent-checks">
-								<div class="wlf_dashboard-link-checks">
-									<?php if ( ! empty( $wlf_last_checks ) ) : ?>
-										<?php foreach ( $wlf_last_checks as $wlf_check_data ) : ?>
-											<?php
-											$link  = $wlf_check_data['link'] ?? null;     // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited, not a global
-											$link_posts = $wlf_check_data['posts'] ?? array(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited, not a global
-											if ( ! $link ) {
-												continue;
-											}
-											?>
-											<div class="wlf_dashboard-link-check-item">
-												<div class="wlf_dashboard-link-check-header">
-													<div class="wlf_dashboard-link-check-url">
-														<span class="wlf_dashboard-link-check-status <?php echo esc_attr( $link->is_broken() ? 'broken' : 'working' ); ?>">
-															<span class="dashicons <?php echo esc_attr( $link->is_broken() ? 'dashicons-no-alt' : 'dashicons-yes-alt' ); ?>"></span>
-														</span>
-														<a href="<?php echo esc_url( add_query_arg( array( 'wlf_link_id' => $link->get_id() ), $wlf_link_table ) ); ?>" class="wlf_dashboard-link-check-title">
-															<?php echo esc_html( $link->get_href() ); ?>
-														</a>
-													</div>
-													<div class="wlf_dashboard-link-check-meta">
-														<?php if ( $link->get_last_check() ) : ?>
-															<span class="wlf_dashboard-link-check-date">
-																<?php
-																$wlf_last_check = $link->get_last_check();
-																$wlf_date_time  = DateTimeImmutable::createFromFormat(
-																	'Y-m-d H:i:s',
-																	$wlf_last_check['date']
-																);
-																$wlf_http_code  = $wlf_last_check['http_code'] ?? null;
+							<?php
+							wpcomsp_wayback_link_fixer_render_template(
+								'admin/dashboard/link-list.php',
+								array(
+									'wlf_links'            => $wlf_last_checks,
+									'wlf_is_active'        => true,
+									'wlf_section_id'       => 'recent-checks',
+									'wlf_link_table'       => $wlf_link_table,
+									'wlf_no_links_message' => __( 'No recent link checks available.', 'internet-archive-wayback-machine-link-fixer' ),
+								)
+							);
+							?>
 
-																// Clean HTTP code for link
-																$wlf_clean_http_code = $wlf_http_code ? preg_replace( '/[^0-9]/', '', (string) $wlf_http_code ) : null;
-
-																$wlf_http_status_display = $wlf_clean_http_code
-																	? sprintf( '<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/%s" target="_blank">%s status</a>', esc_attr( $wlf_clean_http_code ), esc_html( $wlf_clean_http_code ) )
-																	: esc_html__( 'No HTTP Code', 'internet-archive-wayback-machine-link-fixer' );
-
-																if ( $wlf_date_time && $wlf_clean_http_code ) {
-																	printf(
-																		/* translators: %1$s: last checked date, %2$s: HTTP status code with link */
-																		esc_html__( '%1$s with %2$s', 'internet-archive-wayback-machine-link-fixer' ),
-																		esc_html( $wlf_date_time->format( 'j M Y' ) ),
-																		$wlf_http_status_display // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped - already escaped.
-																	);
-																} elseif ( $wlf_date_time ) {
-																	printf(
-																		/* translators: %s: last checked date */
-																		esc_html__( 'Checked: %s', 'internet-archive-wayback-machine-link-fixer' ),
-																		esc_html( $wlf_date_time->format( 'j M Y' ) )
-																	);
-																}
-																?>
-															</span>
-														<?php endif; ?>
-													</div>
-												</div>
-												<?php if ( ! empty( $link_posts ) ) : ?>
-													<div class="wlf_dashboard-link-check-posts">
-														<div class="wlf_dashboard-link-check-details">
-															<div class="wlf_dashboard-link-check-details-item">
-																<strong><?php esc_html_e( 'Link Details:', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>
-																<a href="<?php echo esc_url( add_query_arg( array( 'wlf_link_id' => $link->get_id() ), $wlf_link_table ) ); ?>" class="wlf_dashboard-link-details-link">
-																	<?php esc_html_e( 'View Full Report', 'internet-archive-wayback-machine-link-fixer' ); ?>
-																</a>
-															</div>
-														</div>
-														<span class="wlf_dashboard-link-check-posts-label">
-															<?php
-															printf(
-																/* translators: %d: number of posts */
-																esc_html( _n( 'Found in %d post:', 'Found in %d posts:', count( $link_posts ), 'internet-archive-wayback-machine-link-fixer' ) ),
-																count( $link_posts )
-															);
-															?>
-														</span>
-														<div class="wlf_dashboard-link-check-posts-list">
-															<?php
-															$displayed_posts = array_slice( $link_posts, 0, 12 ); // Show max 12 posts now
-															foreach ( $displayed_posts as $post ) :
-																?>
-																<a href="<?php echo esc_url( get_edit_post_link( $post->ID ) ); ?>" class="wlf_dashboard-link-check-post">
-																	<?php echo esc_html( $post->post_title ?: __( '(No title)', 'internet-archive-wayback-machine-link-fixer' ) ); ?>
-																</a>
-															<?php endforeach; ?>
-															<?php if ( count( $link_posts ) > 12 ) : ?>
-																<span class="wlf_dashboard-link-check-posts-more">
-																	<?php
-																	printf(
-																		/* translators: %d: number of additional posts */
-																		esc_html__( '... and %d more', 'internet-archive-wayback-machine-link-fixer' ),
-																		count( $link_posts ) - 12
-																	);
-																	?>
-																</span>
-															<?php endif; ?>
-														</div>
-													</div>
-												<?php endif; ?>
-											</div>
-										<?php endforeach; ?>
-									<?php else : ?>
-										<div class="wlf_dashboard-link-checks-empty">
-											<p><?php esc_html_e( 'No recent link checks available.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
-										</div>
-									<?php endif; ?>
-								</div>
-							</div>
 
 							<!-- Latest Links Content -->
-							<div class="wlf_dashboard-accordion-content" id="latest-links">
-								<div class="wlf_dashboard-link-checks">
-									<?php if ( ! empty( $wlf_latest_links ) ) : ?>
-										<?php foreach ( $wlf_latest_links as $link_data ) : ?>
-											<?php
-											$link  = $link_data['link'] ?? null;
-											$posts = $link_data['posts'] ?? array();
-											if ( ! $link ) {
-												continue;
-											}
-											?>
-											<div class="wlf_dashboard-link-check-item">
-												<div class="wlf_dashboard-link-check-header">
-													<div class="wlf_dashboard-link-check-url">
-														<span class="wlf_dashboard-link-check-status <?php echo esc_attr( $link->is_broken() ? 'broken' : 'working' ); ?>">
-															<span class="dashicons <?php echo esc_attr( $link->is_broken() ? 'dashicons-no-alt' : 'dashicons-yes-alt' ); ?>"></span>
-														</span>
-														<a href="<?php echo esc_url( add_query_arg( array( 'wlf_link_id' => $link->get_id() ), $wlf_link_table ) ); ?>" class="wlf_dashboard-link-check-title">
-															<?php echo esc_html( $link->get_href() ); ?>
-														</a>
-													</div>
-													<div class="wlf_dashboard-link-check-meta">
-														<?php if ( $link->get_last_check() ) : ?>
-															<span class="wlf_dashboard-link-check-date">
-																<?php
-																$wlf_last_check = $link->get_last_check();
-																$wlf_date_time  = DateTimeImmutable::createFromFormat(
-																	'Y-m-d H:i:s',
-																	$wlf_last_check['date']
-																);
-																$wlf_http_code  = $wlf_last_check['http_code'] ?? null;
+							<?php
+							wpcomsp_wayback_link_fixer_render_template(
+								'admin/dashboard/link-list.php',
+								array(
+									'wlf_links'            => $wlf_latest_links,
+									'wlf_is_active'        => false,
+									'wlf_section_id'       => 'latest-links',
+									'wlf_link_table'       => $wlf_link_table,
+									'wlf_no_links_message' => __( 'No recent links available.', 'internet-archive-wayback-machine-link-fixer' ),
+								)
+							);
+							?>
 
-																// Clean HTTP code for link
-																$wlf_clean_http_code = $wlf_http_code ? preg_replace( '/[^0-9]/', '', (string) $wlf_http_code ) : null;
-
-																$wlf_http_status_display = $wlf_clean_http_code
-																	? sprintf( '<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/%s" target="_blank">%s status</a>', esc_attr( $wlf_clean_http_code ), esc_html( $wlf_clean_http_code ) )
-																	: esc_html__( 'No HTTP Code', 'internet-archive-wayback-machine-link-fixer' );
-
-																if ( $wlf_date_time && $wlf_clean_http_code ) {
-																	printf(
-																		/* translators: %1$s: last checked date, %2$s: HTTP status code with link */
-																		__( '%1$s with %2$s', 'internet-archive-wayback-machine-link-fixer' ),
-																		esc_html( $wlf_date_time->format( 'j M Y' ) ),
-																		$wlf_http_status_display
-																	);
-																} elseif ( $wlf_date_time ) {
-																	printf(
-																		/* translators: %s: last checked date */
-																		esc_html__( 'Checked: %s', 'internet-archive-wayback-machine-link-fixer' ),
-																		esc_html( $wlf_date_time->format( 'j M Y' ) )
-																	);
-																}
-																?>
-															</span>
-														<?php endif; ?>
-													</div>
-												</div>
-												<?php if ( ! empty( $posts ) ) : ?>
-													<div class="wlf_dashboard-link-check-posts">
-														<div class="wlf_dashboard-link-check-details">
-															<div class="wlf_dashboard-link-check-details-item">
-																<strong><?php esc_html_e( 'Link Details:', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>
-																<a href="<?php echo esc_url( add_query_arg( array( 'wlf_link_id' => $link->get_id() ), $wlf_link_table ) ); ?>" class="wlf_dashboard-link-details-link">
-																	<?php esc_html_e( 'View Full Report', 'internet-archive-wayback-machine-link-fixer' ); ?>
-																</a>
-															</div>
-														</div>
-														<span class="wlf_dashboard-link-check-posts-label">
-															<?php
-															printf(
-																/* translators: %d: number of posts */
-																esc_html( _n( 'Found in %d post:', 'Found in %d posts:', count( $posts ), 'internet-archive-wayback-machine-link-fixer' ) ),
-																count( $posts )
-															);
-															?>
-														</span>
-														<div class="wlf_dashboard-link-check-posts-list">
-															<?php
-															$displayed_posts = array_slice( $posts, 0, 12 ); // Show max 12 posts now
-															foreach ( $displayed_posts as $post ) :
-																?>
-																<a href="<?php echo esc_url( get_edit_post_link( $post->ID ) ); ?>" class="wlf_dashboard-link-check-post">
-																	<?php echo esc_html( $post->post_title ?: __( '(No title)', 'internet-archive-wayback-machine-link-fixer' ) ); ?>
-																</a>
-															<?php endforeach; ?>
-															<?php if ( count( $posts ) > 12 ) : ?>
-																<span class="wlf_dashboard-link-check-posts-more">
-																	<?php
-																	printf(
-																		/* translators: %d: number of additional posts */
-																		esc_html__( '... and %d more', 'internet-archive-wayback-machine-link-fixer' ),
-																		count( $posts ) - 12
-																	);
-																	?>
-																</span>
-															<?php endif; ?>
-														</div>
-													</div>
-												<?php endif; ?>
-											</div>
-										<?php endforeach; ?>
-									<?php else : ?>
-										<div class="wlf_dashboard-link-checks-empty">
-											<p><?php esc_html_e( 'No latest links available.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
-										</div>
-									<?php endif; ?>
-								</div>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -303,8 +111,8 @@ $wlf_still_processing      = $wlf_process_new + $wlf_process_pending;
 							</a>
 							<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'Total Links', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 						</div>
-						<div class="wlf_dashboard-stats-box <?php echo $wlf_still_processing === 0 ? 'wlf_dashboard-stats-box--success' : 'wlf_dashboard-stats-box--info'; ?>">
-							<?php if ( $wlf_still_processing === 0 ) : ?>
+						<div class="wlf_dashboard-stats-box <?php echo 0 === $wlf_still_processing ? 'wlf_dashboard-stats-box--success' : 'wlf_dashboard-stats-box--info'; ?>">
+							<?php if ( 0 === $wlf_still_processing ) : ?>
 								<div class="wlf_dashboard-stats-number">✓</div>
 								<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'All Links Processed', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 							<?php else : ?>

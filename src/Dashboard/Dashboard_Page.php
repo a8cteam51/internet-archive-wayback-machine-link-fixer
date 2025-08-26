@@ -107,6 +107,17 @@ class Dashboard_Page {
 	}
 
 	/**
+	 * Returns the base64 encoded SVG icon for the menu.
+	 *
+	 * @return string
+	 */
+	private function get_ia_icon_base64(): string {
+		$icon = 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgdmlld0JveD0iMCAwIDMyIDMyIj48cGF0aCBmaWxsPSIjYTdhYWFkIiBkPSJNMS44NTUgMzAuNTVoMjguM1YzMmgtMjguM3ptMS4xMTUtMi44aDI2LjExM3YySDIuOTd6TTIuODA0IDQuODgyaDI1Ljk3NHYyLjhIMi44MDR6bS4xNjYtLjgzN0gyOC42bC43OC0uODY1TDE1LjggMCAyLjIgMy4xOHptMy41OCAxMi40NmwtLjExMi00LjEtLjE5Ni0zLjg3Yy0uMDA1LS4xLS4wNTMtLjEzNS0uMTQ1LS4xNTZhNS40MSA1LjQxIDAgMCAwLTIuMjk0IDBjLS4wOTIuMDItLjE0LjA0NC0uMTQ1LjE1NmwtLjE5NiAzLjg3LS4xMTIgNC4xLjAxIDIuOTE0LjA4NSAzLjIzMi4xODMgMy40NjUuMDUyLjY1N2E1LjMgNS4zIDAgMCAwIDEuMjcyLjE4Yy40MjItLjAwNS44NDUtLjA3IDEuMjcyLS4xOGwuMDUyLS42NTcuMTgzLTMuNDY1LjA4NS0zLjIzMi4wMS0yLjkxNHptNy4wNzIgMGwtLjExMi00LjEtLjE5Ni0zLjg3Yy0uMDA1LS4xLS4wNTMtLjEzNS0uMTQ1LS4xNTZhNS40MSA1LjQxIDAgMCAwLTIuMjk0IDBjLS4wOTIuMDItLjE0LjA0NC0uMTQ1LjE1NmwtLjE5NiAzLjg3LS4xMTIgNC4xLjAxIDIuOTE0LjA4NSAzLjIzMi4xODMgMy40NjUuMDUyLjY1N2E1LjM0IDUuMzQgMCAwIDAgMS4yNzIuMThjLjQyMi0uMDA1Ljg0NS0uMDcgMS4yNzItLjE4bC4wNTItLjY1Ny4xODItMy40NjUuMDg1LTMuMjMyLjAxLTIuOTE0em04LjIwMiAwbC0uMTEyLTQuMS0uMTk2LTMuODdjLS4wMDUtLjEtLjA1My0uMTM1LS4xNDUtLjE1Ni0uMzgtLjA4My0uNzYzLS4xMjItMS4xNDctLjEyM2E1LjQxIDUuNDEgMCAwIDAtMS4xNDcuMTIzYy0uMDkyLjAyLS4xNC4wNDQtLjE0NS4xNTZsLS4xOTYgMy44Ny0uMTEyIDQuMS4wMSAyLjkxNC4wODUgMy4yMzIuMTgzIDMuNDY1LjA1Mi42NTdhNS4zNCA1LjM0IDAgMCAwIDEuMjcyLjE4Yy40MjItLjAwNS44NDUtLjA3IDEuMjcyLS4xOGwuMDUyLS42NTcuMTgzLTMuNDY1LjA4NS0zLjIzMi4wMS0yLjkxNHptNi45MDYgMGwtLjExMi00LjEtLjE5Ni0zLjg3Yy0uMDA1LS4xLS4wNTMtLjEzNS0uMTQ1LS4xNTYtLjM4LS4wODMtLjc2My0uMTIyLTEuMTQ3LS4xMjNhNS40MSA1LjQxIDAgMCAwLTEuMTQ3LjEyM2MtLjA5Mi4wMi0uMTQuMDQ0LS4xNDUuMTU2bC0uMTk2IDMuODctLjExMiA0LjEuMDEgMi45MTQuMDg1IDMuMjMyLjE4MiAzLjQ2NS4wNTIuNjU3YTUuMzQgNS4zNCAwIDAgMCAxLjI3Mi4xOCA1LjMgNS4zIDAgMCAwIDEuMjcyLS4xOGwuMDUyLS42NTcuMTgzLTMuNDY1LjA4NS0zLjIzMi4wMS0yLjkxNHoiLz48L3N2Zz4=';
+		return \apply_filters( 'wlf_menu_icon_base64', $icon );
+	}
+
+
+	/**
 	 * Enqueue the custom menu icon styles.
 	 *
 	 * @return void
@@ -115,8 +126,7 @@ class Dashboard_Page {
 		$menu_id = 'toplevel_page_' . self::DASHBOARD_SLUG;
 
 		// Base64 encoded SVG - same approach as WooCommerce
-		$svg_icon   = '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 32 32"><path fill="#a7aaad" d="M1.855 30.55h28.3V32h-28.3zm1.115-2.8h26.113v2H2.97zM2.804 4.882h25.974v2.8H2.804zm.166-.837H28.6l.78-.865L15.8 0 2.2 3.18zm3.58 12.46l-.112-4.1-.196-3.87c-.005-.1-.053-.135-.145-.156a5.41 5.41 0 0 0-2.294 0c-.092.02-.14.044-.145.156l-.196 3.87-.112 4.1.01 2.914.085 3.232.183 3.465.052.657a5.3 5.3 0 0 0 1.272.18c.422-.005.845-.07 1.272-.18l.052-.657.183-3.465.085-3.232.01-2.914zm7.072 0l-.112-4.1-.196-3.87c-.005-.1-.053-.135-.145-.156a5.41 5.41 0 0 0-2.294 0c-.092.02-.14.044-.145.156l-.196 3.87-.112 4.1.01 2.914.085 3.232.183 3.465.052.657a5.34 5.34 0 0 0 1.272.18c.422-.005.845-.07 1.272-.18l.052-.657.182-3.465.085-3.232.01-2.914zm8.202 0l-.112-4.1-.196-3.87c-.005-.1-.053-.135-.145-.156-.38-.083-.763-.122-1.147-.123a5.41 5.41 0 0 0-1.147.123c-.092.02-.14.044-.145.156l-.196 3.87-.112 4.1.01 2.914.085 3.232.183 3.465.052.657a5.34 5.34 0 0 0 1.272.18c.422-.005.845-.07 1.272-.18l.052-.657.183-3.465.085-3.232.01-2.914zm6.906 0l-.112-4.1-.196-3.87c-.005-.1-.053-.135-.145-.156-.38-.083-.763-.122-1.147-.123a5.41 5.41 0 0 0-1.147.123c-.092.02-.14.044-.145.156l-.196 3.87-.112 4.1.01 2.914.085 3.232.182 3.465.052.657a5.34 5.34 0 0 0 1.272.18 5.3 5.3 0 0 0 1.272-.18l.052-.657.183-3.465.085-3.232.01-2.914z"/></svg>';
-		$base64_svg = base64_encode( $svg_icon );
+		$base64_svg = $this->get_ia_icon_base64();
 
 		$custom_css = "
 			/* Target only our specific menu item - WooCommerce style */
@@ -164,7 +174,7 @@ class Dashboard_Page {
 		if ( isset( $submenu[ self::DASHBOARD_SLUG ] ) ) {
 			// The first submenu item is always at index 0
 			// Change the menu title (index 0 of the submenu item array)
-			$submenu[ self::DASHBOARD_SLUG ][0][0] = __( 'Dashboard', 'internet-archive-wayback-machine-link-fixer' );
+			$submenu[ self::DASHBOARD_SLUG ][0][0] = __( 'Dashboard', 'internet-archive-wayback-machine-link-fixer' ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited, this is how WP works
 		}
 	}
 
@@ -190,16 +200,12 @@ class Dashboard_Page {
 		if ( false === $stats || ! is_array( $stats ) ) {
 			$stats = $this->compile_statistics();
 
-			// Store for 12 hours.
-			set_transient( self::STATS_TRANSIENT_KEY, $stats, 12 * HOUR_IN_SECONDS );
+			// Store for 2 hours.
+			set_transient( self::STATS_TRANSIENT_KEY, $stats, 2 * HOUR_IN_SECONDS );
 		}
-			$stats = $this->compile_statistics();
-
-		// dd( $stats );
 
 		return $stats;
 	}
-
 
 	/**
 	 * Compile the statistics.
@@ -375,7 +381,7 @@ class Dashboard_Page {
 	/**
 	 * Get all stats for a given link id.
 	 *
-	 * @param int<0, max> $link_id The link ID to get stats for.
+	 * @param positive-int $link_id The link ID to get stats for.
 	 *
 	 * @return array{link: Link, posts: list<\WP_Post>}|null
 	 */
