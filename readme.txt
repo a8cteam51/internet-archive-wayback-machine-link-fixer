@@ -31,11 +31,11 @@ Protect your links, preserve your content, and automate the archiving process—
 == Frequently Asked Questions ==
 
 = How does the link checker work? =
-Your content is checked for any links. When it finds a link it will check if we have already handled this link before, if not it will find or create a snapshot of the webpage on the Internet Archive.
-Then if later that links target site goes offline, we can change the link to the archived version.
+Your content is checked for any links. When it finds a link it will check if we have already handled this link before, if not, it will find or create a snapshot of the webpage on the Internet Archive.
+Then if later that link's target site goes offline, we can change the link to the archived version.
 
 = How do we determine if a link is broken? =
-We use a similar policy as Wikipedia. We check links 1 time per week and if we get 3 consecutive errors, we treat the link as broken, unless the target website comes back
+We use a similar policy as Wikipedia. We check links once per week and if we get 3 consecutive errors, we treat the link as broken, unless the target website comes back.
 
 = Can all links be handled? =
 Sadly not, some sites do not allow the Internet Archive to archive their content.
@@ -44,19 +44,22 @@ Sadly not, some sites do not allow the Internet Archive to archive their content
 Yes, you can enable the Auto Archiver and this will create new snapshots every time you make changes.
 
 = What happens to broken links? =
-When we find a broken link, we update the src on the fly, this will mean the base content is not edited and remains as created.
+When we find a broken link, we update the src on the fly; this means the base content is not edited and remains as created.
 
 = How long does this take? =
-This all depends on how many links there are within your content. This is all handled in the background but can take many weeks if a site has thousands of links. It is best used as tool you setup and leave running in the background.
+This all depends on how many links there are within your content. This is all handled in the background but can take many weeks if a site has thousands of links. It is best used as a tool you setup and leave running in the background.
 
 = Does this add lots of overhead to my site? =
 As this is all processed behind the scenes, in custom tables it should not add any noticeable overhead to your site.
 
 = Do I need an archive.org api key? =
-While you dont need one, it will grately increase the number of snapshots you can create in a day.
+While you don't need one, it will greatly increase the number of snapshots you can create in a day.
 
-= What happens if the Internet Archive goes offline =
-If the Internet Archive services go offline, the link fixer will delay all processes by 24hrs and try again later.
+= What happens if the Internet Archive goes offline? =
+If the Internet Archive services go offline, the link fixer will delay all processes by 24 hours and try again later.
+
+= How often are my own posts updated when auto archive is active? =
+Existing content is sent to the Wayback Machine in batch when the plugin is activated, then again every 30 days (by default, but can be changed). New content is sent to be archived shortly after it is published. Updates to existing content also trigger updates to be sent to the Wayback Machine.
 
 == Changelog ==
 

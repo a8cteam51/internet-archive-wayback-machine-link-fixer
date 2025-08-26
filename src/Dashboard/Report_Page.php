@@ -61,7 +61,7 @@ class Report_Page {
 	 * @return string
 	 */
 	public static function get_page_url(): string {
-		return admin_url( self::PARENT_SLUG . '?page=' . self::SLUG );
+		return admin_url( 'admin.php?page=' . self::SLUG );
 	}
 
 	/**

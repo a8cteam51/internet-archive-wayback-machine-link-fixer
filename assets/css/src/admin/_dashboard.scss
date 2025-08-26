@@ -155,12 +155,19 @@
 
 .wlf_dashboard-page-main {
     min-width: 0; // Prevent grid blowout
+    @media (max-width: 1024px) {
+        order: 2; // Show below sidebar on mobile
+    }
 }
 
 .wlf_dashboard-page-sidebar {
     min-width: 0; // Prevent grid blowout
     position: sticky;
     top: 32px; // Account for WP admin bar
+    @media (max-width: 1024px) {
+        position: static; // Remove sticky positioning on mobile
+        order: 1; // Show above main content on mobile
+    }
 }
 
 // Extended Stats Grid

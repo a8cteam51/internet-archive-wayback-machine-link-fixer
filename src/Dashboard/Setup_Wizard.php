@@ -344,7 +344,7 @@ class Setup_Wizard {
 
 		echo '<div class="wrap">';
 		echo '<h1>';
-		esc_html_e( 'Link Fixer Setup Wizard', 'internet-archive-wayback-machine-link-fixer' );
+		esc_html_e( 'Wayback Link Fixer - Setup Wizard', 'internet-archive-wayback-machine-link-fixer' );
 		echo '</h1>';
 
 		$step_data = $this->get_step_data();
