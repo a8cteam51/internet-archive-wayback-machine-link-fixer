@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
 
 defined( 'ABSPATH' ) || exit;
 

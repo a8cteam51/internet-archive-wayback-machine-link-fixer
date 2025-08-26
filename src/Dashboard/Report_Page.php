@@ -8,10 +8,12 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Table;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Dashboard_Page;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -92,9 +94,10 @@ class Report_Page {
 	 */
 	public function register_page(): void {
 		$hook = add_submenu_page(
-			self::PARENT_SLUG,
-			__( 'Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),
-			__( 'Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),
+			Dashboard_Page::DASHBOARD_SLUG,
+			// self::PARENT_SLUG,
+			__( 'Wayback Link Fixer - Links', 'internet-archive-wayback-machine-link-fixer' ),
+			__( 'Links', 'internet-archive-wayback-machine-link-fixer' ),
 			'manage_options',
 			self::SLUG,
 			array( $this, 'render_page' )
@@ -278,7 +281,7 @@ class Report_Page {
 		echo '<div class="wrap">';
 		printf(
 			'<h1 class="wp-heading-inline">%s</h1>',
-			esc_html__( 'Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),
+			esc_html__( 'Wayback Link Fixer - Links', 'internet-archive-wayback-machine-link-fixer' ),
 		);
 
 		echo '<hr class="wp-header-end">';

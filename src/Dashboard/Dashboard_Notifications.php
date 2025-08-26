@@ -85,7 +85,7 @@ class Dashboard_Notifications {
 		wpcomsp_wayback_link_fixer_render_template(
 			'admin/dashboard/widget.php',
 			array(
-				'wlf_details'                 => $this->get_account_details(),
+				'wlf_details'                 => $this::get_account_details(),
 				'wlf_api_configured'          => Settings::is_archive_api_configured(),
 				'wlf_is_online'               => wpcomsp_wayback_link_fixer_is_archive_api_online(),
 				'wlf_link_to_settings'        => Settings_Page::get_page_url(),

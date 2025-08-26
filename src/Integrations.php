@@ -13,11 +13,12 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Ajax_Controller;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Dashboard_Notifications;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event_Controller;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Settings_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Table_Controller;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Setup_Wizard;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Dashboard_Page;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Report_Page;
 
 
 defined( 'ABSPATH' ) || exit;
@@ -49,7 +50,7 @@ final class Integrations {
 		$this->event_controller         = new Event_Controller();
 		$this->ajax_controller          = new Ajax_Controller();
 		$this->wp_post_table_controller = new WP_Post_Table_Controller();
-		$this->report_page              = new Report\Report_Page();
+		$this->report_page              = new Report_Page();
 		$this->dashboard_notification   = new Dashboard_Notifications();
 		$this->setup_wizard             = new Setup_Wizard();
 		$this->dashboard_page           = new Dashboard_Page();
@@ -69,6 +70,7 @@ final class Integrations {
 	 * @return  void
 	 */
 	public function initialize(): void {
+		$this->dashboard_page->initialize();
 		$this->settings_page->initialize();
 		$this->post_controller->initialize();
 		$this->event_controller->initialize();
@@ -77,7 +79,6 @@ final class Integrations {
 		$this->report_page->initialize();
 		$this->dashboard_notification->initialize();
 		$this->setup_wizard->initialize();
-		$this->dashboard_page->initialize();
 	}
 
 	// endregion

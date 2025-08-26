@@ -1,0 +1,91 @@
+(function () {
+	// Dashboard functionality
+	document.addEventListener('DOMContentLoaded', function () {
+		// Handle accordion tabs
+		const accordionTabs = document.querySelectorAll('.wlf_dashboard-accordion-tab');
+		const accordionContents = document.querySelectorAll('.wlf_dashboard-accordion-content');
+
+		accordionTabs.forEach(function (tab) {
+			tab.addEventListener('click', function () {
+				const targetTab = this.getAttribute('data-tab');
+
+				// Remove active class from all tabs
+				accordionTabs.forEach(function (t) {
+					t.classList.remove('wlf_dashboard-accordion-tab--active');
+				});
+
+				// Hide all content panels
+				accordionContents.forEach(function (content) {
+					content.classList.remove('wlf_dashboard-accordion-content--active');
+				});
+
+				// Activate clicked tab
+				this.classList.add('wlf_dashboard-accordion-tab--active');
+
+				// Show corresponding content
+				const targetContent = document.getElementById(targetTab);
+				if (targetContent) {
+					targetContent.classList.add('wlf_dashboard-accordion-content--active');
+				}
+			});
+		});
+
+		// Handle link check item show/hide functionality
+		const linkCheckItems = document.querySelectorAll('.wlf_dashboard-link-check-item');
+
+		linkCheckItems.forEach(function (item) {
+			const titleLink = item.querySelector('.wlf_dashboard-link-check-title');
+			const posts = item.querySelector('.wlf_dashboard-link-check-posts');
+
+			if (titleLink && posts) {
+				// Initially hide the posts section
+				posts.style.display = 'none';
+
+				// Style the title link to indicate it's expandable
+				titleLink.style.position = 'relative';
+				titleLink.style.paddingRight = '20px';
+
+				// Add arrow indicator
+				const arrow = document.createElement('span');
+				arrow.className = 'wlf_dashboard-link-expand-arrow';
+				arrow.innerHTML = '▼';
+				arrow.style.position = 'absolute';
+				arrow.style.right = '0';
+				arrow.style.top = '50%';
+				arrow.style.transform = 'translateY(-50%)';
+				arrow.style.fontSize = '10px';
+				arrow.style.opacity = '0.6';
+				arrow.style.transition = 'transform 0.2s ease';
+				arrow.style.pointerEvents = 'none';
+
+				titleLink.appendChild(arrow);
+
+				// Add click handler to prevent default link behavior and toggle
+				titleLink.addEventListener('click', function (e) {
+					e.preventDefault();
+
+					const isVisible = posts.style.display !== 'none';
+
+					if (isVisible) {
+						posts.style.display = 'none';
+						arrow.style.transform = 'translateY(-50%) rotate(0deg)';
+						item.classList.remove('expanded');
+					} else {
+						posts.style.display = 'block';
+						arrow.style.transform = 'translateY(-50%) rotate(180deg)';
+						item.classList.add('expanded');
+					}
+				});
+
+				// Add hover effect
+				titleLink.addEventListener('mouseenter', function() {
+					arrow.style.opacity = '1';
+				});
+
+				titleLink.addEventListener('mouseleave', function() {
+					arrow.style.opacity = '0.6';
+				});
+			}
+		});
+	});
+})();

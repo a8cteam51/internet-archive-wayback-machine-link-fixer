@@ -8,9 +8,10 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
+namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Setup_Wizard;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -85,9 +86,9 @@ class Settings_Page {
 	 */
 	public function register_page(): void {
 		$this->menu_hook = add_submenu_page(
-			'options-general.php',
-			__( 'Wayback Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),
-			__( 'Link Fixer Settings', 'internet-archive-wayback-machine-link-fixer' ),
+			Dashboard_Page::DASHBOARD_SLUG,
+			__( 'Wayback Link Fixer Settings', 'internet-archive-wayback-machine-link-fixer' ),
+			__( 'Settings', 'internet-archive-wayback-machine-link-fixer' ),
 			'manage_options',
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )
@@ -162,7 +163,7 @@ class Settings_Page {
 			<h1 class="wp-heading-inline wlf-settings__header">%s</h1>
 			%s
 			</div>',
-			esc_html__( 'Wayback Link Fixer Settings', 'internet-archive-wayback-machine-link-fixer' ),
+			esc_html__( 'Wayback Link Fixer - Settings', 'internet-archive-wayback-machine-link-fixer' ),
 			$wizard_link // phpcs:ignore
 		);
 

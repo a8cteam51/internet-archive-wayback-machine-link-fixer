@@ -55,9 +55,11 @@
             font-size: 14px;
             font-weight: 600;
             color: #1d2327;
-            margin: 0 12px 8px;
-            padding-bottom: 8px;
+            margin: 0 0 8px 0;
+            padding: 0 12px 8px 12px;
             border-bottom: 1px solid #e5e5e5;
+            margin-left: -12px;
+            margin-right: -12px;
         }
     }
     &-features {
@@ -118,6 +120,333 @@
         justify-content: flex-end;
         a {
             text-decoration: none;
+        }
+    }
+}
+
+// Dashboard Page specific styling
+.wlf_dashboard-page-column-wrapper {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    // Remove margin from first and last dashboard wrappers inside column wrapper
+    .wlf_dashboard-wrapper {
+        margin: 0;
+        &:not(:last-child) {
+            border-bottom: 1px solid #f0f0f1;
+        }
+    }
+}
+
+.wlf_dashboard-page-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; // 66% / 33% split
+    gap: 20px;
+    align-items: start;
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    margin-top: 15px;
+    ;
+}
+
+.wlf_dashboard-page-main {
+    min-width: 0; // Prevent grid blowout
+}
+
+.wlf_dashboard-page-sidebar {
+    min-width: 0; // Prevent grid blowout
+    position: sticky;
+    top: 32px; // Account for WP admin bar
+}
+
+// Extended Stats Grid
+.wlf_dashboard-stats-extended {
+    grid-template-columns: repeat(3, 1fr);
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// Sidebar Stats Grid (for right panel)
+.wlf_dashboard-stats-sidebar {
+    grid-template-columns: repeat(2, 1fr);
+    @media (max-width: 1024px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// Stats Box Variants
+.wlf_dashboard-stats-box {
+    &--success {
+        border-left: 4px solid #46b450;
+        .wlf_dashboard-stats-number {
+            color: #46b450;
+        }
+    }
+    &--warning {
+        border-left: 4px solid #ffb900;
+        .wlf_dashboard-stats-number {
+            color: #ffb900;
+        }
+    }
+    &--danger {
+        border-left: 4px solid #dc3232;
+        .wlf_dashboard-stats-number {
+            color: #dc3232;
+        }
+    }
+    &--info {
+        border-left: 4px solid #2271b1;
+        .wlf_dashboard-stats-number {
+            color: #2271b1;
+        }
+    }
+}
+
+// Accordion Component
+.wlf_dashboard-accordion {
+    &-nav {
+        display: flex;
+        border-bottom: 1px solid #e5e5e5;
+        margin-bottom: 16px;
+    }
+    &-tab {
+        background: none;
+        border: none;
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #50575e;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s ease;
+        &:hover {
+            color: #2271b1;
+            background-color: rgba(34, 113, 177, 0.05);
+        }
+        &--active {
+            color: #2271b1;
+            border-bottom-color: #2271b1;
+            background-color: rgba(34, 113, 177, 0.05);
+        }
+    }
+    &-content {
+        display: none;
+        &--active {
+            display: block;
+        }
+    }
+}
+
+// Link Checks Section
+.wlf_dashboard-link-checks {
+    &-empty {
+        text-align: center;
+        padding: 40px 20px;
+        color: #757575;
+        font-style: italic;
+    }
+}
+
+.wlf_dashboard-link-check {
+    &-item {
+        padding: 16px;
+        margin-bottom: 12px;
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        &:hover {
+            border-color: #2271b1;
+            box-shadow: 0 2px 8px rgba(34, 113, 177, 0.1);
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+    &-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        gap: 8px;
+        min-width: 0; // Allow flex shrinking
+    }
+    &-url {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 0; // Allow flex shrinking
+    }
+    &-title {
+        color: #2271b1;
+        text-decoration: none;
+        flex: 1;
+        min-width: 0; // Allow flex shrinking
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        font-weight: 400;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    &-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        &.working {
+            background: #edfaef;
+            color: #46b450;
+        }
+        &.broken {
+            background: #fef1f1;
+            color: #d63638;
+        }
+        .dashicons {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+        }
+    }
+    &-external {
+        color: #757575;
+        margin-left: 4px;
+        text-decoration: none;
+        &:hover {
+            color: #2271b1;
+        }
+        .dashicons {
+            font-size: 12px;
+            width: 12px;
+            height: 12px;
+        }
+    }
+    &-meta {
+        font-size: 12px;
+        color: #757575;
+        white-space: nowrap;
+    }
+    &-date {
+        font-size: 11px;
+        color: #757575;
+    }
+    &-details {
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f0f0f1;
+        &-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+    }
+    &-details-link {
+        color: #2271b1;
+        text-decoration: none;
+        font-size: 11px;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    &-posts {
+        padding-top: 8px;
+        border-top: 1px solid #f0f0f1;
+        &-label {
+            font-size: 12px;
+            color: #50575e;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 8px;
+        }
+        &-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 6px;
+            align-items: start;
+            @media (min-width: 768px) {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            @media (min-width: 1200px) {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        &-more {
+            grid-column: 1 / -1;
+            font-size: 11px;
+            color: #757575;
+            font-style: italic;
+            text-align: center;
+            padding: 4px;
+        }
+    }
+    &-post {
+        display: inline-block;
+        padding: 2px 8px;
+        background: #f8f9fa;
+        color: #2271b1;
+        text-decoration: none;
+        border-radius: 12px;
+        font-size: 11px;
+        border: 1px solid #e5e5e5;
+        transition: all 0.2s ease;
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        &:hover {
+            background: #2271b1;
+            color: #fff;
+            text-decoration: none;
+        }
+    }
+    // Simple expand arrow styling
+    .wlf_dashboard-link-expand-arrow {
+        user-select: none;
+    }
+    &-title {
+        cursor: pointer !important;
+        &:hover {
+            text-decoration: underline !important;
+        }
+    }
+    // Expanded state styling - more subtle
+    &-item.expanded {
+        .wlf_dashboard-link-check-posts {
+            animation: slideDown 0.2s ease-out;
+        }
+    }
+    // Add smooth slide animation
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            max-height: 0;
+            padding-top: 0;
+        }
+        to {
+            opacity: 1;
+            max-height: 400px;
+            padding-top: 8px;
         }
     }
 }
