@@ -14,7 +14,7 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Page;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Report_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 
 defined( 'ABSPATH' ) || exit;
