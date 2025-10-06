@@ -4,7 +4,7 @@
  *
  * @since       1.0.0
  * @version     1.3.0
- * @author      WordPress.com Special Projects
+ * @author       Internet Archive
  * @license     GPL-3.0-or-later
  *
  * @noinspection ALL
@@ -16,8 +16,8 @@
  * Requires at least:       6.4
  * Tested up to:            6.5
  * Requires PHP:            7.4
- * Author:                  WordPress.com Special Projects
- * Author URI:              https://wpspecialprojects.wordpress.com
+ * Author:                  Internet Archive
+ * Author URI:              https://archive.org
  * License:                 GPL-3.0-or-later
  * License URI:             https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:             internet-archive-wayback-machine-link-fixer

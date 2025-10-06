@@ -1,5 +1,5 @@
 === Internet Archive Wayback Machine Link Fixer ===
-Contributors: wpcomspecialprojects
+Contributors: waybackmachineplugin and wpcomspecialprojects
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
 Tested up to: 6.9
