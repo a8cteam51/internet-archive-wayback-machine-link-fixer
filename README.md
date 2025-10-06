@@ -736,6 +736,26 @@ add_filter( 'wlf_show_link_table_debug_data', function( bool $show_debug ): bool
 });
 ```
 
+#### `wlf_dashboard_link_count`
+
+This is used to define how many links are shown in the admin dashboard panels. The default is 10.
+
+```php
+add_filter( 'wlf_dashboard_link_count', function( int $link_count ): int {
+	return 15; // Show 15 links instead of 10
+});
+```
+
+#### `wlf_menu_icon_base64`
+
+This is used to override the base64 encoded PNG for the admin menu item icon. This allows you to customize the plugin's menu icon.
+
+```php
+add_filter( 'wlf_menu_icon_base64', function( string $icon ): string {
+	return 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='; // Your custom base64 icon
+});
+```
+
 ---
 
 #### Advanced Customization

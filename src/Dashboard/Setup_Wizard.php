@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -345,7 +344,7 @@ class Setup_Wizard {
 
 		echo '<div class="wrap">';
 		echo '<h1>';
-		esc_html_e( 'Link Fixer Setup Wizard', 'internet-archive-wayback-machine-link-fixer' );
+		esc_html_e( 'Wayback Link Fixer - Setup Wizard', 'internet-archive-wayback-machine-link-fixer' );
 		echo '</h1>';
 
 		$step_data = $this->get_step_data();

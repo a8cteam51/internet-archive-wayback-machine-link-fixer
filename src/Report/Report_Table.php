@@ -13,7 +13,6 @@ namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
 use DateTimeImmutable;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Check_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Validate_Link_Action;
@@ -21,7 +20,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_New_Snapshot_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Latest_Snapshot_Action;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Util\List_Table_Action_Notification_Cache;
-
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Report_Page;
 /**
  * The report table class.
  */
@@ -158,6 +157,7 @@ class Report_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	public function column_cb( $link ): string {
+
 		return sprintf(
 			'<input type="checkbox" name="%1$s[]" value="%2$s" />',
 			'wlf_link_action',

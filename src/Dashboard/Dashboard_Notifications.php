@@ -11,9 +11,9 @@ declare(strict_types=1);
 namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard;
 
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Page;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Report_Page;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Settings_Page;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -85,7 +85,7 @@ class Dashboard_Notifications {
 		wpcomsp_wayback_link_fixer_render_template(
 			'admin/dashboard/widget.php',
 			array(
-				'wlf_details'                 => $this->get_account_details(),
+				'wlf_details'                 => self::get_account_details(),
 				'wlf_api_configured'          => Settings::is_archive_api_configured(),
 				'wlf_is_online'               => wpcomsp_wayback_link_fixer_is_archive_api_online(),
 				'wlf_link_to_settings'        => Settings_Page::get_page_url(),
