@@ -106,7 +106,7 @@ $wlf_still_processing      = $wlf_process_new + $wlf_process_pending;
 					<div class="wlf_dashboard-stats-grid wlf_dashboard-stats-sidebar">
 						<!-- Row 1: Total Links | Still Processing -->
 						<div class="wlf_dashboard-stats-box">
-							<a href="<?php echo esc_url( $wlf_link_table ); ?>" class="wlf_dashboard-stats-number" style="text-decoration: none; color: inherit;">
+							<a href="<?php echo esc_url( $wlf_link_table ); ?>" class="wlf_dashboard-stats-number wlf_dashboard-stats-link">
 								<?php echo esc_html( $wlf_total_links_count ); ?>
 							</a>
 							<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'Total Links', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
@@ -123,13 +123,13 @@ $wlf_still_processing      = $wlf_process_new + $wlf_process_pending;
 
 						<!-- Row 2: With Archive | Without -->
 						<div class="wlf_dashboard-stats-box wlf_dashboard-stats-box--success">
-							<a href="<?php echo esc_url( $wlf_filtered_has_archive ); ?>" class="wlf_dashboard-stats-number" style="text-decoration: none; color: inherit;">
+							<a href="<?php echo esc_url( $wlf_filtered_has_archive ); ?>" class="wlf_dashboard-stats-number wlf_dashboard-stats-link">
 								<?php echo esc_html( $wlf_links_with_archive ); ?>
 							</a>
 							<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'With Archive', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 						</div>
 						<div class="wlf_dashboard-stats-box wlf_dashboard-stats-box--warning">
-							<a href="<?php echo esc_url( $wlf_filtered_no_archive ); ?>" class="wlf_dashboard-stats-number" style="text-decoration: none; color: inherit;">
+							<a href="<?php echo esc_url( $wlf_filtered_no_archive ); ?>" class="wlf_dashboard-stats-number wlf_dashboard-stats-link">
 								<?php echo esc_html( $wlf_links_without_archive ); ?>
 							</a>
 							<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'Without Archive', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
@@ -141,7 +141,7 @@ $wlf_still_processing      = $wlf_process_new + $wlf_process_pending;
 							<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'Not Checked', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 						</div>
 						<div class="wlf_dashboard-stats-box wlf_dashboard-stats-box--danger">
-							<a href="<?php echo esc_url( $wlf_filtered_broken ); ?>" class="wlf_dashboard-stats-number" style="text-decoration: none; color: inherit;">
+							<a href="<?php echo esc_url( $wlf_filtered_broken ); ?>" class="wlf_dashboard-stats-number wlf_dashboard-stats-link">
 								<?php echo esc_html( $wlf_broken_links ); ?>
 							</a>
 							<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'Broken Links', 'internet-archive-wayback-machine-link-fixer' ); ?></div>

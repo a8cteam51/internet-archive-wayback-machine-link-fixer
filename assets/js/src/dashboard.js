@@ -4,7 +4,17 @@
 		// Handle accordion tabs
 		const accordionTabs = document.querySelectorAll('.wlf_dashboard-accordion-tab');
 		const accordionContents = document.querySelectorAll('.wlf_dashboard-accordion-content');
-
+		 // Set ARIA roles
+        const accordionNav = document.querySelector('.wlf_dashboard-accordion-nav');
+        if (accordionNav) accordionNav.setAttribute('role', 'tablist');
+        accordionTabs.forEach(function (t) {
+            t.setAttribute('role', 'tab');
+            t.setAttribute('aria-selected', t.classList.contains('wlf_dashboard-accordion-tab--active') ? 'true' : 'false');
+        });
+        accordionContents.forEach(function (panel) {
+            panel.setAttribute('role', 'tabpanel');
+            panel.setAttribute('aria-hidden', panel.classList.contains('wlf_dashboard-accordion-content--active') ? 'false' : 'true');
+        });
 		accordionTabs.forEach(function (tab) {
 			tab.addEventListener('click', function () {
 				const targetTab = this.getAttribute('data-tab');
@@ -21,12 +31,21 @@
 
 				// Activate clicked tab
 				this.classList.add('wlf_dashboard-accordion-tab--active');
+				this.setAttribute('aria-selected', 'true');
 
 				// Show corresponding content
 				const targetContent = document.getElementById(targetTab);
 				if (targetContent) {
-					targetContent.classList.add('wlf_dashboard-accordion-content--active');
-				}
+                    targetContent.classList.add('wlf_dashboard-accordion-content--active');
+                    targetContent.setAttribute('aria-hidden', 'false');
+                }
+                // Update other tabs/panels aria state
+                accordionTabs.forEach(function (t) {
+                    if (t !== this) t.setAttribute('aria-selected', 'false');
+                }, this);
+                accordionContents.forEach(function (content) {
+                    if (content !== targetContent) content.setAttribute('aria-hidden', 'true');
+                });
 			});
 		});
 
@@ -48,7 +67,7 @@
 				// Add arrow indicator
 				const arrow = document.createElement('span');
 				arrow.className = 'wlf_dashboard-link-expand-arrow';
-				arrow.innerHTML = '▼';
+				arrow.textContent = '▼';
 				arrow.style.position = 'absolute';
 				arrow.style.right = '0';
 				arrow.style.top = '50%';

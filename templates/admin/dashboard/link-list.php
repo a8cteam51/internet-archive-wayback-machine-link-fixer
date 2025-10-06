@@ -50,7 +50,12 @@ defined( 'ABSPATH' ) || exit;
 									$wlf_clean_http_code = $wlf_http_code ? preg_replace( '/[^0-9]/', '', (string) $wlf_http_code ) : null;
 
 									$wlf_http_status_display = $wlf_clean_http_code
-										? sprintf( '<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/%s" target="_blank">%s status</a>', esc_attr( $wlf_clean_http_code ), esc_html( $wlf_clean_http_code ) )
+										? sprintf(
+											'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s %3$s</a>',
+											esc_url( sprintf( 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/%d', (int) $wlf_clean_http_code ) ),
+											esc_html( (string) $wlf_clean_http_code ),
+											esc_html__( 'status', 'internet-archive-wayback-machine-link-fixer' )
+										)
 										: esc_html__( 'No HTTP Code', 'internet-archive-wayback-machine-link-fixer' );
 
 									if ( $wlf_date_time && $wlf_clean_http_code ) {
@@ -97,7 +102,7 @@ defined( 'ABSPATH' ) || exit;
 								foreach ( $wlf_displayed_posts as $wlf_displayed_post ) :
 									?>
 									<a href="<?php echo esc_url( get_edit_post_link( $wlf_displayed_post->ID ) ); ?>" class="wlf_dashboard-link-check-post">
-										<?php echo esc_html( '' !== $wlf_displayed_post->post_title ? $wlf_displayed_post->post_title : esc_html__( '(No title)', 'internet-archive-wayback-machine-link-fixer' ) ); ?>
+										<?php echo esc_html( '' !== $wlf_displayed_post->post_title ? $wlf_displayed_post->post_title : __( '(No title)', 'internet-archive-wayback-machine-link-fixer' ) ); ?>
 									</a>
 								<?php endforeach; ?>
 								<?php if ( count( $wlf_posts ) > 12 ) : ?>

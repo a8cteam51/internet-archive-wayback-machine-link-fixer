@@ -51,7 +51,7 @@ class Dashboard_Page {
 	 */
 	public function __construct() {
 		$this->link_repository   = new Link_Repository();
-		$this->links_per_section = apply_filters( 'wlf_dashboard_link_count', 10 );
+		$this->links_per_section = absint( apply_filters( 'wlf_dashboard_link_count', 10 ) );
 	}
 
 	/**
@@ -158,7 +158,7 @@ class Dashboard_Page {
 			Settings::get_reporting_page_capability(),
 			self::DASHBOARD_SLUG,
 			array( $this, 'render_page' ),
-			'', // Empty string for custom icon
+			'data:image/svg+xml;base64,' . $this->get_ia_icon_base64(),
 			20
 		);
 	}
@@ -302,6 +302,7 @@ class Dashboard_Page {
 			},
 			$link_stats['last_checks']
 		);
+		$last_checks = array_values( array_filter( $last_checks ) );
 
 		$latest_links = array_map(
 			function ( $link ) {
@@ -309,13 +310,14 @@ class Dashboard_Page {
 			},
 			$this->link_repository->query_links( $this->links_per_section, 1, array(), array(), array(), Link_Repository::ORDER_ID_DESC, null, null, false )
 		);
+		$latest_links = array_values( array_filter( $latest_links ) );
 
 		// Build the filtered links base url.
 		$report_page_base  = Report_Page::get_page_url();
 		$filtered_url_base = add_query_arg(
 			array(
 				'_wpnonce'         => \wp_create_nonce( 'bulk-reports' ),
-				'_wp_http_referer' => \urldecode( $report_page_base ),
+				'_wp_http_referer' => $report_page_base,
 				'action'           => '-1',
 				'action2'          => '-1',
 				'paged'            => '1',
