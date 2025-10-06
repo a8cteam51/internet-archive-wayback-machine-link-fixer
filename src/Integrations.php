@@ -40,6 +40,7 @@ final class Integrations {
 	private $dashboard_notification;
 	private $setup_wizard;
 	private $dashboard_page;
+	private $plugin_management;
 
 	/**
 	 * Creates a new instance of the integrations component.
@@ -54,6 +55,7 @@ final class Integrations {
 		$this->dashboard_notification   = new Dashboard_Notifications();
 		$this->setup_wizard             = new Setup_Wizard();
 		$this->dashboard_page           = new Dashboard_Page();
+		$this->plugin_management        = new Util\Plugin_Management_Service();
 	}
 
 
@@ -79,6 +81,7 @@ final class Integrations {
 		$this->report_page->initialize();
 		$this->dashboard_notification->initialize();
 		$this->setup_wizard->initialize();
+		$this->plugin_management->initialize();
 	}
 
 	// endregion
