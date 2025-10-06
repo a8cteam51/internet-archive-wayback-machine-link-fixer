@@ -79,7 +79,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function is_link_processing_enabled(): bool {
-		return (bool) get_option( self::PROCESS_LINKS, false );
+		return (bool) get_option( self::PROCESS_LINKS, true );
 	}
 
 	/**
@@ -299,7 +299,7 @@ class Settings {
 	public static function add_own_links(): bool {
 		return (bool) apply_filters(
 			'wlf_add_own_content_to_wayback_machine',
-			(bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, false )
+			(bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, true )
 		);
 	}
 
