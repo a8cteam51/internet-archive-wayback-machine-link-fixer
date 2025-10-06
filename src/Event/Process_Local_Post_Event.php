@@ -73,7 +73,9 @@ class Process_Local_Post_Event {
 			self::HANDLE,
 			array(
 				'post_id' => $post_id,
-			)
+			),
+			'wlf_process_local_post', // The group name.
+			true
 		);
 	}
 

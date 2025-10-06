@@ -103,6 +103,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		// Allow with the filters.
 		\add_filter( 'wlf_own_content_allow_post', '__return_true' );
 		\add_filter( 'wlf_routinely_update_wayback_machine', '__return_true' );
+		\add_filter( 'wlf_scan_existing_posts', '__return_false' );
 
 		// Only allow post type 'post'.
 		\add_filter(
@@ -121,7 +122,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		$event();
 
 		// Get all action shceduler actions.
-		$actions = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions" );
+		$actions = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions WHERE status = 'pending'" );
 
 		// Should be 1 added action.
 		$this->assertCount( 1, $actions );
@@ -136,8 +137,10 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_only_get_posts_that_have_not_been_checked_in_last_24_hours(): void {
-		\add_filter( 'wlf_own_content_allow_post', '__return_true' );
 		\add_filter( 'wlf_routinely_update_wayback_machine', '__return_true' );
+		\add_filter( 'wlf_own_content_allow_post', '__return_false' );
+		$backup_settings = get_option( Settings::PROCESS_LINKS );
+		update_option( Settings::PROCESS_LINKS, false );
 
 		// Set the interval to 24 hours.
 		\add_filter( 'wlf_routinely_update_wayback_machine_interval', fn() => 1 );
@@ -145,20 +148,23 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		// Create 2 posts.
 		$post_id_1 = $this->factory->post->create( array( 'post_type' => 'post' ) );
 		$post_id_2 = $this->factory->post->create( array( 'post_type' => 'post' ) );
-		// Set the meta, post 1 should be last checked 2 days ago and post 2 should be 1hour ago.
-		$time_1 = time() - 2 * DAY_IN_SECONDS;
-		$time_2 = time() - 1 * HOUR_IN_SECONDS;
 
+		// Set the meta, post 1 should be last checked 2 days ago and post 2 should be 1hour ago.
+		$time_1 = time() - 6 * DAY_IN_SECONDS;
+		$time_2 = time() - 1 * HOUR_IN_SECONDS;
 		update_post_meta( $post_id_1, Settings::OWN_LINK_LAST_PROCESSED, $time_1 );
 		update_post_meta( $post_id_2, Settings::OWN_LINK_LAST_PROCESSED, $time_2 );
+
+		// Reset the filters and allow adding own posts.
+		\add_filter( 'wlf_own_content_allow_post', '__return_true' );
+		update_option( Settings::PROCESS_LINKS, $backup_settings );
 
 		// Run the event.
 		$event = new Scan_Own_Posts_Event();
 		$event();
 
 		// Get all action shceduler actions.
-		$actions = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions" );
-
+		$actions = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions where status='pending'" );
 		// Should be 1 added action.
 		$this->assertCount( 1, $actions );
 
