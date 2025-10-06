@@ -150,7 +150,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		$post_id_2 = $this->factory->post->create( array( 'post_type' => 'post' ) );
 
 		// Set the meta, post 1 should be last checked 2 days ago and post 2 should be 1hour ago.
-		$time_1 = time() - 6 * DAY_IN_SECONDS;
+		$time_1 = time() - 2 * DAY_IN_SECONDS;
 		$time_2 = time() - 1 * HOUR_IN_SECONDS;
 		update_post_meta( $post_id_1, Settings::OWN_LINK_LAST_PROCESSED, $time_1 );
 		update_post_meta( $post_id_2, Settings::OWN_LINK_LAST_PROCESSED, $time_2 );

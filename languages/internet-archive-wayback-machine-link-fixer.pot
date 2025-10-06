@@ -1,4 +1,4 @@
-# Copyright (C) 2025 WordPress.com Special Projects
+# Copyright (C) 2025 Internet Archive
 # This file is distributed under the GPL-3.0-or-later.
 msgid ""
 msgstr ""
@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-26T16:36:33+00:00\n"
+"POT-Creation-Date: 2025-10-06T16:22:05+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.11.0\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: internet-archive-wayback-machine-link-fixer\n"
 
 #. Plugin Name of the plugin
@@ -26,12 +26,12 @@ msgstr ""
 
 #. Author of the plugin
 #: internet-archive-wayback-machine-link-fixer.php
-msgid "WordPress.com Special Projects"
+msgid "Internet Archive"
 msgstr ""
 
 #. Author URI of the plugin
 #: internet-archive-wayback-machine-link-fixer.php
-msgid "https://wpspecialprojects.wordpress.com"
+msgid "https://archive.org"
 msgstr ""
 
 #: src/Action/Link_Latest_Snapshot_Action.php:65
@@ -87,12 +87,16 @@ msgid "Validation request created, link will be updated ASAP"
 msgstr ""
 
 #: src/Dashboard/Dashboard_Notifications.php:70
-#: src/Dashboard/Dashboard_Page.php:156
-#: src/Dashboard/Dashboard_Page.php:157
+#: src/Dashboard/Dashboard_Page.php:126
 msgid "Wayback Link Fixer"
 msgstr ""
 
-#: src/Dashboard/Dashboard_Page.php:177
+#: src/Dashboard/Dashboard_Page.php:127
+#: src/Dashboard/Settings_Page.php:414
+msgid "Link Fixer"
+msgstr ""
+
+#: src/Dashboard/Dashboard_Page.php:147
 msgid "Dashboard"
 msgstr ""
 
@@ -121,6 +125,7 @@ msgstr ""
 
 #. translators: %1$s is the post title, %2$s is the link to view all links.
 #: src/Dashboard/Report_Page.php:299
+#, php-format
 msgid "Showing links for %1$s <a href=\"%2$s\">(Show all links)</a>"
 msgstr ""
 
@@ -142,6 +147,7 @@ msgid "Wayback Link Fixer Settings"
 msgstr ""
 
 #: src/Dashboard/Settings_Page.php:91
+#: src/Util/Plugin_Management_Service.php:40
 #: templates/admin/dashboard/widget.php:139
 msgid "Settings"
 msgstr ""
@@ -168,11 +174,8 @@ msgstr ""
 
 #. Translators: %s is the link to the Internet account setup.
 #: src/Dashboard/Settings_Page.php:406
+#, php-format
 msgid "To get your API key and secret, please visit the <a href='%s' target='_blank'>Internet Archive</a> and create a new 'S3 access key' (this is a type of credential used by Archive.org)."
-msgstr ""
-
-#: src/Dashboard/Settings_Page.php:414
-msgid "Link Fixer"
 msgstr ""
 
 #: src/Dashboard/Settings_Page.php:416
@@ -314,6 +317,7 @@ msgstr ""
 
 #. translators: %s is the URL to the setup wizard.
 #: src/Dashboard/Setup_Wizard.php:83
+#, php-format
 msgid "The Wayback Link Fixer plugin is almost ready. Please <a href=\"%s\">run the setup wizard</a> to complete the installation."
 msgstr ""
 
@@ -367,66 +371,79 @@ msgstr ""
 #: src/Report/Report_Table.php:385
 #: src/Report/Report_Table.php:468
 #: src/Report/Report_Table.php:650
+#, php-format
 msgid "Link not found with id:%d"
 msgstr ""
 
 #. translators: %s is the link url.
 #: src/Report/Report_Table.php:328
+#, php-format
 msgid "It was not possible to check %s"
 msgstr ""
 
 #. translators: %s is the link url.
 #: src/Report/Report_Table.php:344
+#, php-format
 msgid "Link %s has no checks."
 msgstr ""
 
 #. translators: %1$s is the link url, %2$s is the last check date, %3$s is the last check http code.
 #: src/Report/Report_Table.php:356
+#, php-format
 msgid "Link %1$s checked successfully on %2$s with %3$s status"
 msgstr ""
 
 #. translators: %s is the link url.
 #: src/Report/Report_Table.php:398
+#, php-format
 msgid "Link %s is already an archived link."
 msgstr ""
 
 #. translators: %s is the link url.
 #: src/Report/Report_Table.php:411
+#, php-format
 msgid "No archived link found for %s"
 msgstr ""
 
 #. translators: %s is the link url.
 #: src/Report/Report_Table.php:424
+#, php-format
 msgid "It was not possible to update %s, the latest archive link is the same"
 msgstr ""
 
 #. translators: %s is the link url.
 #: src/Report/Report_Table.php:436
+#, php-format
 msgid "Link %s updated successfully"
 msgstr ""
 
 #. translators: %s is the link url.
 #: src/Report/Report_Table.php:481
+#, php-format
 msgid "Link %1$s could not have a new snapshot created: %2$s"
 msgstr ""
 
 #. translators: %s is the link url.
 #: src/Report/Report_Table.php:494
+#, php-format
 msgid "Link %s added to the queue and a new snapshot will be created and added as the archived url in the coming minutes.."
 msgstr ""
 
 #. translators: %s is the icon for error, %d is the number of links that could not be found.
 #: src/Report/Report_Table.php:554
+#, php-format
 msgid "%1$s - %2$d links could not be found."
 msgstr ""
 
 #. translators: %s is the icon for error, %d is the number of links that are archived.
 #: src/Report/Report_Table.php:564
+#, php-format
 msgid "%1$s - %2$d links that are already snapshots and will be skipped"
 msgstr ""
 
 #. translators: %s is the icon for error, , %d is the number of links that are own links.
 #: src/Report/Report_Table.php:584
+#, php-format
 msgid "%1$s - %2$d links are from this site and will not be processed. Please enable the Auto Archiver to archive your own content."
 msgstr ""
 
@@ -440,6 +457,7 @@ msgstr ""
 
 #. translators: %s is the link url.
 #: src/Report/Report_Table.php:662
+#, php-format
 msgid "Validating %s to ensure we can check its current status"
 msgstr ""
 
@@ -551,13 +569,14 @@ msgstr ""
 
 #: src/Report/Report_Table.php:1142
 #: src/Report/Report_Table.php:1152
-#: templates/admin/dashboard/link-list.php:54
+#: templates/admin/dashboard/link-list.php:59
 msgid "No HTTP Code"
 msgstr ""
 
 #. translators: %1$s is the last check date, %2$s is the last check http code.
 #: src/Report/Report_Table.php:1146
-#: templates/admin/dashboard/link-list.php:59
+#: templates/admin/dashboard/link-list.php:64
+#, php-format
 msgid "%1$s with %2$s"
 msgstr ""
 
@@ -579,6 +598,7 @@ msgstr ""
 
 #. translators: %s is the message.
 #: src/Wayback_Machine/Exception/Service_Offline_Exception.php:33
+#, php-format
 msgid "The service is offline.%s"
 msgstr ""
 
@@ -588,35 +608,43 @@ msgstr ""
 
 #. translators: %2$s is the url to view the links in a report, %2$s is the number of broken links, %3$s is the total number of links.
 #: src/WP_Post/WP_Post_Table_Controller.php:162
+#, php-format
 msgid "<a href=\"%1$s\"><strong>%2$s</strong> broken out of <strong>%3$s</strong></a>"
 msgstr ""
 
+#: templates/admin/dashboard/link-list.php:57
+msgid "status"
+msgstr ""
+
 #. translators: %s: last checked date
-#: templates/admin/dashboard/link-list.php:66
+#: templates/admin/dashboard/link-list.php:71
+#, php-format
 msgid "Checked: %s"
 msgstr ""
 
-#: templates/admin/dashboard/link-list.php:79
+#: templates/admin/dashboard/link-list.php:84
 msgid "Link Details:"
 msgstr ""
 
-#: templates/admin/dashboard/link-list.php:81
+#: templates/admin/dashboard/link-list.php:86
 msgid "View Full Report"
 msgstr ""
 
 #. translators: %d: number of posts
-#: templates/admin/dashboard/link-list.php:89
+#: templates/admin/dashboard/link-list.php:94
+#, php-format
 msgid "Found in %d post:"
 msgid_plural "Found in %d posts:"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/admin/dashboard/link-list.php:100
+#: templates/admin/dashboard/link-list.php:105
 msgid "(No title)"
 msgstr ""
 
 #. translators: %d: number of additional posts
-#: templates/admin/dashboard/link-list.php:108
+#: templates/admin/dashboard/link-list.php:113
+#, php-format
 msgid "... and %d more"
 msgstr ""
 
@@ -726,16 +754,19 @@ msgstr ""
 
 #. translators: 1: number of days between checks, 2: number of failed checks before marking as broken
 #: templates/admin/dashboard/widget.php:115
+#, php-format
 msgid "Links are checked every %1$d days and marked as broken after %2$d consecutive failures"
 msgstr ""
 
 #. translators: 1: opening link tag, 2: closing link tag
 #: templates/admin/dashboard/widget.php:124
+#, php-format
 msgid "Links are not being checked. %1$sEnable Link Processing%2$s to turn this back on."
 msgstr ""
 
 #. translators: %d: number of links
 #: templates/admin/dashboard/widget.php:146
+#, php-format
 msgid "View Links (%d)"
 msgstr ""
 
@@ -781,6 +812,7 @@ msgstr ""
 
 #. translators: %d is the number of consecutive failed checks required to mark a link as broken.
 #: templates/admin/links-table/help-tab-columns.php:28
+#, php-format
 msgid "Indicates whether the live link is active or broken. A link is marked as broken after %d consecutive failed checks."
 msgstr ""
 
@@ -798,6 +830,7 @@ msgstr ""
 
 #. translators: %d is the number of days between checks.
 #: templates/admin/links-table/help-tab-columns.php:46
+#, php-format
 msgid "Shows how many times the link has been checked. Links are automatically checked every %d days."
 msgstr ""
 
@@ -827,6 +860,7 @@ msgstr ""
 
 #. translators: %s: The archived URL
 #: templates/admin/reports/link-details.php:57
+#, php-format
 msgid "HAS ARCHIVE - A snapshot of this link is available on the Internet Archive: %s"
 msgstr ""
 
@@ -868,6 +902,7 @@ msgstr ""
 
 #. translators: %d is the number of consecutive failures required to mark a link as 'Broken'.
 #: templates/admin/reports/link-details.php:97
+#, php-format
 msgid "Monitoring: Link will be marked as 'Broken' after %d consecutive failures."
 msgstr ""
 
@@ -922,6 +957,7 @@ msgstr ""
 
 #. Translators: %1$s is the post ID, %2$s is the post type label (e.g., "Post", "Page").
 #: templates/admin/reports/link-details.php:178
+#, php-format
 msgid "Untitled %2$s (ID: %1$d)"
 msgstr ""
 
@@ -955,6 +991,7 @@ msgstr ""
 
 #. translators: %s is a link to the plugin settings page.
 #: templates/admin/wizard/complete.php:24
+#, php-format
 msgid "Setup is now complete! You can edit these settings at any time from the %s page."
 msgstr ""
 
@@ -968,6 +1005,7 @@ msgstr ""
 
 #. translators: 1: current step, 2: total steps
 #: templates/admin/wizard/footer.php:19
+#, php-format
 msgid "Step %1$d of %2$d"
 msgstr ""
 
