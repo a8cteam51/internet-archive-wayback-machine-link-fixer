@@ -164,7 +164,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		$event();
 
 		// Get all action shceduler actions.
-		$actions = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions where status='pending'" );
+		$actions = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions WHERE status='pending'" );
 		// Should be 1 added action.
 		$this->assertCount( 1, $actions );
 
