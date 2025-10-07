@@ -445,7 +445,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 			function ( $response, $args, $url ) {
 				$this->assertArrayHasKey( 'headers', $args );
 				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
-				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'], $args['headers']['WP-Wayback-Link-Fixer'] );
+				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_VERSION, $args['headers']['WP-Wayback-Link-Fixer'] );
 				return new \WP_Error( 'http_request_failed', 'Error' );
 			},
 			10,
@@ -481,7 +481,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 			function ( $response, $args, $url ) {
 				$this->assertArrayHasKey( 'headers', $args );
 				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
-				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'], $args['headers']['WP-Wayback-Link-Fixer'] );
+				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_VERSION, $args['headers']['WP-Wayback-Link-Fixer'] );
 				$this->assertArrayHasKey( 'Authorization', $args['headers'] );
 				$this->assertEquals( 'LOW test_access_key:test_secret_key', $args['headers']['Authorization'] );
 				return new \WP_Error( 'http_request_failed', 'Error' );
@@ -518,7 +518,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 			function ( $response, $args, $url ) {
 				$this->assertArrayHasKey( 'headers', $args );
 				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
-				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'], $args['headers']['WP-Wayback-Link-Fixer'] );
+				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_VERSION, $args['headers']['WP-Wayback-Link-Fixer'] );
 				return array(
 					'body'     => json_encode( array( 'status' => 'success', 'job_id' => '12345' ) ),
 					'response' => array( 'code' => 200 ),

@@ -134,7 +134,7 @@ class Report_Page {
 			self::SLUG,
 			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
 			array(),
-			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
+			WPCOMSP_WAYBACK_LINK_FIXER_VERSION
 		);
 
 		// Enqueue the admin scripts.
@@ -142,7 +142,7 @@ class Report_Page {
 			self::SLUG,
 			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/link-table.js',
 			array( 'jquery' ),
-			WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
+			WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
 			true
 		);
 	}

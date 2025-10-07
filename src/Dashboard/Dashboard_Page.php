@@ -89,7 +89,7 @@ class Dashboard_Page {
 				self::DASHBOARD_SLUG,
 				WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
 				array(),
-				WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
+				WPCOMSP_WAYBACK_LINK_FIXER_VERSION
 			);
 		}
 
@@ -99,7 +99,7 @@ class Dashboard_Page {
 				self::DASHBOARD_SLUG . '_dashboard',
 				WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/dashboard.js',
 				array(),
-				WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
+				WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
 				true
 			);
 		}

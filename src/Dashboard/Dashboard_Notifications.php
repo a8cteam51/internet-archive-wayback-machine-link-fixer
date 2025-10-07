@@ -54,7 +54,7 @@ class Dashboard_Notifications {
 				self::PAGE_SLUG,
 				WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
 				array(),
-				WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version']
+				WPCOMSP_WAYBACK_LINK_FIXER_VERSION
 			);
 		}
 	}

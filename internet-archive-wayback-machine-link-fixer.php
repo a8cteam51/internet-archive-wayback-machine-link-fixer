@@ -14,7 +14,7 @@
  * Description:             This plugin scans your content for links, replacing broken ones with archived versions from the Wayback Machine. It also features Auto Archiving, which automatically creates snapshots of your own pages and any other links on your site that aren’t yet archived, ensuring long-term accessibility.
  * Version:                 1.3.0
  * Requires at least:       6.4
- * Tested up to:            6.5
+ * Tested up to:            6.8
  * Requires PHP:            7.4
  * Author:                  Internet Archive
  * Author URI:              https://archive.org
@@ -27,12 +27,17 @@
 defined( 'ABSPATH' ) || exit;
 
 // Define plugin constants.
-function_exists( 'get_plugin_data' ) || require_once ABSPATH . 'wp-admin/includes/plugin.php';
-define( 'WPCOMSP_WAYBACK_LINK_FIXER_METADATA', get_plugin_data( __FILE__, false, false ) );
-
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_BASENAME', plugin_basename( __FILE__ ) );
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WPCOMSP_WAYBACK_LINK_FIXER_URL', plugin_dir_url( __FILE__ ) );
+define( 'WPCOMSP_WAYBACK_LINK_FIXER_VERSION', '1.3.0' );
+define(
+	'WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS',
+	array(
+		'wp'  => '6.4',
+		'php' => '7.4',
+	)
+);
 
 // Load the rest of the bootstrap functions.
 require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/functions-bootstrap.php';

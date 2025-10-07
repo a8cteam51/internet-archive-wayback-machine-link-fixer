@@ -10,79 +10,6 @@ declare(strict_types=1);
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Returns the plugin's metadata.
- *
- * @template PluginMetaKey of key-of<PluginMetaData>
- *
- * @param   PluginMetaKey|null $property Optional. The property to return. Default all.
- *
- * @return  ($property is null ? PluginMetaData : ($property is PluginMetaKey ? PluginMetaData[PluginMetaKey] : null))
- */
-function wpcomsp_wayback_link_fixer_get_plugin_metadata( $property = null ) {
-	static $plugin_data = null;
-
-	$can_translate = 0 < did_action( 'init' );
-	$translate_key = 0 < did_action( 'plugins_loaded' ) ? 'full' : ( $can_translate ? 'translated' : 'raw' );
-
-	if ( ! isset( $plugin_data[ $translate_key ] ) ) {
-		if ( ! function_exists( 'get_plugin_data' ) ) {
-			/* @phpstan-ignore requireOnce.fileNotFound */
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
-		$plugin_file                   = trailingslashit( WP_PLUGIN_DIR ) . constant( 'WPCOMSP_WAYBACK_LINK_FIXER_BASENAME' );
-		$plugin_data[ $translate_key ] = get_plugin_data( $plugin_file, false, $can_translate );
-	}
-
-	$metadata = $plugin_data[ $translate_key ];
-	if ( null === $property ) {
-		return $metadata;
-	}
-
-	if ( is_string( $property ) && isset( $metadata[ $property ] ) ) {
-		return $metadata[ $property ];
-	}
-
-	return null;
-}
-
-/**
- * Returns the plugin's slug.
- *
- * @since   1.0.0
- * @version 1.0.0
- *
- * @return  string
- */
-function wpcomsp_wayback_link_fixer_get_plugin_slug(): string {
-	$text_domain = wpcomsp_wayback_link_fixer_get_plugin_metadata( 'TextDomain' );
-	return sanitize_key( $text_domain );
-}
-
-/**
- * Returns the plugin's name.
- *
- * @since   1.0.0
- * @version 1.0.0
- *
- * @return  string
- */
-function wpcomsp_wayback_link_fixer_get_plugin_name(): string {
-	return wpcomsp_wayback_link_fixer_get_plugin_metadata( 'Name' );
-}
-
-/**
- * Returns the plugin's version.
- *
- * @since   1.0.0
- * @version 1.0.0
- *
- * @return  string
- */
-function wpcomsp_wayback_link_fixer_get_plugin_version(): string {
-	return wpcomsp_wayback_link_fixer_get_plugin_metadata( 'Version' );
-}
 
 /**
  * Checks compatibility with the current WordPress version.
@@ -120,23 +47,16 @@ function wpcomsp_wayback_link_fixer_is_php_version_compatible( $min_php_version 
  * @return  true|\WP_Error
  */
 function wpcomsp_wayback_link_fixer_validate_requirements() {
-	$plugin_metadata = wpcomsp_wayback_link_fixer_get_plugin_metadata();
-	if ( ! isset( $plugin_metadata['RequiresPHP'] ) || '' === $plugin_metadata['RequiresPHP'] ) {
-		$plugin_metadata['RequiresPHP'] = '7.4';
-	}
-	if ( ! isset( $plugin_metadata['RequiresWP'] ) || '' === $plugin_metadata['RequiresWP'] ) {
-		$plugin_metadata['RequiresWP'] = '6.7';
-	}
 
-	$is_php_compatible = wpcomsp_wayback_link_fixer_is_php_version_compatible( $plugin_metadata['RequiresPHP'] );
-	$is_wp_compatible  = wpcomsp_wayback_link_fixer_is_wp_version_compatible( $plugin_metadata['RequiresWP'] );
+	$is_php_compatible = wpcomsp_wayback_link_fixer_is_php_version_compatible( WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['php'] );
+	$is_wp_compatible  = wpcomsp_wayback_link_fixer_is_wp_version_compatible( WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['wp'] );
 
 	$wp_error = new \WP_Error();
 	if ( ! $is_wp_compatible ) {
-		$wp_error->add( 'plugin_wp_incompatible', '', array( 'requires_wp' => $plugin_metadata['RequiresWP'] ) );
+		$wp_error->add( 'plugin_wp_incompatible', '', array( 'requires_wp' => WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['wp'] ) );
 	}
 	if ( ! $is_php_compatible ) {
-		$wp_error->add( 'plugin_php_incompatible', '', array( 'requires_php' => $plugin_metadata['RequiresPHP'] ) );
+		$wp_error->add( 'plugin_php_incompatible', '', array( 'requires_php' => WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['php'] ) );
 	}
 
 	return $wp_error->has_errors() ? $wp_error : true;
@@ -156,8 +76,8 @@ function wpcomsp_wayback_link_fixer_output_requirements_error( $error ) {
 			$requirements_error = wp_sprintf(
 				/* translators: 1: Plugin name, 2: Plugin version */
 				__( '<strong>%1$s (version %2$s)</strong> could not be initialized.', 'internet-archive-wayback-machine-link-fixer' ),
-				wpcomsp_wayback_link_fixer_get_plugin_metadata( 'Name' ),
-				wpcomsp_wayback_link_fixer_get_plugin_metadata( 'Version' )
+				__( 'Internet Archive Wayback Machine Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),
+				WPCOMSP_WAYBACK_LINK_FIXER_VERSION
 			);
 
 			if ( $error->has_errors() ) {
