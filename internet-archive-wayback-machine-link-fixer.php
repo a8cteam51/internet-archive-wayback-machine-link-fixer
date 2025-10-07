@@ -73,9 +73,6 @@ if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_3::class,
 	);
 
-	add_action( 'wp_head', 'wpcomsp_wayback_link_fixer_render_archived_link_css', 999 );
-
-
 	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'functions.php';
 	add_action( 'plugins_loaded', array( wpcomsp_wayback_link_fixer_get_plugin_instance(), 'maybe_initialize' ) );
 

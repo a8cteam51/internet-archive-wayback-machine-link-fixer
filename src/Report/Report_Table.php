@@ -99,7 +99,33 @@ class Report_Table extends \WP_List_Table {
 			'$0' . $help_icon,
 			$bulk_actions
 		);
-		echo $bulk_actions; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		$allowed_html = array(
+			'label'  => array(
+				'for'   => array(),
+				'class' => array(),
+			),
+			'select' => array(
+				'name'  => array(),
+				'id'    => array(),
+				'class' => array(),
+			),
+			'option' => array(
+				'value' => array(),
+			),
+			'input'  => array(
+				'type'  => array(),
+				'name'  => array(),
+				'id'    => array(),
+				'class' => array(),
+				'value' => array(),
+			),
+			'span'   => array(
+				'id'    => array(),
+				'class' => array(),
+			),
+		);
+
+		echo wp_kses( $bulk_actions, $allowed_html );
 	}
 
 	/**
@@ -277,7 +303,7 @@ class Report_Table extends \WP_List_Table {
 		$url = home_url() . $redirect;
 
 		// Redirect to the page using JS as page already loaded headers.
-		echo "<script>window.location = '$url';</script>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, this is just a redirect.
+		printf( '<script>window.location = "%s";</script>', esc_url( $url ) );
 		exit;
 	}
 

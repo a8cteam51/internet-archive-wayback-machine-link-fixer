@@ -18,7 +18,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 $wlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 ?>
 
-<?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo wp_kses_post( $header ); ?>
 
 <div class="wlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Step 2: Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
@@ -87,4 +87,4 @@ $wlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 	</select>
 </div>
 
-<?php echo $footer; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo wp_kses_post( $footer ); ?>
