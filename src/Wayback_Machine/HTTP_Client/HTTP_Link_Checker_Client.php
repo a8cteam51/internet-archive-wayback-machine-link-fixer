@@ -80,7 +80,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 		);
 
 		$headers = array(
-			'WP-Wayback-Link-Fixer' => WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
+			'WP-Wayback-Link-Fixer' => WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
 		);
 
 		// Get the response.

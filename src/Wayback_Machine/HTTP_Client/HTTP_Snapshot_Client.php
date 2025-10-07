@@ -64,7 +64,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	 */
 	private function get_headers(): array {
 		$headers = array(
-			'WP-Wayback-Link-Fixer' => WPCOMSP_WAYBACK_LINK_FIXER_METADATA['Version'],
+			'WP-Wayback-Link-Fixer' => WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
 		);
 
 		// Add the auth header if set.
