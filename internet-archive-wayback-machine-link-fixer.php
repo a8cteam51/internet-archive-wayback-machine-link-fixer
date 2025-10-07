@@ -60,7 +60,7 @@ if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
 	wpcomsp_wayback_link_fixer_output_requirements_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS );
 } else {
 	// Include the action scheduler integration.
-	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'lib/action-scheduler/action-scheduler.php';
+	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
 	// Add all migrations.
 	\WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations::$migrations = array( //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1::class,
