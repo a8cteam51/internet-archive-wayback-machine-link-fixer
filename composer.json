@@ -24,7 +24,8 @@
     ],
     "require": {
         "php": ">=7.4",
-        "ext-json": "*"
+        "ext-json": "*",
+        "woocommerce/action-scheduler": "*"
     },
     "require-dev": {
         "a8cteam51/team51-configs": "dev-trunk",
