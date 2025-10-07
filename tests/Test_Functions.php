@@ -24,19 +24,19 @@ class Test_Functions extends \WP_UnitTestCase {
 	 */
 	public static function normalize_url_provider(): array {
 		return array(
-			'HTTPs simple' => array( 'https://example.com', 'https%3A%2F%2Fexample.com' ),
-			'HTTP simple' => array( 'http://example.com', 'http%3A%2F%2Fexample.com' ),
-			'HTTP with trailing slash' => array( 'http://example.com/', 'http%3A%2F%2Fexample.com' ),
-			'URL with special characters in path' => array( 'http://example.com/wiki/Help:Executive+Bios', 'http%3A%2F%2Fexample.com%2Fwiki%2FHelp%253AExecutive%252BBios' ),
-			'HTTP URL with basic path' => array( 'http://example.com/path/to/resource', 'http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fresource' ),
+			'HTTPs simple'                          => array( 'https://example.com', 'https%3A%2F%2Fexample.com' ),
+			'HTTP simple'                           => array( 'http://example.com', 'http%3A%2F%2Fexample.com' ),
+			'HTTP with trailing slash'              => array( 'http://example.com/', 'http%3A%2F%2Fexample.com' ),
+			'URL with special characters in path'   => array( 'http://example.com/wiki/Help:Executive+Bios', 'http%3A%2F%2Fexample.com%2Fwiki%2FHelp%253AExecutive%252BBios' ),
+			'HTTP URL with basic path'              => array( 'http://example.com/path/to/resource', 'http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fresource' ),
 			'HTTP URL with path and trailing slash' => array( 'http://example.com/path/to/resource/', 'http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fresource' ),
-			'HTTP URL with spaces in path' => array( 'http://example.com/path with space/to/resource', 'http%3A%2F%2Fexample.com%2Fpath%2520with%2520space%2Fto%2Fresource' ),
-			'HTTP URL with query parameters' => array( 'http://example.com/path/to/resource?foo=bar', 'http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fresource?foo%3Dbar' ),
-			'HTTP URL with fragment' => array( 'http://example.com/path/to/resource#section1', 'http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fresource#section1' ),
-			'HTTP URL with port' => array( 'http://example.com:8080/path/to/resource', 'http%3A%2F%2Fexample.com:8080%2Fpath%2Fto%2Fresource' ),
+			'HTTP URL with spaces in path'          => array( 'http://example.com/path with space/to/resource', 'http%3A%2F%2Fexample.com%2Fpath%2520with%2520space%2Fto%2Fresource' ),
+			'HTTP URL with query parameters'        => array( 'http://example.com/path/to/resource?foo=bar', 'http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fresource?foo%3Dbar' ),
+			'HTTP URL with fragment'                => array( 'http://example.com/path/to/resource#section1', 'http%3A%2F%2Fexample.com%2Fpath%2Fto%2Fresource#section1' ),
+			'HTTP URL with port'                    => array( 'http://example.com:8080/path/to/resource', 'http%3A%2F%2Fexample.com:8080%2Fpath%2Fto%2Fresource' ),
 			'HTTP URL with query containing spaces' => array( 'http://example.com/?query with spaces', 'http%3A%2F%2Fexample.com%2F?query%20with%20spaces' ),
-			'HTTPs URL with special characters' => array( 'https://example.com/path/to/special&chars', 'https%3A%2F%2Fexample.com%2Fpath%2Fto%2Fspecial%2526chars' ),
-			'HTTP URL with hashbang fragment' => array( 'http://example.com/#!special_characters', 'http%3A%2F%2Fexample.com%2F#!special_characters' ),
+			'HTTPs URL with special characters'     => array( 'https://example.com/path/to/special&chars', 'https%3A%2F%2Fexample.com%2Fpath%2Fto%2Fspecial%2526chars' ),
+			'HTTP URL with hashbang fragment'       => array( 'http://example.com/#!special_characters', 'http%3A%2F%2Fexample.com%2F#!special_characters' ),
 		);
 	}
 
@@ -54,4 +54,16 @@ class Test_Functions extends \WP_UnitTestCase {
 		$this->assertSame( $expected, \wpcomsp_wayback_link_fixer_normalize_url( $url ) );
 	}
 
+	/**
+	 * @testdox The constants should be defined and match the plugin metadata.
+	 *
+	 * @return void
+	 */
+	public function test_constants_should_be_defined_and_match_plugin_metadata(): void {
+		// Get the plugin metadata.
+		$plugin_metadata = get_plugin_data( WP_PLUGIN_DIR . '/internet-archive-wayback-machine-link-fixer/internet-archive-wayback-machine-link-fixer.php' );
+		$this->assertSame( WPCOMSP_WAYBACK_LINK_FIXER_VERSION, $plugin_metadata['Version'], 'Version should match the plugin metadata.' );
+		$this->assertSame( WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['wp'], $plugin_metadata['RequiresWP'], 'RequiresWP should match the plugin metadata.' );
+		$this->assertSame( WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['php'], $plugin_metadata['RequiresPHP'], 'RequiresPHP should match the plugin metadata.' );
+	}
 }
