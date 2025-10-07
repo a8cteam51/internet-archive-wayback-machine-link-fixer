@@ -7,6 +7,10 @@
  *
  * @param array  $step_data The step data.
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 
 <div id="wlf_wizard" class="wlf_settings_card"> <!-- Wizard container -->

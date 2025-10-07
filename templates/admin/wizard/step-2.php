@@ -12,6 +12,10 @@
  * @param string $footer The footer template.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
 // Holds the class to hide all inputs if not enabled.

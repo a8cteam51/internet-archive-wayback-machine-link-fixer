@@ -8,6 +8,10 @@
  * @param string $header The header template.
  * @param string $footer The footer template.
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 
 <?php echo wp_kses_post( $header ); ?>

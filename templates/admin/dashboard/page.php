@@ -25,7 +25,10 @@
  * @param array  $wlf_latest_links     Array of latest links with associated posts.
  */
 
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 // Extract link statistics
 $wlf_total_links_count     = $wlf_link_stats['total_links'] ?? 0;

@@ -5,6 +5,11 @@
  * @since 1.3.0
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+
 $wlf_failed_count    = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_failed_count();
 $wlf_check_frequency = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_link_check_duration();
 ?>

@@ -8,6 +8,10 @@
  * @param array $step_data The step data.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $wlf_previous_state = 'step-1' === $step_data['step'] ? 'DISABLED' : '';
 $wlf_next_state     = 'complete' === $step_data['step'] ? 'DISABLED' : '';
 $wlf_next_label     = 'complete' === $step_data['next']

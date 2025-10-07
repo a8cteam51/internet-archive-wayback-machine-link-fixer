@@ -17,7 +17,10 @@
  * @param int    $wlf_failed_check_count      Number of failed checks before marking as broken.
  */
 
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 ?>
 
 <div class="wlf_dashboard-wrapper">
