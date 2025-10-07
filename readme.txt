@@ -61,6 +61,42 @@ If the Internet Archive services go offline, the link fixer will delay all proce
 = How often are my own posts updated when auto archive is active? =
 Existing content is sent to the Wayback Machine in batch when the plugin is activated, then again every 30 days (by default, but can be changed). New content is sent to be archived shortly after it is published. Updates to existing content also trigger updates to be sent to the Wayback Machine.
 
+== External Services ==
+
+This plugin connects to external services provided by the Internet Archive to provide its core functionality. The following information details what data is sent, when, and why:
+
+= Internet Archive Wayback Machine API (web.archive.org) =
+
+**What the service is and what it is used for:**
+The Internet Archive Wayback Machine is a digital archive of the World Wide Web. This plugin uses their API to check for existing archived versions of web pages, create new snapshots of pages, and verify the status of archiving jobs.
+
+**What data is sent and when:**
+- **System Status Check**: No personal data is sent. Used to verify if the Wayback Machine service is online.
+- **User Account Validation**: When you configure an API key, your access key and secret key are sent in the Authorization header to validate your account and retrieve usage statistics (available snapshots, daily limits, etc.).
+- **URL Archiving**: URLs from your website content are sent to create new snapshots in the Wayback Machine. This includes both external links found in your content and your own post URLs when auto-archiving is enabled.
+- **Snapshot Status Checks**: Job IDs are sent to check the status of archiving requests.
+- **Existing Snapshot Lookups**: URLs are sent to search for existing archived versions of web pages.
+
+**Service Terms and Privacy Policy:**
+- Terms of Service: https://archive.org/about/terms.php
+- Privacy Policy: https://archive.org/about/privacy.php
+
+= Internet Archive Bot API (iabot-api.archive.org) =
+
+**What the service is and what it is used for:**
+This service checks if web pages are accessible and retrieves final URLs after redirects. It's used to determine if links are broken and need to be replaced with archived versions.
+
+**What data is sent and when:**
+- **Link Accessibility Checks**: URLs from your website content are sent to check if they are accessible and to get the final destination URL after any redirects.
+- **Impersonation Parameter**: A technical parameter (`impersonate=1`) is sent to ensure proper link checking behavior.
+
+**Service Terms and Privacy Policy:**
+- Terms of Service: https://archive.org/about/terms.php
+- Privacy Policy: https://archive.org/about/privacy.php
+
+**Data Retention and Privacy:**
+The Internet Archive is a non-profit organization dedicated to preserving digital content for public access. URLs sent to these services become part of the public archive and may be accessible through the Wayback Machine interface. No personal information beyond the URLs themselves is transmitted to these services.
+
 == Changelog ==
 
 = 1.3.0 =
