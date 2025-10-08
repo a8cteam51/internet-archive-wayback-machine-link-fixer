@@ -21,8 +21,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Setup_Wizard {
 
-	private const OPTION_NAME   = 'iawblf_setup_wizard';
-	private const HAS_COMPLETED = 'iawblf_setup_wizard_completed';
+	private const OPTION_NAME   = 'iawmlf_setup_wizard';
+	private const HAS_COMPLETED = 'iawmlf_setup_wizard_completed';
 	private const PAGE_SLUG     = 'wayback-link-fixer-setup-wizard';
 	private const STEPS         = array(
 		'step-1'   => 'step-1.php',

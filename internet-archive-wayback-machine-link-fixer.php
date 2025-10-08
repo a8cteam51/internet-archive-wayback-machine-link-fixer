@@ -78,5 +78,5 @@ if ( is_wp_error( IAWMLF_MINIMUM_REQUIREMENTS ) ) {
 	add_action( 'plugins_loaded', array( iawmlf_get_plugin_instance(), 'maybe_initialize' ) );
 
 	register_activation_hook( __FILE__, 'iawmlf_activate' );
-	register_uninstall_hook( __FILE__, 'iawmlf_deactivate' );
+	register_uninstall_hook( __FILE__, 'iawmlf_uninstall' );
 }

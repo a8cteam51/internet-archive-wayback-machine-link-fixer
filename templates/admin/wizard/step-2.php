@@ -67,7 +67,7 @@ $iawmlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 			<label for="iawmlf_wizard_scan_existing_content">
 				<?php esc_html_e( 'Scan Existing Content', 'internet-archive-wayback-machine-link-fixer' ); ?>
 			</label>
-			<input type="checkbox" id="iawmlf_is_active" name="iawmlf_wizard_scan_existing_content" id="iawmlf_wizard_scan_existing_content" value="1" <?php checked( Settings::should_scan_existing_posts() ); ?> />
+			<input type="checkbox" name="iawmlf_wizard_scan_existing_content" id="iawmlf_wizard_scan_existing_content" value="1" <?php checked( Settings::should_scan_existing_posts() ); ?> />
 		</div>
 		<p class="description"><?php esc_html_e( 'If enabled, all existing posts of the selected types will be scanned and processed. Please note this process can take significant time (potentially hours or days) depending on the amount of content and number of links.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	</div>

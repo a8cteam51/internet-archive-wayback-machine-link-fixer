@@ -110,7 +110,7 @@ function iawmlf_activate(): void {
  *
  * @return  void
  */
-function iawmlf_deactivate(): void {
+function iawmlf_uninstall(): void {
 	Migrations::down();
 }
 
@@ -391,22 +391,26 @@ function iawmlf_normalize_url( string $url ): string {
 	// URL Encode the url parameters.
 	$url_parts = wp_parse_url( $url );
 
-	// If we have a pathm, encode it.
+	// If we have a path, encode it.
 	if ( isset( $url_parts['path'] ) ) {
-		// Split path by /
-		$path_parts        = explode( '/', $url_parts['path'] );
-		$path_parts        = array_map( 'rawurlencode', $path_parts );
-		$url_parts['path'] = rawurlencode( implode( '/', $path_parts ) );
+		// Decode first to avoid double-encoding, then re-encode
+		$decoded_path = urldecode( $url_parts['path'] );
+		$path_parts   = explode( '/', $decoded_path );
+		$path_parts   = array_map( 'rawurlencode', $path_parts );
+		$url_parts['path'] = implode( '/', $path_parts );
 	}
 
 	// If we have a query, encode it.
 	if ( isset( $url_parts['query'] ) ) {
-		$url_parts['query'] = rawurlencode( $url_parts['query'] );
+		// Decode first to avoid double-encoding, then re-encode
+		$url_parts['query'] = rawurlencode( urldecode( $url_parts['query'] ) );
 	}
 
 	// If we have a fragment, encode it.
 	if ( isset( $url_parts['fragment'] ) ) {
-		$url_parts['fragment'] = str_replace( '%21', '!', rawurlencode( $url_parts['fragment'] ) );
+		// Decode first to avoid double-encoding, then re-encode
+		$decoded_fragment = urldecode( $url_parts['fragment'] );
+		$url_parts['fragment'] = str_replace( '%21', '!', rawurlencode( $decoded_fragment ) );
 	}
 
 	// Rebuild the scheme and host

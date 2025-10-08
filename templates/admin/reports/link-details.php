@@ -4,7 +4,7 @@
  *
  * @since 1.2.0
  *
- * @var Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link $iawmlf_link The link.
+ * @var WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link $iawmlf_link The link.
  * @var \WP_Post[] $iawmlf_posts The posts that contain the link.
  * @var string $iawmlf_back_url The URL to return to the report.
  */
@@ -13,15 +13,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
-use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
 
 // Check if we have any previous links to show.
 $iawmlf_check_count      = count( $iawmlf_link->get_checks() );
 $iawmlf_hide_check_count = $iawmlf_check_count > 10 ? absint( $iawmlf_check_count - 10 ) : 0;
 
 // Generate the title.
-$iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https://' ), '', $iawmlf_link->get_href() ), 55 );
+$iawmlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'http://', 'https://' ), '', $iawmlf_link->get_href() ), 55 );
 ?>
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php echo esc_html( $iawmlf_link_title ); ?></h1>
@@ -138,7 +138,7 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 										<?php else : ?>
 											<tr>
 										<?php endif; ?>
-												<td><?php echo esc_html( \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', esc_attr( $iawmlf_check['date'] ) )->format( iawmlf_get_date_format() ) ); ?></td>
+												<td><?php echo esc_html( \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', esc_attr( $iawmlf_check['date'] ) )->format( wpcomsp_wayback_link_fixer_get_date_format() ) ); ?></td>
 												<?php if ( is_numeric( $iawmlf_check['http_code'] ) ) : ?>
 													<td class="iawmlf-archived__http-code"><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/<?php echo esc_attr( $iawmlf_check['http_code'] ); ?>" target="_blank"><?php echo esc_html( $iawmlf_check['http_code'] ); ?></a></td>
 												<?php else : ?>
@@ -183,14 +183,14 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 															);
 															?>
 														<?php else : ?>
-															<?php echo esc_html( iawmlf_trim_string( $iawmlf_post->post_title, 50 ) ); ?>
+															<?php echo esc_html( wpcomsp_wayback_link_fixer_trim_string( $iawmlf_post->post_title, 50 ) ); ?>
 														<?php endif; ?>
 													</a>
 												</td>
 												<td>
 												<?php
 												echo wp_kses(
-													iawmlf_get_admin_post_type_link( $iawmlf_post->post_type ),
+													wpcomsp_wayback_link_fixer_get_admin_post_type_link( $iawmlf_post->post_type ),
 													array(
 														'a' => array(
 															'href' => array(),

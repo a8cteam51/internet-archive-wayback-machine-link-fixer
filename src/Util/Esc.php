@@ -43,7 +43,11 @@ class Esc {
 				'name'  => array(),
 				'class' => array(),
 			),
-
+			'p' => array(
+				'class' => array(),
+				'id'    => array(),
+				'style' => array(),
+			),
 		);
 	}
 }
