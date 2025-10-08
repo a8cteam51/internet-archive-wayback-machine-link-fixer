@@ -377,7 +377,7 @@ This event scans existing posts for links that haven't been processed yet. It ru
 
 | **Configuration** | **Filter** | **Default** | **Description** |
 |-------------------|------------|-------------|-----------------|
-| Batch size | [`wlf_posts_per_batch`](#wlf_posts_per_batch) | 10 | Number of posts processed per batch |
+| Batch size | [`iawmlf_posts_per_batch`](#iawmlf_posts_per_batch) | 10 | Number of posts processed per batch |
 | Frequency | [`wlf_scan_posts_interval`](#wlf_scan_posts_interval) | 10 minutes | How often to run the scan |
 
 **Settings:**
@@ -463,7 +463,7 @@ This event scans existing posts on the site to find those that either do not hav
 
 | **Configuration** | **Filter** | **Default** | **Description** |
 |-------------------|------------|-------------|-----------------|
-| Posts per batch | [`wlf_posts_per_batch`](#wlf_posts_per_batch) | 10 | Number of posts processed per batch |
+| Posts per batch | [`iawmlf_posts_per_batch`](#iawmlf_posts_per_batch) | 10 | Number of posts processed per batch |
 | Scan interval | [`wlf_scan_posts_interval`](#wlf_scan_posts_interval) | 10 minutes | How often to run the scan |
 
 **Settings:**
@@ -526,55 +526,55 @@ The plugin is designed to be extensible, with a number of hooks and filters avai
 
 These filters allow you to programmatically override admin panel settings. **Filters take precedence over WordPress admin settings.**
 
-#### `wlf_add_own_content_to_wayback_machine`
+#### `iawmlf_add_own_content_to_wayback_machine`
 
 This filter overrides the admin setting that controls whether your own content is added to the Wayback Machine. The default is false.
 
 ```php
-add_filter( 'wlf_add_own_content_to_wayback_machine', function( bool $add_own_content ): bool {
+add_filter( 'iawmlf_add_own_content_to_wayback_machine', function( bool $add_own_content ): bool {
 	return true;
 });
 ```
 
 > Please note when a post is added, a 10 minute delay is added before the post is added to the Wayback Machine. This will prevent the internet archive from blocking the request and creating lots of snapshots with no real changes.
 
-#### `wlf_own_content_post_types`
+#### `iawmlf_own_content_post_types`
 
 This filter overrides the admin setting that controls which post types are allowed to be added to the Wayback Machine. The default is `post` and `page`.
 
 ```php
-add_filter( 'wlf_own_content_post_types', function( array $post_types ): array {
+add_filter( 'iawmlf_own_content_post_types', function( array $post_types ): array {
 	$post_types[] = 'custom_post_type';
 	return $post_types;
 });
 ```
 
-#### `wlf_routinely_update_wayback_machine`
+#### `iawmlf_routinely_update_wayback_machine`
 
 This filter overrides the admin setting that controls whether posts are routinely updated in the Wayback Machine. The default is false.
 
 ```php
-add_filter( 'wlf_routinely_update_wayback_machine', function( bool $routinely_update ): bool {
+add_filter( 'iawmlf_routinely_update_wayback_machine', function( bool $routinely_update ): bool {
 	return true;
 });
 ```
 
-#### `wlf_routinely_update_wayback_machine_interval`
+#### `iawmlf_routinely_update_wayback_machine_interval`
 
 This filter overrides the admin setting that controls how long between each routine update. The default is 14 days. The time is given in seconds.
 
 ```php
-add_filter( 'wlf_routinely_update_wayback_machine_interval', function( int $interval ): int {
+add_filter( 'iawmlf_routinely_update_wayback_machine_interval', function( int $interval ): int {
 	return 7 * \DAY_IN_SECONDS; // 7 days
 });
 ```
 
-#### `wlf_link_exclusions`
+#### `iawmlf_link_exclusions`
 
 This filter enhances the link exclusions defined in admin settings by adding additional exclusions to the link checker.
 
 ```php
-add_filter( 'wlf_link_exclusions', function( array $exclusions ): array {
+add_filter( 'iawmlf_link_exclusions', function( array $exclusions ): array {
    $exclusions[] = 'https://example.com/*';
    return $exclusions;
 });
@@ -586,53 +586,53 @@ add_filter( 'wlf_link_exclusions', function( array $exclusions ): array {
 
 These filters control various aspects of plugin behavior and performance.
 
-#### `wlf_link_checker_timeout`
+#### `iawmlf_link_checker_timeout`
 
 This is used to determine how long we should wait when checking if a link is still valid. The default is 5000ms (5 seconds).
 
 ```php
-add_filter( 'wlf_link_checker_timeout', function( int $timeout ): int {
+add_filter( 'iawmlf_link_checker_timeout', function( int $timeout ): int {
    return 10000; // 10 seconds
 });
 ```
 
-#### `wlf_posts_per_batch`
+#### `iawmlf_posts_per_batch`
 
 This is used to define how many posts should be checked, when the plugin is scanning existing posts.
 
 ```php
-add_filter( 'wlf_posts_per_batch', function( int $posts_per_batch ): int {
+add_filter( 'iawmlf_posts_per_batch', function( int $posts_per_batch ): int {
    return 20;
 });
 ```
 
-##### `wlf_link_check_duration_in_days`
+##### `iawmlf_link_check_duration_in_days`
 
 This is used to define how many days should be between checking if a link is still valid. The default is 7 days.
 
 ```php
-add_filter( 'wlf_link_check_duration_in_days', function( int $days ): int {
+add_filter( 'iawmlf_link_check_duration_in_days', function( int $days ): int {
    return 14; // 14 days
 });
 ```
 
-#### `wlf_valid_http_status_codes`
+#### `iawmlf_valid_http_status_codes`
 
 This return array is used to determine what http status codes are considered valid. The default is `200`, `206` and `429`.
 
 ```php
-add_filter( 'wlf_valid_http_status_codes', function( array $codes ): array {
+add_filter( 'iawmlf_valid_http_status_codes', function( array $codes ): array {
    $codes[] = 301;
    return $codes;
 });
 ```
 
-#### `wlf_failed_count`
+#### `iawmlf_failed_count`
 
 This is used to define how many checks with non valid status codes are encountered before marking a link as broken. The default is 5.
 
 ```php
-add_filter( 'wlf_failed_count', function( int $checks ): int {
+add_filter( 'iawmlf_failed_count', function( int $checks ): int {
    return 3;
 });
 ```
@@ -726,12 +726,12 @@ add_filter( 'wlf_scan_own_posts_per_call', function( int $posts_per_call ): int 
 });
 ```
 
-#### `wlf_show_link_table_debug_data`
+#### `iawmlf_show_link_table_debug_data`
 
 This is used to show additional debug data in the link table. This is for debugging purposes only. The default is false.
 
 ```php
-add_filter( 'wlf_show_link_table_debug_data', function( bool $show_debug ): bool {
+add_filter( 'iawmlf_show_link_table_debug_data', function( bool $show_debug ): bool {
 	return true;
 });
 ```
@@ -764,7 +764,7 @@ These filters allow advanced customization of URLs, timeouts, and client impleme
 
 #### `wlf_is_valid_check`
 
-This filter is used when a url is checked and we are returning if the link is valid or not. The default is to check if the status code is in the `wlf_valid_http_status_codes` array.
+This filter is used when a url is checked and we are returning if the link is valid or not. The default is to check if the status code is in the `iawmlf_valid_http_status_codes` array.
 
 ```php
 add_filter( 'wlf_is_valid_check', function( bool $is_valid, array $check, Link $link ): bool {
@@ -909,12 +909,12 @@ add_filter( 'wlf_create_snapshot_timeout', function( int $timeout ): int {
 });
 ```
 
-#### `wlf_reporting_page_capability`
+#### `iawmlf_reporting_page_capability`
 
 This filter allows you to change the required capability for accessing the reporting page. The default is `manage_options`.
 
 ```php
-add_filter( 'wlf_reporting_page_capability', function( string $capability ): string {
+add_filter( 'iawmlf_reporting_page_capability', function( string $capability ): string {
 	return 'edit_posts'; // Allow editors to access the reporting page
 });
 ```
@@ -937,7 +937,7 @@ class My_Custom_Link_Checker_Client implements Link_Checker_Client {
    ....
 }
 
-add_filter( 'wlf_link_checker_client', function( Link_Checker_Client $client ): Link_Checker_Client {
+add_filter( 'iawmlf_link_checker_client', function( Link_Checker_Client $client ): Link_Checker_Client {
    return new My_Custom_Link_Checker_Client();
 });
 ```
@@ -949,7 +949,7 @@ class My_Custom_Snapshot_Client implements Snapshot_Client {
    ....
 }
 
-add_filter( 'wlf_snapshot_client', function( Snapshot_Client $client ): Snapshot_Client {
+add_filter( 'iawmlf_snapshot_client', function( Snapshot_Client $client ): Snapshot_Client {
    return new My_Custom_Snapshot_Client();
 });
 ```

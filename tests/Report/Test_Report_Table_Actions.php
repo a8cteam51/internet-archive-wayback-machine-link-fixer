@@ -41,7 +41,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		$this->wpdb->query( "TRUNCATE TABLE {$this->wpdb->prefix}actionscheduler_actions" );
 
 		// Clear any wlf_snapshot_client filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 
 		// Clear the link table.
 		$this->wpdb->query( 'TRUNCATE TABLE ' . Settings::get_link_table_name() );
@@ -60,7 +60,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		$service = $this->createMock( Snapshot_Client::class );
 		$service->method( 'get_snapshot_status' )->willReturn( $response );
 
-		add_filter( 'wlf_snapshot_client', fn() => $service );
+		add_filter( 'iawmlf_snapshot_client', fn() => $service );
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 
 		// Set the mock client
 		add_filter(
-			'wlf_snapshot_client',
+			'iawmlf_snapshot_client',
 			function () use ( $client ) {
 				return $client;
 			}
@@ -139,7 +139,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		$this->assertEquals(4, $calls);
 
 		// Remove the filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 
 
 	}
@@ -173,7 +173,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 
 		// Set the mock client
 		add_filter(
-			'wlf_snapshot_client',
+			'iawmlf_snapshot_client',
 			function () use ( $client ) {
 				return $client;
 			}
@@ -193,7 +193,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		$notices = $table->get_notices();
 
 		// Remove the filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 
 		// We should have only 1 notice.
 		$this->assertCount( 1, $notices );

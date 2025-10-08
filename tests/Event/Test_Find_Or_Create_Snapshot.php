@@ -115,7 +115,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 
 		// Set the mock client
 		add_filter(
-			'wlf_snapshot_client',
+			'iawmlf_snapshot_client',
 			function () use ( $client ) {
 				return $client;
 			}
@@ -148,7 +148,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		$this->assertEquals( 'https://web.archive.org/web/wlf_glynn/https://example.com', $link->get_archived_href() );
 
 		// Remove the filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 	}
 
 	/**
@@ -165,7 +165,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 
 		// Set the mock client
 		add_filter(
-			'wlf_snapshot_client',
+			'iawmlf_snapshot_client',
 			function () use ( $client ) {
 				return $client;
 			}
@@ -198,6 +198,6 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		$this->assertCount( 1, $results );
 
 		// Remove the filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 	}
 }

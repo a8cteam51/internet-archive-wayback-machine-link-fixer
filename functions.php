@@ -137,7 +137,7 @@ function wpcomsp_wayback_link_fixer_escape_http_status_code( $code ): ?int {
  * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client
  */
 function wpcomsp_wayback_link_fixer_get_snapshot_client(): Snapshot_Client {
-	return apply_filters( 'wlf_snapshot_client', new HTTP_Snapshot_Client() );
+	return apply_filters( 'iawmlf_snapshot_client', new HTTP_Snapshot_Client() );
 }
 
 /**
@@ -148,7 +148,7 @@ function wpcomsp_wayback_link_fixer_get_snapshot_client(): Snapshot_Client {
  * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client
  */
 function wpcomsp_wayback_link_fixer_get_link_checker_client(): Link_Checker_Client {
-	return apply_filters( 'wlf_link_checker_client', new HTTP_Link_Checker_Client() );
+	return apply_filters( 'iawmlf_link_checker_client', new HTTP_Link_Checker_Client() );
 }
 
 /**
@@ -159,7 +159,7 @@ function wpcomsp_wayback_link_fixer_get_link_checker_client(): Link_Checker_Clie
  * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\System_Client
  */
 function wpcomsp_wayback_link_fixer_get_system_client(): \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\System_Client {
-	return apply_filters( 'wlf_system_client', new \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_System_Client() );
+	return apply_filters( 'iawmlf_system_client', new \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_System_Client() );
 }
 
 /**
@@ -482,7 +482,7 @@ function wpcomsp_wayback_link_fixer_is_archive_api_online( bool $force = false )
 	// Check if the system client is online.
 	$online = wpcomsp_wayback_link_fixer_get_system_client()->is_online();
 	// Set the transient
-	$duration = apply_filters( 'wlf_archive_api_status_duration', \HOUR_IN_SECONDS );
-	set_transient( 'wlf_archive_api_online', $online, $duration );
+	$duration = apply_filters( 'iawmlf_archive_api_status_duration', \HOUR_IN_SECONDS );
+	set_transient( 'iawmlf_archive_api_online', $online, $duration );
 	return (bool) $online;
 }

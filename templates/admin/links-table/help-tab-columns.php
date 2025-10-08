@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
-$wlf_failed_count    = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_failed_count();
+$iawmlf_failed_count    = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_failed_count();
 $wlf_check_frequency = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_link_check_duration();
 ?>
 
@@ -31,7 +31,7 @@ $wlf_check_frequency = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Setting
 			sprintf(
 				// translators: %d is the number of consecutive failed checks required to mark a link as broken.
 				__( 'Indicates whether the live link is active or broken. A link is marked as broken after %d consecutive failed checks.', 'internet-archive-wayback-machine-link-fixer' ),
-				$wlf_failed_count
+				$iawmlf_failed_count
 			)
 		);
 		?>

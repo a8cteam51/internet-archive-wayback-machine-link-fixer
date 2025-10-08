@@ -24,7 +24,7 @@ class Test_Link extends \WP_UnitTestCase {
 	// Clear all custom actions on tear down.
 	public function tear_down(): void {
 		parent::tear_down();
-		remove_all_filters( 'wlf_failed_count' );
+		remove_all_filters( 'iawmlf_failed_count' );
 		remove_all_filters( 'wlf_is_valid_check' );
 	}
 
@@ -164,7 +164,7 @@ class Test_Link extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_check_if_link_is_valid(): void {
-		add_filter( 'wlf_failed_count', fn () => 3 );
+		add_filter( 'iawmlf_failed_count', fn () => 3 );
 		$link = new Link( 'https://example.com' );
 
 		// By default the link should be valid.
@@ -181,12 +181,12 @@ class Test_Link extends \WP_UnitTestCase {
 	/**
 	 * @testdox It should be possible to use a filter to change how many failed checks are needed to be considered invalid.
 	 *
-	 * @hook wlf_failed_count
+	 * @hook iawmlf_failed_count
 	 *
 	 * @return void
 	 */
 	public function test_can_use_filter_to_change_failed_count(): void {
-		add_filter( 'wlf_failed_count', fn () => 2 );
+		add_filter( 'iawmlf_failed_count', fn () => 2 );
 
 		$link = new Link( 'https://example.com' );
 
@@ -200,7 +200,7 @@ class Test_Link extends \WP_UnitTestCase {
 		$this->assertFalse( $link->is_valid() );
 
 		// Clear the filter.
-		remove_all_filters( 'wlf_failed_count' );
+		remove_all_filters( 'iawmlf_failed_count' );
 	}
 
 	/**
@@ -211,7 +211,7 @@ class Test_Link extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_use_filter_to_override_is_valid(): void {
-		add_filter( 'wlf_failed_count', fn () => 3 );
+		add_filter( 'iawmlf_failed_count', fn () => 3 );
 
 		add_filter(
 			'wlf_is_valid_check',
@@ -244,7 +244,7 @@ class Test_Link extends \WP_UnitTestCase {
 
 		// Clear the filter.
 		remove_all_filters( 'wlf_is_valid_check' );
-		remove_all_filters( 'wlf_failed_count' );
+		remove_all_filters( 'iawmlf_failed_count' );
 	}
 
 	/**
@@ -364,7 +364,7 @@ class Test_Link extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_less_checks_than_min_failures(): void {
-		add_filter( 'wlf_failed_count', fn () => 3 );
+		add_filter( 'iawmlf_failed_count', fn () => 3 );
 
 		$link = new Link( 'https://example.com' );
 

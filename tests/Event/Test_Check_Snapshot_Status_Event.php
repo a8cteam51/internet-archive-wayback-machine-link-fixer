@@ -40,7 +40,7 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 		$this->wpdb->query( "TRUNCATE TABLE {$this->wpdb->prefix}actionscheduler_actions" );
 
 		// Clear any wlf_snapshot_client filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 
 		// Clear the link table.
 		$this->wpdb->query( 'TRUNCATE TABLE ' . Settings::get_link_table_name() );
@@ -59,7 +59,7 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 		$service = $this->createMock( Snapshot_Client::class );
 		$service->method( 'get_snapshot_status' )->willReturn( $response );
 
-		add_filter( 'wlf_snapshot_client', fn() => $service );
+		add_filter( 'iawmlf_snapshot_client', fn() => $service );
 	}
 
 	/**

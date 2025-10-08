@@ -11,7 +11,7 @@
  * Text Domain: link-fixer-prefix-patch
  * Domain Path: /languages
  */
-
+return;
 // Handle legacy actions.
 add_action(
 	'wlf_create_new_snapshot',
@@ -166,56 +166,56 @@ add_filter(
 add_filter(
 	'iawmlf_link_checker_timeout',
 	function ( $timeout ) {
-		return apply_filters( 'wlf_link_checker_timeout', $timeout );
+		return apply_filters( 'iawmlf_link_checker_timeout', $timeout );
 	}
 );
 
 add_filter(
 	'iawmlf_link_exclusions',
 	function ( $links ) {
-		return apply_filters( 'wlf_link_exclusions', $links );
+		return apply_filters( 'iawmlf_link_exclusions', $links );
 	}
 );
 
 add_filter(
 	'iawmlf_posts_per_batch',
 	function ( $per_batch ) {
-		return apply_filters( 'wlf_posts_per_batch', $per_batch );
+		return apply_filters( 'iawmlf_posts_per_batch', $per_batch );
 	}
 );
 
 add_filter(
 	'iawmlf_link_check_duration_in_days',
 	function ( $days ) {
-		return apply_filters( 'wlf_link_check_duration_in_days', $days );
+		return apply_filters( 'iawmlf_link_check_duration_in_days', $days );
 	}
 );
 
 add_filter(
 	'iawmlf_valid_http_status_codes',
 	function ( $codes ) {
-		return apply_filters( 'wlf_valid_http_status_codes', $codes );
+		return apply_filters( 'iawmlf_valid_http_status_codes', $codes );
 	}
 );
 
 add_filter(
 	'iawmlf_failed_count',
 	function ( $count ) {
-		return apply_filters( 'wlf_failed_count', $count );
+		return apply_filters( 'iawmlf_failed_count', $count );
 	}
 );
 
 add_filter(
 	'iawmlf_add_own_content_to_wayback_machine',
 	function ( $allow ) {
-		return apply_filters( 'wlf_add_own_content_to_wayback_machine', $allow );
+		return apply_filters( 'iawmlf_add_own_content_to_wayback_machine', $allow );
 	}
 );
 
 add_filter(
 	'iawmlf_own_content_post_types',
 	function ( $post_types ) {
-		return apply_filters( 'wlf_own_content_post_types', $post_types );
+		return apply_filters( 'iawmlf_own_content_post_types', $post_types );
 	}
 );
 
@@ -229,7 +229,7 @@ add_filter(
 add_filter(
 	'iawmlf_show_link_table_debug_data',
 	function ( $show ) {
-		return apply_filters( 'wlf_show_link_table_debug_data', $show );
+		return apply_filters( 'iawmlf_show_link_table_debug_data', $show );
 	}
 );
 
@@ -317,21 +317,21 @@ add_filter(
 add_filter(
 	'iawmlf_routinely_update_wayback_machine',
 	function ( $allow ) {
-		return apply_filters( 'wlf_routinely_update_wayback_machine', $allow );
+		return apply_filters( 'iawmlf_routinely_update_wayback_machine', $allow );
 	}
 );
 
 add_filter(
 	'iawmlf_routinely_update_wayback_machine_interval',
 	function ( $interval ) {
-		return apply_filters( 'wlf_routinely_update_wayback_machine_interval', $interval );
+		return apply_filters( 'iawmlf_routinely_update_wayback_machine_interval', $interval );
 	}
 );
 
 add_filter(
 	'iawmlf_reporting_page_capability',
 	function ( $capability ) {
-		return apply_filters( 'wlf_reporting_page_capability', $capability );
+		return apply_filters( 'iawmlf_reporting_page_capability', $capability );
 	}
 );
 
@@ -732,7 +732,7 @@ function link_fixer_prefix_patch_get_settings_keys(): array {
 		't51_wlf_post_types',
 		't51_wlf_migration_log',
 		't51_wlf_drop_tables_uninstall',
-		't51_wlf_link_exclusions',
+		't51_iawmlf_link_exclusions',
 		't51_wlf_scan_existing_posts',
 		't51_wlf_archive_api_secret',
 		't51_wlf_archive_api_access',
@@ -741,8 +741,8 @@ function link_fixer_prefix_patch_get_settings_keys(): array {
 		't51_wlf_archive_api_creds_valid',
 		't51_wlf_allow_own_content_submissions',
 		't51_wlf_allowed_own_content_post_types',
-		't51_wlf_routinely_update_wayback_machine',
-		't51_wlf_routinely_update_wayback_machine_interval',
+		't51_iawmlf_routinely_update_wayback_machine',
+		't51_iawmlf_routinely_update_wayback_machine_interval',
 	);
 }
 
