@@ -33,7 +33,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		// Clear all filters.
 		\remove_all_filters( 'iawmlf_add_own_content_to_wayback_machine' );
 		\remove_all_filters( 'iawmlf_own_content_post_types' );
-		\remove_all_filters( 'wlf_own_content_allow_post' );
+		\remove_all_filters( 'iawmlf_own_content_allow_post' );
 		\remove_all_filters( 'iawmlf_routinely_update_wayback_machine' );
 		\remove_all_filters( 'iawmlf_routinely_update_wayback_machine_interval' );
 
@@ -62,7 +62,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 	 */
 	public function test_dont_allow_own_posts_to_action_scheduler(): void {
 		// Dont allow scanning own posts.
-		\add_filter( 'wlf_own_content_allow_post', '__return_false' );
+		\add_filter( 'iawmlf_own_content_allow_post', '__return_false' );
 		// Allow scanning at defined intervals.
 		\add_filter( 'iawmlf_routinely_update_wayback_machine', '__return_true' );
 
@@ -81,7 +81,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 	 */
 	public function test_dont_allow_own_posts_to_action_scheduler_via_intervals(): void {
 		// Allow scanning own posts.
-		\add_filter( 'wlf_own_content_allow_post', '__return_true' );
+		\add_filter( 'iawmlf_own_content_allow_post', '__return_true' );
 		// Dont allow scanning at defined intervals.
 		\add_filter( 'iawmlf_routinely_update_wayback_machine', '__return_false' );
 
@@ -101,7 +101,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 	public function test_set_allowed_post_types(): void {
 
 		// Allow with the filters.
-		\add_filter( 'wlf_own_content_allow_post', '__return_true' );
+		\add_filter( 'iawmlf_own_content_allow_post', '__return_true' );
 		\add_filter( 'iawmlf_routinely_update_wayback_machine', '__return_true' );
 		\add_filter( 'wlf_scan_existing_posts', '__return_false' );
 
@@ -138,7 +138,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 	 */
 	public function test_only_get_posts_that_have_not_been_checked_in_last_24_hours(): void {
 		\add_filter( 'iawmlf_routinely_update_wayback_machine', '__return_true' );
-		\add_filter( 'wlf_own_content_allow_post', '__return_false' );
+		\add_filter( 'iawmlf_own_content_allow_post', '__return_false' );
 		$backup_settings = get_option( Settings::PROCESS_LINKS );
 		update_option( Settings::PROCESS_LINKS, false );
 
@@ -156,7 +156,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		update_post_meta( $post_id_2, Settings::OWN_LINK_LAST_PROCESSED, $time_2 );
 
 		// Reset the filters and allow adding own posts.
-		\add_filter( 'wlf_own_content_allow_post', '__return_true' );
+		\add_filter( 'iawmlf_own_content_allow_post', '__return_true' );
 		update_option( Settings::PROCESS_LINKS, $backup_settings );
 
 		// Run the event.

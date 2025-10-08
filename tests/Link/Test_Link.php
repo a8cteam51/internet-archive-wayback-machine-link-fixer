@@ -25,7 +25,7 @@ class Test_Link extends \WP_UnitTestCase {
 	public function tear_down(): void {
 		parent::tear_down();
 		remove_all_filters( 'iawmlf_failed_count' );
-		remove_all_filters( 'wlf_is_valid_check' );
+		remove_all_filters( 'iawmlf_is_valid_check' );
 	}
 
 	/**
@@ -206,7 +206,7 @@ class Test_Link extends \WP_UnitTestCase {
 	/**
 	 * @testdox It should be possible to override the is_valid logic using a filter.
 	 *
-	 * @hook wlf_is_valid_check
+	 * @hook iawmlf_is_valid_check
 	 *
 	 * @return void
 	 */
@@ -214,7 +214,7 @@ class Test_Link extends \WP_UnitTestCase {
 		add_filter( 'iawmlf_failed_count', fn () => 3 );
 
 		add_filter(
-			'wlf_is_valid_check',
+			'iawmlf_is_valid_check',
 			/**
 			 * @param boolean                           $is_valid If the link is valid.
 			 * @param array{date:string, http_code:int} $check    The check.
@@ -243,7 +243,7 @@ class Test_Link extends \WP_UnitTestCase {
 		$this->assertFalse( $link->is_valid() );
 
 		// Clear the filter.
-		remove_all_filters( 'wlf_is_valid_check' );
+		remove_all_filters( 'iawmlf_is_valid_check' );
 		remove_all_filters( 'iawmlf_failed_count' );
 	}
 

@@ -299,7 +299,7 @@ This process is retried automatically if it fails, with up to 3 attempts by defa
 
 | **Configuration** | **Filter/Setting** | **Default** | **Description** |
 |-------------------|-------------------|-------------|-----------------|
-| Max attempts | [`wlf_create_new_snapshot_attempts`](#wlf_create_new_snapshot_attempts) | 3 | Number of retry attempts |
+| Max attempts | [`iawmlf_create_new_snapshot_attempts`](#iawmlf_create_new_snapshot_attempts) | 3 | Number of retry attempts |
 
 ---
 
@@ -327,8 +327,8 @@ This process is retried automatically until the snapshot is complete or the maxi
 
 | **Configuration** | **Filter/Setting** | **Default** | **Description** |
 |-------------------|-------------------|-------------|-----------------|
-| Max attempts | [`wlf_check_snapshot_status_attempts`](#wlf_check_snapshot_status_attempts) | 3 | Number of retry attempts |
-| Retry interval | [`wlf_check_snapshot_status_interval`](#wlf_check_snapshot_status_interval) | 5 minutes | Delay between status checks |
+| Max attempts | [`iawmlf_check_snapshot_status_attempts`](#iawmlf_check_snapshot_status_attempts) | 3 | Number of retry attempts |
+| Retry interval | [`iawmlf_check_snapshot_status_interval`](#iawmlf_check_snapshot_status_interval) | 5 minutes | Delay between status checks |
 
 ---
 
@@ -353,7 +353,7 @@ This process is retried automatically with up to 3 attempts by default. Each ret
 
 | **Configuration** | **Filter/Setting** | **Default** | **Description** |
 |-------------------|-------------------|-------------|-----------------|
-| Max attempts | [`wlf_update_archive_url_attempts`](#wlf_update_archive_url_attempts) | 3 | Number of retry attempts |
+| Max attempts | [`iawmlf_update_archive_url_attempts`](#iawmlf_update_archive_url_attempts) | 3 | Number of retry attempts |
 
 ---
 
@@ -378,7 +378,7 @@ This event scans existing posts for links that haven't been processed yet. It ru
 | **Configuration** | **Filter** | **Default** | **Description** |
 |-------------------|------------|-------------|-----------------|
 | Batch size | [`iawmlf_posts_per_batch`](#iawmlf_posts_per_batch) | 10 | Number of posts processed per batch |
-| Frequency | [`wlf_scan_posts_interval`](#wlf_scan_posts_interval) | 10 minutes | How often to run the scan |
+| Frequency | [`iawmlf_scan_posts_interval`](#iawmlf_scan_posts_interval) | 10 minutes | How often to run the scan |
 
 **Settings:**
 
@@ -438,8 +438,8 @@ This event is called by the `Link_Access_Validator_Event` to check the status of
 
 | **Configuration** | **Filter** | **Default** | **Description** |
 |-------------------|------------|-------------|-----------------|
-| Max attempts | [`wlf_check_validator_status_attempts`](#wlf_check_validator_status_attempts) | 3 | Maximum number of retry attempts |
-| Retry interval | [`wlf_check_validator_status_interval`](#wlf_check_validator_status_interval) | 2 minutes | Delay between status checks |
+| Max attempts | [`iawmlf_check_validator_status_attempts`](#iawmlf_check_validator_status_attempts) | 3 | Maximum number of retry attempts |
+| Retry interval | [`iawmlf_check_validator_status_interval`](#iawmlf_check_validator_status_interval) | 2 minutes | Delay between status checks |
 
 ---
 
@@ -464,7 +464,7 @@ This event scans existing posts on the site to find those that either do not hav
 | **Configuration** | **Filter** | **Default** | **Description** |
 |-------------------|------------|-------------|-----------------|
 | Posts per batch | [`iawmlf_posts_per_batch`](#iawmlf_posts_per_batch) | 10 | Number of posts processed per batch |
-| Scan interval | [`wlf_scan_posts_interval`](#wlf_scan_posts_interval) | 10 minutes | How often to run the scan |
+| Scan interval | [`iawmlf_scan_posts_interval`](#iawmlf_scan_posts_interval) | 10 minutes | How often to run the scan |
 
 **Settings:**
 
@@ -637,91 +637,91 @@ add_filter( 'iawmlf_failed_count', function( int $checks ): int {
 });
 ```
 
-#### `wlf_create_new_snapshot_attempts`
+#### `iawmlf_create_new_snapshot_attempts`
 
 This is used to define how many times we should attempt to create a new snapshot. The default is 3.
 
 ```php
-add_filter( 'wlf_create_new_snapshot_attempts', function( int $attempts ): int {
+add_filter( 'iawmlf_create_new_snapshot_attempts', function( int $attempts ): int {
    return 5;
 });
 ```
-#### `wlf_check_snapshot_status_attempts`
+#### `iawmlf_check_snapshot_status_attempts`
 
 This is used to define how many times we should attempt to check the status of a snapshot. The default is 3.
 
 ```php
-add_filter( 'wlf_check_snapshot_status_attempts', function( int $attempts ): int {
+add_filter( 'iawmlf_check_snapshot_status_attempts', function( int $attempts ): int {
    return 5;
 });
 ```
 
-#### `wlf_check_snapshot_status_interval`
+#### `iawmlf_check_snapshot_status_interval`
 
 This is used to define how long we should wait between checking the status of a snapshot. The default is 300 seconds (5 minutes).
 
 ```php
-add_filter( 'wlf_check_snapshot_status_interval', function( int $interval ): int {
+add_filter( 'iawmlf_check_snapshot_status_interval', function( int $interval ): int {
    return 10 * \MINUTE_IN_SECONDS; // 10 minutes
 });
 ```
 
-#### `wlf_update_archive_url_attempts`
+#### `iawmlf_update_archive_url_attempts`
 
 This is used to define how many times we should attempt to update the archive URL. The default is 3.
 
 ```php
-add_filter( 'wlf_update_archive_url_attempts', function( int $attempts ): int {
+add_filter( 'iawmlf_update_archive_url_attempts', function( int $attempts ): int {
    return 5;
 });
 ```
 
-#### `wlf_scan_posts_interval`
+#### `iawmlf_scan_posts_interval`
 
 This is used to define how often we should check for posts which have not been scanned. The default is 10 minutes.
 
 ```php
-add_filter( 'wlf_scan_posts_interval', function( int $interval ): int {
+add_filter( 'iawmlf_scan_posts_interval', function( int $interval ): int {
    return 5 * \MINUTE_IN_SECONDS; // 5 minutes
 });
 ```
 
-#### `wlf_check_validator_status_interval`
+#### `iawmlf_check_validator_status_interval`
 
 This is used to define how often we should check if the validator is still running. The default is 2 minutes.
 
 ```php
-add_filter( 'wlf_check_validator_status_interval', function( int $interval ): int {
+add_filter( 'iawmlf_check_validator_status_interval', function( int $interval ): int {
 	return 1 * \MINUTE_IN_SECONDS; // 1 minute
 });
 ```
 
-#### `wlf_check_validator_status_attempts`
+#### `iawmlf_check_validator_status_attempts`
 
 This is used to define how many times we should attempt to check if the validator is still running. The default is 3.
 
 ```php
-add_filter( 'wlf_check_validator_status_attempts', function( int $attempts ): int {
+add_filter( 'iawmlf_check_validator_status_attempts', function( int $attempts ): int {
 	return 5;
 });
 ```
 
-#### `wlf_scan_own_posts_event_interval`
+#### `iawmlf_scan_own_posts_event_interval`
 
 This is used to define how often the scan own posts event should run. The default is 15 minutes.
 
 ```php
-add_filter( 'wlf_scan_own_posts_event_interval', function( int $interval ): int {
+add_filter( 'iawmlf_scan_own_posts_event_interval', function( int $interval ): int {
 	return 30 * \MINUTE_IN_SECONDS; // 30 minutes
 });
 ```
 
-#### `wlf_scan_own_posts_per_call`
+#### `iawmlf_scan_own_posts_per_call`
 
 This is used to define how many posts should be processed per call when scanning own posts. The default is 10.
 
 ```php
-add_filter( 'wlf_scan_own_posts_per_call', function( int $posts_per_call ): int {
+add_filter( 'iawmlf_scan_own_posts_per_call', function( int $posts_per_call ): int {
 	return 20;
 });
 ```
@@ -736,22 +736,22 @@ add_filter( 'iawmlf_show_link_table_debug_data', function( bool $show_debug ): b
 });
 ```
 
-#### `wlf_dashboard_link_count`
+#### `iawmlf_dashboard_link_count`
 
 This is used to define how many links are shown in the admin dashboard panels. The default is 10.
 
 ```php
-add_filter( 'wlf_dashboard_link_count', function( int $link_count ): int {
+add_filter( 'iawmlf_dashboard_link_count', function( int $link_count ): int {
 	return 15; // Show 15 links instead of 10
 });
 ```
 
-#### `wlf_menu_icon_base64`
+#### `iawmlf_menu_icon_base64`
 
 This is used to override the base64 encoded PNG for the admin menu item icon. This allows you to customize the plugin's menu icon.
 
 ```php
-add_filter( 'wlf_menu_icon_base64', function( string $icon ): string {
+add_filter( 'iawmlf_menu_icon_base64', function( string $icon ): string {
 	return 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='; // Your custom base64 icon
 });
 ```
@@ -762,12 +762,12 @@ add_filter( 'wlf_menu_icon_base64', function( string $icon ): string {
 
 These filters allow advanced customization of URLs, timeouts, and client implementations.
 
-#### `wlf_is_valid_check`
+#### `iawmlf_is_valid_check`
 
 This filter is used when a url is checked and we are returning if the link is valid or not. The default is to check if the status code is in the `iawmlf_valid_http_status_codes` array.
 
 ```php
-add_filter( 'wlf_is_valid_check', function( bool $is_valid, array $check, Link $link ): bool {
+add_filter( 'iawmlf_is_valid_check', function( bool $is_valid, array $check, Link $link ): bool {
    // If the link is from foo.com and the status code is 301 or 302, treate as valid
    if ( strpos( $link->get_href, 'foo.com' ) !== false && in_array( $check['status_code'], [ 301, 302 ] ) ) {
 	  return true;
@@ -778,12 +778,12 @@ add_filter( 'wlf_is_valid_check', function( bool $is_valid, array $check, Link $
 > The `$check` array contains the following keys: `status_code (string)`, `date (Y-m-d H:i:s)`.
 > For all public methods of the `Link` model, see the codebase (src/Link/Link.php)
 
-#### `wlf_exclude_link_from_post`
+#### `iawmlf_exclude_link_from_post`
 
 This allows a link to be excluded from the list of links generated for a post. If a link is excluded, it will not be checked or have its link replaced when viewing the post.
 
 ```php
-add_filter( 'wlf_exclude_link_from_post', function( bool $exclude, Link $link, int $post_id ): bool {
+add_filter( 'iawmlf_exclude_link_from_post', function( bool $exclude, Link $link, int $post_id ): bool {
 	if ( strpos( $link->get_href(), 'example.com' ) !== false ) {
 	  return true;
 	}
@@ -793,12 +793,12 @@ add_filter( 'wlf_exclude_link_from_post', function( bool $exclude, Link $link, i
 
 > Please note if a link is already being excluded, this is likely due to the site blocking any uptime checking bots and allowing these links to be checked will likely result in false positives.
 
-#### `wlf_own_content_allow_post`
+#### `iawmlf_own_content_allow_post`
 
 This filter allows a final decision to be made on if a post should be added to the Wayback Machine. The default is to allow all posts.
 
 ```php
-add_filter( 'wlf_own_content_allow_post', function( bool $allow, int $post_id ): bool {
+add_filter( 'iawmlf_own_content_allow_post', function( bool $allow, int $post_id ): bool {
 	if ( get_post_meta( $post_id, 'do_not_archive', true ) ) {
 		return false;
 	}
@@ -806,14 +806,14 @@ add_filter( 'wlf_own_content_allow_post', function( bool $allow, int $post_id ):
 });
 ```
 
-#### `wlf_link_checker_url_params`
+#### `iawmlf_link_checker_url_params`
 
 This is the array of parameters which are passed to the `wp_safe_remote_get` function when checking if a link is still valid.
 
 > Please note url=https://the-url-to-check.com should always passed.
 
 ```php
-add_filter( 'wlf_link_checker_url_params', function( array $params ): array {
+add_filter( 'iawmlf_link_checker_url_params', function( array $params ): array {
    $params['skip_cache'] = 10; // Skip the IA cache (5 mins by default)
    return $params; 
 });
@@ -827,84 +827,84 @@ to impersonate Chrome 110 and potentially avoid TLS fingerprinting blockers.
 * `kip_wbm_blocker=1`: The service blocks Wayback Machine URLs by default. Use this parameter to skip it
 * `user_agent=<str>`: Use a custom `user-agent` HTTP header
 
-#### `wlf_link_checker_url_base`
+#### `iawmlf_link_checker_url_base`
 
 This is the base url of the link checker and doesnt really need changing unless you are running tests or your own custom endpoint for addtional caching.
 
 ```php
-add_filter( 'wlf_link_checker_url_base', function( string $url ): string {
+add_filter( 'iawmlf_link_checker_url_base', function( string $url ): string {
    return 'https://my-custom-link-checker.com';
 });
 ```
 
-#### `wlf_find_snapshot_base_url`
+#### `iawmlf_find_snapshot_base_url`
 
 This is the url which is used when looking for a snapshot of a link. This should not need changing unless you are running tests or have your own custom endpoint.
 
 ```php
-add_filter( 'wlf_find_snapshot_base_url', function( string $url ): string {
+add_filter( 'iawmlf_find_snapshot_base_url', function( string $url ): string {
 	   return 'https://my-custom-snapshot-finder.com';
 });
 ```
 
 > Please note these only apply when using the default `Link_Checker_Client` class.
 
-#### `wlf_get_latest_snapshot_url`
+#### `iawmlf_get_latest_snapshot_url`
 
 This is the url which is called to get the latest snapshot of a link.
 
 ```php
-add_filter( 'wlf_get_latest_snapshot_url', function( string $base_url, string $url ): string {
+add_filter( 'iawmlf_get_latest_snapshot_url', function( string $base_url, string $url ): string {
 	return sprintf( '%s?url=%s', $base_url, urlencode( $url ) );
 });
 ```
 
-#### `wlf_get_closest_snapshot_url`
+#### `iawmlf_get_closest_snapshot_url`
 
 This is the url which is called to get the snapshot closest to a defined date.
 
 ```php
-add_filter( 'wlf_get_closest_snapshot_url', function( string $base_url, string $url, DateTime $date ): string {
+add_filter( 'iawmlf_get_closest_snapshot_url', function( string $base_url, string $url, DateTime $date ): string {
 	return sprintf( '%s?url=%s&timestamp=%s', $base_url, urlencode( $url ), $date->getTimestamp() );
 });
 ```
 
-#### `wlf_get_latest_snapshot_timeout`
+#### `iawmlf_get_latest_snapshot_timeout`
 
 This is used to set the timeout for getting the latest snapshot of a link. The default is 10 seconds.
 
 ```php
-add_filter( 'wlf_get_latest_snapshot_timeout', function( int $timeout ): int {
+add_filter( 'iawmlf_get_latest_snapshot_timeout', function( int $timeout ): int {
 	return 30; // 30 seconds
 });
 ```
 
-#### `wlf_get_closest_snapshot_timeout`
+#### `iawmlf_get_closest_snapshot_timeout`
 
 This is used to set the timeout for getting the closest snapshot to a defined date. The default is 10 seconds.
 
 ```php
-add_filter( 'wlf_get_closest_snapshot_timeout', function( int $timeout ): int {
+add_filter( 'iawmlf_get_closest_snapshot_timeout', function( int $timeout ): int {
 	return 30; // 30 seconds
 });
 ```
 
-#### `wlf_create_snapshot_url`
+#### `iawmlf_create_snapshot_url`
 
 This is the url which is used when creating a new snapshot. This should not need changing unless you are running tests or have your own custom endpoint.
 
 ```php
-add_filter( 'wlf_create_snapshot_url', function( string $url ): string {
+add_filter( 'iawmlf_create_snapshot_url', function( string $url ): string {
 	return 'https://my-custom-snapshot-creator.com';
 });
 ```
 
-#### `wlf_create_snapshot_timeout`
+#### `iawmlf_create_snapshot_timeout`
 
 This is used to set the timeout for creating a new snapshot. The default is 1000 seconds (16.7 minutes).
 
 ```php
-add_filter( 'wlf_create_snapshot_timeout', function( int $timeout ): int {
+add_filter( 'iawmlf_create_snapshot_timeout', function( int $timeout ): int {
 	return 2000; // 33+ minutes
 });
 ```

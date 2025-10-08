@@ -75,7 +75,7 @@ class Scan_Own_Posts_Event {
 		}
 
 		// Get the delay of the event.
-		$interval = absint( apply_filters( 'wlf_scan_own_posts_event_interval', 15 * \MINUTE_IN_SECONDS ) );
+		$interval = absint( apply_filters( 'iawmlf_scan_own_posts_event_interval', 15 * \MINUTE_IN_SECONDS ) );
 
 		// If we have 0 interval, add as async action.
 		if ( 0 === $interval ) {
@@ -101,7 +101,7 @@ class Scan_Own_Posts_Event {
 			: $allowed_delay * DAY_IN_SECONDS;
 
 		$allowed_post_types = Settings::own_link_allowed_post_types();
-		$posts_per_call     = absint( apply_filters( 'wlf_scan_own_posts_per_call', 10 ) );
+		$posts_per_call     = absint( apply_filters( 'iawmlf_scan_own_posts_per_call', 10 ) );
 
 		$args = array(
 			'posts_per_page' => $posts_per_call,

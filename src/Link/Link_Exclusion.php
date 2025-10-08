@@ -58,7 +58,7 @@ class Link_Exclusion {
 	 */
 	public function is_excluded( Link $link, ?int $post_id = null ): bool {
 		return null !== $post_id
-			? apply_filters( 'wlf_exclude_link_from_post', $this->is_global_excluded( $link ), $link, $post_id )
+			? apply_filters( 'iawmlf_exclude_link_from_post', $this->is_global_excluded( $link ), $link, $post_id )
 			: $this->is_global_excluded( $link );
 	}
 

@@ -75,8 +75,8 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 		$url_params = wp_parse_args( $additional_params, $url_params );
 
 		$query_url = add_query_arg(
-			apply_filters( 'wlf_link_checker_url_params', $url_params ),
-			apply_filters( 'wlf_link_checker_url_base', 'https://iabot-api.archive.org/livewebcheck' )
+			apply_filters( 'iawmlf_link_checker_url_params', $url_params ),
+			apply_filters( 'iawmlf_link_checker_url_base', 'https://iabot-api.archive.org/livewebcheck' )
 		);
 
 		$headers = array(

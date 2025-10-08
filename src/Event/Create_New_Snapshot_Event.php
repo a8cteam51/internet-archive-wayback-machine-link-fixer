@@ -55,7 +55,7 @@ class Create_New_Snapshot_Event {
 	public function setup(): void {
 		$this->link_repository = new Link_Repository();
 		$this->wayback_machine = new Wayback_Machine_Service();
-		$this->attempt         = apply_filters( 'wlf_create_new_snapshot_attempts', 3 );
+		$this->attempt         = apply_filters( 'iawmlf_create_new_snapshot_attempts', 3 );
 	}
 
 	/**

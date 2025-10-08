@@ -86,7 +86,7 @@ class Scan_Posts_Event {
 		}
 
 		// Get the delay of the event.
-		$interval = absint( apply_filters( 'wlf_scan_posts_interval', 10 * \MINUTE_IN_SECONDS ) );
+		$interval = absint( apply_filters( 'iawmlf_scan_posts_interval', 10 * \MINUTE_IN_SECONDS ) );
 
 		// If we have 0 interval, add as async action.
 		if ( 0 === $interval ) {

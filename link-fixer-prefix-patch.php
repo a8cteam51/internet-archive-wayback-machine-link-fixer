@@ -89,77 +89,77 @@ add_action(
 add_filter(
 	'iawmlf_find_snapshot_base_url',
 	function ( $url ) {
-		return apply_filters( 'wlf_find_snapshot_base_url', $url );
+		return apply_filters( 'iawmlf_find_snapshot_base_url', $url );
 	}
 );
 
 add_filter(
 	'iawmlf_get_latest_snapshot_url',
 	function ( $url, $api_url ) {
-		return apply_filters( 'wlf_get_latest_snapshot_url', $url, $api_url );
+		return apply_filters( 'iawmlf_get_latest_snapshot_url', $url, $api_url );
 	}
 );
 
 add_filter(
 	'iawmlf_get_closest_snapshot_url',
 	function ( $api_url, $url, $date ) {
-		return apply_filters( 'wlf_get_closest_snapshot_url', $api_url, $url, $date );
+		return apply_filters( 'iawmlf_get_closest_snapshot_url', $api_url, $url, $date );
 	}
 );
 
 add_filter(
 	'iawmlf_get_latest_snapshot_timeout',
 	function ( $timeout ) {
-		return apply_filters( 'wlf_get_latest_snapshot_timeout', $timeout );
+		return apply_filters( 'iawmlf_get_latest_snapshot_timeout', $timeout );
 	}
 );
 
 add_filter(
 	'iawmlf_get_closest_snapshot_timeout',
 	function ( $timeout ) {
-		return apply_filters( 'wlf_get_closest_snapshot_timeout', $timeout );
+		return apply_filters( 'iawmlf_get_closest_snapshot_timeout', $timeout );
 	}
 );
 
 add_filter(
 	'iawmlf_create_snapshot_url',
 	function ( $url ) {
-		return apply_filters( 'wlf_create_snapshot_url', $url );
+		return apply_filters( 'iawmlf_create_snapshot_url', $url );
 	}
 );
 
 add_filter(
 	'iawmlf_create_snapshot_timeout',
 	function ( $timeout ) {
-		return apply_filters( 'wlf_create_snapshot_timeout', $timeout );
+		return apply_filters( 'iawmlf_create_snapshot_timeout', $timeout );
 	}
 );
 
 add_filter(
 	'iawmlf_link_checker_url_params',
 	function ( $params ) {
-		return apply_filters( 'wlf_link_checker_url_params', $params );
+		return apply_filters( 'iawmlf_link_checker_url_params', $params );
 	}
 );
 
 add_filter(
 	'iawmlf_link_checker_url_base',
 	function ( $url ) {
-		return apply_filters( 'wlf_link_checker_url_base', $url );
+		return apply_filters( 'iawmlf_link_checker_url_base', $url );
 	}
 );
 
 add_filter(
 	'iawmlf_dashboard_link_count',
 	function ( $count ) {
-		return apply_filters( 'wlf_dashboard_link_count', $count );
+		return apply_filters( 'iawmlf_dashboard_link_count', $count );
 	}
 );
 
 add_filter(
 	'iawmlf_menu_icon_base64',
 	function ( $icon ) {
-		return apply_filters( 'wlf_menu_icon_base64', $icon );
+		return apply_filters( 'iawmlf_menu_icon_base64', $icon );
 	}
 );
 
@@ -222,7 +222,7 @@ add_filter(
 add_filter(
 	'iawmlf_own_content_allow_post',
 	function ( $can_add, $post ) {
-		return apply_filters( 'wlf_own_content_allow_post', $can_add, $post );
+		return apply_filters( 'iawmlf_own_content_allow_post', $can_add, $post );
 	}
 );
 
@@ -236,42 +236,42 @@ add_filter(
 add_filter(
 	'iawmlf_scan_own_posts_event_interval',
 	function ( $interval ) {
-		return apply_filters( 'wlf_scan_own_posts_event_interval', $interval );
+		return apply_filters( 'iawmlf_scan_own_posts_event_interval', $interval );
 	}
 );
 
 add_filter(
 	'iawmlf_scan_own_posts_per_call',
 	function ( $count ) {
-		return apply_filters( 'wlf_scan_own_posts_per_call', $count );
+		return apply_filters( 'iawmlf_scan_own_posts_per_call', $count );
 	}
 );
 
 add_filter(
 	'iawmlf_scan_posts_interval',
 	function ( $interval ) {
-		return apply_filters( 'wlf_scan_posts_interval', $interval );
+		return apply_filters( 'iawmlf_scan_posts_interval', $interval );
 	}
 );
 
 add_filter(
 	'iawmlf_create_new_snapshot_attempts',
 	function ( $attempts ) {
-		return apply_filters( 'wlf_create_new_snapshot_attempts', $attempts );
+		return apply_filters( 'iawmlf_create_new_snapshot_attempts', $attempts );
 	}
 );
 
 add_filter(
 	'iawmlf_update_archive_url_attempts',
 	function ( $attempts ) {
-		return apply_filters( 'wlf_update_archive_url_attempts', $attempts );
+		return apply_filters( 'iawmlf_update_archive_url_attempts', $attempts );
 	}
 );
 
 add_filter(
 	'iawmlf_exclude_link_from_post',
 	function ( $is_excluded, $link, $post_id ) {
-		return apply_filters( 'wlf_exclude_link_from_post', $is_excluded, $link, $post_id );
+		return apply_filters( 'iawmlf_exclude_link_from_post', $is_excluded, $link, $post_id );
 	},
 	10,
 	3
@@ -280,7 +280,7 @@ add_filter(
 add_filter(
 	'iawmlf_is_valid_check',
 	function ( $is_valid, $check, $link_obj ) {
-		return apply_filters( 'wlf_is_valid_check', $is_valid, $check, $link_obj );
+		return apply_filters( 'iawmlf_is_valid_check', $is_valid, $check, $link_obj );
 	},
 	10,
 	3
@@ -289,28 +289,28 @@ add_filter(
 add_filter(
 	'iawmlf_check_snapshot_status_attempts',
 	function ( $attempts ) {
-		return apply_filters( 'wlf_check_snapshot_status_attempts', $attempts );
+		return apply_filters( 'iawmlf_check_snapshot_status_attempts', $attempts );
 	}
 );
 
 add_filter(
 	'iawmlf_check_snapshot_status_interval',
 	function ( $interval ) {
-		return apply_filters( 'wlf_check_snapshot_status_interval', $interval );
+		return apply_filters( 'iawmlf_check_snapshot_status_interval', $interval );
 	}
 );
 
 add_filter(
 	'iawmlf_check_validator_status_attempts',
 	function ( $attempts ) {
-		return apply_filters( 'wlf_check_validator_status_attempts', $attempts );
+		return apply_filters( 'iawmlf_check_validator_status_attempts', $attempts );
 	}
 );
 
 add_filter(
 	'iawmlf_check_validator_status_interval',
 	function ( $interval ) {
-		return apply_filters( 'wlf_check_validator_status_interval', $interval );
+		return apply_filters( 'iawmlf_check_validator_status_interval', $interval );
 	}
 );
 

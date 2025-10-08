@@ -31,7 +31,7 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Clear all filters.
 		\remove_all_filters( 'iawmlf_add_own_content_to_wayback_machine' );
 		\remove_all_filters( 'iawmlf_own_content_post_types' );
-		\remove_all_filters( 'wlf_own_content_allow_post' );
+		\remove_all_filters( 'iawmlf_own_content_allow_post' );
 
 		parent::set_up();
 	}
@@ -434,7 +434,7 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 			}
 		);
 		add_filter(
-			'wlf_own_content_allow_post',
+			'iawmlf_own_content_allow_post',
 			function ( $allowed, $post ) {
 				// If the post title is 'disable', return false.
 				return $post->post_title !== 'disable';

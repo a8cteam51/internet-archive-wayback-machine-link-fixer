@@ -338,7 +338,7 @@ class Link implements \JsonSerializable {
 				$is_valid = in_array( absint( $check['http_code'] ), Settings::get_valid_http_status_codes(), true );
 
 				// Allow additional checks
-				return apply_filters( 'wlf_is_valid_check', $is_valid, $check, $this );
+				return apply_filters( 'iawmlf_is_valid_check', $is_valid, $check, $this );
 			}
 		);
 

@@ -152,7 +152,7 @@ class WP_Post_Controller {
 			throw new Exception( 'Invalid post id' );
 		}
 
-		$can_add = apply_filters( 'wlf_own_content_allow_post', true, $post );
+		$can_add = apply_filters( 'iawmlf_own_content_allow_post', true, $post );
 
 		if ( $can_add ) {
 			Process_Local_Post_Event::add_to_queue_with_delay( $post_id );

@@ -51,7 +51,7 @@ class Check_Validator_Status {
 	 * Create instance of the class.
 	 */
 	public function __construct() {
-		$this->attempts = apply_filters( 'wlf_check_validator_status_attempts', 3 );
+		$this->attempts = apply_filters( 'iawmlf_check_validator_status_attempts', 3 );
 	}
 
 	/**
@@ -70,7 +70,7 @@ class Check_Validator_Status {
 	 * @return integer
 	 */
 	public static function get_interval(): int {
-		return absint( apply_filters( 'wlf_check_validator_status_interval', 2 * \MINUTE_IN_SECONDS ) );
+		return absint( apply_filters( 'iawmlf_check_validator_status_interval', 2 * \MINUTE_IN_SECONDS ) );
 	}
 
 	/**

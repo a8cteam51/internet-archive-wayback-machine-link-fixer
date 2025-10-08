@@ -29,8 +29,8 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	public function tearDown(): void {
 		parent::tearDown();
 		remove_all_filters( 'pre_http_request' );
-		remove_all_filters( 'wlf_link_checker_url_base' );
-		remove_all_filters( 'wlf_link_checker_url_params' );
+		remove_all_filters( 'iawmlf_link_checker_url_base' );
+		remove_all_filters( 'iawmlf_link_checker_url_params' );
 	}
 
 	/**
@@ -143,7 +143,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	public function test_should_be_able_to_change_url_called() {
 		// Filter the URL.
 		add_filter(
-			'wlf_link_checker_url_base',
+			'iawmlf_link_checker_url_base',
 			function ( $url ) {
 				return 'https://anotherurl.someplace.fakeit';
 			}
@@ -199,7 +199,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 
 		// Filter the url params.
 		add_filter(
-			'wlf_link_checker_url_params',
+			'iawmlf_link_checker_url_params',
 			function ( $url_params ) {
 				$url_params['banana'] = 'cherry';
 				return $url_params;

@@ -94,7 +94,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		);
 
 		add_filter(
-			'wlf_find_snapshot_base_url',
+			'iawmlf_find_snapshot_base_url',
 			function ( $url ) {
 				return 'http://snashot.com';
 			}
@@ -125,7 +125,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		);
 
 		add_filter(
-			'wlf_get_latest_snapshot_url',
+			'iawmlf_get_latest_snapshot_url',
 			function ( $url ) {
 				return 'http://custom-snapshot.com';
 			}
@@ -283,7 +283,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		);
 
 		add_filter(
-			'wlf_get_closest_snapshot_url',
+			'iawmlf_get_closest_snapshot_url',
 			function ( $url, $queried_url, $timestamp ) {
 				return 'http://custom-snapshot.com?url=' . $queried_url . '&timestamp=' . $timestamp->format( 'Ymd' );
 			},
@@ -356,7 +356,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		);
 
 		add_filter(
-			'wlf_create_snapshot_url',
+			'iawmlf_create_snapshot_url',
 			function ( $queried_url ) {
 				return 'http://custom-snapshot.com/';
 			}
