@@ -209,7 +209,7 @@ class WP_Post_Table_Controller {
 		$url = Report_Page::get_page_url();
 
 		// Add the initial post id.
-		$url = add_query_arg( 'wlf_filtered_post_id', $post_id, $url );
+		$url = add_query_arg( 'iawmlf_filtered_post_id', $post_id, $url );
 
 		return $url;
 	}

@@ -178,7 +178,7 @@ class Report_Page {
 	 */
 	public function render_page(): void {
 		// If we have the link id in the query string, render the single report page.
-		if ( isset( $_GET['wlf_link_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+		if ( isset( $_GET['iawmlf_link_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
 			$this->render_single_page();
 			return;
 		}
@@ -196,7 +196,7 @@ class Report_Page {
 	 */
 	public function register_screen_options(): void {
 		// If we viewing a single link, do not show the screen options.
-		if ( isset( $_GET['wlf_link_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+		if ( isset( $_GET['iawmlf_link_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
 			return;
 		}
 
@@ -286,8 +286,8 @@ class Report_Page {
 		echo '<hr class="wp-header-end">';
 
 		// If we have a post id in params, show a message.
-		if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
-			$post_id = sanitize_text_field( wp_unslash( $_GET['wlf_filtered_post_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+		if ( array_key_exists( 'iawmlf_filtered_post_id', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+			$post_id = sanitize_text_field( wp_unslash( $_GET['iawmlf_filtered_post_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
 
 			// Get the post title.
 			$post = get_post( $post_id );
@@ -330,8 +330,8 @@ class Report_Page {
 	private function render_single_page(): void {
 
 		// Get the link.
-		$link_id = isset( $_GET['wlf_link_id'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
-			? absint( wp_unslash( $_GET['wlf_link_id'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible
+		$link_id = isset( $_GET['iawmlf_link_id'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+			? absint( wp_unslash( $_GET['iawmlf_link_id'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible
 			: 0;
 
 		// If the link does not exist, show an error.

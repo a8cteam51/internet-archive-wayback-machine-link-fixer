@@ -159,7 +159,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	public function create_snapshot( string $url ): string {
 
 		// Strip any trailing slash from url.
-		$url = wpcomsp_wayback_link_fixer_normalize_url( $url );
+		$url = trim( $url, '/' );
 
 		$base_url = 'https://web.archive.org/save/';
 

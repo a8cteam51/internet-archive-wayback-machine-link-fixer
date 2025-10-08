@@ -314,7 +314,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 				$this->assertStringStartsWith( 'https://web.archive.org/save', $url );
 				$this->assertArrayHasKey( 'body', $args );
 				$this->assertArrayHasKey( 'url', $args['body'] );
-				$this->assertEquals( 'http%3A%2F%2Fexample.com', $args['body']['url'] );
+				$this->assertEquals( 'http://example.com', $args['body']['url'] );
 				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
 
 				// Mock a valid response.
@@ -328,7 +328,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		);
 
 		$client = new HTTP_Snapshot_Client();
-		$client->create_snapshot( 'http://example.com' );
+		$client->create_snapshot( 'http://example.com/' );
 	}
 
 	/**

@@ -39,7 +39,7 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 		// Clear the actionscheduler_actions table.
 		$this->wpdb->query( "TRUNCATE TABLE {$this->wpdb->prefix}actionscheduler_actions" );
 
-		// Clear any wlf_snapshot_client filter.
+		// Clear any iawmlf_snapshot_client filter.
 		remove_all_filters( 'iawmlf_snapshot_client' );
 
 		// Clear the link table.

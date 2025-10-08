@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class List_Table_Action_Notification_Cache {
 
-	private const CACHE_KEY_PREFIX = 'wlf_list_table_action_cache_';
+	private const CACHE_KEY_PREFIX = 'iawmlf_list_table_action_cache_';
 	private const CACHE_EXPIRATION = 5 * MINUTE_IN_SECONDS;
 
 	/**

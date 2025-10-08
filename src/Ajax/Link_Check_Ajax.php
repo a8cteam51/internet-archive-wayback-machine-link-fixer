@@ -27,12 +27,12 @@ class Link_Check_Ajax {
 	/**
 	 * The action name for the AJAX request.
 	 */
-	public const ACTION = 'wlf_link_check_ajax';
+	public const ACTION = 'iawmlf_link_check_ajax';
 
 	/**
 	 * The nonce name for the AJAX request.
 	 */
-	public const NONCE = 'wlf_link_check_nonce';
+	public const NONCE = 'iawmlf_link_check_nonce';
 
 	/**
 	 * Acces to the Link Repository.

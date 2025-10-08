@@ -474,7 +474,7 @@ function wpcomsp_wayback_link_fixer_get_admin_post_type_link( string $post_type,
  */
 function wpcomsp_wayback_link_fixer_is_archive_api_online( bool $force = false ): bool {
 	// Try to get from transient.
-	$online = get_transient( 'wlf_archive_api_online' );
+	$online = get_transient( 'iawmlf_archive_api_online' );
 	if ( false !== (bool) $online && false === $force ) {
 		return (bool) $online;
 	}

@@ -318,11 +318,11 @@ class Setup_Wizard {
 	private function handle_step_3(): void {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		// Get values from the form.
-		$is_active             = isset( $_POST['wlf_wizard_activate_auto_archiver'] );
-		$allowed_post_types    = isset( $_POST['wlf_wizard_post_types'] ) && is_array( $_POST['wlf_wizard_post_types'] )
-			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['wlf_wizard_post_types'] )
+		$is_active             = isset( $_POST['iawmlf_wizard_activate_auto_archiver'] );
+		$allowed_post_types    = isset( $_POST['iawmlf_wizard_post_types'] ) && is_array( $_POST['iawmlf_wizard_post_types'] )
+			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['iawmlf_wizard_post_types'] )
 			: array();
-		$enable_routine_update = isset( $_POST['wlf_wizard_recurring_backup'] );
+		$enable_routine_update = isset( $_POST['iawmlf_wizard_recurring_backup'] );
 
 		// Update all the settings.
 		update_option( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS, $is_active );

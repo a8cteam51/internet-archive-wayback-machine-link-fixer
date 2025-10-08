@@ -30,7 +30,7 @@ defined( 'ABSPATH' ) || exit;
 class Dashboard_Page {
 
 	public const DASHBOARD_SLUG      = 'wayback-link-fixer-dashboard';
-	public const STATS_TRANSIENT_KEY = 'wlf_dashboard_stats';
+	public const STATS_TRANSIENT_KEY = 'iawmlf_dashboard_stats';
 
 	/**
 	 * Access to the link repository.
@@ -297,30 +297,30 @@ class Dashboard_Page {
 		// Has archive link.
 		$has_archive_link = add_query_arg(
 			array(
-				'wlf_status'      => 'all',
-				'wlf_has_archive' => '1',
+				'iawmlf_status'      => 'all',
+				'iawmlf_has_archive' => '1',
 			),
 			$filtered_url_base
 		);
 
 		$has_no_archive_link = add_query_arg(
 			array(
-				'wlf_status'      => 'all',
-				'wlf_has_archive' => '0',
+				'iawmlf_status'      => 'all',
+				'iawmlf_has_archive' => '0',
 			),
 			$filtered_url_base
 		);
 
 		$broken_link = add_query_arg(
 			array(
-				'wlf_status' => '1',
+				'iawmlf_status' => '1',
 			),
 			$filtered_url_base
 		);
 
 		$valid_link = add_query_arg(
 			array(
-				'wlf_status' => '0',
+				'iawmlf_status' => '0',
 			),
 			$filtered_url_base
 		);

@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<span class="iawmlf_dashboard-link-check-status <?php echo esc_attr( $iawmlf_link->is_broken() ? 'broken' : 'working' ); ?>">
 								<span class="dashicons <?php echo esc_attr( $iawmlf_link->is_broken() ? 'dashicons-no-alt' : 'dashicons-yes-alt' ); ?>"></span>
 							</span>
-							<a href="<?php echo esc_url( add_query_arg( array( 'wlf_link_id' => $iawmlf_link->get_id() ), $iawmlf_link_table ) ); ?>" class="iawmlf_dashboard-link-check-title">
+							<a href="<?php echo esc_url( add_query_arg( array( 'iawmlf_link_id' => $iawmlf_link->get_id() ), $iawmlf_link_table ) ); ?>" class="iawmlf_dashboard-link-check-title">
 								<?php echo esc_html( $iawmlf_link->get_href() ); ?>
 							</a>
 						</div>
@@ -85,7 +85,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<div class="iawmlf_dashboard-link-check-details">
 								<div class="iawmlf_dashboard-link-check-details-item">
 									<strong><?php esc_html_e( 'Link Details:', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>
-									<a href="<?php echo esc_url( add_query_arg( array( 'wlf_link_id' => $iawmlf_link->get_id() ), $iawmlf_link_table ) ); ?>" class="iawmlf_dashboard-link-details-link">
+									<a href="<?php echo esc_url( add_query_arg( array( 'iawmlf_link_id' => $iawmlf_link->get_id() ), $iawmlf_link_table ) ); ?>" class="iawmlf_dashboard-link-details-link">
 										<?php esc_html_e( 'View Full Report', 'internet-archive-wayback-machine-link-fixer' ); ?>
 									</a>
 								</div>
