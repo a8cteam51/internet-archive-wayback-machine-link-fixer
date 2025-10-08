@@ -16,11 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <?php echo wp_kses( $header, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
 
-<div class="wlf-wizard__content__header">
+<div class="iawmlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Setup complete.', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
 </div>
 
-<div class="wlf-wizard__content__intro">
+<div class="iawmlf-wizard__content__intro">
 	<p>
 	<?php
 	printf(

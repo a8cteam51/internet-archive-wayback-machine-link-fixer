@@ -23,27 +23,27 @@ class Esc {
 	 */
 	public static function wizard_allowed_tags(): array {
 		return array(
-				'div' => array(
-					'class' => array(),
-					'id' => array(),
-					'style' => array(),
-				),
-				'form' => array(
-					'method' => array(),
-					'action' => array(),
-				),
-				'input' => array(
-					'type' => array(),
-					'name' => array(),
-					'value' => array(),
-					'id' => array(),
-				),
-				'button' => array(
-					'type' => array(),
-					'name' => array(),
-					'class' => array(),
-				),
+			'div'    => array(
+				'class' => array(),
+				'id'    => array(),
+				'style' => array(),
+			),
+			'form'   => array(
+				'method' => array(),
+				'action' => array(),
+			),
+			'input'  => array(
+				'type'  => array(),
+				'name'  => array(),
+				'value' => array(),
+				'id'    => array(),
+			),
+			'button' => array(
+				'type'  => array(),
+				'name'  => array(),
+				'class' => array(),
+			),
 
-			);
+		);
 	}
 }

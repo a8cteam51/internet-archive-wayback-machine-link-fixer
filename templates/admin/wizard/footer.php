@@ -29,21 +29,21 @@ $iawmlf_rerun_wizard = isset( $_GET['rerun-wizard'] ) && '1' === sanitize_text_f
 ?>
 	</div> <!-- END Wizard content -->
 
-	<div id="wlf-wizard__footer">
-		<div class="wlf-wizard__footer__previous">
+	<div id="iawmlf-wizard__footer">
+		<div class="iawmlf-wizard__footer__previous">
 			<?php if ( 'complete' !== $step_data['step'] || $iawmlf_rerun_wizard ) : ?>
-				<button class="button button-primary" type="submit" name="wlf-previous-step" <?php echo esc_attr( $iawmlf_previous_state ); ?>><?php esc_html_e( 'Previous Step', 'internet-archive-wayback-machine-link-fixer' ); ?></button>
+				<button class="button button-primary" type="submit" name="iawmlf-previous-step" <?php echo esc_attr( $iawmlf_previous_state ); ?>><?php esc_html_e( 'Previous Step', 'internet-archive-wayback-machine-link-fixer' ); ?></button>
 			<?php endif; ?>
 		</div>
-		<div class="wlf-wizard__footer__progress">
+		<div class="iawmlf-wizard__footer__progress">
 			<?php if ( 'complete' !== $step_data['step'] ) : ?>
-			<div class="wlf-wizard__footer__progress__bar">
+			<div class="iawmlf-wizard__footer__progress__bar">
 				<p><?php echo esc_html( $iawmlf_progress_string ); ?></p>
-				<div class="wlf-wizard__footer__progress__bar__inner" style="width: <?php echo esc_attr( $iawmlf_progress_pc ); ?>%"></div>
+				<div class="iawmlf-wizard__footer__progress__bar__inner" style="width: <?php echo esc_attr( $iawmlf_progress_pc ); ?>%"></div>
 			</div>
 			<?php endif; ?>
 		</div>
-		<div class="wlf-wizard__footer__next">
+		<div class="iawmlf-wizard__footer__next">
 			<?php if ( 'complete' !== $step_data['step'] ) : ?>
 				<button class="button button-primary" type="submit" name="next-step" <?php echo esc_attr( $iawmlf_next_state ); ?>><?php echo esc_html( $iawmlf_next_label ); ?></button>
 			<?php endif; ?>

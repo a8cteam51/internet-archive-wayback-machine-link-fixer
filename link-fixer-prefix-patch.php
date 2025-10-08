@@ -794,7 +794,6 @@ function link_fixer_prefix_patch_process_settings( string $action ): array {
 
 		$result = update_option( $new_key, $old_value, $autoload );
 
-
 		if ( 'replace' === $action ) {
 			delete_option( $setting );
 		}

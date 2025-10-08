@@ -23,21 +23,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-<div class="wlf_dashboard-wrapper">
+<div class="iawmlf_dashboard-wrapper">
 	<?php if ( ! $iawmlf_api_configured ) : ?>
-		<div class="wlf_dashboard-warning">
+		<div class="iawmlf_dashboard-warning">
 			<?php esc_html_e( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</div>
 	<?php endif; ?>
 
 	<?php if ( $iawmlf_api_configured && ! \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::has_valid_archive_api_credentials() ) : ?>
-		<div class="wlf_dashboard-warning">
+		<div class="iawmlf_dashboard-warning">
 			<?php esc_html_e( 'Your Archive.org API credentials are invalid. Please check your settings.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</div>
 	<?php endif; ?>
 
-	<div class="wlf_dashboard-status-section">
-		<span class="wlf_dashboard-status-indicator <?php echo esc_attr( $iawmlf_is_online ? 'online' : 'offline' ); ?>"></span>
+	<div class="iawmlf_dashboard-status-section">
+		<span class="iawmlf_dashboard-status-indicator <?php echo esc_attr( $iawmlf_is_online ? 'online' : 'offline' ); ?>"></span>
 		<strong>
 			<?php
 			echo $iawmlf_is_online
@@ -48,10 +48,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 
 	<?php if ( $iawmlf_details && is_array( $iawmlf_details ) ) : ?>
-		<div class="wlf_dashboard-status-section">
-			<div class="wlf_dashboard-stats-grid">
-				<div class="wlf_dashboard-stats-box">
-					<div class="wlf_dashboard-stats-ratio">
+		<div class="iawmlf_dashboard-status-section">
+			<div class="iawmlf_dashboard-stats-grid">
+				<div class="iawmlf_dashboard-stats-box">
+					<div class="iawmlf_dashboard-stats-ratio">
 						<?php
 						printf(
 							'%d/%d',
@@ -60,13 +60,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 						);
 						?>
 					</div>
-					<div class="wlf_dashboard-stats-label">
+					<div class="iawmlf_dashboard-stats-label">
 						<?php esc_html_e( "Today's Snapshots", 'internet-archive-wayback-machine-link-fixer' ); ?>
 					</div>
 				</div>
-				<div class="wlf_dashboard-stats-box">
-					<div class="wlf_dashboard-stats-number"><?php echo esc_html( absint( $iawmlf_details['processing'] ) ); ?></div>
-					<div class="wlf_dashboard-stats-label">
+				<div class="iawmlf_dashboard-stats-box">
+					<div class="iawmlf_dashboard-stats-number"><?php echo esc_html( absint( $iawmlf_details['processing'] ) ); ?></div>
+					<div class="iawmlf_dashboard-stats-label">
 						<?php esc_html_e( 'Pending Snapshots', 'internet-archive-wayback-machine-link-fixer' ); ?>
 					</div>
 				</div>
@@ -74,43 +74,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	<?php endif; ?>
 
-	<div class="wlf_dashboard-status-section">
-		<h3 class="wlf_dashboard-section-title"><?php esc_html_e( 'Active Features', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
-		<div class="wlf_dashboard-features">
-			<div class="wlf_dashboard-features-item">
-				<span class="wlf_dashboard-features-status <?php echo esc_attr( $iawmlf_link_processing_enabled ? 'enabled' : 'disabled' ); ?>">
+	<div class="iawmlf_dashboard-status-section">
+		<h3 class="iawmlf_dashboard-section-title"><?php esc_html_e( 'Active Features', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
+		<div class="iawmlf_dashboard-features">
+			<div class="iawmlf_dashboard-features-item">
+				<span class="iawmlf_dashboard-features-status <?php echo esc_attr( $iawmlf_link_processing_enabled ? 'enabled' : 'disabled' ); ?>">
 					<span class="dashicons <?php echo esc_attr( $iawmlf_link_processing_enabled ? 'dashicons-yes-alt' : 'dashicons-no-alt' ); ?>"></span>
 				</span>
-				<div class="wlf_dashboard-features-content">
-					<span class="wlf_dashboard-features-label"><?php esc_html_e( 'Link Processing', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
-					<div class="wlf_dashboard-features-description"><?php esc_html_e( 'Create snapshots of external links when posts are created or updated', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
+				<div class="iawmlf_dashboard-features-content">
+					<span class="iawmlf_dashboard-features-label"><?php esc_html_e( 'Link Processing', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
+					<div class="iawmlf_dashboard-features-description"><?php esc_html_e( 'Create snapshots of external links when posts are created or updated', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 				</div>
 			</div>
-			<div class="wlf_dashboard-features-item">
-				<span class="wlf_dashboard-features-status <?php echo esc_attr( $iawmlf_auto_archiver_enabled ? 'enabled' : 'disabled' ); ?>">
+			<div class="iawmlf_dashboard-features-item">
+				<span class="iawmlf_dashboard-features-status <?php echo esc_attr( $iawmlf_auto_archiver_enabled ? 'enabled' : 'disabled' ); ?>">
 					<span class="dashicons <?php echo esc_attr( $iawmlf_auto_archiver_enabled ? 'dashicons-yes-alt' : 'dashicons-no-alt' ); ?>"></span>
 				</span>
-				<div class="wlf_dashboard-features-content">
-					<span class="wlf_dashboard-features-label"><?php esc_html_e( 'Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
-					<div class="wlf_dashboard-features-description"><?php esc_html_e( 'Create snapshots of your own content', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
+				<div class="iawmlf_dashboard-features-content">
+					<span class="iawmlf_dashboard-features-label"><?php esc_html_e( 'Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
+					<div class="iawmlf_dashboard-features-description"><?php esc_html_e( 'Create snapshots of your own content', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 				</div>
 			</div>
-			<div class="wlf_dashboard-features-item">
-				<span class="wlf_dashboard-features-status <?php echo esc_attr( $iawmlf_scan_existing_enabled ? 'enabled' : 'disabled' ); ?>">
+			<div class="iawmlf_dashboard-features-item">
+				<span class="iawmlf_dashboard-features-status <?php echo esc_attr( $iawmlf_scan_existing_enabled ? 'enabled' : 'disabled' ); ?>">
 					<span class="dashicons <?php echo esc_attr( $iawmlf_scan_existing_enabled ? 'dashicons-yes-alt' : 'dashicons-no-alt' ); ?>"></span>
 				</span>
-				<div class="wlf_dashboard-features-content">
-					<span class="wlf_dashboard-features-label"><?php esc_html_e( 'Scan Existing Posts', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
-					<div class="wlf_dashboard-features-description"><?php esc_html_e( 'Process links in previously published content', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
+				<div class="iawmlf_dashboard-features-content">
+					<span class="iawmlf_dashboard-features-label"><?php esc_html_e( 'Scan Existing Posts', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
+					<div class="iawmlf_dashboard-features-description"><?php esc_html_e( 'Process links in previously published content', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 				</div>
 			</div>
-			<div class="wlf_dashboard-features-item">
-				<span class="wlf_dashboard-features-status <?php echo esc_attr( $iawmlf_link_processing_enabled ? 'enabled' : 'disabled' ); ?>">
+			<div class="iawmlf_dashboard-features-item">
+				<span class="iawmlf_dashboard-features-status <?php echo esc_attr( $iawmlf_link_processing_enabled ? 'enabled' : 'disabled' ); ?>">
 					<span class="dashicons dashicons-clock"></span>
 				</span>
-				<div class="wlf_dashboard-features-content">
-					<span class="wlf_dashboard-features-label"><?php esc_html_e( 'Link Checking', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
-					<div class="wlf_dashboard-features-description">
+				<div class="iawmlf_dashboard-features-content">
+					<span class="iawmlf_dashboard-features-label"><?php esc_html_e( 'Link Checking', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
+					<div class="iawmlf_dashboard-features-description">
 						<?php if ( $iawmlf_link_processing_enabled ) : ?>
 							<?php
 							printf(
@@ -136,7 +136,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	</div>
 
-	<div class="wlf_dashboard-navigation">
+	<div class="iawmlf_dashboard-navigation">
 		<a href="<?php echo esc_url( $iawmlf_link_to_settings ); ?>" class="button">
 			<span class="dashicons dashicons-admin-settings" style="margin-top: 3px;"></span>
 			<?php esc_html_e( 'Settings', 'internet-archive-wayback-machine-link-fixer' ); ?>

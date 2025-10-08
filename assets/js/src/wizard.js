@@ -1,5 +1,5 @@
 (function () {
-	// If #wlf_wizard form has an input with the id of is_active, add an event listenter when its toggled.
+	// If #iawmlf_wizard form has an input with the id of is_active, add an event listenter when its toggled.
 	const isActive = document.getElementById('is_active');
 	if (isActive) {
 		// Add event listener to the is_active checkbox, and make fields disabled.

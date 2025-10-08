@@ -67,10 +67,10 @@ $iawmlf_still_processing      = $iawmlf_process_new + $iawmlf_process_pending;
 							wpcomsp_wayback_link_fixer_render_template(
 								'admin/dashboard/link-list.php',
 								array(
-									'iawmlf_links'            => $iawmlf_last_checks,
-									'iawmlf_is_active'        => true,
-									'iawmlf_section_id'       => 'recent-checks',
-									'iawmlf_link_table'       => $iawmlf_link_table,
+									'iawmlf_links'      => $iawmlf_last_checks,
+									'iawmlf_is_active'  => true,
+									'iawmlf_section_id' => 'recent-checks',
+									'iawmlf_link_table' => $iawmlf_link_table,
 									'iawmlf_no_links_message' => __( 'No recent link checks available.', 'internet-archive-wayback-machine-link-fixer' ),
 								)
 							);
@@ -82,10 +82,10 @@ $iawmlf_still_processing      = $iawmlf_process_new + $iawmlf_process_pending;
 							wpcomsp_wayback_link_fixer_render_template(
 								'admin/dashboard/link-list.php',
 								array(
-									'iawmlf_links'            => $iawmlf_latest_links,
-									'iawmlf_is_active'        => false,
-									'iawmlf_section_id'       => 'latest-links',
-									'iawmlf_link_table'       => $iawmlf_link_table,
+									'iawmlf_links'      => $iawmlf_latest_links,
+									'iawmlf_is_active'  => false,
+									'iawmlf_section_id' => 'latest-links',
+									'iawmlf_link_table' => $iawmlf_link_table,
 									'iawmlf_no_links_message' => __( 'No recent links available.', 'internet-archive-wayback-machine-link-fixer' ),
 								)
 							);

@@ -1,4 +1,4 @@
-.wlf_dashboard {
+.iawmlf_dashboard {
     &-wrapper {
         margin: -12px;
         padding: 0;
@@ -125,14 +125,14 @@
 }
 
 // Dashboard Page specific styling
-.wlf_dashboard-page-column-wrapper {
+.iawmlf_dashboard-page-column-wrapper {
     background: #fff;
     border: 1px solid #c3c4c7;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     // Remove margin from first and last dashboard wrappers inside column wrapper
-    .wlf_dashboard-wrapper {
+    .iawmlf_dashboard-wrapper {
         margin: 0;
         &:not(:last-child) {
             border-bottom: 1px solid #f0f0f1;
@@ -140,7 +140,7 @@
     }
 }
 
-.wlf_dashboard-page-grid {
+.iawmlf_dashboard-page-grid {
     display: grid;
     grid-template-columns: 2fr 1fr; // 66% / 33% split
     gap: 20px;
@@ -153,14 +153,14 @@
     ;
 }
 
-.wlf_dashboard-page-main {
+.iawmlf_dashboard-page-main {
     min-width: 0; // Prevent grid blowout
     @media (max-width: 1024px) {
         order: 2; // Show below sidebar on mobile
     }
 }
 
-.wlf_dashboard-page-sidebar {
+.iawmlf_dashboard-page-sidebar {
     min-width: 0; // Prevent grid blowout
     position: sticky;
     top: 32px; // Account for WP admin bar
@@ -171,7 +171,7 @@
 }
 
 // Extended Stats Grid
-.wlf_dashboard-stats-extended {
+.iawmlf_dashboard-stats-extended {
     grid-template-columns: repeat(3, 1fr);
     @media (max-width: 768px) {
         grid-template-columns: repeat(2, 1fr);
@@ -182,7 +182,7 @@
 }
 
 // Sidebar Stats Grid (for right panel)
-.wlf_dashboard-stats-sidebar {
+.iawmlf_dashboard-stats-sidebar {
     grid-template-columns: repeat(2, 1fr);
     @media (max-width: 1024px) {
         grid-template-columns: repeat(3, 1fr);
@@ -196,40 +196,40 @@
 }
 
 // Stats Box Variants
-.wlf_dashboard-stats-box {
+.iawmlf_dashboard-stats-box {
     &--success {
         border-left: 4px solid #46b450;
-        .wlf_dashboard-stats-number {
+        .iawmlf_dashboard-stats-number {
             color: #46b450;
         }
     }
     &--warning {
         border-left: 4px solid #ffb900;
-        .wlf_dashboard-stats-number {
+        .iawmlf_dashboard-stats-number {
             color: #ffb900;
         }
     }
     &--danger {
         border-left: 4px solid #dc3232;
-        .wlf_dashboard-stats-number {
+        .iawmlf_dashboard-stats-number {
             color: #dc3232;
         }
     }
     &--info {
         border-left: 4px solid #2271b1;
-        .wlf_dashboard-stats-number {
+        .iawmlf_dashboard-stats-number {
             color: #2271b1;
         }
     }
 }
 
-.wlf_dashboard-stats-link {
+.iawmlf_dashboard-stats-link {
     text-decoration: none;
     color: inherit;
 }
 
 // Accordion Component
-.wlf_dashboard-accordion {
+.iawmlf_dashboard-accordion {
     &-nav {
         display: flex;
         border-bottom: 1px solid #e5e5e5;
@@ -264,7 +264,7 @@
 }
 
 // Link Checks Section
-.wlf_dashboard-link-checks {
+.iawmlf_dashboard-link-checks {
     &-empty {
         text-align: center;
         padding: 40px 20px;
@@ -273,7 +273,7 @@
     }
 }
 
-.wlf_dashboard-link-check {
+.iawmlf_dashboard-link-check {
     &-item {
         padding: 16px;
         margin-bottom: 12px;
@@ -433,7 +433,7 @@
         }
     }
     // Simple expand arrow styling
-    .wlf_dashboard-link-expand-arrow {
+    .iawmlf_dashboard-link-expand-arrow {
         user-select: none;
     }
     &-title {
@@ -444,7 +444,7 @@
     }
     // Expanded state styling - more subtle
     &-item.expanded {
-        .wlf_dashboard-link-check-posts {
+        .iawmlf_dashboard-link-check-posts {
             animation: slideDown 0.2s ease-out;
         }
     }
