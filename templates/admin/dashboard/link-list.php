@@ -17,8 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<div class="wlf_dashboard-accordion-content wlf_dashboard-accordion-content<?php echo esc_attr( $iawmlf_is_active ? '--active' : '' ); ?>" id="<?php echo esc_attr( $iawmlf_section_id ); ?>">
-	<div class="wlf_dashboard-link-checks">
+<div class="iawmlf_dashboard-accordion-content iawmlf_dashboard-accordion-content<?php echo esc_attr( $iawmlf_is_active ? '--active' : '' ); ?>" id="<?php echo esc_attr( $iawmlf_section_id ); ?>">
+	<div class="iawmlf_dashboard-link-checks">
 		<?php if ( ! empty( $iawmlf_links ) ) : ?>
 			<?php foreach ( $iawmlf_links as $iawmlf_check_data ) : ?>
 				<?php
@@ -28,19 +28,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 					continue;
 				}
 				?>
-				<div class="wlf_dashboard-link-check-item">
-					<div class="wlf_dashboard-link-check-header">
-						<div class="wlf_dashboard-link-check-url">
-							<span class="wlf_dashboard-link-check-status <?php echo esc_attr( $iawmlf_link->is_broken() ? 'broken' : 'working' ); ?>">
+				<div class="iawmlf_dashboard-link-check-item">
+					<div class="iawmlf_dashboard-link-check-header">
+						<div class="iawmlf_dashboard-link-check-url">
+							<span class="iawmlf_dashboard-link-check-status <?php echo esc_attr( $iawmlf_link->is_broken() ? 'broken' : 'working' ); ?>">
 								<span class="dashicons <?php echo esc_attr( $iawmlf_link->is_broken() ? 'dashicons-no-alt' : 'dashicons-yes-alt' ); ?>"></span>
 							</span>
-							<a href="<?php echo esc_url( add_query_arg( array( 'wlf_link_id' => $iawmlf_link->get_id() ), $iawmlf_link_table ) ); ?>" class="wlf_dashboard-link-check-title">
+							<a href="<?php echo esc_url( add_query_arg( array( 'wlf_link_id' => $iawmlf_link->get_id() ), $iawmlf_link_table ) ); ?>" class="iawmlf_dashboard-link-check-title">
 								<?php echo esc_html( $iawmlf_link->get_href() ); ?>
 							</a>
 						</div>
-						<div class="wlf_dashboard-link-check-meta">
+						<div class="iawmlf_dashboard-link-check-meta">
 							<?php if ( $iawmlf_link->get_last_check() ) : ?>
-								<span class="wlf_dashboard-link-check-date">
+								<span class="iawmlf_dashboard-link-check-date">
 									<?php
 									$iawmlf_last_check = $iawmlf_link->get_last_check();
 									$iawmlf_date_time  = DateTimeImmutable::createFromFormat(
@@ -81,16 +81,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</div>
 					</div>
 					<?php if ( ! empty( $iawmlf_posts ) ) : ?>
-						<div class="wlf_dashboard-link-check-posts">
-							<div class="wlf_dashboard-link-check-details">
-								<div class="wlf_dashboard-link-check-details-item">
+						<div class="iawmlf_dashboard-link-check-posts">
+							<div class="iawmlf_dashboard-link-check-details">
+								<div class="iawmlf_dashboard-link-check-details-item">
 									<strong><?php esc_html_e( 'Link Details:', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>
-									<a href="<?php echo esc_url( add_query_arg( array( 'wlf_link_id' => $iawmlf_link->get_id() ), $iawmlf_link_table ) ); ?>" class="wlf_dashboard-link-details-link">
+									<a href="<?php echo esc_url( add_query_arg( array( 'wlf_link_id' => $iawmlf_link->get_id() ), $iawmlf_link_table ) ); ?>" class="iawmlf_dashboard-link-details-link">
 										<?php esc_html_e( 'View Full Report', 'internet-archive-wayback-machine-link-fixer' ); ?>
 									</a>
 								</div>
 							</div>
-							<span class="wlf_dashboard-link-check-posts-label">
+							<span class="iawmlf_dashboard-link-check-posts-label">
 								<?php
 								printf(
 									/* translators: %d: number of posts */
@@ -99,17 +99,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 								);
 								?>
 							</span>
-							<div class="wlf_dashboard-link-check-posts-list">
+							<div class="iawmlf_dashboard-link-check-posts-list">
 								<?php
 								$iawmlf_displayed_posts = array_slice( $iawmlf_posts, 0, 12 ); // Show max 12 posts now
 								foreach ( $iawmlf_displayed_posts as $iawmlf_displayed_post ) :
 									?>
-									<a href="<?php echo esc_url( get_edit_post_link( $iawmlf_displayed_post->ID ) ); ?>" class="wlf_dashboard-link-check-post">
+									<a href="<?php echo esc_url( get_edit_post_link( $iawmlf_displayed_post->ID ) ); ?>" class="iawmlf_dashboard-link-check-post">
 										<?php echo esc_html( '' !== $iawmlf_displayed_post->post_title ? $iawmlf_displayed_post->post_title : __( '(No title)', 'internet-archive-wayback-machine-link-fixer' ) ); ?>
 									</a>
 								<?php endforeach; ?>
 								<?php if ( count( $iawmlf_posts ) > 12 ) : ?>
-									<span class="wlf_dashboard-link-check-posts-more">
+									<span class="iawmlf_dashboard-link-check-posts-more">
 										<?php
 										printf(
 											/* translators: %d: number of additional posts */
@@ -125,7 +125,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			<?php endforeach; ?>
 		<?php else : ?>
-			<div class="wlf_dashboard-link-checks-empty">
+			<div class="iawmlf_dashboard-link-checks-empty">
 				<p><?php echo esc_html( $iawmlf_no_links_message ); ?></p>
 			</div>
 		<?php endif; ?>

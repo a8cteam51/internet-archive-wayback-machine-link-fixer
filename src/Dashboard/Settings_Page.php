@@ -120,7 +120,7 @@ class Settings_Page {
 
 		wp_localize_script(
 			self::PAGE_SLUG,
-			'WlfSettings',
+			'IawmlfSettings',
 			array(
 				'newExcludedTemplate' => $this->render_excluded_url( '{newUrl}', '{newIndex}' ),
 			)
@@ -159,8 +159,8 @@ class Settings_Page {
 
 		echo '<div class="wrap">';
 		printf(
-			'<div id="wlf_settings_header" class="wlf-settings__header">
-			<h1 class="wp-heading-inline wlf-settings__header">%s</h1>
+			'<div id="iawmlf_settings_header" class="iawmlf-settings__header">
+			<h1 class="wp-heading-inline iawmlf-settings__header">%s</h1>
 			%s
 			</div>',
 			esc_html__( 'Wayback Link Fixer - Settings', 'internet-archive-wayback-machine-link-fixer' ),
@@ -389,7 +389,7 @@ class Settings_Page {
 			'__return_empty_string',
 			self::PAGE_SLUG,
 			array(
-				'before_section' => '<div id="wlf_settings_plugin_section" class="wlf_settings_postbox">',
+				'before_section' => '<div id="iawmlf_settings_plugin_section" class="iawmlf_settings_postbox">',
 				'after_section'  => '</div>',
 			)
 		);
@@ -400,7 +400,7 @@ class Settings_Page {
 			'__return_empty_string',
 			self::PAGE_SLUG,
 			array(
-				'before_section' => '<div id="wlf_settings_ia_section" class="wlf_settings_postbox">',
+				'before_section' => '<div id="iawmlf_settings_ia_section" class="iawmlf_settings_postbox">',
 				'after_section'  => $this->render_invalid_api_keys_message() . '<p class="description">' . sprintf(
 						// Translators: %s is the link to the Internet account setup.
 					__( "To get your API key and secret, please visit the <a href='%s' target='_blank'>Internet Archive</a> and create a new 'S3 access key' (this is a type of credential used by Archive.org).", 'internet-archive-wayback-machine-link-fixer' ),
@@ -417,7 +417,7 @@ class Settings_Page {
 			},
 			self::PAGE_SLUG,
 			array(
-				'before_section' => '<div id="wlf_settings_link_fixer_section" class="wlf_settings_postbox">',
+				'before_section' => '<div id="iawmlf_settings_link_fixer_section" class="iawmlf_settings_postbox">',
 				'after_section'  => '</div>',
 			)
 		);
@@ -430,7 +430,7 @@ class Settings_Page {
 			},
 			self::PAGE_SLUG,
 			array(
-				'before_section' => '<div id="wlf_settings_auto_archiver_section" class="wlf_settings_postbox">',
+				'before_section' => '<div id="iawmlf_settings_auto_archiver_section" class="iawmlf_settings_postbox">',
 				'after_section'  => '</div>',
 			)
 		);
@@ -449,7 +449,7 @@ class Settings_Page {
 			array( $this, 'render_fixer_post_types_field' ),
 			self::PAGE_SLUG,
 			self::GROUP_LINK_FIXER,
-			array( 'class' => Settings::is_link_processing_enabled() ? 'wlf_toggle_setting__fixer' : 'wlf_toggle_setting__fixer hidden' )
+			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
 		);
 
 		add_settings_field(
@@ -466,7 +466,7 @@ class Settings_Page {
 			array( $this, 'render_check_existing_posts' ),
 			self::PAGE_SLUG,
 			self::GROUP_LINK_FIXER,
-			array( 'class' => Settings::is_link_processing_enabled() ? 'wlf_toggle_setting__fixer' : 'wlf_toggle_setting__fixer hidden' )
+			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
 		);
 
 		add_settings_field(
@@ -475,7 +475,7 @@ class Settings_Page {
 			array( $this, 'render_fixer_option' ),
 			self::PAGE_SLUG,
 			self::GROUP_LINK_FIXER,
-			array( 'class' => Settings::is_link_processing_enabled() ? 'wlf_toggle_setting__fixer' : 'wlf_toggle_setting__fixer hidden' )
+			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
 		);
 
 		add_settings_field(
@@ -484,7 +484,7 @@ class Settings_Page {
 			array( $this, 'render_link_exclusions_field' ),
 			self::PAGE_SLUG,
 			self::GROUP_LINK_FIXER,
-			array( 'class' => Settings::is_link_processing_enabled() ? 'wlf_toggle_setting__fixer' : 'wlf_toggle_setting__fixer hidden' )
+			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
 		);
 
 		add_settings_field(
@@ -494,7 +494,7 @@ class Settings_Page {
 			self::PAGE_SLUG,
 			self::GROUP_IA_SETTINGS,
 			array(
-				'class' => Settings::has_valid_archive_api_credentials() ? '' : 'wlf_toggle_setting__invalid_api_keys',
+				'class' => Settings::has_valid_archive_api_credentials() ? '' : 'iawmlf_toggle_setting__invalid_api_keys',
 			)
 		);
 
@@ -505,7 +505,7 @@ class Settings_Page {
 			self::PAGE_SLUG,
 			self::GROUP_IA_SETTINGS,
 			array(
-				'class' => Settings::has_valid_archive_api_credentials() ? '' : 'wlf_toggle_setting__invalid_api_keys',
+				'class' => Settings::has_valid_archive_api_credentials() ? '' : 'iawmlf_toggle_setting__invalid_api_keys',
 			)
 		);
 
@@ -523,7 +523,7 @@ class Settings_Page {
 			array( $this, 'render_own_link_routinely_update' ),
 			self::PAGE_SLUG,
 			self::GROUP_AUTO_ARCHIVER,
-			array( 'class' => Settings::add_own_links() ? 'wlf_toggle_setting__auto_archiver' : 'wlf_toggle_setting__auto_archiver hidden' )
+			array( 'class' => Settings::add_own_links() ? 'iawmlf_toggle_setting__auto_archiver' : 'iawmlf_toggle_setting__auto_archiver hidden' )
 		);
 
 		add_settings_field(
@@ -532,7 +532,7 @@ class Settings_Page {
 			array( $this, 'render_own_link_routinely_update_interval' ),
 			self::PAGE_SLUG,
 			self::GROUP_AUTO_ARCHIVER,
-			array( 'class' => Settings::add_own_links() ? 'wlf_toggle_setting__auto_archiver' : 'wlf_toggle_setting__auto_archiver hidden' )
+			array( 'class' => Settings::add_own_links() ? 'iawmlf_toggle_setting__auto_archiver' : 'iawmlf_toggle_setting__auto_archiver hidden' )
 		);
 
 		add_settings_field(
@@ -541,7 +541,7 @@ class Settings_Page {
 			array( $this, 'render_archiver_post_types_field' ),
 			self::PAGE_SLUG,
 			self::GROUP_AUTO_ARCHIVER,
-			array( 'class' => Settings::add_own_links() ? 'wlf_toggle_setting__auto_archiver' : 'wlf_toggle_setting__auto_archiver hidden' )
+			array( 'class' => Settings::add_own_links() ? 'iawmlf_toggle_setting__auto_archiver' : 'iawmlf_toggle_setting__auto_archiver hidden' )
 		);
 	}
 
@@ -615,7 +615,7 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_fixer_post_types_field(): void {
-		echo '<div class="wlf_settings_post_types">';
+		echo '<div class="iawmlf_settings_post_types">';
 		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type ) {
 			if ( 'attachment' === $post_type->name ) {
 				continue;
@@ -645,7 +645,7 @@ class Settings_Page {
 	 * @return void
 	 */
 	public function render_archiver_post_types_field(): void {
-		echo '<div class="wlf_settings_post_types">';
+		echo '<div class="iawmlf_settings_post_types">';
 		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type ) {
 			if ( 'attachment' === $post_type->name ) {
 				continue;
@@ -737,18 +737,18 @@ class Settings_Page {
 		);
 
 		?>
-		<div id="wlf_excluded_links">
+		<div id="iawmlf_excluded_links">
 			<div class="new-link">
 				<input
 					type="text"
-					id="wlf_excluded_links_new"
+					id="iawmlf_excluded_links_new"
 					placeholder="<?php esc_html_e( 'Add a new exclusion (https://x.com*)', 'internet-archive-wayback-machine-link-fixer' ); ?>"
 					data-group="link_fixer"
 				/>
-				<button id="wlf_excluded_links_new_action" data-group="link_fixer" type="button" class="button button-secondary add-exclusion"><?php esc_html_e( 'Add', 'internet-archive-wayback-machine-link-fixer' ); ?></button>
+				<button id="iawmlf_excluded_links_new_action" data-group="link_fixer" type="button" class="button button-secondary add-exclusion"><?php esc_html_e( 'Add', 'internet-archive-wayback-machine-link-fixer' ); ?></button>
 			</div>
 
-			<div id="wlf_excluded_empty" style="display: <?php echo empty( $urls ) ? 'block' : 'none'; ?>;">
+			<div id="iawmlf_excluded_empty" style="display: <?php echo empty( $urls ) ? 'block' : 'none'; ?>;">
 				<p>
 					<?php esc_html_e( 'No exclusions found.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 				</p>

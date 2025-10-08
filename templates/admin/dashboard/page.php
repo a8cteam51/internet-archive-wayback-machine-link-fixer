@@ -44,20 +44,20 @@ $iawmlf_still_processing      = $iawmlf_process_new + $iawmlf_process_pending;
 
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php esc_html_e( 'Wayback Link Fixer - Dashboard', 'internet-archive-wayback-machine-link-fixer' ); ?></h1>
-	<div class="wlf_dashboard-page-grid">
+	<div class="iawmlf_dashboard-page-grid">
 		<!-- Left Column (66%) - Link Details -->
-		<div class="wlf_dashboard-page-main">
-			<div class="wlf_dashboard-page-column-wrapper">
+		<div class="iawmlf_dashboard-page-main">
+			<div class="iawmlf_dashboard-page-column-wrapper">
 				<!-- Link Activity Accordion -->
-				<div class="wlf_dashboard-wrapper">
-					<div class="wlf_dashboard-status-section">
-						<div class="wlf_dashboard-accordion">
+				<div class="iawmlf_dashboard-wrapper">
+					<div class="iawmlf_dashboard-status-section">
+						<div class="iawmlf_dashboard-accordion">
 							<!-- Accordion Navigation -->
-							<div class="wlf_dashboard-accordion-nav">
-								<button class="wlf_dashboard-accordion-tab wlf_dashboard-accordion-tab--active" data-tab="recent-checks">
+							<div class="iawmlf_dashboard-accordion-nav">
+								<button class="iawmlf_dashboard-accordion-tab iawmlf_dashboard-accordion-tab--active" data-tab="recent-checks">
 									<?php esc_html_e( 'Recent Link Checks', 'internet-archive-wayback-machine-link-fixer' ); ?>
 								</button>
-								<button class="wlf_dashboard-accordion-tab" data-tab="latest-links">
+								<button class="iawmlf_dashboard-accordion-tab" data-tab="latest-links">
 									<?php esc_html_e( 'Latest Links', 'internet-archive-wayback-machine-link-fixer' ); ?>
 								</button>
 							</div>
@@ -100,54 +100,54 @@ $iawmlf_still_processing      = $iawmlf_process_new + $iawmlf_process_pending;
 
 			</div>
 			<!-- Right Column (33%) - Overview Stats & Widget -->
-		<div class="wlf_dashboard-page-sidebar">
-			<div class="wlf_dashboard-page-column-wrapper">
+		<div class="iawmlf_dashboard-page-sidebar">
+			<div class="iawmlf_dashboard-page-column-wrapper">
 					<!-- Overview Stats -->
-					<div class="wlf_dashboard-wrapper">
-						<div class="wlf_dashboard-status-section">
-					<h3 class="wlf_dashboard-section-title"><?php esc_html_e( 'Link Statistics Overview', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
-					<div class="wlf_dashboard-stats-grid wlf_dashboard-stats-sidebar">
+					<div class="iawmlf_dashboard-wrapper">
+						<div class="iawmlf_dashboard-status-section">
+					<h3 class="iawmlf_dashboard-section-title"><?php esc_html_e( 'Link Statistics Overview', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
+					<div class="iawmlf_dashboard-stats-grid iawmlf_dashboard-stats-sidebar">
 						<!-- Row 1: Total Links | Still Processing -->
-						<div class="wlf_dashboard-stats-box">
-							<a href="<?php echo esc_url( $iawmlf_link_table ); ?>" class="wlf_dashboard-stats-number wlf_dashboard-stats-link">
+						<div class="iawmlf_dashboard-stats-box">
+							<a href="<?php echo esc_url( $iawmlf_link_table ); ?>" class="iawmlf_dashboard-stats-number iawmlf_dashboard-stats-link">
 								<?php echo esc_html( $iawmlf_total_links_count ); ?>
 							</a>
-							<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'Total Links', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
+							<div class="iawmlf_dashboard-stats-label"><?php esc_html_e( 'Total Links', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 						</div>
-						<div class="wlf_dashboard-stats-box <?php echo 0 === $iawmlf_still_processing ? 'wlf_dashboard-stats-box--success' : 'wlf_dashboard-stats-box--info'; ?>">
+						<div class="iawmlf_dashboard-stats-box <?php echo 0 === $iawmlf_still_processing ? 'iawmlf_dashboard-stats-box--success' : 'iawmlf_dashboard-stats-box--info'; ?>">
 							<?php if ( 0 === $iawmlf_still_processing ) : ?>
-								<div class="wlf_dashboard-stats-number">✓</div>
-								<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'All Links Processed', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
+								<div class="iawmlf_dashboard-stats-number">✓</div>
+								<div class="iawmlf_dashboard-stats-label"><?php esc_html_e( 'All Links Processed', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 							<?php else : ?>
-								<div class="wlf_dashboard-stats-number"><?php echo esc_html( $iawmlf_still_processing ); ?></div>
-								<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'Still Processing', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
+								<div class="iawmlf_dashboard-stats-number"><?php echo esc_html( $iawmlf_still_processing ); ?></div>
+								<div class="iawmlf_dashboard-stats-label"><?php esc_html_e( 'Still Processing', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 							<?php endif; ?>
 						</div>
 
 						<!-- Row 2: With Archive | Without -->
-						<div class="wlf_dashboard-stats-box wlf_dashboard-stats-box--success">
-							<a href="<?php echo esc_url( $iawmlf_filtered_has_archive ); ?>" class="wlf_dashboard-stats-number wlf_dashboard-stats-link">
+						<div class="iawmlf_dashboard-stats-box iawmlf_dashboard-stats-box--success">
+							<a href="<?php echo esc_url( $iawmlf_filtered_has_archive ); ?>" class="iawmlf_dashboard-stats-number iawmlf_dashboard-stats-link">
 								<?php echo esc_html( $iawmlf_links_with_archive ); ?>
 							</a>
-							<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'With Archive', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
+							<div class="iawmlf_dashboard-stats-label"><?php esc_html_e( 'With Archive', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 						</div>
-						<div class="wlf_dashboard-stats-box wlf_dashboard-stats-box--warning">
-							<a href="<?php echo esc_url( $iawmlf_filtered_no_archive ); ?>" class="wlf_dashboard-stats-number wlf_dashboard-stats-link">
+						<div class="iawmlf_dashboard-stats-box iawmlf_dashboard-stats-box--warning">
+							<a href="<?php echo esc_url( $iawmlf_filtered_no_archive ); ?>" class="iawmlf_dashboard-stats-number iawmlf_dashboard-stats-link">
 								<?php echo esc_html( $iawmlf_links_without_archive ); ?>
 							</a>
-							<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'Without Archive', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
+							<div class="iawmlf_dashboard-stats-label"><?php esc_html_e( 'Without Archive', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 						</div>
 
 						<!-- Row 3: Not Checked | Broken Links -->
-						<div class="wlf_dashboard-stats-box wlf_dashboard-stats-box--info">
-							<div class="wlf_dashboard-stats-number"><?php echo esc_html( $iawmlf_not_checked ); ?></div>
-							<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'Not Checked', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
+						<div class="iawmlf_dashboard-stats-box iawmlf_dashboard-stats-box--info">
+							<div class="iawmlf_dashboard-stats-number"><?php echo esc_html( $iawmlf_not_checked ); ?></div>
+							<div class="iawmlf_dashboard-stats-label"><?php esc_html_e( 'Not Checked', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 						</div>
-						<div class="wlf_dashboard-stats-box wlf_dashboard-stats-box--danger">
-							<a href="<?php echo esc_url( $iawmlf_filtered_broken ); ?>" class="wlf_dashboard-stats-number wlf_dashboard-stats-link">
+						<div class="iawmlf_dashboard-stats-box iawmlf_dashboard-stats-box--danger">
+							<a href="<?php echo esc_url( $iawmlf_filtered_broken ); ?>" class="iawmlf_dashboard-stats-number iawmlf_dashboard-stats-link">
 								<?php echo esc_html( $iawmlf_broken_links ); ?>
 							</a>
-							<div class="wlf_dashboard-stats-label"><?php esc_html_e( 'Broken Links', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
+							<div class="iawmlf_dashboard-stats-label"><?php esc_html_e( 'Broken Links', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 						</div>
 					</div>
 				</div>
