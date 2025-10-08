@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<?php echo wp_kses_post( $header ); ?>
+<?php echo wp_kses( $header, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
 
 <div class="wlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Setup complete.', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
@@ -33,4 +33,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 </div>
 
 
-<?php echo wp_kses_post( $footer ); ?>
+<?php echo wp_kses( $footer, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>

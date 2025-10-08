@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
 // Holds the class to hide all inputs if not enabled.
-$wlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
+$iawmlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 ?>
 
 <?php echo wp_kses_post( $header ); ?>
@@ -43,24 +43,24 @@ $wlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 		<p class="description"><?php esc_html_e( 'When the Auto Archiver is enabled, your content is automatically archived on the Internet Archive each time you publish or save changes to a post of the selected types.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	</div>
 </div>
-<div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $wlf_hide_class ); ?>" >
+<div class="wlf-wizard__content__field is_optional <?php echo esc_attr( $iawmlf_hide_class ); ?>" >
 	<label for="wlf_wizard_post_types">
 		<?php esc_html_e( 'Post Types', 'internet-archive-wayback-machine-link-fixer' ); ?>
 	</label>
 	<p class="description"><?php esc_html_e( 'Select which post types should be archived on the Wayback Machine.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	<div class="wlf-wizard__content__inner-field checkboxes">
-		<?php foreach ( $post_types as $wlf_pt_slug => $wlf_pt_name ) : ?>
+		<?php foreach ( $post_types as $iawmlf_pt_slug => $iawmlf_pt_name ) : ?>
 			<div class="inner-spaced-between__list">
 				<label>
-					<?php echo esc_html( $wlf_pt_name ); ?>
+					<?php echo esc_html( $iawmlf_pt_name ); ?>
 				</label>
-					<input type="checkbox" name="wlf_wizard_post_types[]" value="<?php echo esc_attr( $wlf_pt_slug ); ?>" <?php checked( in_array( $wlf_pt_slug, Settings::own_link_allowed_post_types(), true ) ); ?> />
+					<input type="checkbox" name="wlf_wizard_post_types[]" value="<?php echo esc_attr( $iawmlf_pt_slug ); ?>" <?php checked( in_array( $iawmlf_pt_slug, Settings::own_link_allowed_post_types(), true ) ); ?> />
 			</div>
 		<?php endforeach; ?>
 	</div>
 </div>
 
-<div class="wlf-wizard__content__field  is_optional <?php echo esc_attr( $wlf_hide_class ); ?>">
+<div class="wlf-wizard__content__field  is_optional <?php echo esc_attr( $iawmlf_hide_class ); ?>">
 	<div class="wlf-wizard__content__inner-field checkbox">
 		<div class="inner-spaced-between">
 			<label for="wlf_wizard_recurring_backup">

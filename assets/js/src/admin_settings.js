@@ -8,8 +8,8 @@
 	jQuery(document).ready(function () {
 
 		// Get the settings.
-		const PROCESS_LINK = jQuery('#t51_wlf_process_links');
-		const AUTO_ARCHIVE = jQuery('#t51_wlf_allow_own_content_submissions');
+		const PROCESS_LINK = jQuery('#iawmlf_process_links');
+		const AUTO_ARCHIVE = jQuery('#iawmlf_allow_own_content_submissions');
 
 		const EXCLUDED_LINKS = jQuery('#wlf_excluded_links');
 		const NEW_LINK = jQuery('#wlf_excluded_links_new');

@@ -358,9 +358,9 @@ class Report_Page {
 		wpcomsp_wayback_link_fixer_render_template(
 			'admin/reports/link-details.php',
 			array(
-				'wlf_link'     => $link,
-				'wlf_posts'    => array_map( 'get_post', array_unique( $this->link_repository->get_post_ids_from_link_id( $link->get_id() ) ) ),
-				'wlf_back_url' => wp_get_referer() ?: self::get_page_url(), // phpcs:ignore Universal.Operators.DisallowShortTernary.Found, returns false, so cant use ??
+				'iawmlf_link'     => $link,
+				'iawmlf_posts'    => array_map( 'get_post', array_unique( $this->link_repository->get_post_ids_from_link_id( $link->get_id() ) ) ),
+				'iawmlf_back_url' => wp_get_referer() ?: self::get_page_url(), // phpcs:ignore Universal.Operators.DisallowShortTernary.Found, returns false, so cant use ??
 			)
 		);
 	}

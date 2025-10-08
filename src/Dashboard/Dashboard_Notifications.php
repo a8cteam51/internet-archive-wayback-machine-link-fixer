@@ -85,17 +85,17 @@ class Dashboard_Notifications {
 		wpcomsp_wayback_link_fixer_render_template(
 			'admin/dashboard/widget.php',
 			array(
-				'wlf_details'                 => self::get_account_details(),
-				'wlf_api_configured'          => Settings::is_archive_api_configured(),
-				'wlf_is_online'               => wpcomsp_wayback_link_fixer_is_archive_api_online(),
-				'wlf_link_to_settings'        => Settings_Page::get_page_url(),
-				'wlf_link_table'              => Report_Page::get_page_url(),
-				'wlf_total_links'             => ( new Link_Repository() )->query_links( PHP_INT_MAX ),
-				'wlf_auto_archiver_enabled'   => Settings::add_own_links(),
-				'wlf_scan_existing_enabled'   => Settings::should_scan_existing_posts(),
-				'wlf_link_processing_enabled' => Settings::is_link_processing_enabled(),
-				'wlf_link_check_duration'     => Settings::get_link_check_duration(),
-				'wlf_failed_check_count'      => Settings::get_failed_count(),
+				'iawmlf_details'                 => self::get_account_details(),
+				'iawmlf_api_configured'          => Settings::is_archive_api_configured(),
+				'iawmlf_is_online'               => wpcomsp_wayback_link_fixer_is_archive_api_online(),
+				'iawmlf_link_to_settings'        => Settings_Page::get_page_url(),
+				'iawmlf_link_table'              => Report_Page::get_page_url(),
+				'iawmlf_total_links'             => ( new Link_Repository() )->query_links( PHP_INT_MAX ),
+				'iawmlf_auto_archiver_enabled'   => Settings::add_own_links(),
+				'iawmlf_scan_existing_enabled'   => Settings::should_scan_existing_posts(),
+				'iawmlf_link_processing_enabled' => Settings::is_link_processing_enabled(),
+				'iawmlf_link_check_duration'     => Settings::get_link_check_duration(),
+				'iawmlf_failed_check_count'      => Settings::get_failed_count(),
 			)
 		);
 	}
