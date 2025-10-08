@@ -84,8 +84,10 @@ class Check_Validator_Status {
 	 * @return void
 	 */
 	public static function add_to_queue( int $link_id, string $job_id, int $attempt = 0, ?int $delay = null ): void {
-		// Get the time to call this.
-		$time = time() + $delay ?? self::get_interval();
+
+		$time = ! is_int( $delay ) || 0 === $delay
+			? time() + self::get_interval()
+			: time() + $delay;
 
 		// Add the event to the queue.
 		as_schedule_single_action(

@@ -413,9 +413,6 @@ function wpcomsp_wayback_link_fixer_normalize_url( string $url ): string {
 	$url  = isset( $url_parts['scheme'] ) ? $url_parts['scheme'] . '://' : '';
 	$url .= isset( $url_parts['host'] ) ? $url_parts['host'] : '';
 
-	// URL encode the host
-	$url = rawurlencode( $url );
-
 	// Add port if specified
 	if ( isset( $url_parts['port'] ) ) {
 		$url .= ':' . $url_parts['port'];

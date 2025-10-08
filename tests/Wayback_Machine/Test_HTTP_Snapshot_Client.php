@@ -62,7 +62,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		add_filter(
 			'pre_http_request',
 			function ( $response, $args, $url ) {
-				$this->assertStringEndsWith( 'http%3A%2F%2Fexample.com', $url );
+				$this->assertStringEndsWith( 'http://example.com', $url );
 				return new \WP_Error( 'http_request_failed', 'Error' );
 			},
 			10,
@@ -275,7 +275,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		add_filter(
 			'pre_http_request',
 			function ( $response, $args, $url ) {
-				$this->assertEquals( 'http://custom-snapshot.com?url=http%3A%2F%2Fexample.com&timestamp=20240422', $url );
+				$this->assertEquals( 'http://custom-snapshot.com?url=http://example.com&timestamp=20240422', $url );
 				return new \WP_Error( 'http_request_failed', 'Error' );
 			},
 			10,

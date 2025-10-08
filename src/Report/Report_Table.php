@@ -402,7 +402,6 @@ class Report_Table extends \WP_List_Table {
 		// Itrerates over the links and rescan them.
 		foreach ( $links as $link_id ) {
 			$result = $action->rescan_link( absint( $link_id ) );
-
 			// If we have no link, add a notice.
 			if ( null === $result['link'] ) {
 				$this->notices[] = array(

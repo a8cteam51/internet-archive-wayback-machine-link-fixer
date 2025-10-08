@@ -160,18 +160,6 @@ class Update_Archive_URL_Event {
 	}
 
 	/**
-	 * Mark a link a broken.
-	 *
-	 * @param Link $link The link to mark as broken.
-	 *
-	 * @return void
-	 */
-	private function mark_link_broken( Link $link ): void {
-		$link->set_broken();
-		$this->repository->upsert( $link );
-	}
-
-	/**
 	 * Add an archived url to a link.
 	 *
 	 * @param Link   $link        The link to add the archived url to.

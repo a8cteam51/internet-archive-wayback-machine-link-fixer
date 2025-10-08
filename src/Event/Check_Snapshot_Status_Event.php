@@ -70,7 +70,7 @@ class Check_Snapshot_Status_Event {
 	 * @return integer
 	 */
 	public static function get_interval(): int {
-		return absint( apply_filters( 'iawmlf_check_snapshot_status_interval', 5 * \MINUTE_IN_SECONDS ) );
+		return absint( apply_filters( 'iawmlf_check_snapshot_status_interval', 10 * \MINUTE_IN_SECONDS ) );
 	}
 
 	/**
@@ -84,8 +84,10 @@ class Check_Snapshot_Status_Event {
 	 * @return void
 	 */
 	public static function add_to_queue( int $link_id, string $job_id, int $attempt = 0, ?int $delay = null ): void {
-		// Get the time to call this.
-		$time = time() + $delay ?? self::get_interval();
+
+		$time = ! is_int( $delay ) || 0 === $delay
+			? time() + self::get_interval()
+			: time() + $delay;
 
 		// Add the event to the queue.
 		as_schedule_single_action(

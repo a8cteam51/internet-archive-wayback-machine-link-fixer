@@ -91,7 +91,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		$this->assertStringStartsWith( 'https://iabot-api.archive.org/livewebcheck', $called_url );
 
 		// Check contains url=https://example.com
-		$this->assertStringContainsString( 'url=https%3A%2F%2Fexample.com', $called_url );
+		$this->assertStringContainsString( 'url=https://example.com', $called_url );
 	}
 
 	/**
@@ -129,7 +129,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		$this->assertStringStartsWith( 'https://iabot-api.archive.org/livewebcheck', $called_url );
 
 		// Check contains url=https://example.com
-		$this->assertStringContainsString( 'url=https%3A%2F%2Fexample.com', $called_url );
+		$this->assertStringContainsString( 'url=https://example.com', $called_url );
 
 		// Check contains foo=bar
 		$this->assertStringContainsString( 'foo=bar', $called_url );
