@@ -27,12 +27,12 @@
 defined( 'ABSPATH' ) || exit;
 
 // Define plugin constants.
-define( 'WPCOMSP_WAYBACK_LINK_FIXER_BASENAME', plugin_basename( __FILE__ ) );
-define( 'WPCOMSP_WAYBACK_LINK_FIXER_PATH', plugin_dir_path( __FILE__ ) );
-define( 'WPCOMSP_WAYBACK_LINK_FIXER_URL', plugin_dir_url( __FILE__ ) );
-define( 'WPCOMSP_WAYBACK_LINK_FIXER_VERSION', '1.3.0' );
+define( 'IAWMLF_BASENAME', plugin_basename( __FILE__ ) );
+define( 'IAWMLF_PATH', plugin_dir_path( __FILE__ ) );
+define( 'IAWMLF_URL', plugin_dir_url( __FILE__ ) );
+define( 'IAWMLF_VERSION', '1.3.0' );
 define(
-	'WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS',
+	'IAWMLF_MINIMUM_VERSIONS',
 	array(
 		'wp'  => '6.4',
 		'php' => '7.4',
@@ -40,7 +40,7 @@ define(
 );
 
 // Load the rest of the bootstrap functions.
-require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/functions-bootstrap.php';
+require_once IAWMLF_PATH . '/functions-bootstrap.php';
 
 // Declare compatibility with WC features.
 add_action(
@@ -53,19 +53,19 @@ add_action(
 );
 
 // Load the autoloader.
-if ( ! is_file( WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/vendor/autoload.php' ) ) {
+if ( ! is_file( IAWMLF_PATH . '/vendor/autoload.php' ) ) {
 	iawmlf_output_requirements_error( new WP_Error( 'missing_autoloader' ) );
 	return;
 }
-require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/vendor/autoload.php';
+require_once IAWMLF_PATH . '/vendor/autoload.php';
 
-define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', iawmlf_validate_requirements() );
+define( 'IAWMLF_MINIMUM_REQUIREMENTS', iawmlf_validate_requirements() );
 
-if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
-	iawmlf_output_requirements_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS );
+if ( is_wp_error( IAWMLF_MINIMUM_REQUIREMENTS ) ) {
+	iawmlf_output_requirements_error( IAWMLF_MINIMUM_REQUIREMENTS );
 } else {
 	// Include the action scheduler integration.
-	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
+	require_once IAWMLF_PATH . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
 	// Add all migrations.
 	\WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations::$migrations = array( //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1::class,
@@ -73,7 +73,7 @@ if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
 		\WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_3::class,
 	);
 
-	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'functions.php';
+	require_once IAWMLF_PATH . 'functions.php';
 	add_action( 'plugins_loaded', array( iawmlf_get_plugin_instance(), 'maybe_initialize' ) );
 
 	register_activation_hook( __FILE__, 'iawmlf_activate' );

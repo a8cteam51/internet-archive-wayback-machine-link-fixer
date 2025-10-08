@@ -214,7 +214,7 @@ class WP_Post_Controller {
 			: array();
 
 		// Get the scripts assets file.
-		$script_assets = WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'assets/js/build/front_link_checker.asset.php';
+		$script_assets = IAWMLF_PATH . 'assets/js/build/front_link_checker.asset.php';
 
 		// If the script cant be found, return.
 		if ( ! file_exists( $script_assets ) ) {
@@ -226,7 +226,7 @@ class WP_Post_Controller {
 		// Register the script.
 		wp_register_script(
 			'wpcomsp-wayback-link-fixer-front-link-checker',
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/front_link_checker.js',
+			IAWMLF_URL . 'assets/js/build/front_link_checker.js',
 			$assets['dependencies'],
 			$assets['version'],
 			true

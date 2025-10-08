@@ -52,9 +52,9 @@ class Dashboard_Notifications {
 		if ( $screen && 'dashboard' === $screen->id ) {
 			wp_enqueue_style(
 				self::PAGE_SLUG,
-				WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
+				IAWMLF_URL . 'assets/css/build/style-style.scss.css',
 				array(),
-				WPCOMSP_WAYBACK_LINK_FIXER_VERSION
+				IAWMLF_VERSION
 			);
 		}
 	}

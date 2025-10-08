@@ -175,7 +175,7 @@ function iawmlf_get_system_client(): \WPCOMSpecialProjects\Wayback_Link_Fixer\Wa
  */
 function iawmlf_render_template( string $template, array $args = array(), bool $render = true ) {
 
-	$path = WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'templates/' . $template;
+	$path = IAWMLF_PATH . 'templates/' . $template;
 
 	// Throw an error if the template does not exist.
 	if ( ! file_exists( $path ) ) {
@@ -222,7 +222,7 @@ function iawmlf_render_template( string $template, array $args = array(), bool $
  * @return string
  */
 function iawmlf_get_image_asset_url( string $filename ): string {
-	return esc_url( WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/images/' . $filename );
+	return esc_url( IAWMLF_URL . 'assets/images/' . $filename );
 }
 
 /**

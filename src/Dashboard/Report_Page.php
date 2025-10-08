@@ -132,17 +132,17 @@ class Report_Page {
 		// Enqueue the admin styles.
 		wp_enqueue_style(
 			self::SLUG,
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
+			IAWMLF_URL . 'assets/css/build/style-style.scss.css',
 			array(),
-			WPCOMSP_WAYBACK_LINK_FIXER_VERSION
+			IAWMLF_VERSION
 		);
 
 		// Enqueue the admin scripts.
 		wp_enqueue_script(
 			self::SLUG,
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/link-table.js',
+			IAWMLF_URL . 'assets/js/build/link-table.js',
 			array( 'jquery' ),
-			WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
+			IAWMLF_VERSION,
 			true
 		);
 	}

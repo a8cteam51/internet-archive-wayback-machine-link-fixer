@@ -87,9 +87,9 @@ class Dashboard_Page {
 			// Enqueue styles
 			wp_enqueue_style(
 				self::DASHBOARD_SLUG,
-				WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
+				IAWMLF_URL . 'assets/css/build/style-style.scss.css',
 				array(),
-				WPCOMSP_WAYBACK_LINK_FIXER_VERSION
+				IAWMLF_VERSION
 			);
 		}
 
@@ -97,9 +97,9 @@ class Dashboard_Page {
 		if ( $is_dashboard_page ) {
 			wp_enqueue_script(
 				self::DASHBOARD_SLUG . '_dashboard',
-				WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/dashboard.js',
+				IAWMLF_URL . 'assets/js/build/dashboard.js',
 				array(),
-				WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
+				IAWMLF_VERSION,
 				true
 			);
 		}

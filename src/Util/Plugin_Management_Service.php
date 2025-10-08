@@ -26,7 +26,7 @@ class Plugin_Management_Service {
 	 * @return void
 	 */
 	public function initialize(): void {
-		add_action( 'plugin_action_links_' . WPCOMSP_WAYBACK_LINK_FIXER_BASENAME, array( $this, 'add_settings_link' ) );
+		add_action( 'plugin_action_links_' . IAWMLF_BASENAME, array( $this, 'add_settings_link' ) );
 	}
 
 	/**

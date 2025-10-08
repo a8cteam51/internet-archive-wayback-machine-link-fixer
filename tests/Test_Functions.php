@@ -62,8 +62,8 @@ class Test_Functions extends \WP_UnitTestCase {
 	public function test_constants_should_be_defined_and_match_plugin_metadata(): void {
 		// Get the plugin metadata.
 		$plugin_metadata = get_plugin_data( WP_PLUGIN_DIR . '/internet-archive-wayback-machine-link-fixer/internet-archive-wayback-machine-link-fixer.php' );
-		$this->assertSame( WPCOMSP_WAYBACK_LINK_FIXER_VERSION, $plugin_metadata['Version'], 'Version should match the plugin metadata.' );
-		$this->assertSame( WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['wp'], $plugin_metadata['RequiresWP'], 'RequiresWP should match the plugin metadata.' );
-		$this->assertSame( WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['php'], $plugin_metadata['RequiresPHP'], 'RequiresPHP should match the plugin metadata.' );
+		$this->assertSame( IAWMLF_VERSION, $plugin_metadata['Version'], 'Version should match the plugin metadata.' );
+		$this->assertSame( IAWMLF_MINIMUM_VERSIONS['wp'], $plugin_metadata['RequiresWP'], 'RequiresWP should match the plugin metadata.' );
+		$this->assertSame( IAWMLF_MINIMUM_VERSIONS['php'], $plugin_metadata['RequiresPHP'], 'RequiresPHP should match the plugin metadata.' );
 	}
 }

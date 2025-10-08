@@ -112,9 +112,9 @@ class Settings_Page {
 
 		wp_register_script(
 			self::PAGE_SLUG,
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/admin_settings.js',
+			IAWMLF_URL . 'assets/js/build/admin_settings.js',
 			array( 'jquery' ),
-			WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
+			IAWMLF_VERSION,
 			true
 		);
 
@@ -131,9 +131,9 @@ class Settings_Page {
 		//  Register the styles.
 		wp_enqueue_style(
 			self::PAGE_SLUG,
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
+			IAWMLF_URL . 'assets/css/build/style-style.scss.css',
 			array(),
-			WPCOMSP_WAYBACK_LINK_FIXER_VERSION
+			IAWMLF_VERSION
 		);
 	}
 
