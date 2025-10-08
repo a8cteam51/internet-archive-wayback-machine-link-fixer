@@ -87,7 +87,7 @@ class Setup_Wizard {
 		add_action(
 			'admin_notices',
 			function () use ( $message ) {
-				printf( '<div class="notice notice-warning is-dismissible"><p>%s</p></div>', $message ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				printf( '<div class="notice notice-warning is-dismissible"><p>%s</p></div>', wp_kses( $message, array( 'a' => array( 'href' => array() ) ) ) );
 			}
 		);
 	}

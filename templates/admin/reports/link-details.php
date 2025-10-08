@@ -9,10 +9,12 @@
  * @var string $wlf_back_url The URL to return to the report.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-
-defined( 'ABSPATH' ) || exit;
 
 // Check if we have any previous links to show.
 $wlf_check_count      = count( $wlf_link->get_checks() );
@@ -185,7 +187,19 @@ $wlf_link_title = wpcomsp_wayback_link_fixer_trim_string( str_replace( array( 'h
 														<?php endif; ?>
 													</a>
 												</td>
-												<td><?php echo wpcomsp_wayback_link_fixer_get_admin_post_type_link( $wlf_post->post_type );  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, escaped in function ?></td>
+												<td>
+												<?php
+												echo wp_kses(
+													wpcomsp_wayback_link_fixer_get_admin_post_type_link( $wlf_post->post_type ),
+													array(
+														'a' => array(
+															'href' => array(),
+															'target' => array(),
+														),
+													)
+												);
+												?>
+													</td>
 												<td>
 													<?php
 													// Get the post status.

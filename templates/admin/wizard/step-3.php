@@ -12,13 +12,17 @@
  * @param string $footer The footer template.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 
 // Holds the class to hide all inputs if not enabled.
 $wlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 ?>
 
-<?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo wp_kses_post( $header ); ?>
 
 <div class="wlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Step 3: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
@@ -68,4 +72,4 @@ $wlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 	</div>
 </div>
 
-<?php echo $footer; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo wp_kses_post( $footer ); ?>

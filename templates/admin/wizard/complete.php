@@ -8,9 +8,13 @@
  * @param string $header The header template.
  * @param string $footer The footer template.
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 
-<?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo wp_kses_post( $header ); ?>
 
 <div class="wlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Setup complete.', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
@@ -29,4 +33,4 @@
 </div>
 
 
-<?php echo $footer; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo wp_kses_post( $footer ); ?>

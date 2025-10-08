@@ -12,6 +12,10 @@
  * @param string $footer The footer template.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Sets the type for api keys based on the current environment.
 $wlf_invalid_keys = isset( $_POST['wlf_wizard_invalid_keys'] ); // phpcs:ignore
 $wlf_access_type  = '' === $settings->get_archive_access_key() || $wlf_invalid_keys
@@ -26,7 +30,7 @@ $wlf_existing_access_key = isset( $_POST['wlf_wizard_archive_access_key_temp'] )
 $wlf_existing_secret_key = isset( $_POST['wlf_wizard_archive_secret_key_temp'] ) ? sanitize_text_field( wp_unslash( $_POST['wlf_wizard_archive_secret_key_temp'] ) ) : $settings->get_archive_secret_key(); // phpcs:ignore
 ?>
 
-<?php echo $header; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo wp_kses_post( $header ); ?>
 
 <div class="wlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Step 1: Configure the Wayback Machine API', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
@@ -51,4 +55,4 @@ $wlf_existing_secret_key = isset( $_POST['wlf_wizard_archive_secret_key_temp'] )
 </div>
 
 
-<?php echo $footer; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo wp_kses_post( $footer ); ?>

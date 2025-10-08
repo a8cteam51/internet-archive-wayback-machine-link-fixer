@@ -5,6 +5,10 @@
  * @since 1.3.0
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 ?>
 <div id="wlf_help_tab_bulk_actions" class="wlf_help_tab">
 	<h3><?php esc_html_e( 'Update to latest snapshot', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>

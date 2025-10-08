@@ -211,30 +211,6 @@ function wpcomsp_wayback_link_fixer_render_template( string $template, array $ar
 }
 
 
-/**
- * Render the CSS used for archived links in the header.
- *
- * @since 1.1.0
- *
- * @return void
- */
-function wpcomsp_wayback_link_fixer_render_archived_link_css(): void {
-	$css = '
-.wlf-archived__redirect {
-    color: var(--wp--preset--color--primary) !important;
-    padding: 0 8px;
-    font-size: 75%;
-}
-.wlf-archived__redirect:hover {
-    color: #005f7b;
-}
-';
-
-	// Filter the css.
-	$css = apply_filters( 'wlf_archived_link_css', $css );
-
-	echo '<style>' . $css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-}
 
 /**
  * Get image asset URL from filename.

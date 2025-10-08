@@ -12,7 +12,10 @@
  * @param string $wlf_no_links_message Message to display when no links are available.
  */
 
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 ?>
 <div class="wlf_dashboard-accordion-content wlf_dashboard-accordion-content<?php echo esc_attr( $wlf_is_active ? '--active' : '' ); ?>" id="<?php echo esc_attr( $wlf_section_id ); ?>">
 	<div class="wlf_dashboard-link-checks">
