@@ -66,7 +66,7 @@ if ( is_wp_error( IAWMLF_MINIMUM_REQUIREMENTS ) ) {
 } else {
 	// Include the action scheduler integration.
 	require_once IAWMLF_PATH . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
-	dump(class_exists(\Internet_Archive\Wayback_Machine_Link_Fixer_Migration\Migration_1::class));
+
 	// Add all migrations.
 	\Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Migrations::$migrations = array( //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		\Internet_Archive\Wayback_Machine_Link_Fixer_Migration\Migration_1::class,

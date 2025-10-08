@@ -43,7 +43,7 @@ class Esc {
 				'name'  => array(),
 				'class' => array(),
 			),
-			'p' => array(
+			'p'      => array(
 				'class' => array(),
 				'id'    => array(),
 				'style' => array(),

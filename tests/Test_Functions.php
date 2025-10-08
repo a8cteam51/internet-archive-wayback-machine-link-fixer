@@ -31,7 +31,7 @@ class Test_Functions extends \WP_UnitTestCase {
 			'HTTP URL with basic path'              => array( 'http://example.com/path/to/resource', 'http://example.com/path/to/resource' ),
 			'HTTP URL with path and trailing slash' => array( 'http://example.com/path/to/resource/', 'http://example.com/path/to/resource' ),
 			'HTTP URL with spaces in path'          => array( 'http://example.com/path with space/to/resource', 'http://example.com/path%20with%20space/to/resource' ),
-			'HTTP URL with query parameters'        => array( 'http://example.com/path/to/resource?foo=bar', 'http://example.com/path/to/resource?foo%3Dbar' ),
+			'HTTP URL with query parameters'        => array( 'http://example.com/path/to/resource?foo=bar', 'http://example.com/path/to/resource?foo=bar' ),
 			'HTTP URL with fragment'                => array( 'http://example.com/path/to/resource#section1', 'http://example.com/path/to/resource#section1' ),
 			'HTTP URL with port'                    => array( 'http://example.com:8080/path/to/resource', 'http://example.com:8080/path/to/resource' ),
 			'HTTP URL with query containing spaces' => array( 'http://example.com/?query with spaces', 'http://example.com/?query%20with%20spaces' ),
@@ -39,10 +39,10 @@ class Test_Functions extends \WP_UnitTestCase {
 			'HTTP URL with hashbang fragment'       => array( 'http://example.com/#!special_characters', 'http://example.com/#!special_characters' ),
 			'URL with already encoded characters'   => array( 'http://example.com/path%20with%20spaces', 'http://example.com/path%20with%20spaces' ),
 			'URL with mixed encoding'               => array( 'http://example.com/path%20with/other spaces', 'http://example.com/path%20with/other%20spaces' ),
-			'URL with special chars in query'       => array( 'http://example.com/?param=value&other=test', 'http://example.com/?param%3Dvalue%26other%3Dtest' ),
+			'URL with special chars in query'       => array( 'http://example.com/?param=value&other=test', 'http://example.com/?param=value&other=test' ),
 			'URL with unicode characters'           => array( 'http://example.com/path/with/unicode/测试', 'http://example.com/path/with/unicode/%E6%B5%8B%E8%AF%95' ),
 			'Real-world CanSpace URL with %20'      => array( 'https://www.canspace.ca/blog/hosting-servers/what-does-%20-mean-in-a-web-address/', 'https://www.canspace.ca/blog/hosting-servers/what-does-%20-mean-in-a-web-address' ),
-			'Real-world Stack Overflow search'      => array( 'https://stackoverflow.com/search?q=php%20url%20encoding&s=b474a178-b42b-4310-ab1c-267331ff5fc3', 'https://stackoverflow.com/search?q%3Dphp%20url%20encoding%26s%3Db474a178-b42b-4310-ab1c-267331ff5fc3' ),
+			'Real-world Stack Overflow search'      => array( 'https://stackoverflow.com/search?q=php%20url%20encoding&s=b474a178-b42b-4310-ab1c-267331ff5fc3', 'https://stackoverflow.com/search?q=php%20url%20encoding&s=b474a178-b42b-4310-ab1c-267331ff5fc3' ),
 		);
 	}
 

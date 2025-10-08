@@ -37,5 +37,3 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page;
 
 
 <?php echo wp_kses( $footer, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
-
-

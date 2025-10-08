@@ -394,22 +394,36 @@ function iawmlf_normalize_url( string $url ): string {
 	// If we have a path, encode it.
 	if ( isset( $url_parts['path'] ) ) {
 		// Decode first to avoid double-encoding, then re-encode
-		$decoded_path = urldecode( $url_parts['path'] );
-		$path_parts   = explode( '/', $decoded_path );
-		$path_parts   = array_map( 'rawurlencode', $path_parts );
+		$decoded_path      = urldecode( $url_parts['path'] );
+		$path_parts        = explode( '/', $decoded_path );
+		$path_parts        = array_map( 'rawurlencode', $path_parts );
 		$url_parts['path'] = implode( '/', $path_parts );
 	}
 
 	// If we have a query, encode it.
 	if ( isset( $url_parts['query'] ) ) {
-		// Decode first to avoid double-encoding, then re-encode
-		$url_parts['query'] = rawurlencode( urldecode( $url_parts['query'] ) );
+		// Split query string into individual parameters
+		$query_pairs   = explode( '&', $url_parts['query'] );
+		$encoded_pairs = array();
+
+		foreach ( $query_pairs as $pair ) {
+			if ( strpos( $pair, '=' ) !== false ) {
+				// Has a value: key=value
+				list( $key, $value ) = explode( '=', $pair, 2 );
+				$encoded_pairs[]     = rawurlencode( urldecode( $key ) ) . '=' . rawurlencode( urldecode( $value ) );
+			} else {
+				// No value: just key
+				$encoded_pairs[] = rawurlencode( urldecode( $pair ) );
+			}
+		}
+
+		$url_parts['query'] = implode( '&', $encoded_pairs );
 	}
 
 	// If we have a fragment, encode it.
 	if ( isset( $url_parts['fragment'] ) ) {
 		// Decode first to avoid double-encoding, then re-encode
-		$decoded_fragment = urldecode( $url_parts['fragment'] );
+		$decoded_fragment      = urldecode( $url_parts['fragment'] );
 		$url_parts['fragment'] = str_replace( '%21', '!', rawurlencode( $decoded_fragment ) );
 	}
 
