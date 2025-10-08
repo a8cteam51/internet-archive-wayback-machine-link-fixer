@@ -16,13 +16,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 
 // Holds the class to hide all inputs if not enabled.
 $iawmlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 ?>
 
-<?php echo wp_kses( $header, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
+<?php echo wp_kses( $header, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
 
 <div class="iawmlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Step 2: Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
@@ -91,4 +91,4 @@ $iawmlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 	</select>
 </div>
 
-<?php echo wp_kses( $footer, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
+<?php echo wp_kses( $footer, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>

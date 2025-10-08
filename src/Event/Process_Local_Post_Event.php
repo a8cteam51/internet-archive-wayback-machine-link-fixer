@@ -8,12 +8,12 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
 use Exception;
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 defined( 'ABSPATH' ) || exit;
 

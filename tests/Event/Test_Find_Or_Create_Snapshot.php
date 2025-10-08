@@ -5,16 +5,16 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Find_Or_Create_Snapshot_Event
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Event\Find_Or_Create_Snapshot_Event
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Event;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Find_Or_Create_Snapshot_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Find_Or_Create_Snapshot_Event;
 
 /**
  * Test_Find_Or_Create_Snapshot
@@ -109,7 +109,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 		// Create mock snapshot client.
-		$client = $this->createMock( \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
+		$client = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
 		$client->method( 'get_latest_snapshot' )
 			->willReturn( array( 'url' => 'https://web.archive.org/web/iawmlf_glynn/https://example.com' ) );
 
@@ -159,7 +159,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 	public function test_link_is_not_found_on_wayback_machine(): void {
 
 		// Create mock snapshot client.
-		$client = $this->createMock( \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
+		$client = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
 		$client->method( 'get_latest_snapshot' )
 			->willReturn( null );
 

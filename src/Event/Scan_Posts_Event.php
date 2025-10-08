@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
 use WP_Query;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller;
 
 defined( 'ABSPATH' ) || exit;
 

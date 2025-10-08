@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer;
 
 defined( 'ABSPATH' ) || exit;
 

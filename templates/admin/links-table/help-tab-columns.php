@@ -10,8 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
-$iawmlf_failed_count    = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_failed_count();
-$iawmlf_check_frequency = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_link_check_duration();
+$iawmlf_failed_count    = \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings::get_failed_count();
+$iawmlf_check_frequency = \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings::get_link_check_duration();
 ?>
 
 <div id="iawmlf_help_tab_columns" class="iawmlf_help_tab">

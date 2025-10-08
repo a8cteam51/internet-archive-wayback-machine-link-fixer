@@ -4,7 +4,7 @@
  *
  * @since 1.2.0
  *
- * @var WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link $iawmlf_link The link.
+ * @var Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link $iawmlf_link The link.
  * @var \WP_Post[] $iawmlf_posts The posts that contain the link.
  * @var string $iawmlf_back_url The URL to return to the report.
  */
@@ -13,8 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 
 // Check if we have any previous links to show.
 $iawmlf_check_count      = count( $iawmlf_link->get_checks() );

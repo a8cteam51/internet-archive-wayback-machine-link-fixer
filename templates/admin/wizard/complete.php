@@ -13,11 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Settings_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page;
 
 ?>
 
-<?php echo wp_kses( $header, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
+<?php echo wp_kses( $header, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
 
 <div class="iawmlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Setup complete.', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
@@ -36,6 +36,6 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Settings_Page;
 </div>
 
 
-<?php echo wp_kses( $footer, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
+<?php echo wp_kses( $footer, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
 
 

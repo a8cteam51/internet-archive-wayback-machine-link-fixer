@@ -8,15 +8,15 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Link;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Link;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
-use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_1;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Abstract_Migration;
-use WPCOMSpecialProjects\Wayback_Link_Fixer_Migration\Migration_3;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Migrations;
+use Internet_Archive\Wayback_Machine_Link_Fixer_Migration\Migration_1;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Abstract_Migration;
+use Internet_Archive\Wayback_Machine_Link_Fixer_Migration\Migration_3;
 
 /**
  * Test_Migrations

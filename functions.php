@@ -10,14 +10,14 @@ declare(strict_types=1);
 
 defined( 'ABSPATH' ) || exit;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Plugin;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Migrations;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings_Page;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Plugin;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Migrations;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Link_Checker_Client;
 
 // region
 
@@ -134,7 +134,7 @@ function iawmlf_escape_http_status_code( $code ): ?int {
  *
  * @since 1.2.0
  *
- * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client
+ * @return Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client
  */
 function iawmlf_get_snapshot_client(): Snapshot_Client {
 	return apply_filters( 'iawmlf_snapshot_client', new HTTP_Snapshot_Client() );
@@ -145,7 +145,7 @@ function iawmlf_get_snapshot_client(): Snapshot_Client {
  *
  * @since 1.2.0
  *
- * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client
+ * @return Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client
  */
 function iawmlf_get_link_checker_client(): Link_Checker_Client {
 	return apply_filters( 'iawmlf_link_checker_client', new HTTP_Link_Checker_Client() );
@@ -156,10 +156,10 @@ function iawmlf_get_link_checker_client(): Link_Checker_Client {
  *
  * @since 1.3.0
  *
- * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\System_Client
+ * @return Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\System_Client
  */
-function iawmlf_get_system_client(): \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\System_Client {
-	return apply_filters( 'iawmlf_system_client', new \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_System_Client() );
+function iawmlf_get_system_client(): \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\System_Client {
+	return apply_filters( 'iawmlf_system_client', new \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_System_Client() );
 }
 
 /**

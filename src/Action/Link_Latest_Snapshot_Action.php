@@ -7,16 +7,16 @@
  *
  * @since 1.2.0
  *
- * @package WPCOMSpecialProjects\Wayback_Link_Fixer\Action
+ * @package Internet_Archive\Wayback_Machine_Link_Fixer\Action
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Action;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Action;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 defined( 'ABSPATH' ) || exit;
 

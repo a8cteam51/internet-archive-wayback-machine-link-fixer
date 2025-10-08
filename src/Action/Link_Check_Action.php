@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Action;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Action;
 
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -5,16 +5,16 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\HTTP_Snapshot_Client
+ * @coversDefaultClass Internet_Archive\Wayback_Machine_Link_Fixer\Link_Checker\HTTP_Snapshot_Client
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests;
 
 use DateTime;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
 
 /**
  * Test class for HTTP_Snapshot_Client.

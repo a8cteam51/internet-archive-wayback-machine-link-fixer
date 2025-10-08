@@ -10,17 +10,17 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post;
 
 use Exception;
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Exclusion;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Link_Check_Ajax;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Processor;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Process_Local_Post_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Exclusion;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Ajax\Link_Check_Ajax;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Processor\Post_Processor;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Process_Local_Post_Event;
 
 defined( 'ABSPATH' ) || exit;
 

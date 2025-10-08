@@ -5,23 +5,23 @@
  *
  * @since 1.3.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Event\Create_New_Snapshot_Event
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Event;
 
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Create_New_Snapshot_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
 
 /**
  * Test_Create_New_Snapshot_Event

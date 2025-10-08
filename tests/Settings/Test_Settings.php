@@ -5,15 +5,15 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Settings;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Settings;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Abstract_Migration;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Abstract_Migration;
 
 class Test_Settings extends \WP_UnitTestCase {
 

@@ -5,12 +5,12 @@
  *
  * @since 1.2.0
  *
- * @package WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception
+ * @package Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception;
 
 use Exception;
 

@@ -30,7 +30,7 @@ $iawmlf_existing_access_key = isset( $_POST['iawmlf_wizard_archive_access_key_te
 $iawmlf_existing_secret_key = isset( $_POST['iawmlf_wizard_archive_secret_key_temp'] ) ? sanitize_text_field( wp_unslash( $_POST['iawmlf_wizard_archive_secret_key_temp'] ) ) : $settings->get_archive_secret_key(); // phpcs:ignore
 ?>
 
-<?php echo wp_kses( $header, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
+<?php echo wp_kses( $header, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
 
 <div class="iawmlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Step 1: Configure the Wayback Machine API', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
@@ -55,4 +55,4 @@ $iawmlf_existing_secret_key = isset( $_POST['iawmlf_wizard_archive_secret_key_te
 </div>
 
 
-<?php echo wp_kses( $footer, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
+<?php echo wp_kses( $footer, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>

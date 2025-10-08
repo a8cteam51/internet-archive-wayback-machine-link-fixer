@@ -27,7 +27,7 @@
 		<properties>
 			<property name="prefixes" type="array">
 				<element value="iawmlf_"/>
-				<element value="WPCOMSpecialProjects\Wayback_Link_Fixer"/>
+				<element value="Internet_Archive\Wayback_Machine_Link_Fixer"/>
 			</property>
 		</properties>
 	</rule>

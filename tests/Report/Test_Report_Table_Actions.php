@@ -5,19 +5,19 @@
  *
  * @since 1.3.0
  *
- * @coversDefaultClass WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Table
+ * @coversDefaultClass Internet_Archive\Wayback_Machine_Link_Fixer\Report\Report_Table
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Report;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Report;
 
 use Gin0115\WPUnit_Helpers\Objects;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Table;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Report\Report_Table;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
 
 /**
  * Test_Report_Table_Actions
@@ -99,7 +99,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		$calls = 0;
 
 		// Use a mock IA insstance
-		$client = $this->createMock( \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
+		$client = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
 		$client->method( 'create_snapshot' )
 			->willReturnCallback(function($link) use( &$calls) {
 				$calls++;
@@ -167,7 +167,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		);
 
 		// Use a mock IA insstance
-		$client = $this->createMock( \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
+		$client = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
 		$client->method( 'create_snapshot' )
 			->willReturn('some-id');
 

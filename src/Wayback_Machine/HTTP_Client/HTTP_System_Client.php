@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client;
 
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\System_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\System_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
 
 defined( 'ABSPATH' ) || exit;
 

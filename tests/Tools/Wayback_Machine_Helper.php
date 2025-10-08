@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @since 1.0.0
  */
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer_Tests\Tools;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer_Tests\Tools;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 
 
 /**

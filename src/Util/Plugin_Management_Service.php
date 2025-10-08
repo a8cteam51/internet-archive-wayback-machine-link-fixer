@@ -5,13 +5,13 @@
  *
  * @since 1.3.0
  *
- * @package WPCOMSpecialProjects\Wayback_Link_Fixer\Util
+ * @package Internet_Archive\Wayback_Machine_Link_Fixer\Util
  */
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Util;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Util;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Settings_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page;
 
 defined( 'ABSPATH' ) || exit;
 

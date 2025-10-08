@@ -8,10 +8,10 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Settings;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Archive_Services_Online_Event;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Abstract_Migration;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Archive_Services_Online_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Abstract_Migration;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Processor;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Processor;
 
 use DOMDocument;
 

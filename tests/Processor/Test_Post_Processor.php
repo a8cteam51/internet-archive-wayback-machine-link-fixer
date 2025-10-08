@@ -5,14 +5,14 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Processor
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Processor\Post_Processor
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Processor;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Processor;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Processor;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Processor\Post_Processor;
 
 /**
  * Test_Post_Processor

@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Report_Page;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 
 defined( 'ABSPATH' ) || exit;
 

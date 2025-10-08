@@ -8,19 +8,19 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Report;
 
 use DateTimeImmutable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Check_Action;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Validate_Link_Action;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_New_Snapshot_Action;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Latest_Snapshot_Action;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Util\List_Table_Action_Notification_Cache;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Report_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Action\Link_Check_Action;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Action\Validate_Link_Action;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Action\Link_New_Snapshot_Action;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Action\Link_Latest_Snapshot_Action;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Create_New_Snapshot_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Util\List_Table_Action_Notification_Cache;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page;
 /**
  * The report table class.
  */

@@ -5,14 +5,14 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Collection
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Collection
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Link;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Link;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 
 /**
  * Test_Link_Collection
@@ -25,7 +25,7 @@ class Test_Link_Collection extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_add_link_to_collection(): void {
-		$collection = new \WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Collection( 1 );
+		$collection = new \Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Collection( 1 );
 		$link       = new Link( 'https://example.com' );
 
 		$collection->add( $link );
@@ -39,7 +39,7 @@ class Test_Link_Collection extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_get_post_id(): void {
-		$collection = new \WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Collection( 1 );
+		$collection = new \Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Collection( 1 );
 
 		$this->assertSame( 1, $collection->get_post_id() );
 	}
@@ -50,7 +50,7 @@ class Test_Link_Collection extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_get_links(): void {
-		$collection = new \WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Collection( 1 );
+		$collection = new \Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Collection( 1 );
 		$link       = new Link( 'https://example.com' );
 
 		$collection->add( $link );
@@ -64,7 +64,7 @@ class Test_Link_Collection extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_get_links_as_json(): void {
-		$collection = new \WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Collection( 1 );
+		$collection = new \Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Collection( 1 );
 		$link       = new Link( 'https://example.com' );
 
 		$collection->add( $link );

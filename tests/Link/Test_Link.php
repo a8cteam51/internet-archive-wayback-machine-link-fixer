@@ -5,16 +5,16 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link
  *
  * @group Link
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Link;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Link;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 
 /**
  * Test_Link

@@ -6,7 +6,7 @@
  * @since 1.3.0
  */
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Util;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Util;
 
 defined( 'ABSPATH' ) || exit;
 

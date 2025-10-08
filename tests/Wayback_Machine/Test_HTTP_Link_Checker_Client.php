@@ -5,16 +5,16 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\Link_Checker
+ * @coversDefaultClass Internet_Archive\Wayback_Machine_Link_Fixer\Link_Checker\Link_Checker
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Link_Checker_Client;
 
 /**
  * Test class for HTTP_Link_Checker_Client.

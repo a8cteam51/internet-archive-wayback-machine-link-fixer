@@ -3,8 +3,8 @@
  * PHPUnit bootstrap file
  */
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
 
 // Composer autoloader must be loaded before WP_PHPUNIT__DIR will be available
 require_once dirname( __DIR__ ) . '/vendor/autoload.php';

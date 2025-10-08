@@ -8,10 +8,10 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Setup_Wizard;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Setup_Wizard;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 

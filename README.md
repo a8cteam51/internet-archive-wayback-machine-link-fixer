@@ -923,8 +923,8 @@ add_filter( 'iawmlf_reporting_page_capability', function( string $capability ): 
 
 Both the Link Checker and Snapshot clients are all extended from the following interfaces:  
 
-* WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client  
-* WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client  
+* Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client  
+* Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client  
 
 Both of these classes return documented arrays of data, so can be overridden to use a different service if needed.
 

@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	<?php endif; ?>
 
-	<?php if ( $iawmlf_api_configured && ! \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::has_valid_archive_api_credentials() ) : ?>
+	<?php if ( $iawmlf_api_configured && ! \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings::has_valid_archive_api_credentials() ) : ?>
 		<div class="iawmlf_dashboard-warning">
 			<?php esc_html_e( 'Your Archive.org API credentials are invalid. Please check your settings.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</div>
