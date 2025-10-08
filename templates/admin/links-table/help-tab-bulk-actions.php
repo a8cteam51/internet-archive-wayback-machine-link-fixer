@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<div id="wlf_help_tab_bulk_actions" class="wlf_help_tab">
+<div id="iawmlf_help_tab_bulk_actions" class="iawmlf_help_tab">
 	<h3><?php esc_html_e( 'Update to latest snapshot', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
 	<p><?php esc_html_e( 'When this option is selected, the link will have its archive updated to the latest snapshot available from the Internet Archive.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 

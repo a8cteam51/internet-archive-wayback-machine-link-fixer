@@ -14,7 +14,7 @@ $iawmlf_failed_count    = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Sett
 $iawmlf_check_frequency = \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings::get_link_check_duration();
 ?>
 
-<div id="wlf_help_tab_columns" class="wlf_help_tab">
+<div id="iawmlf_help_tab_columns" class="iawmlf_help_tab">
 	<h3><?php esc_html_e( 'Archive Status', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
 	<p><?php esc_html_e( 'Indicates whether the link has a valid snapshot from the Internet Archive associated with it.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	<p>

@@ -214,14 +214,14 @@ class Report_Page {
 		$screen = get_current_screen();
 		$screen->add_help_tab(
 			array(
-				'id'       => 'wlf_help_bulk_actions',
+				'id'       => 'iawmlf_help_bulk_actions',
 				'title'    => __( 'Bulk Actions', 'internet-archive-wayback-machine-link-fixer' ),
 				'callback' => array( $this, 'render_help_bulk_actions' ),
 			)
 		);
 		$screen->add_help_tab(
 			array(
-				'id'       => 'wlf_help_table_columns',
+				'id'       => 'iawmlf_help_table_columns',
 				'title'    => __( 'Table Columns', 'internet-archive-wayback-machine-link-fixer' ),
 				'callback' => array( $this, 'render_help_columns' ),
 			)

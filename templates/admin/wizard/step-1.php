@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Sets the type for api keys based on the current environment.
-$iawmlf_invalid_keys = isset( $_POST['wlf_wizard_invalid_keys'] ); // phpcs:ignore
+$iawmlf_invalid_keys = isset( $_POST['iawmlf_wizard_invalid_keys'] ); // phpcs:ignore
 $iawmlf_access_type  = '' === $settings->get_archive_access_key() || $iawmlf_invalid_keys
 	? 'text'
 	: 'password';

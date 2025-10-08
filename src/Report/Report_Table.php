@@ -92,7 +92,7 @@ class Report_Table extends \WP_List_Table {
 		parent::bulk_actions( $which );
 		$bulk_actions = \ob_get_clean();
 
-		$help_icon = '<span id="wlf_help_info_bulk_actions" class="wlf_bulk_actions_trigger dashicons dashicons-editor-help"></span>';
+		$help_icon = '<span id="iawmlf_help_info_bulk_actions" class="iawmlf_bulk_actions_trigger dashicons dashicons-editor-help"></span>';
 
 		$bulk_actions = preg_replace(
 			'/<input\b[^>]*\bid\s*=\s*["\']doaction["\'][^>]*>/i',
