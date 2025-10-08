@@ -12,6 +12,9 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Settings_Page;
+
 ?>
 
 <?php echo wp_kses( $header, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
@@ -26,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	printf(
 		// translators: %s is a link to the plugin settings page.
 		esc_html__( 'Setup is now complete! You can edit these settings at any time from the %s page.', 'internet-archive-wayback-machine-link-fixer' ),
-		'<a href="' . esc_url( menu_page_url( 'wpcomsp_wayback_link_fixer_settings', false ) ) . '">' . esc_html__( 'Wayback Link Fixer Settings', 'internet-archive-wayback-machine-link-fixer' ) . '</a>'
+		'<a href="' . esc_url( Settings_Page::get_page_url() ) . '">' . esc_html__( 'Wayback Link Fixer Settings', 'internet-archive-wayback-machine-link-fixer' ) . '</a>'
 	);
 	?>
 	</p>
@@ -34,3 +37,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 <?php echo wp_kses( $footer, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
+
+

@@ -239,7 +239,7 @@ class Report_Page {
 	 * @return void
 	 */
 	public function render_help_bulk_actions( \WP_Screen $screen, array $args ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-		wpcomsp_wayback_link_fixer_render_template( 'admin/links-table/help-tab-bulk-actions.php' );
+		iawmlf_render_template( 'admin/links-table/help-tab-bulk-actions.php' );
 	}
 
 	/**
@@ -253,7 +253,7 @@ class Report_Page {
 	 * @return void
 	 */
 	public function render_help_columns( \WP_Screen $screen, array $args ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-		wpcomsp_wayback_link_fixer_render_template( 'admin/links-table/help-tab-columns.php' );
+		iawmlf_render_template( 'admin/links-table/help-tab-columns.php' );
 	}
 
 	/**
@@ -272,7 +272,7 @@ class Report_Page {
 
 		// Render any notices.
 		$table->render_notices();
-		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
+		iawmlf_render_not_authenticated_notice();
 
 		// Get the current page.
 		$current_page = isset( $_REQUEST['page'] ) ? \sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) : self::SLUG; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
@@ -355,7 +355,7 @@ class Report_Page {
 			return;
 		}
 		// Render the template.
-		wpcomsp_wayback_link_fixer_render_template(
+		iawmlf_render_template(
 			'admin/reports/link-details.php',
 			array(
 				'iawmlf_link'     => $link,

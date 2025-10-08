@@ -449,7 +449,7 @@ class Link implements \JsonSerializable {
 
 		foreach ( $data['checks'] as $check ) {
 			$link->add_check(
-				wpcomsp_wayback_link_fixer_escape_http_status_code( $check['http_code'] ),
+				iawmlf_escape_http_status_code( $check['http_code'] ),
 				esc_attr( $check['date'] )
 			);
 		}

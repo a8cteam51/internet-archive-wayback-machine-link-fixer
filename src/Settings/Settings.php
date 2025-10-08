@@ -263,7 +263,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function is_archive_api_online(): bool {
-		return wpcomsp_wayback_link_fixer_is_archive_api_online();
+		return iawmlf_is_archive_api_online();
 	}
 
 	/**

@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return  boolean
  */
-function wpcomsp_wayback_link_fixer_is_wp_version_compatible( $min_wp_version ) {
+function iawmlf_is_wp_version_compatible( $min_wp_version ) {
 	if ( ! function_exists( 'is_wp_version_compatible' ) ) {
 		return false;
 	}
@@ -33,7 +33,7 @@ function wpcomsp_wayback_link_fixer_is_wp_version_compatible( $min_wp_version ) 
  *
  * @return  boolean
  */
-function wpcomsp_wayback_link_fixer_is_php_version_compatible( $min_php_version ) {
+function iawmlf_is_php_version_compatible( $min_php_version ) {
 	if ( ! function_exists( 'is_php_version_compatible' ) ) {
 		return false;
 	}
@@ -46,10 +46,10 @@ function wpcomsp_wayback_link_fixer_is_php_version_compatible( $min_php_version 
  *
  * @return  true|\WP_Error
  */
-function wpcomsp_wayback_link_fixer_validate_requirements() {
+function iawmlf_validate_requirements() {
 
-	$is_php_compatible = wpcomsp_wayback_link_fixer_is_php_version_compatible( WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['php'] );
-	$is_wp_compatible  = wpcomsp_wayback_link_fixer_is_wp_version_compatible( WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['wp'] );
+	$is_php_compatible = iawmlf_is_php_version_compatible( WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['php'] );
+	$is_wp_compatible  = iawmlf_is_wp_version_compatible( WPCOMSP_WAYBACK_LINK_FIXER_MINIMUM_VERSIONS['wp'] );
 
 	$wp_error = new \WP_Error();
 	if ( ! $is_wp_compatible ) {
@@ -69,7 +69,7 @@ function wpcomsp_wayback_link_fixer_validate_requirements() {
  *
  * @return  void
  */
-function wpcomsp_wayback_link_fixer_output_requirements_error( $error ) {
+function iawmlf_output_requirements_error( $error ) {
 	add_action(
 		'admin_notices',
 		static function () use ( $error ) {

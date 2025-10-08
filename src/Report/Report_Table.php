@@ -352,7 +352,7 @@ class Report_Table extends \WP_List_Table {
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'It was not possible to check %s', 'internet-archive-wayback-machine-link-fixer' ),
-						esc_html( wpcomsp_wayback_link_fixer_trim_string( $results['link']->get_href(), 54 ) )
+						esc_html( iawmlf_trim_string( $results['link']->get_href(), 54 ) )
 					),
 					'type'    => 'error',
 				);
@@ -368,7 +368,7 @@ class Report_Table extends \WP_List_Table {
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'Link %s has no checks.', 'internet-archive-wayback-machine-link-fixer' ),
-						esc_html( wpcomsp_wayback_link_fixer_trim_string( $link_url, 54 ) )
+						esc_html( iawmlf_trim_string( $link_url, 54 ) )
 					),
 					'type'    => 'error',
 				);
@@ -380,7 +380,7 @@ class Report_Table extends \WP_List_Table {
 				'message' => sprintf(
 					// translators: %1$s is the link url, %2$s is the last check date, %3$s is the last check http code.
 					__( 'Link %1$s checked successfully on %2$s with %3$s status', 'internet-archive-wayback-machine-link-fixer' ),
-					esc_html( wpcomsp_wayback_link_fixer_trim_string( $link_url, 54 ) ),
+					esc_html( iawmlf_trim_string( $link_url, 54 ) ),
 					DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) ),
 					esc_html( $last_check['http_code'] )
 				),
@@ -416,12 +416,12 @@ class Report_Table extends \WP_List_Table {
 			}
 
 			// If an internet archived link, show the message.
-			if ( wpcomsp_wayback_link_fixer_is_archive_link( $result['link']->get_href() ) ) {
+			if ( iawmlf_is_archive_link( $result['link']->get_href() ) ) {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'Link %s is already an archived link.', 'internet-archive-wayback-machine-link-fixer' ),
-						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+						esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 					),
 					'type'    => 'notice',
 				);
@@ -434,7 +434,7 @@ class Report_Table extends \WP_List_Table {
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'No archived link found for %s', 'internet-archive-wayback-machine-link-fixer' ),
-						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+						esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 					),
 					'type'    => 'error',
 				);
@@ -447,7 +447,7 @@ class Report_Table extends \WP_List_Table {
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'It was not possible to update %s, the latest archive link is the same', 'internet-archive-wayback-machine-link-fixer' ),
-						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+						esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 					),
 					'type'    => 'notice',
 				);
@@ -459,7 +459,7 @@ class Report_Table extends \WP_List_Table {
 				'message' => sprintf(
 					// translators: %s is the link url.
 					__( 'Link %s updated successfully', 'internet-archive-wayback-machine-link-fixer' ),
-					esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+					esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 				),
 				'type'    => 'success',
 			);
@@ -504,7 +504,7 @@ class Report_Table extends \WP_List_Table {
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'Link %1$s could not have a new snapshot created: %2$s', 'internet-archive-wayback-machine-link-fixer' ),
-						wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ),
+						iawmlf_trim_string( $result['link']->get_href(), 54 ),
 						esc_html( $result['message'] )
 					),
 					'type'    => 'error',
@@ -517,7 +517,7 @@ class Report_Table extends \WP_List_Table {
 				'message' => sprintf(
 					// translators: %s is the link url.
 					__( 'Link %s added to the queue and a new snapshot will be created and added as the archived url in the coming minutes..', 'internet-archive-wayback-machine-link-fixer' ),
-					wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 )
+					iawmlf_trim_string( $result['link']->get_href(), 54 )
 				),
 				'type'    => 'success',
 			);
@@ -550,13 +550,13 @@ class Report_Table extends \WP_List_Table {
 				continue;
 			}
 
-			if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+			if ( iawmlf_is_archive_link( $link->get_href() ) ) {
 				// Add a notice.
 				$archived_links[] = $link;
 				continue;
 			}
 
-			if ( wpcomsp_wayback_link_fixer_is_current_site_link( $link->get_href() ) ) {
+			if ( iawmlf_is_current_site_link( $link->get_href() ) ) {
 				// Add a notice.
 				$own_links[] = $link;
 				continue;
@@ -596,7 +596,7 @@ class Report_Table extends \WP_List_Table {
 			foreach ( $archived_links as $link ) {
 				$notice .= sprintf(
 					'<li>%s</li>',
-					wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+					iawmlf_trim_string( $link->get_href(), 54 )
 				);
 			}
 			$notice .= '</ul>';
@@ -616,7 +616,7 @@ class Report_Table extends \WP_List_Table {
 			foreach ( $own_links as $link ) {
 				$notice .= sprintf(
 					'<li>%s</li>',
-					wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+					iawmlf_trim_string( $link->get_href(), 54 )
 				);
 			}
 			$notice .= '</ul>';
@@ -631,7 +631,7 @@ class Report_Table extends \WP_List_Table {
 			foreach ( $added_links as $link ) {
 				$success_notice .= sprintf(
 					'<li>%s</li>',
-					wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+					iawmlf_trim_string( $link->get_href(), 54 )
 				);
 			}
 			$success_notice .= '</ul>';
@@ -685,7 +685,7 @@ class Report_Table extends \WP_List_Table {
 				'message' => sprintf(
 					// translators: %s is the link url.
 					__( 'Validating %s to ensure we can check its current status', 'internet-archive-wayback-machine-link-fixer' ),
-					esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+					esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 				),
 				'type'    => 'success',
 			);
@@ -1134,7 +1134,7 @@ class Report_Table extends \WP_List_Table {
 	private function compile_link_name( Link $item ): string {
 		return sprintf(
 			'%s <a href="%s" target="_blank">%s</a>',
-			esc_html( wpcomsp_wayback_link_fixer_trim_string( $item->get_href(), 200 ) ),
+			esc_html( iawmlf_trim_string( $item->get_href(), 200 ) ),
 			esc_url( $item->get_href() ),
 			'<span class="dashicons dashicons-external"></span>'
 		);

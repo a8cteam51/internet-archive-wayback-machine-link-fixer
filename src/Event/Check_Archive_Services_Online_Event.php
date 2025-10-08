@@ -65,6 +65,6 @@ class Check_Archive_Services_Online_Event {
 	 */
 	public function __invoke(): void {
 		$this->setup();
-		wpcomsp_wayback_link_fixer_is_archive_api_online( true );
+		iawmlf_is_archive_api_online( true );
 	}
 }

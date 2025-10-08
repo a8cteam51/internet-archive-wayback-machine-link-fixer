@@ -51,7 +51,7 @@ class Test_Functions extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_normalize_url( string $url, string $expected ): void {
-		$this->assertSame( $expected, \wpcomsp_wayback_link_fixer_normalize_url( $url ) );
+		$this->assertSame( $expected, \iawmlf_normalize_url( $url ) );
 	}
 
 	/**

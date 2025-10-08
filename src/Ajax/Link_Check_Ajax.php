@@ -69,7 +69,7 @@ class Link_Check_Ajax {
 	 */
 	private function setup(): void {
 		$this->link_repository = new Link_Repository();
-		$this->link_checker    = wpcomsp_wayback_link_fixer_get_link_checker_client();
+		$this->link_checker    = iawmlf_get_link_checker_client();
 	}
 
 	/**
@@ -126,7 +126,7 @@ class Link_Check_Ajax {
 		}
 
 		// If the link is an archive link, return false.
-		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+		if ( iawmlf_is_archive_link( $link->get_href() ) ) {
 			return false;
 		}
 

@@ -86,7 +86,7 @@ if ( ! function_exists( 'mb_strlen' ) ) {
  *
  * @return  Plugin
  */
-function wpcomsp_wayback_link_fixer_get_plugin_instance(): Plugin {
+function iawmlf_get_plugin_instance(): Plugin {
 	return Plugin::get_instance();
 }
 
@@ -98,7 +98,7 @@ function wpcomsp_wayback_link_fixer_get_plugin_instance(): Plugin {
  *
  * @return  void
  */
-function wpcomsp_wayback_link_fixer_activate(): void {
+function iawmlf_activate(): void {
 	Migrations::up();
 }
 
@@ -110,7 +110,7 @@ function wpcomsp_wayback_link_fixer_activate(): void {
  *
  * @return  void
  */
-function wpcomsp_wayback_link_fixer_deactivate(): void {
+function iawmlf_deactivate(): void {
 	Migrations::down();
 }
 
@@ -124,7 +124,7 @@ function wpcomsp_wayback_link_fixer_deactivate(): void {
  *
  * @return integer|null
  */
-function wpcomsp_wayback_link_fixer_escape_http_status_code( $code ): ?int {
+function iawmlf_escape_http_status_code( $code ): ?int {
 	$code = absint( (int) $code );
 	return $code > 0 ? $code : null;
 }
@@ -136,7 +136,7 @@ function wpcomsp_wayback_link_fixer_escape_http_status_code( $code ): ?int {
  *
  * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client
  */
-function wpcomsp_wayback_link_fixer_get_snapshot_client(): Snapshot_Client {
+function iawmlf_get_snapshot_client(): Snapshot_Client {
 	return apply_filters( 'iawmlf_snapshot_client', new HTTP_Snapshot_Client() );
 }
 
@@ -147,7 +147,7 @@ function wpcomsp_wayback_link_fixer_get_snapshot_client(): Snapshot_Client {
  *
  * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client
  */
-function wpcomsp_wayback_link_fixer_get_link_checker_client(): Link_Checker_Client {
+function iawmlf_get_link_checker_client(): Link_Checker_Client {
 	return apply_filters( 'iawmlf_link_checker_client', new HTTP_Link_Checker_Client() );
 }
 
@@ -158,7 +158,7 @@ function wpcomsp_wayback_link_fixer_get_link_checker_client(): Link_Checker_Clie
  *
  * @return WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\System_Client
  */
-function wpcomsp_wayback_link_fixer_get_system_client(): \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\System_Client {
+function iawmlf_get_system_client(): \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\System_Client {
 	return apply_filters( 'iawmlf_system_client', new \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_System_Client() );
 }
 
@@ -173,7 +173,7 @@ function wpcomsp_wayback_link_fixer_get_system_client(): \WPCOMSpecialProjects\W
  *
  * @return void|string
  */
-function wpcomsp_wayback_link_fixer_render_template( string $template, array $args = array(), bool $render = true ) {
+function iawmlf_render_template( string $template, array $args = array(), bool $render = true ) {
 
 	$path = WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'templates/' . $template;
 
@@ -221,7 +221,7 @@ function wpcomsp_wayback_link_fixer_render_template( string $template, array $ar
  *
  * @return string
  */
-function wpcomsp_wayback_link_fixer_get_image_asset_url( string $filename ): string {
+function iawmlf_get_image_asset_url( string $filename ): string {
 	return esc_url( WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/images/' . $filename );
 }
 
@@ -236,7 +236,7 @@ function wpcomsp_wayback_link_fixer_get_image_asset_url( string $filename ): str
  *
  * @return string
  */
-function wpcomsp_wayback_link_fixer_trim_string( string $text, int $length, string $suffix = '...' ): string {
+function iawmlf_trim_string( string $text, int $length, string $suffix = '...' ): string {
 	if ( mb_strlen( $text ) <= $length ) {
 		return $text;
 	}
@@ -251,7 +251,7 @@ function wpcomsp_wayback_link_fixer_trim_string( string $text, int $length, stri
  *
  * @return string
  */
-function wpcomsp_wayback_link_fixer_get_date_format(): string {
+function iawmlf_get_date_format(): string {
 	return get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 }
 
@@ -262,7 +262,7 @@ function wpcomsp_wayback_link_fixer_get_date_format(): string {
  *
  * @return void
  */
-function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
+function iawmlf_render_not_authenticated_notice(): void {
 	$in_unauthenticated_mode = __( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'internet-archive-wayback-machine-link-fixer' );
 
 	// If the archive api is not configured.
@@ -306,7 +306,7 @@ function wpcomsp_wayback_link_fixer_render_not_authenticated_notice(): void {
  *
  * @return void
  */
-function wpcomsp_wayback_link_fixer_render_wayback_offline_notice(): void {
+function iawmlf_render_wayback_offline_notice(): void {
 	// If the Wayback Machine is online, bail.
 	if ( Settings::is_archive_api_online() ) {
 		return;
@@ -330,7 +330,7 @@ function wpcomsp_wayback_link_fixer_render_wayback_offline_notice(): void {
  *
  * @return boolean
  */
-function wpcomsp_wayback_link_fixer_is_archive_link( string $url ): bool {
+function iawmlf_is_archive_link( string $url ): bool {
 	$urls = array(
 		'https://web.archive.org/web/',
 		'http://web.archive.org/web/',
@@ -353,17 +353,17 @@ function wpcomsp_wayback_link_fixer_is_archive_link( string $url ): bool {
  *
  * @return boolean
  */
-function wpcomsp_wayback_link_fixer_is_current_site_link( string $url ): bool {
+function iawmlf_is_current_site_link( string $url ): bool {
 	// Get the site urls with all protocols.
 	$site_urls = array(
 		get_site_url( null, '', 'https' ),
 		get_site_url( null, '', 'http' ),
 	);
 	// Normalize the URL.
-	$normalized_url = wpcomsp_wayback_link_fixer_normalize_url( $url );
+	$normalized_url = iawmlf_normalize_url( $url );
 
 	// Noprmalize the site URLs.
-	$site_urls = array_map( 'wpcomsp_wayback_link_fixer_normalize_url', $site_urls );
+	$site_urls = array_map( 'iawmlf_normalize_url', $site_urls );
 
 	// Check if the URL starts with any of the site URLs.
 	foreach ( $site_urls as $site_url ) {
@@ -385,7 +385,7 @@ function wpcomsp_wayback_link_fixer_is_current_site_link( string $url ): bool {
  *
  * @return string
  */
-function wpcomsp_wayback_link_fixer_normalize_url( string $url ): string {
+function iawmlf_normalize_url( string $url ): string {
 	$url = rtrim( $url, '/' );
 
 	// URL Encode the url parameters.
@@ -444,7 +444,7 @@ function wpcomsp_wayback_link_fixer_normalize_url( string $url ): string {
  *
  * @return string|null
  */
-function wpcomsp_wayback_link_fixer_get_admin_post_type_link( string $post_type, string $target = '_self' ): ?string {
+function iawmlf_get_admin_post_type_link( string $post_type, string $target = '_self' ): ?string {
 	// Get the post type object.
 	$post_type_object = get_post_type_object( $post_type );
 
@@ -469,7 +469,7 @@ function wpcomsp_wayback_link_fixer_get_admin_post_type_link( string $post_type,
  *
  * @return boolean
  */
-function wpcomsp_wayback_link_fixer_is_archive_api_online( bool $force = false ): bool {
+function iawmlf_is_archive_api_online( bool $force = false ): bool {
 	// Try to get from transient.
 	$online = get_transient( 'iawmlf_archive_api_online' );
 	if ( false !== (bool) $online && false === $force ) {
@@ -477,7 +477,7 @@ function wpcomsp_wayback_link_fixer_is_archive_api_online( bool $force = false )
 	}
 
 	// Check if the system client is online.
-	$online = wpcomsp_wayback_link_fixer_get_system_client()->is_online();
+	$online = iawmlf_get_system_client()->is_online();
 	// Set the transient
 	$duration = apply_filters( 'iawmlf_archive_api_status_duration', \HOUR_IN_SECONDS );
 	set_transient( 'iawmlf_archive_api_online', $online, $duration );

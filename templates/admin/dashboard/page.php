@@ -64,7 +64,7 @@ $iawmlf_still_processing      = $iawmlf_process_new + $iawmlf_process_pending;
 
 							<!-- Recent Link Checks Content -->
 							<?php
-							wpcomsp_wayback_link_fixer_render_template(
+							iawmlf_render_template(
 								'admin/dashboard/link-list.php',
 								array(
 									'iawmlf_links'      => $iawmlf_last_checks,
@@ -79,7 +79,7 @@ $iawmlf_still_processing      = $iawmlf_process_new + $iawmlf_process_pending;
 
 							<!-- Latest Links Content -->
 							<?php
-							wpcomsp_wayback_link_fixer_render_template(
+							iawmlf_render_template(
 								'admin/dashboard/link-list.php',
 								array(
 									'iawmlf_links'      => $iawmlf_latest_links,

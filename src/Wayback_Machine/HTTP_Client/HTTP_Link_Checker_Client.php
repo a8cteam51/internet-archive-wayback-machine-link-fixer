@@ -68,7 +68,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 
 		// Compile the url for the live web check service.
 		$url_params = array(
-			'url'         => wpcomsp_wayback_link_fixer_normalize_url( $url ),
+			'url'         => iawmlf_normalize_url( $url ),
 			'impersonate' => 1,
 		);
 
@@ -174,6 +174,6 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 	 * @return boolean
 	 */
 	public function is_online(): bool {
-		return wpcomsp_wayback_link_fixer_is_archive_api_online();
+		return iawmlf_is_archive_api_online();
 	}
 }

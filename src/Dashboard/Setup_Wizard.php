@@ -265,7 +265,7 @@ class Setup_Wizard {
 		}
 
 		// Check the users api credentials.
-		if ( ! wpcomsp_wayback_link_fixer_get_system_client()->is_valid_user( $access_key, $secret_key ) ) {
+		if ( ! iawmlf_get_system_client()->is_valid_user( $access_key, $secret_key ) ) {
 			$this->add_notice( __( 'Invalid Archive.org API credentials. Please verify your Access Key and Secret Key, or leave both fields blank to proceed without authentication.', 'internet-archive-wayback-machine-link-fixer' ), 'error' );
 			$_POST['iawmlf_wizard_invalid_keys'] = true; // Set a flag to indicate invalid keys.
 
@@ -365,7 +365,7 @@ class Setup_Wizard {
 			'footer'     => $this->get_page_footer( $step_data ),
 		);
 
-		echo wpcomsp_wayback_link_fixer_render_template( $view_path, $view_data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo iawmlf_render_template( $view_path, $view_data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		echo '</div>';
 	}
@@ -434,7 +434,7 @@ class Setup_Wizard {
 			'header.php'
 		);
 
-		return wpcomsp_wayback_link_fixer_render_template(
+		return iawmlf_render_template(
 			$view_path,
 			array(
 				'step_data' => $step_data,
@@ -459,7 +459,7 @@ class Setup_Wizard {
 			'footer.php'
 		);
 
-		return wpcomsp_wayback_link_fixer_render_template(
+		return iawmlf_render_template(
 			$view_path,
 			array(
 				'step_data' => $step_data,

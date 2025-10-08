@@ -20,12 +20,12 @@ defined( 'ABSPATH' ) || exit;
  */
 class Settings_Page {
 
-	public const PAGE_SLUG             = 'wpcomsp_wayback_link_fixer_settings';
-	public const SETTINGS_SECTION      = 'wpcomsp-wayback-link-fixer-settings';
-	public const GROUP_IA_SETTINGS     = 'wpcomsp_wayback_link_fixer_ia_settings';
-	public const GROUP_PLUGIN_SETTINGS = 'wpcomsp_wayback_link_fixer_plugin_settings';
-	public const GROUP_LINK_FIXER      = 'wpcomsp_wayback_link_fixer_group';
-	public const GROUP_AUTO_ARCHIVER   = 'wpcomsp_wayback_link_fixer_auto_archiver';
+	public const PAGE_SLUG             = 'wayback_link_fixer_settings';
+	public const SETTINGS_SECTION      = 'wayback-link-fixer-settings';
+	public const GROUP_IA_SETTINGS     = 'wayback_link_fixer_ia_settings';
+	public const GROUP_PLUGIN_SETTINGS = 'wayback_link_fixer_plugin_settings';
+	public const GROUP_LINK_FIXER      = 'wayback_link_fixer_group';
+	public const GROUP_AUTO_ARCHIVER   = 'wayback_link_fixer_auto_archiver';
 
 	/**
 	 * The pages menu hook.
@@ -145,7 +145,7 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_page(): void {
-		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
+		iawmlf_render_not_authenticated_notice();
 
 		// Check if the wizard has been completed.
 		$wizard_link = '';
@@ -578,7 +578,7 @@ class Settings_Page {
 			$key        = Settings::get_archive_secret_key();
 			$access_key = Settings::get_archive_access_key();
 
-			$system_client = wpcomsp_wayback_link_fixer_get_system_client();
+			$system_client = iawmlf_get_system_client();
 			$is_valid      = $system_client->is_valid_user( $access_key, $key );
 
 			Settings::update_archive_api_credentials_validity( $is_valid );

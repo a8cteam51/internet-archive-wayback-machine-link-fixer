@@ -105,7 +105,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_link_is_found_on_wayback_machine(): void {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 		// Create mock snapshot client.

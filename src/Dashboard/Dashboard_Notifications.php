@@ -82,12 +82,12 @@ class Dashboard_Notifications {
 	 * @return void
 	 */
 	public function render_widget(): void {
-		wpcomsp_wayback_link_fixer_render_template(
+		iawmlf_render_template(
 			'admin/dashboard/widget.php',
 			array(
 				'iawmlf_details'                 => self::get_account_details(),
 				'iawmlf_api_configured'          => Settings::is_archive_api_configured(),
-				'iawmlf_is_online'               => wpcomsp_wayback_link_fixer_is_archive_api_online(),
+				'iawmlf_is_online'               => iawmlf_is_archive_api_online(),
 				'iawmlf_link_to_settings'        => Settings_Page::get_page_url(),
 				'iawmlf_link_table'              => Report_Page::get_page_url(),
 				'iawmlf_total_links'             => ( new Link_Repository() )->query_links( PHP_INT_MAX ),
@@ -111,7 +111,7 @@ class Dashboard_Notifications {
 			return $cached;
 		}
 		try {
-			$details = \wpcomsp_wayback_link_fixer_get_system_client()->get_user_stats(
+			$details = \iawmlf_get_system_client()->get_user_stats(
 				Settings::get_archive_access_key(),
 				Settings::get_archive_secret_key()
 			);

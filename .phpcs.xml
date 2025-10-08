@@ -27,8 +27,6 @@
 		<properties>
 			<property name="prefixes" type="array">
 				<element value="iawmlf_"/>
-				<element value="wpcomsp_"/>
-				<element value="wpcomsp_wayback_link_fixer_"/>
 				<element value="WPCOMSpecialProjects\Wayback_Link_Fixer"/>
 			</property>
 		</properties>

@@ -325,7 +325,7 @@ class Dashboard_Page {
 			$filtered_url_base
 		);
 
-		wpcomsp_wayback_link_fixer_render_template(
+		iawmlf_render_template(
 			'admin/dashboard/page.php',
 			array(
 				'iawmlf_link_stats'              => $link_stats,
@@ -333,7 +333,7 @@ class Dashboard_Page {
 				'iawmlf_latest_links'            => $latest_links,
 				'iawmlf_account_details'         => Dashboard_Notifications::get_account_details(),
 				'iawmlf_api_configured'          => Settings::is_archive_api_configured(),
-				'iawmlf_is_online'               => wpcomsp_wayback_link_fixer_is_archive_api_online(),
+				'iawmlf_is_online'               => iawmlf_is_archive_api_online(),
 				'iawmlf_link_to_settings'        => Settings_Page::get_page_url(),
 				'iawmlf_link_table'              => Report_Page::get_page_url(),
 				'iawmlf_auto_archiver_enabled'   => Settings::add_own_links(),

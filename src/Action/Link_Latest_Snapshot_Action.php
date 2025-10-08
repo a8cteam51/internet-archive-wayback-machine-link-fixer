@@ -77,7 +77,7 @@ class Link_Latest_Snapshot_Action {
 		}
 
 		// If the lik is an internet archive link, we don't need to check it.
-		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+		if ( iawmlf_is_archive_link( $link->get_href() ) ) {
 			return array(
 				'link'    => $link,
 				'found'   => true,

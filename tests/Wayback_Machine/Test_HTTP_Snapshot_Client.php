@@ -55,7 +55,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_strip_tailing_slash_from_url() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -79,7 +79,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_use_filter_to_change_base_url_for_find() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -110,7 +110,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_use_filter_to_change_url_for_find_latest_snapshot() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -144,7 +144,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @param boolean         $is_valid_response
 	 */
 	public function test_should_only_use_fully_formed_responses( $response, $is_valid_response ) {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -236,7 +236,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_get_snapshot_based_on_timestamp() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -268,7 +268,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_use_filter_to_change_url_for_get_closest_snapshot() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -304,7 +304,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_create_snapshot() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -337,7 +337,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_use_filter_to_change_url_for_create_snapshot() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -372,7 +372,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_check_if_url_has_snapshot_valid() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -413,7 +413,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_check_if_url_has_snapshot_invalid() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -436,7 +436,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_set_correct_headers_no_api_keys() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -462,7 +462,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_set_correct_headers_with_api_keys() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -509,7 +509,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_check_snapshot_status_with_correct_headers() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 

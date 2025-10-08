@@ -87,7 +87,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	public function get_latest_snapshot( string $url ): ?array {
 
 		// Normalize the url.
-		$url = wpcomsp_wayback_link_fixer_normalize_url( $url );
+		$url = iawmlf_normalize_url( $url );
 
 		$api_url = $this->get_base_url();
 
@@ -119,7 +119,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	public function get_closest_snapshot( string $url, \DateTime $date ): ?array {
 
 		// Strip any trailing slash from url.
-		$url = wpcomsp_wayback_link_fixer_normalize_url( $url );
+		$url = iawmlf_normalize_url( $url );
 
 		$api_url = $this->get_base_url();
 
@@ -348,6 +348,6 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	 * @return boolean
 	 */
 	public function is_online(): bool {
-		return wpcomsp_wayback_link_fixer_is_archive_api_online();
+		return iawmlf_is_archive_api_online();
 	}
 }

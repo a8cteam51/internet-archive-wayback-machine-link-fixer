@@ -46,9 +46,9 @@ class Wayback_Machine_Service {
 	 * Creates an instance of the Wayback Machine Client.
 	 */
 	public function __construct() {
-		$this->snapshot_client     = wpcomsp_wayback_link_fixer_get_snapshot_client();
-		$this->link_checker_client = wpcomsp_wayback_link_fixer_get_link_checker_client();
-		$this->system_client       = wpcomsp_wayback_link_fixer_get_system_client();
+		$this->snapshot_client     = iawmlf_get_snapshot_client();
+		$this->link_checker_client = iawmlf_get_link_checker_client();
+		$this->system_client       = iawmlf_get_system_client();
 	}
 
 	/**

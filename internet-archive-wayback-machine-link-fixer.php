@@ -54,15 +54,15 @@ add_action(
 
 // Load the autoloader.
 if ( ! is_file( WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/vendor/autoload.php' ) ) {
-	wpcomsp_wayback_link_fixer_output_requirements_error( new WP_Error( 'missing_autoloader' ) );
+	iawmlf_output_requirements_error( new WP_Error( 'missing_autoloader' ) );
 	return;
 }
 require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . '/vendor/autoload.php';
 
-define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', wpcomsp_wayback_link_fixer_validate_requirements() );
+define( 'WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS', iawmlf_validate_requirements() );
 
 if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
-	wpcomsp_wayback_link_fixer_output_requirements_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS );
+	iawmlf_output_requirements_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS );
 } else {
 	// Include the action scheduler integration.
 	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
@@ -74,8 +74,8 @@ if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
 	);
 
 	require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'functions.php';
-	add_action( 'plugins_loaded', array( wpcomsp_wayback_link_fixer_get_plugin_instance(), 'maybe_initialize' ) );
+	add_action( 'plugins_loaded', array( iawmlf_get_plugin_instance(), 'maybe_initialize' ) );
 
-	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
-	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
+	register_activation_hook( __FILE__, 'iawmlf_activate' );
+	register_uninstall_hook( __FILE__, 'iawmlf_deactivate' );
 }
