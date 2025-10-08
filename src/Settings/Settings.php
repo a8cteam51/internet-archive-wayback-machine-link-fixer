@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
 class Settings {
 
 	// Prefix.
-	public const SETTINGS_PREFIX = 't51_wlf_';
+	public const SETTINGS_PREFIX = 'iawmlf_';
 
 
 	// Option keys
@@ -38,12 +38,8 @@ class Settings {
 	public const ARCHIVE_ORG_CREDS_VALID_KEY  = self::SETTINGS_PREFIX . 'archive_api_creds_valid';
 
 	// Table names.
-	public const LINK_TABLE = self::SETTINGS_PREFIX . 'link_archive';
+	public const LINK_TABLE = 't51_wlf_link_archive';
 
-	// LEGACY TABLE NAME, TO REMOVE.
-	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
-	public const SCAN_REPORT_TABLE_NAME = self::SETTINGS_PREFIX . 'scan_report';
-	public const SCAN_LINK_CACHE_TABLE  = self::SETTINGS_PREFIX . 'scan_link_cache';
 
 	// Meta Keys
 	public const LINK_META_KEY           = self::SETTINGS_PREFIX . 'links';

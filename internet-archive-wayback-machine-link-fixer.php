@@ -79,3 +79,5 @@ if ( is_wp_error( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) ) {
 	register_activation_hook( __FILE__, 'wpcomsp_wayback_link_fixer_activate' );
 	register_uninstall_hook( __FILE__, 'wpcomsp_wayback_link_fixer_deactivate' );
 }
+
+require_once WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'link-fixer-prefix-patch.php';
