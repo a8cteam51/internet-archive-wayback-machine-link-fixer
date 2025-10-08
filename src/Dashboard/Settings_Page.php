@@ -109,7 +109,6 @@ class Settings_Page {
 		if ( $this->menu_hook !== $page_hook ) {
 			return;
 		}
-		dump([$page_hook, $this]);
 
 		wp_register_script(
 			self::PAGE_SLUG,

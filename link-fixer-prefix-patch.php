@@ -703,7 +703,6 @@ function link_fixer_prefix_patch_process_post_meta_keys( array $posts, string $a
 		foreach ( $post_types as $post_type => $posts ) {
 			foreach ( $posts as $post_id ) {
 				$initial_data = get_post_meta( $post_id, $meta_key, true );
-				dump( $initial_data );
 				$new_key      = 't51_wlf_links' === $meta_key ? 'iawmlf_links' : 'iawmlf_last_processed';
 				$result       = update_post_meta( $post_id, $new_key, $initial_data );
 				if ( 'replace' === $action ) {

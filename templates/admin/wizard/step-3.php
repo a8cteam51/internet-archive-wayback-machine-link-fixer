@@ -22,7 +22,7 @@ use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
 $iawmlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 ?>
 
-<?php echo wp_kses_post( $header ); ?>
+<?php echo wp_kses( $header, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
 
 <div class="wlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Step 3: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
@@ -72,4 +72,4 @@ $iawmlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 	</div>
 </div>
 
-<?php echo wp_kses_post( $footer ); ?>
+<?php echo wp_kses( $footer, \WPCOMSpecialProjects\Wayback_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
