@@ -65,7 +65,7 @@ class Test_Process_Local_Post_Event extends TestCase {
 		// Get the action.
 		$action = $actions[0];
 
-		$this->assertSame( 'wlf_process_local_post', $action->hook );
+		$this->assertSame( 'iawmlf_process_local_post', $action->hook );
 		$this->assertSame( 'pending', $action->status );
 		$this->assertSame( \json_encode( array( 'post_id' => 1 ) ), $action->args );
 	}

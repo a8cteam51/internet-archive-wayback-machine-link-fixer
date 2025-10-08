@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Create_New_Snapshot_Event {
 
-	public const HANDLE = 'wlf_create_new_snapshot';
+	public const HANDLE = 'iawmlf_create_new_snapshot';
 
 	/**
 	 * The link repository.

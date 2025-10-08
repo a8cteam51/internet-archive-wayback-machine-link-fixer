@@ -27,7 +27,7 @@ class Scan_Own_Posts_Event {
 	/**
 	 * The event handle.
 	 */
-	public const HANDLE = 'wlf_add_own_posts';
+	public const HANDLE = 'iawmlf_add_own_posts';
 
 	/**
 	 * The post handler.

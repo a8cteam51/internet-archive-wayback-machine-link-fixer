@@ -192,8 +192,8 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		// Check if event added to actionscheduler_actions  table.
 		global $wpdb;
 
-		// Look for a row with hook of wlf_create_new_snapshot and a args that contains the "link_id":$id key.
-		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}actionscheduler_actions WHERE hook = 'wlf_create_new_snapshot' AND args LIKE '%\"link_id\":{$link->get_id()}%'" );
+		// Look for a row with hook of iawmlf_create_new_snapshot and a args that contains the "link_id":$id key.
+		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}actionscheduler_actions WHERE hook = 'iawmlf_create_new_snapshot' AND args LIKE '%\"link_id\":{$link->get_id()}%'" );
 
 		$this->assertCount( 1, $results );
 

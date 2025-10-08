@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Check_Validator_Status {
 
-	public const HANDLE = 'wlf_check_validator_status';
+	public const HANDLE = 'iawmlf_check_validator_status';
 
 	/**
 	 * Link repository.

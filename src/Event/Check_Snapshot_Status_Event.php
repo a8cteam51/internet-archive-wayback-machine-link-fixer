@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Check_Snapshot_Status_Event {
 
-	public const HANDLE = 'wlf_check_snapshot_status';
+	public const HANDLE = 'iawmlf_check_snapshot_status';
 
 	/**
 	 * Link repository.

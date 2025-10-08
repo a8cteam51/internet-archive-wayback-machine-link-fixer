@@ -179,7 +179,7 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Check that a new event was scheduled with incremented attempt
 		$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions" );
 		$this->assertCount( 1, $actions );
-		$this->assertEquals( 'wlf_create_new_snapshot', $actions[0]->hook );
+		$this->assertEquals( 'iawmlf_create_new_snapshot', $actions[0]->hook );
 		$this->assertEquals(
 			json_encode(
 				array(
@@ -232,7 +232,7 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Check that a new event was scheduled with incremented attempt
 		$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions" );
 		$this->assertCount( 1, $actions );
-		$this->assertEquals( 'wlf_create_new_snapshot', $actions[0]->hook );
+		$this->assertEquals( 'iawmlf_create_new_snapshot', $actions[0]->hook );
 		$this->assertEquals(
 			json_encode(
 				array(
@@ -281,7 +281,7 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Check that a new event was scheduled with same attempt count but 24hr delay
 		$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions" );
 		$this->assertCount( 1, $actions );
-		$this->assertEquals( 'wlf_create_new_snapshot', $actions[0]->hook );
+		$this->assertEquals( 'iawmlf_create_new_snapshot', $actions[0]->hook );
 		$this->assertEquals(
 			json_encode(
 				array(

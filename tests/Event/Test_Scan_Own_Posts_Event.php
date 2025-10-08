@@ -70,7 +70,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		Scan_Own_Posts_Event::add_to_action_scheduler();
 
 		// Check that the event has not been added to the action scheduler.
-		$events = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions WHERE hook='wlf_scan_existing_posts'" );
+		$events = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions WHERE hook='iawmlf_scan_existing_posts'" );
 		$this->assertCount( 0, $events );
 	}
 
@@ -89,7 +89,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		Scan_Own_Posts_Event::add_to_action_scheduler();
 
 		// Check that the event has not been added to the action scheduler.
-		$events = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions WHERE hook='wlf_scan_existing_posts'" );
+		$events = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions WHERE hook='iawmlf_scan_existing_posts'" );
 		$this->assertCount( 0, $events );
 	}
 
@@ -103,7 +103,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		// Allow with the filters.
 		\add_filter( 'iawmlf_own_content_allow_post', '__return_true' );
 		\add_filter( 'iawmlf_routinely_update_wayback_machine', '__return_true' );
-		\add_filter( 'wlf_scan_existing_posts', '__return_false' );
+		\add_filter( 'iawmlf_scan_existing_posts', '__return_false' );
 
 		// Only allow post type 'post'.
 		\add_filter(

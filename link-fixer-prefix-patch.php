@@ -14,14 +14,14 @@
 return;
 // Handle legacy actions.
 add_action(
-	'wlf_create_new_snapshot',
+	'iawmlf_create_new_snapshot',
 	function ( $link_id, $attempt ) {
 		do_action( 'iawmlf_create_new_snapshot', $link_id, $attempt );
 	}
 );
 
 add_action(
-	'wlf_update_archive_url',
+	'iawmlf_update_archive_url',
 	function ( $link_id, $attempt ) {
 		do_action( 'iawmlf_update_archive_url', $link_id, $attempt );
 	}
@@ -29,56 +29,56 @@ add_action(
 
 
 add_action(
-	'wlf_scan_existing_posts',
+	'iawmlf_scan_existing_posts',
 	function () {
 		do_action( 'iawmlf_scan_existing_posts' );
 	}
 );
 
 add_action(
-	'wlf_check_snapshot_status',
+	'iawmlf_check_snapshot_status',
 	function ( $link_id, $job_id, $attempt ) {
 		do_action( 'iawmlf_check_snapshot_status', $link_id, $job_id, $attempt );
 	}
 );
 
 add_action(
-	'wlf_find_or_create_snapshot',
+	'iawmlf_find_or_create_snapshot',
 	function ( $link_id ) {
 		do_action( 'iawmlf_find_or_create_snapshot', $link_id );
 	}
 );
 
 add_action(
-	'wlf_link_access_validator',
+	'iawmlf_link_access_validator',
 	function ( $link_id ) {
 		do_action( 'iawmlf_link_access_validator', $link_id );
 	}
 );
 
 add_action(
-	'wlf_check_validator_status',
+	'iawmlf_check_validator_status',
 	function ( $link_id, $job_id, $attempt ) {
 		do_action( 'iawmlf_check_validator_status', $link_id, $job_id, $attempt );
 	}
 );
 
 add_action(
-	'wlf_check_archive_services_online',
+	'iawmlf_check_archive_services_online',
 	function () {
 		do_action( 'iawmlf_check_archive_services_online' );
 	}
 );
 
 add_action(
-	'wlf_process_local_post',
+	'iawmlf_process_local_post',
 	function ( $post_id ) {
 		do_action( 'iawmlf_process_local_post', $post_id );
 	}
 );
 
 add_action(
-	'wlf_add_own_posts',
+	'iawmlf_add_own_posts',
 	function () {
 		do_action( 'iawmlf_add_own_posts' );
 	}
@@ -733,7 +733,7 @@ function link_fixer_prefix_patch_get_settings_keys(): array {
 		't51_wlf_migration_log',
 		't51_wlf_drop_tables_uninstall',
 		't51_iawmlf_link_exclusions',
-		't51_wlf_scan_existing_posts',
+		't51_iawmlf_scan_existing_posts',
 		't51_wlf_archive_api_secret',
 		't51_wlf_archive_api_access',
 		't51_wlf_fixer_option',

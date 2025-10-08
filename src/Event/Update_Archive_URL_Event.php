@@ -26,7 +26,7 @@ class Update_Archive_URL_Event {
 	/**
 	 * The event handle.
 	 */
-	public const HANDLE = 'wlf_update_archive_url';
+	public const HANDLE = 'iawmlf_update_archive_url';
 
 	/**
 	 * The current attempt.

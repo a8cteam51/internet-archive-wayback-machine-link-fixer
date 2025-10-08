@@ -25,7 +25,7 @@ class Process_Local_Post_Event {
 	/**
 	 * The event handle.
 	 */
-	public const HANDLE = 'wlf_process_local_post';
+	public const HANDLE = 'iawmlf_process_local_post';
 
 	/**
 	 * The wayback machine service.

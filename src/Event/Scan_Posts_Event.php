@@ -26,7 +26,7 @@ class Scan_Posts_Event {
 	/**
 	 * The event handle.
 	 */
-	public const HANDLE = 'wlf_scan_existing_posts';
+	public const HANDLE = 'iawmlf_scan_existing_posts';
 
 	/**
 	 * Number of posts to process per call.

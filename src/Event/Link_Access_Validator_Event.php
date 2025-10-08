@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Link_Access_Validator_Event {
 
-	public const HANDLE = 'wlf_link_access_validator';
+	public const HANDLE = 'iawmlf_link_access_validator';
 
 	/**
 	 * The link repository.

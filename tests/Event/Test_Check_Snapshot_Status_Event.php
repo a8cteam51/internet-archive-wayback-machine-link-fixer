@@ -211,7 +211,7 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 
 		$this->assertCount( 1, $actions );
 
-		$this->assertEquals( 'wlf_check_snapshot_status', $actions[0]->hook );
+		$this->assertEquals( 'iawmlf_check_snapshot_status', $actions[0]->hook );
 		$this->assertEquals(
 			json_encode(
 				array(
@@ -280,7 +280,7 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 
 		$this->assertCount( 1, $actions );
 
-		$this->assertEquals( 'wlf_update_archive_url', $actions[0]->hook );
+		$this->assertEquals( 'iawmlf_update_archive_url', $actions[0]->hook );
 		$this->assertEquals( json_encode( array( 'link_id' => $link->get_id(), 'attempt' => 0 ) ), $actions[0]->args );
 	}
 }

@@ -205,7 +205,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		}
 
 		// Check how many actions are scheduled.
-		$actions = $this->wpdb->get_results( "SELECT args FROM {$this->wpdb->prefix}actionscheduler_actions where hook='wlf_create_new_snapshot'" );
+		$actions = $this->wpdb->get_results( "SELECT args FROM {$this->wpdb->prefix}actionscheduler_actions where hook='iawmlf_create_new_snapshot'" );
 		$this->assertCount( 12, $actions );
 
 		// Iterate over the actions and check the id in args is id in array.
@@ -278,7 +278,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		}
 
 		// Check how many actions are scheduled.
-		$actions = $this->wpdb->get_results( "SELECT args FROM {$this->wpdb->prefix}actionscheduler_actions where hook='wlf_create_new_snapshot'" );
+		$actions = $this->wpdb->get_results( "SELECT args FROM {$this->wpdb->prefix}actionscheduler_actions where hook='iawmlf_create_new_snapshot'" );
 		$this->assertCount( 4, $actions );
 	}
 }

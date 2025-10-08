@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Check_Archive_Services_Online_Event {
 
-	public const HANDLE = 'wlf_check_archive_services_online';
+	public const HANDLE = 'iawmlf_check_archive_services_online';
 
 	/**
 	 * Wayback Machine Client.
@@ -52,7 +52,7 @@ class Check_Archive_Services_Online_Event {
 			0, // Forces the event to run immediately.
 			self::HANDLE,
 			array(),
-			'wlf_check_archive_services_online',
+			'iawmlf_check_archive_services_online',
 			'',
 			0
 		);
