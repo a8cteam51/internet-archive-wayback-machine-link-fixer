@@ -443,9 +443,9 @@ class Link_Repository {
 
 		// If we have statuses, add to the query.
 		if ( ! empty( $status ) ) {
-			$where  = true;
-			$format = sprintf( ' WHERE is_broken IN (%s)', join( ',', array_fill( 0, count( $status ), '%d' ) ) );
-			$query .= $this->wpdb->prepare( $format, $status ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Format is prepared.
+			$where           = true;
+			$status_template = sprintf( ' WHERE is_broken IN (%s)', join( ',', array_fill( 0, count( $status ), '%d' ) ) );
+			$query          .= $this->wpdb->prepare( $status_template, $status ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Format is prepared.
 		}
 
 		// If we have archive statuses, add to the query.
@@ -458,8 +458,8 @@ class Link_Repository {
 
 		// If we have link ids, add to the query.
 		if ( ! empty( $link_ids ) ) {
-			$place_holders   = join( ',', array_fill( 0, count( $link_ids ), '%d' ) );
-			$link_ids_format = true === $where ? " AND id IN ({$place_holders})" : " WHERE id IN ({$place_holders})";
+			$place_holders = join( ',', array_fill( 0, count( $link_ids ), '%d' ) );
+			$ids_template  = true === $where ? " AND id IN ({$place_holders})" : " WHERE id IN ({$place_holders})";
 
 			$query .= $this->wpdb->prepare( $link_ids_format, $link_ids ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared,  the column name is not interpolated.
 			$where  = true;
@@ -477,11 +477,11 @@ class Link_Repository {
 		// If we have a search term, add to the query.
 		if ( $search_term ) {
 			// Prepare the search term.
-			$search_term        = str_replace( '%', '', sanitize_text_field( $search_term ) );
-			$search_term        = "%{$search_term}%";
-			$search_term_format = true === $where ? ' AND url LIKE %s' : ' WHERE url LIKE %s';
+			$search_term          = str_replace( '%', '', sanitize_text_field( $search_term ) );
+			$search_term          = "%{$search_term}%";
+			$search_term_template = true === $where ? ' AND url LIKE %s' : ' WHERE url LIKE %s';
 
-			$query .= $this->wpdb->prepare( $search_term_format, $search_term ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
+			$query .= $this->wpdb->prepare( $search_term_template, $search_term ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
 			$where  = true;
 		}
 
