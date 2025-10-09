@@ -45,7 +45,9 @@ jobs:
             "phpunit.xml.dist" \
             "postcss.config.js" \
             "tests/*" \
-            ".vscode/*"
+            ".vscode/*" \
+            "assets/css/src/*" \
+            "assets/js/src/*"
 
       - name:  Release
         uses: softprops/action-gh-release@v1
