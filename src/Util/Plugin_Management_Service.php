@@ -5,13 +5,13 @@
  *
  * @since 1.3.0
  *
- * @package WPCOMSpecialProjects\Wayback_Link_Fixer\Util
+ * @package Internet_Archive\Wayback_Machine_Link_Fixer\Util
  */
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Util;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Util;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Settings_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,7 +26,7 @@ class Plugin_Management_Service {
 	 * @return void
 	 */
 	public function initialize(): void {
-		add_action( 'plugin_action_links_' . WPCOMSP_WAYBACK_LINK_FIXER_BASENAME, array( $this, 'add_settings_link' ) );
+		add_action( 'plugin_action_links_' . IAWMLF_BASENAME, array( $this, 'add_settings_link' ) );
 	}
 
 	/**

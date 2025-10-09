@@ -8,10 +8,10 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Settings;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Settings;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Archive_Services_Online_Event;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Abstract_Migration;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Archive_Services_Online_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Abstract_Migration;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
 class Settings {
 
 	// Prefix.
-	public const SETTINGS_PREFIX = 't51_wlf_';
+	public const SETTINGS_PREFIX = 'iawmlf_';
 
 
 	// Option keys
@@ -38,12 +38,8 @@ class Settings {
 	public const ARCHIVE_ORG_CREDS_VALID_KEY  = self::SETTINGS_PREFIX . 'archive_api_creds_valid';
 
 	// Table names.
-	public const LINK_TABLE = self::SETTINGS_PREFIX . 'link_archive';
+	public const LINK_TABLE = 'iawmlf_link_archive';
 
-	// LEGACY TABLE NAME, TO REMOVE.
-	public const SCAN_LOG_TABLE_NAME    = self::SETTINGS_PREFIX . 'scan_log';
-	public const SCAN_REPORT_TABLE_NAME = self::SETTINGS_PREFIX . 'scan_report';
-	public const SCAN_LINK_CACHE_TABLE  = self::SETTINGS_PREFIX . 'scan_link_cache';
 
 	// Meta Keys
 	public const LINK_META_KEY           = self::SETTINGS_PREFIX . 'links';
@@ -136,7 +132,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_checker_timeout(): int {
-		return absint( apply_filters( 'wlf_link_checker_timeout', 5000 ) );
+		return absint( apply_filters( 'iawmlf_link_checker_timeout', 5000 ) );
 	}
 
 	/**
@@ -148,7 +144,7 @@ class Settings {
 	 */
 	public static function get_link_exclusions(): array {
 		$links = array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
-		return apply_filters( 'wlf_link_exclusions', $links );
+		return apply_filters( 'iawmlf_link_exclusions', $links );
 	}
 
 	/**
@@ -159,7 +155,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_posts_per_batch(): int {
-		$per_batch = absint( apply_filters( 'wlf_posts_per_batch', 10 ) );
+		$per_batch = absint( apply_filters( 'iawmlf_posts_per_batch', 10 ) );
 
 		// If value is less than or equal to 1, set as 2.
 		return $per_batch <= 1 ? 2 : $per_batch;
@@ -174,7 +170,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_check_duration(): int {
-		return absint( apply_filters( 'wlf_link_check_duration_in_days', 7 ) );
+		return absint( apply_filters( 'iawmlf_link_check_duration_in_days', 7 ) );
 	}
 
 	/**
@@ -186,7 +182,7 @@ class Settings {
 	 */
 	public static function get_valid_http_status_codes(): array {
 		$codes = array( 200, 206, 429 );
-		return (array) apply_filters( 'wlf_valid_http_status_codes', $codes );
+		return (array) apply_filters( 'iawmlf_valid_http_status_codes', $codes );
 	}
 
 	/**
@@ -212,7 +208,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_failed_count(): int {
-		return absint( apply_filters( 'wlf_failed_count', 5 ) );
+		return absint( apply_filters( 'iawmlf_failed_count', 5 ) );
 	}
 
 	/**
@@ -267,7 +263,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function is_archive_api_online(): bool {
-		return wpcomsp_wayback_link_fixer_is_archive_api_online();
+		return iawmlf_is_archive_api_online();
 	}
 
 	/**
@@ -298,7 +294,7 @@ class Settings {
 	 */
 	public static function add_own_links(): bool {
 		return (bool) apply_filters(
-			'wlf_add_own_content_to_wayback_machine',
+			'iawmlf_add_own_content_to_wayback_machine',
 			(bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, true )
 		);
 	}
@@ -312,7 +308,7 @@ class Settings {
 	 */
 	public static function own_link_allowed_post_types(): array {
 		return apply_filters(
-			'wlf_own_content_post_types',
+			'iawmlf_own_content_post_types',
 			array_map( 'esc_html', (array) get_option( self::ALLOWED_OWN_CONTENT_POST_TYPES, array( 'post', 'page' ) ) )
 		);
 	}
@@ -326,7 +322,7 @@ class Settings {
 	 */
 	public static function own_link_routinely_update(): bool {
 		return (bool) apply_filters(
-			'wlf_routinely_update_wayback_machine',
+			'iawmlf_routinely_update_wayback_machine',
 			(bool) get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE, false )
 		);
 	}
@@ -342,7 +338,7 @@ class Settings {
 		$default  = 28;
 		$interval = absint(
 			apply_filters(
-				'wlf_routinely_update_wayback_machine_interval',
+				'iawmlf_routinely_update_wayback_machine_interval',
 				get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, $default )
 			)
 		);
@@ -360,7 +356,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function show_link_table_debug_data(): bool {
-		return (bool) apply_filters( 'wlf_show_link_table_debug_data', false );
+		return (bool) apply_filters( 'iawmlf_show_link_table_debug_data', false );
 	}
 
 	/**
@@ -396,7 +392,7 @@ class Settings {
 	 */
 	public static function get_reporting_page_capability(): string {
 		return apply_filters(
-			'wlf_reporting_page_capability',
+			'iawmlf_reporting_page_capability',
 			'manage_options'
 		);
 	}

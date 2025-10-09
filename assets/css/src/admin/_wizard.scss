@@ -1,4 +1,4 @@
-#wlf_wizard {
+#iawmlf_wizard {
     padding: 20px 30px;
     background: white;
     border-radius: 10px;
@@ -50,14 +50,14 @@
     }
 }
 
-#wlf-wizard__footer {
+#iawmlf-wizard__footer {
     display: flex;
     width: 100%;
     align-items: center;
     justify-content: space-between;
 }
 
-.wlf-wizard__footer__progress {
+.iawmlf-wizard__footer__progress {
     flex-grow: 1;
     display: flex;
     align-items: center;
@@ -69,14 +69,14 @@
     }
 }
 
-.wlf-wizard__footer__progress__bar {
+.iawmlf-wizard__footer__progress__bar {
     width: 100%;
     justify-content: center;
     align-items: center;
     display: inline;
     text-align: center;
     position: relative;
-    .wlf-wizard__footer__progress__bar__inner {
+    .iawmlf-wizard__footer__progress__bar__inner {
         background-color: #2271b1;
         height: 5px;
         position: relative;
@@ -95,7 +95,7 @@
     }
 }
 
-.wlf-wizard__content {
+.iawmlf-wizard__content {
     form {
         display: flex;
         flex-direction: column;

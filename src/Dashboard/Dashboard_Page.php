@@ -8,11 +8,11 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -30,7 +30,7 @@ defined( 'ABSPATH' ) || exit;
 class Dashboard_Page {
 
 	public const DASHBOARD_SLUG      = 'wayback-link-fixer-dashboard';
-	public const STATS_TRANSIENT_KEY = 'wlf_dashboard_stats';
+	public const STATS_TRANSIENT_KEY = 'iawmlf_dashboard_stats';
 
 	/**
 	 * Access to the link repository.
@@ -51,7 +51,7 @@ class Dashboard_Page {
 	 */
 	public function __construct() {
 		$this->link_repository   = new Link_Repository();
-		$this->links_per_section = absint( apply_filters( 'wlf_dashboard_link_count', 10 ) );
+		$this->links_per_section = absint( apply_filters( 'iawmlf_dashboard_link_count', 10 ) );
 	}
 
 	/**
@@ -87,9 +87,9 @@ class Dashboard_Page {
 			// Enqueue styles
 			wp_enqueue_style(
 				self::DASHBOARD_SLUG,
-				WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
+				IAWMLF_URL . 'assets/css/build/style-style.scss.css',
 				array(),
-				WPCOMSP_WAYBACK_LINK_FIXER_VERSION
+				IAWMLF_VERSION
 			);
 		}
 
@@ -97,9 +97,9 @@ class Dashboard_Page {
 		if ( $is_dashboard_page ) {
 			wp_enqueue_script(
 				self::DASHBOARD_SLUG . '_dashboard',
-				WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/dashboard.js',
+				IAWMLF_URL . 'assets/js/build/dashboard.js',
 				array(),
-				WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
+				IAWMLF_VERSION,
 				true
 			);
 		}
@@ -112,7 +112,7 @@ class Dashboard_Page {
 	 */
 	private function get_ia_icon_base64(): string {
 		$icon = 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjYwIDYwIDE0MCAxNDAiIGZpbGw9ImN1cnJlbnRDb2xvciI+PHBhdGggZD0iTTE3MS45MjggMTA5LjcwNEMxNzkuMDA3IDEwMi42MjUgMTc5LjAwNyA5MS4xNDkxIDE3MS45MjggODQuMDcwOUMxNjQuODUgNzYuOTkyNiAxNTMuMzc0IDc2Ljk5MjYgMTQ2LjI5NiA4NC4wNzA5TDg0LjA3MDQgMTQ2LjI5NkM3Ni45OTIyIDE1My4zNzUgNzYuOTkyMiAxNjQuODUxIDg0LjA3MDQgMTcxLjkyOUM5MS4xNDg3IDE3OS4wMDcgMTAyLjYyNSAxNzkuMDA3IDEwOS43MDMgMTcxLjkyOUwxNzEuOTI4IDEwOS43MDRaTTExNi41OTcgMTc4LjgyM0MxMDUuNzExIDE4OS43MDkgODguMDYyIDE4OS43MDkgNzcuMTc2MSAxNzguODIzQzY2LjI5MDMgMTY3LjkzNyA2Ni4yOTAzIDE1MC4yODggNzcuMTc2MSAxMzkuNDAyTDEzOS40MDIgNzcuMTc2NkMxNTAuMjg3IDY2LjI5MDcgMTY3LjkzNyA2Ni4yOTA3IDE3OC44MjMgNzcuMTc2NkMxODkuNzA5IDg4LjA2MjUgMTg5LjcwOSAxMDUuNzEyIDE3OC44MjMgMTE2LjU5OEwxMTYuNTk3IDE3OC44MjNaIi8+PHBhdGggZD0iTTE3OC44MjMgMTM5LjQwMkMxODkuNzA5IDE1MC4yODggMTg5LjcwOSAxNjcuOTM3IDE3OC44MjMgMTc4LjgyM0MxNjcuOTM3IDE4OS43MDkgMTUwLjI4OCAxODkuNzA5IDEzOS40MDIgMTc4LjgyM0wxMzUuMTU5IDE3NC41OEwxNDIuMDUzIDE2Ny42ODZMMTQ2LjI5NiAxNzEuOTI5QzE1My4zNzUgMTc5LjAwNyAxNjQuODUgMTc5LjAwNyAxNzEuOTI4IDE3MS45MjlDMTc5LjAwNiAxNjQuODUgMTc5LjAwNiAxNTMuMzc1IDE3MS45MjggMTQ2LjI5N0wxNjcuNjg1IDE0Mi4wNTRMMTc0LjU4IDEzNS4xNTlMMTc4LjgyMyAxMzkuNDAyWk03Ny4xNzYyIDc3LjE3NjdDODguMDYyIDY2LjI5MSAxMDUuNzExIDY2LjI5MTEgMTE2LjU5NyA3Ny4xNzY3TDEyMC44NCA4MS40MTk5TDExMy45NDYgODguMzEzNUwxMDkuNzA0IDg0LjA3MTNDMTAyLjYyNSA3Ni45OTMgOTEuMTQ5IDc2Ljk5MyA4NC4wNzA4IDg0LjA3MTNDNzYuOTkyNSA5MS4xNDk1IDc2Ljk5MjUgMTAyLjYyNiA4NC4wNzA4IDEwOS43MDRMODguMzEzIDExMy45NDZMODEuNDE5NCAxMjAuODQxTDc3LjE3NjIgMTE2LjU5OEM2Ni4yOTA2IDEwNS43MTIgNjYuMjkwNSA4OC4wNjI1IDc3LjE3NjIgNzcuMTc2N1oiLz48cGF0aCBkPSJNMTY3LjQyMSAxMjhMMTI3Ljk5OSAxNjcuNDIxTDg4LjU3ODIgMTI4TDEyNy45OTkgODguNTc4N0wxNjcuNDIxIDEyOFpNMTAyLjM2NyAxMjhMMTI3Ljk5OSAxNTMuNjMzTDE1My42MzIgMTI4TDEyNy45OTkgMTAyLjM2N0wxMDIuMzY3IDEyOFoiLz48cGF0aCBkPSJNMTMwLjEyMSAxMTguODA4QzEyOC41NTkgMTIwLjM3IDEyNi4wMjYgMTIwLjM3IDEyNC40NjQgMTE4LjgwOEMxMjIuOTAyIDExNy4yNDUgMTIyLjkwMiAxMTQuNzEzIDEyNC40NjQgMTEzLjE1MUMxMjYuMDI2IDExMS41ODkgMTI4LjU1OSAxMTEuNTg5IDEzMC4xMjEgMTEzLjE1MUMxMzEuNjgzIDExNC43MTMgMTMxLjY4MyAxMTcuMjQ1IDEzMC4xMjEgMTE4LjgwOFoiLz48cGF0aCBkPSJNMTE5LjUxNCAxMjkuNDE0QzExNy45NTIgMTMwLjk3NiAxMTUuNDE5IDEzMC45NzYgMTEzLjg1NyAxMjkuNDE0QzExMi4yOTUgMTI3Ljg1MiAxMTIuMjk1IDEyNS4zMTkgMTEzLjg1NyAxMjMuNzU3QzExNS40MTkgMTIyLjE5NSAxMTcuOTUyIDEyMi4xOTUgMTE5LjUxNCAxMjMuNzU3QzEyMS4wNzYgMTI1LjMxOSAxMjEuMDc2IDEyNy44NTIgMTE5LjUxNCAxMjkuNDE0WiIvPjxwYXRoIGQ9Ik0xNDIuODQ5IDEzMS41MzVDMTQxLjI4NyAxMzMuMDk4IDEzOC43NTQgMTMzLjA5OCAxMzcuMTkyIDEzMS41MzVDMTM1LjYzIDEyOS45NzMgMTM1LjYzIDEyNy40NDEgMTM3LjE5MiAxMjUuODc5QzEzOC43NTQgMTI0LjMxNiAxNDEuMjg3IDEyNC4zMTYgMTQyLjg0OSAxMjUuODc5QzE0NC40MTEgMTI3LjQ0MSAxNDQuNDExIDEyOS45NzMgMTQyLjg0OSAxMzEuNTM1WiIvPjxwYXRoIGQ9Ik0xMzIuMjQyIDE0Mi4xNDJDMTMwLjY4IDE0My43MDQgMTI4LjE0NyAxNDMuNzA0IDEyNi41ODUgMTQyLjE0MkMxMjUuMDIzIDE0MC41OCAxMjUuMDIzIDEzOC4wNDcgMTI2LjU4NSAxMzYuNDg1QzEyOC4xNDcgMTM0LjkyMyAxMzAuNjggMTM0LjkyMyAxMzIuMjQyIDEzNi40ODVDMTMzLjgwNCAxMzguMDQ3IDEzMy44MDQgMTQwLjU4IDEzMi4yNDIgMTQyLjE0MloiLz48L3N2Zz4K';
-		return \apply_filters( 'wlf_menu_icon_base64', $icon );
+		return \apply_filters( 'iawmlf_menu_icon_base64', $icon );
 	}
 
 
@@ -297,55 +297,55 @@ class Dashboard_Page {
 		// Has archive link.
 		$has_archive_link = add_query_arg(
 			array(
-				'wlf_status'      => 'all',
-				'wlf_has_archive' => '1',
+				'iawmlf_status'      => 'all',
+				'iawmlf_has_archive' => '1',
 			),
 			$filtered_url_base
 		);
 
 		$has_no_archive_link = add_query_arg(
 			array(
-				'wlf_status'      => 'all',
-				'wlf_has_archive' => '0',
+				'iawmlf_status'      => 'all',
+				'iawmlf_has_archive' => '0',
 			),
 			$filtered_url_base
 		);
 
 		$broken_link = add_query_arg(
 			array(
-				'wlf_status' => '1',
+				'iawmlf_status' => '1',
 			),
 			$filtered_url_base
 		);
 
 		$valid_link = add_query_arg(
 			array(
-				'wlf_status' => '0',
+				'iawmlf_status' => '0',
 			),
 			$filtered_url_base
 		);
 
-		wpcomsp_wayback_link_fixer_render_template(
+		iawmlf_render_template(
 			'admin/dashboard/page.php',
 			array(
-				'wlf_link_stats'              => $link_stats,
-				'wlf_last_checks'             => $last_checks,
-				'wlf_latest_links'            => $latest_links,
-				'wlf_account_details'         => Dashboard_Notifications::get_account_details(),
-				'wlf_api_configured'          => Settings::is_archive_api_configured(),
-				'wlf_is_online'               => wpcomsp_wayback_link_fixer_is_archive_api_online(),
-				'wlf_link_to_settings'        => Settings_Page::get_page_url(),
-				'wlf_link_table'              => Report_Page::get_page_url(),
-				'wlf_auto_archiver_enabled'   => Settings::add_own_links(),
-				'wlf_scan_existing_enabled'   => Settings::should_scan_existing_posts(),
-				'wlf_link_processing_enabled' => Settings::is_link_processing_enabled(),
-				'wlf_link_check_duration'     => Settings::get_link_check_duration(),
-				'wlf_failed_check_count'      => Settings::get_failed_count(),
-				'wlf_report_page_base'        => $report_page_base,
-				'wlf_filtered_broken'         => esc_url( $broken_link ),
-				'wlf_filtered_valid'          => esc_url( $valid_link ),
-				'wlf_filtered_has_archive'    => esc_url( $has_archive_link ),
-				'wlf_filtered_no_archive'     => esc_url( $has_no_archive_link ),
+				'iawmlf_link_stats'              => $link_stats,
+				'iawmlf_last_checks'             => $last_checks,
+				'iawmlf_latest_links'            => $latest_links,
+				'iawmlf_account_details'         => Dashboard_Notifications::get_account_details(),
+				'iawmlf_api_configured'          => Settings::is_archive_api_configured(),
+				'iawmlf_is_online'               => iawmlf_is_archive_api_online(),
+				'iawmlf_link_to_settings'        => Settings_Page::get_page_url(),
+				'iawmlf_link_table'              => Report_Page::get_page_url(),
+				'iawmlf_auto_archiver_enabled'   => Settings::add_own_links(),
+				'iawmlf_scan_existing_enabled'   => Settings::should_scan_existing_posts(),
+				'iawmlf_link_processing_enabled' => Settings::is_link_processing_enabled(),
+				'iawmlf_link_check_duration'     => Settings::get_link_check_duration(),
+				'iawmlf_failed_check_count'      => Settings::get_failed_count(),
+				'iawmlf_report_page_base'        => $report_page_base,
+				'iawmlf_filtered_broken'         => esc_url( $broken_link ),
+				'iawmlf_filtered_valid'          => esc_url( $valid_link ),
+				'iawmlf_filtered_has_archive'    => esc_url( $has_archive_link ),
+				'iawmlf_filtered_no_archive'     => esc_url( $has_no_archive_link ),
 			)
 		);
 	}

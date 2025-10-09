@@ -8,7 +8,7 @@ console.log('link-table.js loaded');
 	"use strict";
 	jQuery(document).ready(function () {
 
-		const TRIGGER_BULK_ACTIONS = jQuery('#wlf_help_info_bulk_actions');
+		const TRIGGER_BULK_ACTIONS = jQuery('#iawmlf_help_info_bulk_actions');
 
 		/**
 		 * Shows the help tab.
@@ -26,7 +26,7 @@ console.log('link-table.js loaded');
 		 * @param {string} tabName - The name of the tab to select.
 		 */
 		const selectTab = (tabName) => {
-			const tabLink = jQuery(`#tab-link-wlf_help_${tabName} a`);
+			const tabLink = jQuery(`#tab-link-iawmlf_help_${tabName} a`);
 			if (tabLink.length) {
 				tabLink.trigger('click');
 			}

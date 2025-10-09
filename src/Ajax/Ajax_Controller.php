@@ -8,9 +8,9 @@
 
 declare( strict_types = 1 );
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Ajax;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Link_Check_Ajax;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Ajax\Link_Check_Ajax;
 
 defined( 'ABSPATH' ) || exit;
 

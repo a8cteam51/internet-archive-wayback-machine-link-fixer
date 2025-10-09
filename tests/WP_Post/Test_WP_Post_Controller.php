@@ -4,14 +4,16 @@
  * Tests for the WP_Post_Controller class.
  *
  * @since 1.2.0
+ *
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller
  */
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Processor;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Processor;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller;
 
 /**
  * Test_WP_Post_Controller
@@ -29,9 +31,9 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$wpdb->query( "DELETE FROM {$wpdb->prefix}actionscheduler_actions" );
 
 		// Clear all filters.
-		\remove_all_filters( 'wlf_add_own_content_to_wayback_machine' );
-		\remove_all_filters( 'wlf_own_content_post_types' );
-		\remove_all_filters( 'wlf_own_content_allow_post' );
+		\remove_all_filters( 'iawmlf_add_own_content_to_wayback_machine' );
+		\remove_all_filters( 'iawmlf_own_content_post_types' );
+		\remove_all_filters( 'iawmlf_own_content_allow_post' );
 
 		parent::set_up();
 	}
@@ -301,7 +303,7 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	public function test_existing_links_not_processed(): void {
 
 		// Set the option to not allow the post to be processed.
-		add_filter( 'wlf_add_own_content_to_wayback_machine', '__return_false' );
+		add_filter( 'iawmlf_add_own_content_to_wayback_machine', '__return_false' );
 
 		$post = \WP_UnitTestCase_Base::factory()->post->create_and_get();
 
@@ -324,11 +326,11 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	 */
 	public function test_not_allowed_post_types_not_processed(): void {
 		// Alloq posts to be added.
-		add_filter( 'wlf_add_own_content_to_wayback_machine', '__return_true' );
+		add_filter( 'iawmlf_add_own_content_to_wayback_machine', '__return_true' );
 
 		// Only allow pages
 		add_filter(
-			'wlf_own_content_post_types',
+			'iawmlf_own_content_post_types',
 			function ( $post_types ) {
 				$post_types = array( 'page' );
 				return $post_types;
@@ -357,11 +359,11 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	 */
 	public function test_not_published_post_not_processed(): void {
 		// Alloq posts to be added.
-		add_filter( 'wlf_add_own_content_to_wayback_machine', '__return_true' );
+		add_filter( 'iawmlf_add_own_content_to_wayback_machine', '__return_true' );
 
 		// Only allow pages
 		add_filter(
-			'wlf_own_content_post_types',
+			'iawmlf_own_content_post_types',
 			function ( $post_types ) {
 				$post_types = array( 'page', 'post' );
 				return $post_types;
@@ -390,11 +392,11 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	 */
 	public function test_add_own_post_to_wayback_machine(): void {
 		// Alloq posts to be added.
-		add_filter( 'wlf_add_own_content_to_wayback_machine', '__return_true' );
+		add_filter( 'iawmlf_add_own_content_to_wayback_machine', '__return_true' );
 
 		// Only allow pages
 		add_filter(
-			'wlf_own_content_post_types',
+			'iawmlf_own_content_post_types',
 			function ( $post_types ) {
 				$post_types = array( 'page', 'post' );
 				return $post_types;
@@ -425,16 +427,16 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	 */
 	public function test_disable_own_post_to_wayback_machine(): void {
 		// Allow posts to be added and allow post and page post types.
-		add_filter( 'wlf_add_own_content_to_wayback_machine', '__return_true' );
+		add_filter( 'iawmlf_add_own_content_to_wayback_machine', '__return_true' );
 		add_filter(
-			'wlf_own_content_post_types',
+			'iawmlf_own_content_post_types',
 			function ( $post_types ) {
 				$post_types = array( 'page', 'post' );
 				return $post_types;
 			}
 		);
 		add_filter(
-			'wlf_own_content_allow_post',
+			'iawmlf_own_content_allow_post',
 			function ( $allowed, $post ) {
 				// If the post title is 'disable', return false.
 				return $post->post_title !== 'disable';

@@ -2,18 +2,18 @@
 	// Dashboard functionality
 	document.addEventListener('DOMContentLoaded', function () {
 		// Handle accordion tabs
-		const accordionTabs = document.querySelectorAll('.wlf_dashboard-accordion-tab');
-		const accordionContents = document.querySelectorAll('.wlf_dashboard-accordion-content');
+		const accordionTabs = document.querySelectorAll('.iawmlf_dashboard-accordion-tab');
+		const accordionContents = document.querySelectorAll('.iawmlf_dashboard-accordion-content');
 		 // Set ARIA roles
-        const accordionNav = document.querySelector('.wlf_dashboard-accordion-nav');
+        const accordionNav = document.querySelector('.iawmlf_dashboard-accordion-nav');
         if (accordionNav) accordionNav.setAttribute('role', 'tablist');
         accordionTabs.forEach(function (t) {
             t.setAttribute('role', 'tab');
-            t.setAttribute('aria-selected', t.classList.contains('wlf_dashboard-accordion-tab--active') ? 'true' : 'false');
+            t.setAttribute('aria-selected', t.classList.contains('iawmlf_dashboard-accordion-tab--active') ? 'true' : 'false');
         });
         accordionContents.forEach(function (panel) {
             panel.setAttribute('role', 'tabpanel');
-            panel.setAttribute('aria-hidden', panel.classList.contains('wlf_dashboard-accordion-content--active') ? 'false' : 'true');
+            panel.setAttribute('aria-hidden', panel.classList.contains('iawmlf_dashboard-accordion-content--active') ? 'false' : 'true');
         });
 		accordionTabs.forEach(function (tab) {
 			tab.addEventListener('click', function () {
@@ -21,22 +21,22 @@
 
 				// Remove active class from all tabs
 				accordionTabs.forEach(function (t) {
-					t.classList.remove('wlf_dashboard-accordion-tab--active');
+					t.classList.remove('iawmlf_dashboard-accordion-tab--active');
 				});
 
 				// Hide all content panels
 				accordionContents.forEach(function (content) {
-					content.classList.remove('wlf_dashboard-accordion-content--active');
+					content.classList.remove('iawmlf_dashboard-accordion-content--active');
 				});
 
 				// Activate clicked tab
-				this.classList.add('wlf_dashboard-accordion-tab--active');
+				this.classList.add('iawmlf_dashboard-accordion-tab--active');
 				this.setAttribute('aria-selected', 'true');
 
 				// Show corresponding content
 				const targetContent = document.getElementById(targetTab);
 				if (targetContent) {
-                    targetContent.classList.add('wlf_dashboard-accordion-content--active');
+                    targetContent.classList.add('iawmlf_dashboard-accordion-content--active');
                     targetContent.setAttribute('aria-hidden', 'false');
                 }
                 // Update other tabs/panels aria state
@@ -50,11 +50,11 @@
 		});
 
 		// Handle link check item show/hide functionality
-		const linkCheckItems = document.querySelectorAll('.wlf_dashboard-link-check-item');
+		const linkCheckItems = document.querySelectorAll('.iawmlf_dashboard-link-check-item');
 
 		linkCheckItems.forEach(function (item) {
-			const titleLink = item.querySelector('.wlf_dashboard-link-check-title');
-			const posts = item.querySelector('.wlf_dashboard-link-check-posts');
+			const titleLink = item.querySelector('.iawmlf_dashboard-link-check-title');
+			const posts = item.querySelector('.iawmlf_dashboard-link-check-posts');
 
 			if (titleLink && posts) {
 				// Initially hide the posts section
@@ -66,7 +66,7 @@
 
 				// Add arrow indicator
 				const arrow = document.createElement('span');
-				arrow.className = 'wlf_dashboard-link-expand-arrow';
+				arrow.className = 'iawmlf_dashboard-link-expand-arrow';
 				arrow.textContent = '▼';
 				arrow.style.position = 'absolute';
 				arrow.style.right = '0';

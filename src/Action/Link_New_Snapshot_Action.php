@@ -7,19 +7,19 @@
  *
  * @since 1.3.0
  *
- * @package WPCOMSpecialProjects\Wayback_Link_Fixer\Action
+ * @package Internet_Archive\Wayback_Machine_Link_Fixer\Action
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Action;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Action;
 
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Snapshot_Status_Event;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Snapshot_Status_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -97,7 +97,7 @@ class Link_New_Snapshot_Action {
 		}
 
 		// If we have an internet archive link, we don't need to check it.
-		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+		if ( iawmlf_is_archive_link( $link->get_href() ) ) {
 			return array(
 				'link'    => $link,
 				'job_id'  => null,

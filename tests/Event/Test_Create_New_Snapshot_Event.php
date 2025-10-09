@@ -5,23 +5,23 @@
  *
  * @since 1.3.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Event\Create_New_Snapshot_Event
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Event;
 
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Create_New_Snapshot_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
 
 /**
  * Test_Create_New_Snapshot_Event
@@ -45,8 +45,8 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		$this->wpdb->query( "TRUNCATE TABLE {$this->wpdb->prefix}actionscheduler_actions" );
 
 		// Clear any filters.
-		remove_all_filters( 'wlf_link_checker_client' );
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_link_checker_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 
 		// Clear the link table.
 		$this->wpdb->query( 'TRUNCATE TABLE ' . Settings::get_link_table_name() );
@@ -59,8 +59,8 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 	 */
 	public function tear_down(): void {
 		// Clear filters
-		remove_all_filters( 'wlf_link_checker_client' );
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_link_checker_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 
 		parent::tear_down();
 	}
@@ -122,7 +122,7 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Setup the mock service
 		$service = $this->createMock( Link_Checker_Client::class );
 		$service->method( 'get_final_url' )->willReturn( $final_url );
-		add_filter( 'wlf_link_checker_client', fn() => $service );
+		add_filter( 'iawmlf_link_checker_client', fn() => $service );
 
 		$event = new Create_New_Snapshot_Event();
 		$event->setup();
@@ -158,7 +158,7 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		$service = $this->createMock( Link_Checker_Client::class );
 		$service->method( 'get_final_url' )
 			->willThrowException( new Service_Offline_Exception( 'Service is offline' ) );
-		add_filter( 'wlf_link_checker_client', fn() => $service );
+		add_filter( 'iawmlf_link_checker_client', fn() => $service );
 
 		$event = new Create_New_Snapshot_Event();
 		$event->setup();
@@ -179,7 +179,7 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Check that a new event was scheduled with incremented attempt
 		$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions" );
 		$this->assertCount( 1, $actions );
-		$this->assertEquals( 'wlf_create_new_snapshot', $actions[0]->hook );
+		$this->assertEquals( 'iawmlf_create_new_snapshot', $actions[0]->hook );
 		$this->assertEquals(
 			json_encode(
 				array(
@@ -206,13 +206,13 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Setup the link checker mock to return the same URL (no redirect)
 		$link_checker = $this->createMock( Link_Checker_Client::class );
 		$link_checker->method( 'get_final_url' )->willReturn( $url );
-		add_filter( 'wlf_link_checker_client', fn() => $link_checker );
+		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
 
 		// Setup the snapshot client mock to throw a service offline exception
 		$snapshot_client = $this->createMock( Snapshot_Client::class );
 		$snapshot_client->method( 'create_snapshot' )
 			->willThrowException( new Service_Offline_Exception( 'Service is offline' ) );
-		add_filter( 'wlf_snapshot_client', fn() => $snapshot_client );
+		add_filter( 'iawmlf_snapshot_client', fn() => $snapshot_client );
 
 		$event = new Create_New_Snapshot_Event();
 		$event->setup();
@@ -232,7 +232,7 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Check that a new event was scheduled with incremented attempt
 		$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions" );
 		$this->assertCount( 1, $actions );
-		$this->assertEquals( 'wlf_create_new_snapshot', $actions[0]->hook );
+		$this->assertEquals( 'iawmlf_create_new_snapshot', $actions[0]->hook );
 		$this->assertEquals(
 			json_encode(
 				array(
@@ -259,13 +259,13 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Setup the link checker mock to return the same URL (no redirect)
 		$link_checker = $this->createMock( Link_Checker_Client::class );
 		$link_checker->method( 'get_final_url' )->willReturn( $url );
-		add_filter( 'wlf_link_checker_client', fn() => $link_checker );
+		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
 
 		// Setup the snapshot client mock to throw an exceeded limit exception
 		$snapshot_client = $this->createMock( Snapshot_Client::class );
 		$snapshot_client->method( 'create_snapshot' )
 			->willThrowException( new Exceeded_Snapshot_Limit_Exception() );
-		add_filter( 'wlf_snapshot_client', fn() => $snapshot_client );
+		add_filter( 'iawmlf_snapshot_client', fn() => $snapshot_client );
 
 		$event = new Create_New_Snapshot_Event();
 		$event->setup();
@@ -281,7 +281,7 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Check that a new event was scheduled with same attempt count but 24hr delay
 		$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions" );
 		$this->assertCount( 1, $actions );
-		$this->assertEquals( 'wlf_create_new_snapshot', $actions[0]->hook );
+		$this->assertEquals( 'iawmlf_create_new_snapshot', $actions[0]->hook );
 		$this->assertEquals(
 			json_encode(
 				array(
@@ -313,13 +313,13 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Setup the link checker mock to return the same URL (no redirect)
 		$link_checker = $this->createMock( Link_Checker_Client::class );
 		$link_checker->method( 'get_final_url' )->willReturn( $url );
-		add_filter( 'wlf_link_checker_client', fn() => $link_checker );
+		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
 
 		// Setup the snapshot client mock to throw an invalid response exception
 		$snapshot_client = $this->createMock( Snapshot_Client::class );
 		$snapshot_client->method( 'create_snapshot' )
 			->willThrowException( new Invalid_Response_Exception( 'Invalid response' ) );
-		add_filter( 'wlf_snapshot_client', fn() => $snapshot_client );
+		add_filter( 'iawmlf_snapshot_client', fn() => $snapshot_client );
 
 		$event = new Create_New_Snapshot_Event();
 		$event->setup();

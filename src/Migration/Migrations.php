@@ -8,9 +8,9 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Migration;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Migration;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -101,8 +101,8 @@ class Plugin {
 	 */
 	public function is_active(): bool {
 		// Custom requirements check out, just ensure basic requirements are met.
-		return is_bool( WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS ) // @phpstan-ignore-line
-		&& true === WPCOMSP_WAYBACK_LINK_FIXER_REQUIREMENTS;
+		return is_bool( IAWMLF_MINIMUM_REQUIREMENTS ) // @phpstan-ignore-line
+		&& true === IAWMLF_MINIMUM_REQUIREMENTS;
 	}
 
 	/**

@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
 use WP_Query;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,7 +26,7 @@ class Scan_Posts_Event {
 	/**
 	 * The event handle.
 	 */
-	public const HANDLE = 'wlf_scan_existing_posts';
+	public const HANDLE = 'iawmlf_scan_existing_posts';
 
 	/**
 	 * Number of posts to process per call.
@@ -86,7 +86,7 @@ class Scan_Posts_Event {
 		}
 
 		// Get the delay of the event.
-		$interval = absint( apply_filters( 'wlf_scan_posts_interval', 10 * \MINUTE_IN_SECONDS ) );
+		$interval = absint( apply_filters( 'iawmlf_scan_posts_interval', 10 * \MINUTE_IN_SECONDS ) );
 
 		// If we have 0 interval, add as async action.
 		if ( 0 === $interval ) {

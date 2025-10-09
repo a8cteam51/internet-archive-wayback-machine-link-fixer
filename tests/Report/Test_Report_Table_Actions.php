@@ -5,19 +5,19 @@
  *
  * @since 1.3.0
  *
- * @coversDefaultClass WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Table
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Report\Report_Table
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Report;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Report;
 
 use Gin0115\WPUnit_Helpers\Objects;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Table;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Report\Report_Table;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
 
 /**
  * Test_Report_Table_Actions
@@ -40,8 +40,8 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		// Clear the actionscheduler_actions table.
 		$this->wpdb->query( "TRUNCATE TABLE {$this->wpdb->prefix}actionscheduler_actions" );
 
-		// Clear any wlf_snapshot_client filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		// Clear any iawmlf_snapshot_client filter.
+		remove_all_filters( 'iawmlf_snapshot_client' );
 
 		// Clear the link table.
 		$this->wpdb->query( 'TRUNCATE TABLE ' . Settings::get_link_table_name() );
@@ -60,7 +60,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		$service = $this->createMock( Snapshot_Client::class );
 		$service->method( 'get_snapshot_status' )->willReturn( $response );
 
-		add_filter( 'wlf_snapshot_client', fn() => $service );
+		add_filter( 'iawmlf_snapshot_client', fn() => $service );
 	}
 
 	/**
@@ -99,7 +99,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		$calls = 0;
 
 		// Use a mock IA insstance
-		$client = $this->createMock( \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
+		$client = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
 		$client->method( 'create_snapshot' )
 			->willReturnCallback(function($link) use( &$calls) {
 				$calls++;
@@ -108,7 +108,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 
 		// Set the mock client
 		add_filter(
-			'wlf_snapshot_client',
+			'iawmlf_snapshot_client',
 			function () use ( $client ) {
 				return $client;
 			}
@@ -139,7 +139,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		$this->assertEquals(4, $calls);
 
 		// Remove the filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 
 
 	}
@@ -167,13 +167,13 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		);
 
 		// Use a mock IA insstance
-		$client = $this->createMock( \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
+		$client = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
 		$client->method( 'create_snapshot' )
 			->willReturn('some-id');
 
 		// Set the mock client
 		add_filter(
-			'wlf_snapshot_client',
+			'iawmlf_snapshot_client',
 			function () use ( $client ) {
 				return $client;
 			}
@@ -193,7 +193,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		$notices = $table->get_notices();
 
 		// Remove the filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 
 		// We should have only 1 notice.
 		$this->assertCount( 1, $notices );
@@ -205,7 +205,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		}
 
 		// Check how many actions are scheduled.
-		$actions = $this->wpdb->get_results( "SELECT args FROM {$this->wpdb->prefix}actionscheduler_actions where hook='wlf_create_new_snapshot'" );
+		$actions = $this->wpdb->get_results( "SELECT args FROM {$this->wpdb->prefix}actionscheduler_actions where hook='iawmlf_create_new_snapshot'" );
 		$this->assertCount( 12, $actions );
 
 		// Iterate over the actions and check the id in args is id in array.
@@ -278,7 +278,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		}
 
 		// Check how many actions are scheduled.
-		$actions = $this->wpdb->get_results( "SELECT args FROM {$this->wpdb->prefix}actionscheduler_actions where hook='wlf_create_new_snapshot'" );
+		$actions = $this->wpdb->get_results( "SELECT args FROM {$this->wpdb->prefix}actionscheduler_actions where hook='iawmlf_create_new_snapshot'" );
 		$this->assertCount( 4, $actions );
 	}
 }

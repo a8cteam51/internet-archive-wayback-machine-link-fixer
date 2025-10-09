@@ -5,16 +5,16 @@
  *
  * @since 1.3.0
  *
- * @coversDefaultClass WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\HTTP_System_Client
+ * @coversDefaultClass Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_System_Client
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests;
 
 use DateTime;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_System_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_System_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
 
 /**
  * Test class for HTTP_System_Client.

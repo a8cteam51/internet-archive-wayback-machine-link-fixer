@@ -8,12 +8,12 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Report\Report_Table;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Dashboard_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Report\Report_Table;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -132,17 +132,17 @@ class Report_Page {
 		// Enqueue the admin styles.
 		wp_enqueue_style(
 			self::SLUG,
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
+			IAWMLF_URL . 'assets/css/build/style-style.scss.css',
 			array(),
-			WPCOMSP_WAYBACK_LINK_FIXER_VERSION
+			IAWMLF_VERSION
 		);
 
 		// Enqueue the admin scripts.
 		wp_enqueue_script(
 			self::SLUG,
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/link-table.js',
+			IAWMLF_URL . 'assets/js/build/link-table.js',
 			array( 'jquery' ),
-			WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
+			IAWMLF_VERSION,
 			true
 		);
 	}
@@ -178,7 +178,7 @@ class Report_Page {
 	 */
 	public function render_page(): void {
 		// If we have the link id in the query string, render the single report page.
-		if ( isset( $_GET['wlf_link_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+		if ( isset( $_GET['iawmlf_link_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
 			$this->render_single_page();
 			return;
 		}
@@ -196,7 +196,7 @@ class Report_Page {
 	 */
 	public function register_screen_options(): void {
 		// If we viewing a single link, do not show the screen options.
-		if ( isset( $_GET['wlf_link_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+		if ( isset( $_GET['iawmlf_link_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
 			return;
 		}
 
@@ -214,14 +214,14 @@ class Report_Page {
 		$screen = get_current_screen();
 		$screen->add_help_tab(
 			array(
-				'id'       => 'wlf_help_bulk_actions',
+				'id'       => 'iawmlf_help_bulk_actions',
 				'title'    => __( 'Bulk Actions', 'internet-archive-wayback-machine-link-fixer' ),
 				'callback' => array( $this, 'render_help_bulk_actions' ),
 			)
 		);
 		$screen->add_help_tab(
 			array(
-				'id'       => 'wlf_help_table_columns',
+				'id'       => 'iawmlf_help_table_columns',
 				'title'    => __( 'Table Columns', 'internet-archive-wayback-machine-link-fixer' ),
 				'callback' => array( $this, 'render_help_columns' ),
 			)
@@ -239,7 +239,7 @@ class Report_Page {
 	 * @return void
 	 */
 	public function render_help_bulk_actions( \WP_Screen $screen, array $args ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-		wpcomsp_wayback_link_fixer_render_template( 'admin/links-table/help-tab-bulk-actions.php' );
+		iawmlf_render_template( 'admin/links-table/help-tab-bulk-actions.php' );
 	}
 
 	/**
@@ -253,7 +253,7 @@ class Report_Page {
 	 * @return void
 	 */
 	public function render_help_columns( \WP_Screen $screen, array $args ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-		wpcomsp_wayback_link_fixer_render_template( 'admin/links-table/help-tab-columns.php' );
+		iawmlf_render_template( 'admin/links-table/help-tab-columns.php' );
 	}
 
 	/**
@@ -272,7 +272,7 @@ class Report_Page {
 
 		// Render any notices.
 		$table->render_notices();
-		wpcomsp_wayback_link_fixer_render_not_authenticated_notice();
+		iawmlf_render_not_authenticated_notice();
 
 		// Get the current page.
 		$current_page = isset( $_REQUEST['page'] ) ? \sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) : self::SLUG; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
@@ -286,8 +286,8 @@ class Report_Page {
 		echo '<hr class="wp-header-end">';
 
 		// If we have a post id in params, show a message.
-		if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
-			$post_id = sanitize_text_field( wp_unslash( $_GET['wlf_filtered_post_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+		if ( array_key_exists( 'iawmlf_filtered_post_id', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+			$post_id = absint( wp_unslash( $_GET['iawmlf_filtered_post_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
 
 			// Get the post title.
 			$post = get_post( $post_id );
@@ -330,8 +330,8 @@ class Report_Page {
 	private function render_single_page(): void {
 
 		// Get the link.
-		$link_id = isset( $_GET['wlf_link_id'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
-			? absint( wp_unslash( $_GET['wlf_link_id'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible
+		$link_id = isset( $_GET['iawmlf_link_id'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+			? absint( wp_unslash( $_GET['iawmlf_link_id'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible
 			: 0;
 
 		// If the link does not exist, show an error.
@@ -355,12 +355,12 @@ class Report_Page {
 			return;
 		}
 		// Render the template.
-		wpcomsp_wayback_link_fixer_render_template(
+		iawmlf_render_template(
 			'admin/reports/link-details.php',
 			array(
-				'wlf_link'     => $link,
-				'wlf_posts'    => array_map( 'get_post', array_unique( $this->link_repository->get_post_ids_from_link_id( $link->get_id() ) ) ),
-				'wlf_back_url' => wp_get_referer() ?: self::get_page_url(), // phpcs:ignore Universal.Operators.DisallowShortTernary.Found, returns false, so cant use ??
+				'iawmlf_link'     => $link,
+				'iawmlf_posts'    => array_map( 'get_post', array_unique( $this->link_repository->get_post_ids_from_link_id( $link->get_id() ) ) ),
+				'iawmlf_back_url' => wp_get_referer() ?: self::get_page_url(), // phpcs:ignore Universal.Operators.DisallowShortTernary.Found, returns false, so cant use ??
 			)
 		);
 	}

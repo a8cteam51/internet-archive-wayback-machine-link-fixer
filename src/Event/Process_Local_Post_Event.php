@@ -8,12 +8,12 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
 use Exception;
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,7 +25,7 @@ class Process_Local_Post_Event {
 	/**
 	 * The event handle.
 	 */
-	public const HANDLE = 'wlf_process_local_post';
+	public const HANDLE = 'iawmlf_process_local_post';
 
 	/**
 	 * The wayback machine service.

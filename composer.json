@@ -48,13 +48,13 @@
     },
     "autoload": {
         "psr-4": {
-            "WPCOMSpecialProjects\\Wayback_Link_Fixer\\": "src",
-            "WPCOMSpecialProjects\\Wayback_Link_Fixer_Migration\\": "migrations"
+            "Internet_Archive\\Wayback_Machine_Link_Fixer\\": "src",
+            "Internet_Archive\\Wayback_Machine_Link_Fixer_Migration\\": "migrations"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "WPCOMSpecialProjects\\Wayback_Link_Fixer_Tests\\": "tests"
+            "Internet_Archive\\Wayback_Machine_Link_Fixer_Tests\\": "tests"
         }
     },
     "scripts": {
@@ -67,7 +67,7 @@
         ],
         "generate-autoloader": "@composer dump-autoload -o",
         "scope-php-dependencies": [
-            "vendor/bin/php-scoper add-prefix --prefix=WPCOMSpecialProjects\\\\Wayback_Link_Fixer_Deps --output-dir=./dependencies --config=.php-scoper.inc.php --force --quiet",
+            "vendor/bin/php-scoper add-prefix --prefix=Internet_Archive\\\\Wayback_Link_Fixer_Deps --output-dir=./dependencies --config=.php-scoper.inc.php --force --quiet",
             "@generate-autoloader"
         ],
         "test:php": "./vendor/bin/phpunit --testdox --colors=always",

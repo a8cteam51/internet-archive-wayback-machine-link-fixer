@@ -5,16 +5,16 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Find_Or_Create_Snapshot_Event
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Event\Find_Or_Create_Snapshot_Event
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Event;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Find_Or_Create_Snapshot_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Find_Or_Create_Snapshot_Event;
 
 /**
  * Test_Find_Or_Create_Snapshot
@@ -105,17 +105,17 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_link_is_found_on_wayback_machine(): void {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 		// Create mock snapshot client.
-		$client = $this->createMock( \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
+		$client = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
 		$client->method( 'get_latest_snapshot' )
-			->willReturn( array( 'url' => 'https://web.archive.org/web/wlf_glynn/https://example.com' ) );
+			->willReturn( array( 'url' => 'https://web.archive.org/web/iawmlf_glynn/https://example.com' ) );
 
 		// Set the mock client
 		add_filter(
-			'wlf_snapshot_client',
+			'iawmlf_snapshot_client',
 			function () use ( $client ) {
 				return $client;
 			}
@@ -145,10 +145,10 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		// Check the link status is now done.
 		$this->assertEquals( Link::PROCESS_DONE, $link->get_archive_process() );
 
-		$this->assertEquals( 'https://web.archive.org/web/wlf_glynn/https://example.com', $link->get_archived_href() );
+		$this->assertEquals( 'https://web.archive.org/web/iawmlf_glynn/https://example.com', $link->get_archived_href() );
 
 		// Remove the filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 	}
 
 	/**
@@ -159,13 +159,13 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 	public function test_link_is_not_found_on_wayback_machine(): void {
 
 		// Create mock snapshot client.
-		$client = $this->createMock( \WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
+		$client = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
 		$client->method( 'get_latest_snapshot' )
 			->willReturn( null );
 
 		// Set the mock client
 		add_filter(
-			'wlf_snapshot_client',
+			'iawmlf_snapshot_client',
 			function () use ( $client ) {
 				return $client;
 			}
@@ -192,12 +192,12 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		// Check if event added to actionscheduler_actions  table.
 		global $wpdb;
 
-		// Look for a row with hook of wlf_create_new_snapshot and a args that contains the "link_id":$id key.
-		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}actionscheduler_actions WHERE hook = 'wlf_create_new_snapshot' AND args LIKE '%\"link_id\":{$link->get_id()}%'" );
+		// Look for a row with hook of iawmlf_create_new_snapshot and a args that contains the "link_id":$id key.
+		$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}actionscheduler_actions WHERE hook = 'iawmlf_create_new_snapshot' AND args LIKE '%\"link_id\":{$link->get_id()}%'" );
 
 		$this->assertCount( 1, $results );
 
 		// Remove the filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
 	}
 }

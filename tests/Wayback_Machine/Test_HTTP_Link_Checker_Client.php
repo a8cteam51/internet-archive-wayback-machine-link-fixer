@@ -5,16 +5,16 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\Link_Checker
+ * @coversDefaultClass Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Link_Checker_Client
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Link_Checker_Client;
 
 /**
  * Test class for HTTP_Link_Checker_Client.
@@ -29,8 +29,8 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	public function tearDown(): void {
 		parent::tearDown();
 		remove_all_filters( 'pre_http_request' );
-		remove_all_filters( 'wlf_link_checker_url_base' );
-		remove_all_filters( 'wlf_link_checker_url_params' );
+		remove_all_filters( 'iawmlf_link_checker_url_base' );
+		remove_all_filters( 'iawmlf_link_checker_url_params' );
 	}
 
 	/**
@@ -58,7 +58,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 */
 	public function test_should_make_request_to_wayback_machine_api() {
 
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -91,7 +91,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		$this->assertStringStartsWith( 'https://iabot-api.archive.org/livewebcheck', $called_url );
 
 		// Check contains url=https://example.com
-		$this->assertStringContainsString( 'url=https%3A%2F%2Fexample.com', $called_url );
+		$this->assertStringContainsString( 'url=https://example.com', $called_url );
 	}
 
 	/**
@@ -100,7 +100,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_be_able_to_pass_additional_parameters() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -129,7 +129,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		$this->assertStringStartsWith( 'https://iabot-api.archive.org/livewebcheck', $called_url );
 
 		// Check contains url=https://example.com
-		$this->assertStringContainsString( 'url=https%3A%2F%2Fexample.com', $called_url );
+		$this->assertStringContainsString( 'url=https://example.com', $called_url );
 
 		// Check contains foo=bar
 		$this->assertStringContainsString( 'foo=bar', $called_url );
@@ -143,7 +143,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	public function test_should_be_able_to_change_url_called() {
 		// Filter the URL.
 		add_filter(
-			'wlf_link_checker_url_base',
+			'iawmlf_link_checker_url_base',
 			function ( $url ) {
 				return 'https://anotherurl.someplace.fakeit';
 			}
@@ -179,7 +179,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_be_able_to_set_custom_url_params_via_filter() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -199,7 +199,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 
 		// Filter the url params.
 		add_filter(
-			'wlf_link_checker_url_params',
+			'iawmlf_link_checker_url_params',
 			function ( $url_params ) {
 				$url_params['banana'] = 'cherry';
 				return $url_params;
@@ -223,7 +223,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_throw_exception_if_service_offline() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -244,7 +244,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_throw_exception_if_response_invalid_no_code() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -270,7 +270,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_throw_exception_if_response_invalid_no_body() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -291,7 +291,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_resolve_url_to_final_destination() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -316,7 +316,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_return_original_url_if_no_location_key() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -341,7 +341,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_throw_exception_if_wp_error() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -362,7 +362,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_throw_exception_if_response_body_not_string() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -387,7 +387,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_return_http_code() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -412,7 +412,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_throw_exception_if_status_code_not_numeric() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 

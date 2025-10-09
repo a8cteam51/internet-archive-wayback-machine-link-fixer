@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @since 1.0.0
  */
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer_Tests\Tools;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer_Tests\Tools;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 
 
 /**
@@ -26,8 +26,8 @@ trait Wayback_Machine_Helper {
 	 * @return void
 	 */
 	public function clear_clients(): void {
-		remove_all_filters( 'wlf_snapshot_client' );
-		remove_all_filters( 'wlf_link_checker_client' );
+		remove_all_filters( 'iawmlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_link_checker_client' );
 	}
 
 	/**
@@ -72,7 +72,7 @@ trait Wayback_Machine_Helper {
 
 		// Set the mock client
 		add_filter(
-			'wlf_snapshot_client',
+			'iawmlf_snapshot_client',
 			function () use ( $snapshot_client ) {
 				return $snapshot_client;
 			}
@@ -80,7 +80,7 @@ trait Wayback_Machine_Helper {
 
 		// Set the mock client
 		add_filter(
-			'wlf_link_checker_client',
+			'iawmlf_link_checker_client',
 			function () use ( $link_client ) {
 				return $link_client;
 			}

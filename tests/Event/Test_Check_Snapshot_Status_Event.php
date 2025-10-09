@@ -5,18 +5,18 @@
  *
  * @since 1.3.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Snapshot_Status_Event
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Snapshot_Status_Event
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Event;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Check_Snapshot_Status_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Snapshot_Status_Event;
 
 /**
  * Test_Check_Snapshot_Status_Event
@@ -39,8 +39,8 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 		// Clear the actionscheduler_actions table.
 		$this->wpdb->query( "TRUNCATE TABLE {$this->wpdb->prefix}actionscheduler_actions" );
 
-		// Clear any wlf_snapshot_client filter.
-		remove_all_filters( 'wlf_snapshot_client' );
+		// Clear any iawmlf_snapshot_client filter.
+		remove_all_filters( 'iawmlf_snapshot_client' );
 
 		// Clear the link table.
 		$this->wpdb->query( 'TRUNCATE TABLE ' . Settings::get_link_table_name() );
@@ -59,7 +59,7 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 		$service = $this->createMock( Snapshot_Client::class );
 		$service->method( 'get_snapshot_status' )->willReturn( $response );
 
-		add_filter( 'wlf_snapshot_client', fn() => $service );
+		add_filter( 'iawmlf_snapshot_client', fn() => $service );
 	}
 
 	/**
@@ -211,7 +211,7 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 
 		$this->assertCount( 1, $actions );
 
-		$this->assertEquals( 'wlf_check_snapshot_status', $actions[0]->hook );
+		$this->assertEquals( 'iawmlf_check_snapshot_status', $actions[0]->hook );
 		$this->assertEquals(
 			json_encode(
 				array(
@@ -280,7 +280,7 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 
 		$this->assertCount( 1, $actions );
 
-		$this->assertEquals( 'wlf_update_archive_url', $actions[0]->hook );
+		$this->assertEquals( 'iawmlf_update_archive_url', $actions[0]->hook );
 		$this->assertEquals( json_encode( array( 'link_id' => $link->get_id(), 'attempt' => 0 ) ), $actions[0]->args );
 	}
 }

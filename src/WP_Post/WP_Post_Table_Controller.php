@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Report_Page;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -209,7 +209,7 @@ class WP_Post_Table_Controller {
 		$url = Report_Page::get_page_url();
 
 		// Add the initial post id.
-		$url = add_query_arg( 'wlf_filtered_post_id', $post_id, $url );
+		$url = add_query_arg( 'iawmlf_filtered_post_id', $post_id, $url );
 
 		return $url;
 	}

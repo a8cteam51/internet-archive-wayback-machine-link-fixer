@@ -10,13 +10,13 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
 use Exception;
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Check_Snapshot_Status_Event {
 
-	public const HANDLE = 'wlf_check_snapshot_status';
+	public const HANDLE = 'iawmlf_check_snapshot_status';
 
 	/**
 	 * Link repository.
@@ -51,7 +51,7 @@ class Check_Snapshot_Status_Event {
 	 * Create instance of the class.
 	 */
 	public function __construct() {
-		$this->attempts = apply_filters( 'wlf_check_snapshot_status_attempts', 3 );
+		$this->attempts = apply_filters( 'iawmlf_check_snapshot_status_attempts', 3 );
 	}
 
 	/**
@@ -70,7 +70,7 @@ class Check_Snapshot_Status_Event {
 	 * @return integer
 	 */
 	public static function get_interval(): int {
-		return absint( apply_filters( 'wlf_check_snapshot_status_interval', 5 * \MINUTE_IN_SECONDS ) );
+		return absint( apply_filters( 'iawmlf_check_snapshot_status_interval', 10 * \MINUTE_IN_SECONDS ) );
 	}
 
 	/**
@@ -84,8 +84,10 @@ class Check_Snapshot_Status_Event {
 	 * @return void
 	 */
 	public static function add_to_queue( int $link_id, string $job_id, int $attempt = 0, ?int $delay = null ): void {
-		// Get the time to call this.
-		$time = time() + $delay ?? self::get_interval();
+
+		$time = ! is_int( $delay ) || 0 === $delay
+			? time() + self::get_interval()
+			: time() + $delay;
 
 		// Add the event to the queue.
 		as_schedule_single_action(

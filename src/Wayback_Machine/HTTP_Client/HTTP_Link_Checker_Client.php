@@ -8,13 +8,13 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client;
 
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -68,19 +68,19 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 
 		// Compile the url for the live web check service.
 		$url_params = array(
-			'url'         => wpcomsp_wayback_link_fixer_normalize_url( $url ),
+			'url'         => iawmlf_normalize_url( $url ),
 			'impersonate' => 1,
 		);
 
 		$url_params = wp_parse_args( $additional_params, $url_params );
 
 		$query_url = add_query_arg(
-			apply_filters( 'wlf_link_checker_url_params', $url_params ),
-			apply_filters( 'wlf_link_checker_url_base', 'https://iabot-api.archive.org/livewebcheck' )
+			apply_filters( 'iawmlf_link_checker_url_params', $url_params ),
+			apply_filters( 'iawmlf_link_checker_url_base', 'https://iabot-api.archive.org/livewebcheck' )
 		);
 
 		$headers = array(
-			'WP-Wayback-Link-Fixer' => WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
+			'WP-Wayback-Link-Fixer' => IAWMLF_VERSION,
 		);
 
 		// Get the response.
@@ -174,6 +174,6 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 	 * @return boolean
 	 */
 	public function is_online(): bool {
-		return wpcomsp_wayback_link_fixer_is_archive_api_online();
+		return iawmlf_is_archive_api_online();
 	}
 }

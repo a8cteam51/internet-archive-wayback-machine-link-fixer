@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
 use Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Find_Or_Create_Snapshot_Event {
 
-	public const HANDLE = 'wlf_find_or_create_snapshot';
+	public const HANDLE = 'iawmlf_find_or_create_snapshot';
 
 	/**
 	 * The link repository.
@@ -108,7 +108,7 @@ class Find_Or_Create_Snapshot_Event {
 		}
 
 		// If the link is an archive.org link, add message and throw error.
-		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+		if ( iawmlf_is_archive_link( $link->get_href() ) ) {
 			$link->set_message( esc_html( 'Already an Internet Archive Snapshot.' ) );
 			$this->link_repository->upsert( $link );
 			throw new Exception( esc_html( 'Already an Internet Archive Snapshot.' ) );

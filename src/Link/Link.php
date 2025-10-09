@@ -8,10 +8,10 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Link;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Link;
 
 use DateTime;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -338,7 +338,7 @@ class Link implements \JsonSerializable {
 				$is_valid = in_array( absint( $check['http_code'] ), Settings::get_valid_http_status_codes(), true );
 
 				// Allow additional checks
-				return apply_filters( 'wlf_is_valid_check', $is_valid, $check, $this );
+				return apply_filters( 'iawmlf_is_valid_check', $is_valid, $check, $this );
 			}
 		);
 
@@ -449,7 +449,7 @@ class Link implements \JsonSerializable {
 
 		foreach ( $data['checks'] as $check ) {
 			$link->add_check(
-				wpcomsp_wayback_link_fixer_escape_http_status_code( $check['http_code'] ),
+				iawmlf_escape_http_status_code( $check['http_code'] ),
 				esc_attr( $check['date'] )
 			);
 		}

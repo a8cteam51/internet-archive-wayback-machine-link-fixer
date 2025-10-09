@@ -5,12 +5,12 @@
  *
  * @since 1.2.0
  *
- * @package WPCOMSpecialProjects\Wayback_Link_Fixer\Event
+ * @package Internet_Archive\Wayback_Machine_Link_Fixer\Event
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -1,8 +1,8 @@
-#wlf_excluded_links {
+#iawmlf_excluded_links {
     padding: 5px;
     border: 1px solid #cfcfcf;
     margin: 5px 0;
-    #wlf_excluded_empty {
+    #iawmlf_excluded_empty {
         text-align: center;
         color: #cfcfcf;
     }
@@ -21,14 +21,14 @@
     }
 }
 
-#wlf_settings_header {
+#iawmlf_settings_header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 15px;
 }
 
-.wlf_settings_postbox {
+.iawmlf_settings_postbox {
     position: relative;
     min-width: 255px;
     border: 1px solid #c3c4c7;
@@ -58,7 +58,7 @@
     }
 }
 
-.wlf_settings_card {
+.iawmlf_settings_card {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 2px rgba(0, 0, 0, 0.16);
     border-radius: 8px;
     overflow: hidden;
@@ -67,19 +67,19 @@
     margin-bottom: 20px;
 }
 
-.wlf_settings_post_types {
+.iawmlf_settings_post_types {
     display: grid;
     grid-template-columns: auto auto;
     gap: 16px;
     width: fit-content;
 }
 
-.wlf_read-only {
+.iawmlf_read-only {
     pointer-events: none;
     background-color: #f9f9f9;
 }
 
-.wlf_toggle_setting__invalid_api_keys input {
+.iawmlf_toggle_setting__invalid_api_keys input {
     border-color: #dc3232;
 }
 

@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Processor;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Processor;
 
 use DOMDocument;
 
@@ -99,7 +99,7 @@ class Content_Scanner {
 		return array_filter(
 			$this->links,
 			function ( string $link ): bool {
-				return ! wpcomsp_wayback_link_fixer_is_archive_link( $link ) && ! wpcomsp_wayback_link_fixer_is_current_site_link( $link );
+				return ! iawmlf_is_archive_link( $link ) && ! iawmlf_is_current_site_link( $link );
 			}
 		);
 	}

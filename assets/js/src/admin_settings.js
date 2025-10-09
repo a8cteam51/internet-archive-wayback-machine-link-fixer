@@ -8,14 +8,14 @@
 	jQuery(document).ready(function () {
 
 		// Get the settings.
-		const PROCESS_LINK = jQuery('#t51_wlf_process_links');
-		const AUTO_ARCHIVE = jQuery('#t51_wlf_allow_own_content_submissions');
+		const PROCESS_LINK = jQuery('#iawmlf_process_links');
+		const AUTO_ARCHIVE = jQuery('#iawmlf_allow_own_content_submissions');
 
-		const EXCLUDED_LINKS = jQuery('#wlf_excluded_links');
-		const NEW_LINK = jQuery('#wlf_excluded_links_new');
-		const NEW_LINK_BUTTON = jQuery('#wlf_excluded_links_new_action');
-		const NEW_LINK_TEMPLATE = WlfSettings.newExcludedTemplate;
-		const NO_LINKS = jQuery('#wlf_excluded_empty');
+		const EXCLUDED_LINKS = jQuery('#iawmlf_excluded_links');
+		const NEW_LINK = jQuery('#iawmlf_excluded_links_new');
+		const NEW_LINK_BUTTON = jQuery('#iawmlf_excluded_links_new_action');
+		const NEW_LINK_TEMPLATE = IawmlfSettings.newExcludedTemplate;
+		const NO_LINKS = jQuery('#iawmlf_excluded_empty');
 
 		// Handle removing a link.
 		EXCLUDED_LINKS.on('click', '.remove-exclusion', function (e) {
@@ -34,8 +34,8 @@
 			e.preventDefault();
 		}
 
-		// When a checkbox or radio has wlf-read-only class, prevent the user from changing it.
-		jQuery(document).on('click', '.wlf_settings_card input.wlf-read-only, .wlf_settings_card select.wlf-read-only', doNothing);
+		// When a checkbox or radio has iawmlf-read-only class, prevent the user from changing it.
+		jQuery(document).on('click', '.iawmlf_settings_card input.iawmlf-read-only, .iawmlf_settings_card select.iawmlf-read-only', doNothing);
 
 		// When Process Links is checked, enable the excluded links.
 		PROCESS_LINK.on('change', function () {
@@ -56,8 +56,8 @@
 
 			// Get the field list, based on the group name.
 			const fieldList = 'link_fixer' === groupName
-				? '.wlf_toggle_setting__fixer'
-				: '.wlf_toggle_setting__auto_archiver';
+				? '.iawmlf_toggle_setting__fixer'
+				: '.iawmlf_toggle_setting__auto_archiver';
 
 
 			if (!isChecked) {

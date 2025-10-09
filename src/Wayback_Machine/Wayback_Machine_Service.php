@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine;
 
 use Throwable;
 
@@ -46,9 +46,9 @@ class Wayback_Machine_Service {
 	 * Creates an instance of the Wayback Machine Client.
 	 */
 	public function __construct() {
-		$this->snapshot_client     = wpcomsp_wayback_link_fixer_get_snapshot_client();
-		$this->link_checker_client = wpcomsp_wayback_link_fixer_get_link_checker_client();
-		$this->system_client       = wpcomsp_wayback_link_fixer_get_system_client();
+		$this->snapshot_client     = iawmlf_get_snapshot_client();
+		$this->link_checker_client = iawmlf_get_link_checker_client();
+		$this->system_client       = iawmlf_get_system_client();
 	}
 
 	/**

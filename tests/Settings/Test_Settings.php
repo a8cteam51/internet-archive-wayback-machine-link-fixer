@@ -5,15 +5,15 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Settings;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Settings;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Migration\Abstract_Migration;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Abstract_Migration;
 
 class Test_Settings extends \WP_UnitTestCase {
 
@@ -92,7 +92,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	 */
 	public function test_can_get_link_checker_timeout(): void {
 		add_filter(
-			'wlf_link_checker_timeout',
+			'iawmlf_link_checker_timeout',
 			function () {
 				return 20;
 			}
@@ -102,7 +102,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEquals( 20, $timeout );
 
 		// Clean up.
-		remove_all_filters( 'wlf_link_checker_timeout' );
+		remove_all_filters( 'iawmlf_link_checker_timeout' );
 	}
 
 	/**
@@ -130,7 +130,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	 */
 	public function test_can_add_links_to_exclusion_list_via_filter(): void {
 		add_filter(
-			'wlf_link_exclusions',
+			'iawmlf_link_exclusions',
 			function ( array $links ) {
 				$links[] = 'https://example.com/4';
 				return $links;
@@ -140,7 +140,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEquals( array( 'https://example.com/4' ), Settings::get_link_exclusions() );
 
 		// Clean up.
-		remove_all_filters( 'wlf_link_exclusions' );
+		remove_all_filters( 'iawmlf_link_exclusions' );
 	}
 
 	/**
@@ -154,7 +154,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEquals( 10, Settings::get_posts_per_batch() );
 
 		add_filter(
-			'wlf_posts_per_batch',
+			'iawmlf_posts_per_batch',
 			function () {
 				return 5;
 			}
@@ -163,7 +163,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEquals( 5, Settings::get_posts_per_batch() );
 
 		// Clean up.
-		remove_all_filters( 'wlf_posts_per_batch' );
+		remove_all_filters( 'iawmlf_posts_per_batch' );
 	}
 
 	/**
@@ -176,7 +176,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEquals( 7, Settings::get_link_check_duration() );
 
 		add_filter(
-			'wlf_link_check_duration_in_days',
+			'iawmlf_link_check_duration_in_days',
 			function () {
 				return 2;
 			}
@@ -185,7 +185,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEquals( 2, Settings::get_link_check_duration() );
 
 		// Clean up.
-		remove_all_filters( 'wlf_link_check_duration_in_days' );
+		remove_all_filters( 'iawmlf_link_check_duration_in_days' );
 	}
 
 	/**
@@ -198,7 +198,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEquals( array( 200, 206, 429 ), Settings::get_valid_http_status_codes() );
 
 		add_filter(
-			'wlf_valid_http_status_codes',
+			'iawmlf_valid_http_status_codes',
 			function () {
 				return array( 200, 206, 301 );
 			}
@@ -207,7 +207,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEquals( array( 200, 206, 301 ), Settings::get_valid_http_status_codes() );
 
 		// Clean up.
-		remove_all_filters( 'wlf_valid_http_status_codes' );
+		remove_all_filters( 'iawmlf_valid_http_status_codes' );
 	}
 
 	/**

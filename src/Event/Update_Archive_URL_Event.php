@@ -10,13 +10,13 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
 use Exception;
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 /**
  * Update Archive URL Event class.
@@ -26,7 +26,7 @@ class Update_Archive_URL_Event {
 	/**
 	 * The event handle.
 	 */
-	public const HANDLE = 'wlf_update_archive_url';
+	public const HANDLE = 'iawmlf_update_archive_url';
 
 	/**
 	 * The current attempt.
@@ -62,7 +62,7 @@ class Update_Archive_URL_Event {
 	 * @return void
 	 */
 	public function setup(): void {
-		$this->max_attempts = apply_filters( 'wlf_update_archive_url_attempts', $this->max_attempts );
+		$this->max_attempts = apply_filters( 'iawmlf_update_archive_url_attempts', $this->max_attempts );
 
 		$this->wayback_machine = new Wayback_Machine_Service();
 		$this->repository      = new Link_Repository();
@@ -157,18 +157,6 @@ class Update_Archive_URL_Event {
 
 		// If we have no archive URL, then add the event back to the queue.
 		self::add_to_queue( $link_id, $attempt + 1, 15 * \MINUTE_IN_SECONDS );
-	}
-
-	/**
-	 * Mark a link a broken.
-	 *
-	 * @param Link $link The link to mark as broken.
-	 *
-	 * @return void
-	 */
-	private function mark_link_broken( Link $link ): void {
-		$link->set_broken();
-		$this->repository->upsert( $link );
 	}
 
 	/**

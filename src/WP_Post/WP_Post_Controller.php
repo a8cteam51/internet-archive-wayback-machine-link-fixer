@@ -10,17 +10,17 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post;
 
 use Exception;
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Exclusion;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Link_Check_Ajax;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Processor\Post_Processor;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Process_Local_Post_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Exclusion;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Ajax\Link_Check_Ajax;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Processor\Post_Processor;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Process_Local_Post_Event;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -152,7 +152,7 @@ class WP_Post_Controller {
 			throw new Exception( 'Invalid post id' );
 		}
 
-		$can_add = apply_filters( 'wlf_own_content_allow_post', true, $post );
+		$can_add = apply_filters( 'iawmlf_own_content_allow_post', true, $post );
 
 		if ( $can_add ) {
 			Process_Local_Post_Event::add_to_queue_with_delay( $post_id );
@@ -214,7 +214,7 @@ class WP_Post_Controller {
 			: array();
 
 		// Get the scripts assets file.
-		$script_assets = WPCOMSP_WAYBACK_LINK_FIXER_PATH . 'assets/js/build/front_link_checker.asset.php';
+		$script_assets = IAWMLF_PATH . 'assets/js/build/front_link_checker.asset.php';
 
 		// If the script cant be found, return.
 		if ( ! file_exists( $script_assets ) ) {
@@ -226,7 +226,7 @@ class WP_Post_Controller {
 		// Register the script.
 		wp_register_script(
 			'wpcomsp-wayback-link-fixer-front-link-checker',
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/front_link_checker.js',
+			IAWMLF_URL . 'assets/js/build/front_link_checker.js',
 			$assets['dependencies'],
 			$assets['version'],
 			true

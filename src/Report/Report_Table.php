@@ -8,19 +8,19 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Report;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Report;
 
 use DateTimeImmutable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Check_Action;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Validate_Link_Action;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_New_Snapshot_Action;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Action\Link_Latest_Snapshot_Action;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Create_New_Snapshot_Event;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Util\List_Table_Action_Notification_Cache;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Report_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Action\Link_Check_Action;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Action\Validate_Link_Action;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Action\Link_New_Snapshot_Action;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Action\Link_Latest_Snapshot_Action;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Create_New_Snapshot_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Util\List_Table_Action_Notification_Cache;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page;
 /**
  * The report table class.
  */
@@ -92,7 +92,7 @@ class Report_Table extends \WP_List_Table {
 		parent::bulk_actions( $which );
 		$bulk_actions = \ob_get_clean();
 
-		$help_icon = '<span id="wlf_help_info_bulk_actions" class="wlf_bulk_actions_trigger dashicons dashicons-editor-help"></span>';
+		$help_icon = '<span id="iawmlf_help_info_bulk_actions" class="iawmlf_bulk_actions_trigger dashicons dashicons-editor-help"></span>';
 
 		$bulk_actions = preg_replace(
 			'/<input\b[^>]*\bid\s*=\s*["\']doaction["\'][^>]*>/i',
@@ -136,18 +136,18 @@ class Report_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	private function populate_cached_notifications(): void {
-		// Check if 'wlf_completed_action' is set in url.
-		if ( ! array_key_exists( 'wlf_completed_action', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		// Check if 'iawmlf_completed_action' is set in url.
+		if ( ! array_key_exists( 'iawmlf_completed_action', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			return;
 		}
 
 		// Check the cache key is set in url.
-		if ( ! array_key_exists( 'wlf_notification', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		if ( ! array_key_exists( 'iawmlf_notification', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			return;
 		}
 
-		$key    = sanitize_text_field( wp_unslash( $_GET['wlf_notification'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-		$action = sanitize_text_field( wp_unslash( $_GET['wlf_completed_action'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		$key    = sanitize_text_field( wp_unslash( $_GET['iawmlf_notification'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		$action = sanitize_text_field( wp_unslash( $_GET['iawmlf_completed_action'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 
 		// Get the cache and populate the notices.
 		$cache         = new List_Table_Action_Notification_Cache( $action );
@@ -186,7 +186,7 @@ class Report_Table extends \WP_List_Table {
 
 		return sprintf(
 			'<input type="checkbox" name="%1$s[]" value="%2$s" />',
-			'wlf_link_action',
+			'iawmlf_link_action',
 			$link->get_id()
 		);
 	}
@@ -220,8 +220,8 @@ class Report_Table extends \WP_List_Table {
 			return;
 		}
 
-		$links = array_key_exists( 'wlf_link_action', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? array_map( 'absint', $_GET['wlf_link_action'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		$links = array_key_exists( 'iawmlf_link_action', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? array_map( 'absint', $_GET['iawmlf_link_action'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: array();
 
 		if ( empty( $links ) ) {
@@ -286,24 +286,24 @@ class Report_Table extends \WP_List_Table {
 		$cache_key = $cache->save();
 
 		// Redirect to the same page with all actions removed.
-		$redirect = remove_query_arg( array( 'action', 'action2', 'wlf_link_action', 'wlf_links', '_wpnonce', '_wp_http_referer' ) );
+		$redirect = remove_query_arg( array( 'action', 'action2', 'iawmlf_link_action', 'iawmlf_links', '_wpnonce', '_wp_http_referer' ) );
 
-		$redirect = add_query_arg( 'wlf_notification', $cache_key, $redirect );
-		$redirect = add_query_arg( 'wlf_completed_action', esc_attr( $this->current_action() ), $redirect );
+		$redirect = add_query_arg( 'iawmlf_notification', $cache_key, $redirect );
+		$redirect = add_query_arg( 'iawmlf_completed_action', esc_attr( $this->current_action() ), $redirect );
 
 		// Get the previous url params.
 		$params = $this->get_previous_url_params();
 
 		// If we have a post id, add it and its links to the redirect.
-		if ( array_key_exists( 'wlf_filtered_post_id', $params ) ) {
-			$redirect = add_query_arg( 'wlf_filtered_post_id', absint( $params['wlf_filtered_post_id'] ), $redirect );
+		if ( array_key_exists( 'iawmlf_filtered_post_id', $params ) ) {
+			$redirect = add_query_arg( 'iawmlf_filtered_post_id', absint( $params['iawmlf_filtered_post_id'] ), $redirect );
 		}
 
 		// Add to the redirect the current page.
 		$url = home_url() . $redirect;
 
 		// Redirect to the page using JS as page already loaded headers.
-		printf( '<script>window.location = "%s";</script>', esc_url( $url ) );
+		printf( '<script>window.location = %s;</script>', wp_json_encode( $url ) );
 		exit;
 	}
 
@@ -352,7 +352,7 @@ class Report_Table extends \WP_List_Table {
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'It was not possible to check %s', 'internet-archive-wayback-machine-link-fixer' ),
-						esc_html( wpcomsp_wayback_link_fixer_trim_string( $results['link']->get_href(), 54 ) )
+						esc_html( iawmlf_trim_string( $results['link']->get_href(), 54 ) )
 					),
 					'type'    => 'error',
 				);
@@ -368,7 +368,7 @@ class Report_Table extends \WP_List_Table {
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'Link %s has no checks.', 'internet-archive-wayback-machine-link-fixer' ),
-						esc_html( wpcomsp_wayback_link_fixer_trim_string( $link_url, 54 ) )
+						esc_html( iawmlf_trim_string( $link_url, 54 ) )
 					),
 					'type'    => 'error',
 				);
@@ -380,7 +380,7 @@ class Report_Table extends \WP_List_Table {
 				'message' => sprintf(
 					// translators: %1$s is the link url, %2$s is the last check date, %3$s is the last check http code.
 					__( 'Link %1$s checked successfully on %2$s with %3$s status', 'internet-archive-wayback-machine-link-fixer' ),
-					esc_html( wpcomsp_wayback_link_fixer_trim_string( $link_url, 54 ) ),
+					esc_html( iawmlf_trim_string( $link_url, 54 ) ),
 					DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) ),
 					esc_html( $last_check['http_code'] )
 				),
@@ -402,7 +402,6 @@ class Report_Table extends \WP_List_Table {
 		// Itrerates over the links and rescan them.
 		foreach ( $links as $link_id ) {
 			$result = $action->rescan_link( absint( $link_id ) );
-
 			// If we have no link, add a notice.
 			if ( null === $result['link'] ) {
 				$this->notices[] = array(
@@ -417,12 +416,12 @@ class Report_Table extends \WP_List_Table {
 			}
 
 			// If an internet archived link, show the message.
-			if ( wpcomsp_wayback_link_fixer_is_archive_link( $result['link']->get_href() ) ) {
+			if ( iawmlf_is_archive_link( $result['link']->get_href() ) ) {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'Link %s is already an archived link.', 'internet-archive-wayback-machine-link-fixer' ),
-						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+						esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 					),
 					'type'    => 'notice',
 				);
@@ -435,7 +434,7 @@ class Report_Table extends \WP_List_Table {
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'No archived link found for %s', 'internet-archive-wayback-machine-link-fixer' ),
-						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+						esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 					),
 					'type'    => 'error',
 				);
@@ -448,7 +447,7 @@ class Report_Table extends \WP_List_Table {
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'It was not possible to update %s, the latest archive link is the same', 'internet-archive-wayback-machine-link-fixer' ),
-						esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+						esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 					),
 					'type'    => 'notice',
 				);
@@ -460,7 +459,7 @@ class Report_Table extends \WP_List_Table {
 				'message' => sprintf(
 					// translators: %s is the link url.
 					__( 'Link %s updated successfully', 'internet-archive-wayback-machine-link-fixer' ),
-					esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+					esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 				),
 				'type'    => 'success',
 			);
@@ -505,7 +504,7 @@ class Report_Table extends \WP_List_Table {
 					'message' => sprintf(
 						// translators: %s is the link url.
 						__( 'Link %1$s could not have a new snapshot created: %2$s', 'internet-archive-wayback-machine-link-fixer' ),
-						wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ),
+						iawmlf_trim_string( $result['link']->get_href(), 54 ),
 						esc_html( $result['message'] )
 					),
 					'type'    => 'error',
@@ -518,7 +517,7 @@ class Report_Table extends \WP_List_Table {
 				'message' => sprintf(
 					// translators: %s is the link url.
 					__( 'Link %s added to the queue and a new snapshot will be created and added as the archived url in the coming minutes..', 'internet-archive-wayback-machine-link-fixer' ),
-					wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 )
+					iawmlf_trim_string( $result['link']->get_href(), 54 )
 				),
 				'type'    => 'success',
 			);
@@ -551,13 +550,13 @@ class Report_Table extends \WP_List_Table {
 				continue;
 			}
 
-			if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+			if ( iawmlf_is_archive_link( $link->get_href() ) ) {
 				// Add a notice.
 				$archived_links[] = $link;
 				continue;
 			}
 
-			if ( wpcomsp_wayback_link_fixer_is_current_site_link( $link->get_href() ) ) {
+			if ( iawmlf_is_current_site_link( $link->get_href() ) ) {
 				// Add a notice.
 				$own_links[] = $link;
 				continue;
@@ -597,7 +596,7 @@ class Report_Table extends \WP_List_Table {
 			foreach ( $archived_links as $link ) {
 				$notice .= sprintf(
 					'<li>%s</li>',
-					wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+					iawmlf_trim_string( $link->get_href(), 54 )
 				);
 			}
 			$notice .= '</ul>';
@@ -617,7 +616,7 @@ class Report_Table extends \WP_List_Table {
 			foreach ( $own_links as $link ) {
 				$notice .= sprintf(
 					'<li>%s</li>',
-					wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+					iawmlf_trim_string( $link->get_href(), 54 )
 				);
 			}
 			$notice .= '</ul>';
@@ -632,7 +631,7 @@ class Report_Table extends \WP_List_Table {
 			foreach ( $added_links as $link ) {
 				$success_notice .= sprintf(
 					'<li>%s</li>',
-					wpcomsp_wayback_link_fixer_trim_string( $link->get_href(), 54 )
+					iawmlf_trim_string( $link->get_href(), 54 )
 				);
 			}
 			$success_notice .= '</ul>';
@@ -686,7 +685,7 @@ class Report_Table extends \WP_List_Table {
 				'message' => sprintf(
 					// translators: %s is the link url.
 					__( 'Validating %s to ensure we can check its current status', 'internet-archive-wayback-machine-link-fixer' ),
-					esc_html( wpcomsp_wayback_link_fixer_trim_string( $result['link']->get_href(), 54 ) )
+					esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 				),
 				'type'    => 'success',
 			);
@@ -783,8 +782,8 @@ class Report_Table extends \WP_List_Table {
 			return;
 		}
 		?>
-		<label for="wlf_status" class="screen-reader-text"><?php esc_html_e( 'Filter by status', 'internet-archive-wayback-machine-link-fixer' ); ?></label>
-		<select name="wlf_status" id="wlf_status">
+		<label for="iawmlf_status" class="screen-reader-text"><?php esc_html_e( 'Filter by status', 'internet-archive-wayback-machine-link-fixer' ); ?></label>
+		<select name="iawmlf_status" id="iawmlf_status">
 			<option value="all"><?php esc_html_e( 'Show valid and broken links', 'internet-archive-wayback-machine-link-fixer' ); ?></option>
 			<?php
 			$statuses = array(
@@ -802,8 +801,8 @@ class Report_Table extends \WP_List_Table {
 			?>
 		</select>
 
-		<label for="wlf_has_archive" class="screen-reader-text"><?php esc_html_e( 'Filter by archived link', 'internet-archive-wayback-machine-link-fixer' ); ?></label>
-		<select name="wlf_has_archive" id="wlf_has_archive">
+		<label for="iawmlf_has_archive" class="screen-reader-text"><?php esc_html_e( 'Filter by archived link', 'internet-archive-wayback-machine-link-fixer' ); ?></label>
+		<select name="iawmlf_has_archive" id="iawmlf_has_archive">
 			<option value=""><?php esc_html_e( 'Show with or without archived link', 'internet-archive-wayback-machine-link-fixer' ); ?></option>
 			<?php
 			$has_archive = array(
@@ -822,8 +821,8 @@ class Report_Table extends \WP_List_Table {
 		</select>
 
 		<?php if ( Settings::show_link_table_debug_data() ) : ?>
-			<label for="wlf_is_excluded" class="screen-reader-text"><?php esc_html_e( 'Filter by excluded', 'internet-archive-wayback-machine-link-fixer' ); ?></label>
-			<select name="wlf_is_excluded" id="wlf_is_excluded">
+			<label for="iawmlf_is_excluded" class="screen-reader-text"><?php esc_html_e( 'Filter by excluded', 'internet-archive-wayback-machine-link-fixer' ); ?></label>
+			<select name="iawmlf_is_excluded" id="iawmlf_is_excluded">
 				<option value=""><?php esc_html_e( 'Show with or without excluded link', 'internet-archive-wayback-machine-link-fixer' ); ?></option>
 				<?php
 				$has_archive = array(
@@ -842,8 +841,8 @@ class Report_Table extends \WP_List_Table {
 			</select>
 		<?php endif; ?>
 
-		<?php if ( array_key_exists( 'wlf_filtered_post_id', $_GET ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>
-			<input type="hidden" name="wlf_filtered_post_id" value="<?php echo absint( \sanitize_text_field( wp_unslash( $_GET['wlf_filtered_post_id'] ) ) ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>" />
+		<?php if ( array_key_exists( 'iawmlf_filtered_post_id', $_GET ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>
+			<input type="hidden" name="iawmlf_filtered_post_id" value="<?php echo absint( \sanitize_text_field( wp_unslash( $_GET['iawmlf_filtered_post_id'] ) ) ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible ?>" />
 		<?php endif; ?>
 
 		<input type="submit" class="button" value="<?php esc_attr_e( 'Filter', 'internet-archive-wayback-machine-link-fixer' ); ?>"  />
@@ -859,8 +858,8 @@ class Report_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	private function get_status_from_url(): ?string {
-		return array_key_exists( 'wlf_status', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? sanitize_text_field( wp_unslash( $_GET['wlf_status'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		return array_key_exists( 'iawmlf_status', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( wp_unslash( $_GET['iawmlf_status'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: '';
 	}
 
@@ -870,8 +869,8 @@ class Report_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	private function get_excluded_status_from_url(): ?string {
-		return array_key_exists( 'wlf_is_excluded', $_GET ) && '' !== $_GET['wlf_is_excluded'] // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? sanitize_text_field( wp_unslash( $_GET['wlf_is_excluded'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		return array_key_exists( 'iawmlf_is_excluded', $_GET ) && '' !== $_GET['iawmlf_is_excluded'] // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( wp_unslash( $_GET['iawmlf_is_excluded'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: null;
 	}
 
@@ -881,8 +880,8 @@ class Report_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	private function get_archived_status_from_url(): ?string {
-		return array_key_exists( 'wlf_has_archive', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? sanitize_text_field( wp_unslash( $_GET['wlf_has_archive'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		return array_key_exists( 'iawmlf_has_archive', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+			? sanitize_text_field( wp_unslash( $_GET['iawmlf_has_archive'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			: '';
 	}
 
@@ -991,11 +990,11 @@ class Report_Table extends \WP_List_Table {
 	private function get_link_ids_from_url(): array {
 
 		// If we have the post id in the url, return the links ids.
-		if ( ! array_key_exists( 'wlf_filtered_post_id', $_GET ) ) { // phpcs:ignore
+		if ( ! array_key_exists( 'iawmlf_filtered_post_id', $_GET ) ) { // phpcs:ignore
 			return array();
 		}
 
-		$post_id = absint( $_GET['wlf_filtered_post_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		$post_id = absint( $_GET['iawmlf_filtered_post_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 
 		$links = $this->links->get_links_for_post( $post_id );
 
@@ -1079,7 +1078,7 @@ class Report_Table extends \WP_List_Table {
 
 				return sprintf(
 					'<a href="%s">%s</a>',
-					esc_url( add_query_arg( array( 'wlf_link_id' => $item->get_id() ), $url ) ),
+					esc_url( add_query_arg( array( 'iawmlf_link_id' => $item->get_id() ), $url ) ),
 					$this->compile_link_name( $item )
 				);
 			case self::COLUMN_LINK_ARCHIVE:
@@ -1117,7 +1116,7 @@ class Report_Table extends \WP_List_Table {
 					: '<span class="dashicons dashicons-dismiss"></span>';
 			case 'cb':
 				return sprintf(
-					'<input type="checkbox" name="wlf_links[]" value="%d" />',
+					'<input type="checkbox" name="iawmlf_links[]" value="%d" />',
 					$item->get_id()
 				);
 			default:
@@ -1135,7 +1134,7 @@ class Report_Table extends \WP_List_Table {
 	private function compile_link_name( Link $item ): string {
 		return sprintf(
 			'%s <a href="%s" target="_blank">%s</a>',
-			esc_html( wpcomsp_wayback_link_fixer_trim_string( $item->get_href(), 200 ) ),
+			esc_html( iawmlf_trim_string( $item->get_href(), 200 ) ),
 			esc_url( $item->get_href() ),
 			'<span class="dashicons dashicons-external"></span>'
 		);

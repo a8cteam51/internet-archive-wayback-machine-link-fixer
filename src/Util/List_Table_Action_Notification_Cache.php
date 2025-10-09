@@ -5,11 +5,11 @@
  *
  * @since 1.2.0
  *
- * @package WPCOMSpecialProjects\Wayback_Link_Fixer\Util
+ * @package Internet_Archive\Wayback_Machine_Link_Fixer\Util
  */
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Util;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Util;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class List_Table_Action_Notification_Cache {
 
-	private const CACHE_KEY_PREFIX = 'wlf_list_table_action_cache_';
+	private const CACHE_KEY_PREFIX = 'iawmlf_list_table_action_cache_';
 	private const CACHE_EXPIRATION = 5 * MINUTE_IN_SECONDS;
 
 	/**

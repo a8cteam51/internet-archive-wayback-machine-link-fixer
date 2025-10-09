@@ -5,17 +5,16 @@
  *
  * @since 1.3.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Process_Local_Post_Event
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Event\Process_Local_Post_Event
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer_Tests\Tests\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer_Tests\Tests\Event;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Process_Local_Post_Event;
-use WPCOMSpecialProjects\Wayback_Link_Fixer_Tests\Tools\Wayback_Machine_Helper;
-
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Process_Local_Post_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer_Tests\Tools\Wayback_Machine_Helper;
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 /**
@@ -65,7 +64,7 @@ class Test_Process_Local_Post_Event extends TestCase {
 		// Get the action.
 		$action = $actions[0];
 
-		$this->assertSame( 'wlf_process_local_post', $action->hook );
+		$this->assertSame( 'iawmlf_process_local_post', $action->hook );
 		$this->assertSame( 'pending', $action->status );
 		$this->assertSame( \json_encode( array( 'post_id' => 1 ) ), $action->args );
 	}

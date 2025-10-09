@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client;
 
 use Exception;
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Snapshot_Client;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Invalid_Response_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -50,7 +50,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	public function get_base_url(): string {
 		return trailingslashit(
 			untrailingslashit(
-				apply_filters( 'wlf_find_snapshot_base_url', 'https://archive.org/wayback/available/' )
+				apply_filters( 'iawmlf_find_snapshot_base_url', 'https://archive.org/wayback/available/' )
 			)
 		);
 	}
@@ -64,7 +64,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	 */
 	private function get_headers(): array {
 		$headers = array(
-			'WP-Wayback-Link-Fixer' => WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
+			'WP-Wayback-Link-Fixer' => IAWMLF_VERSION,
 		);
 
 		// Add the auth header if set.
@@ -87,20 +87,20 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	public function get_latest_snapshot( string $url ): ?array {
 
 		// Normalize the url.
-		$url = wpcomsp_wayback_link_fixer_normalize_url( $url );
+		$url = iawmlf_normalize_url( $url );
 
 		$api_url = $this->get_base_url();
 
 		// add the url to the query string
 		$url = add_query_arg( 'url', esc_url_raw( $url ), $api_url );
 
-		$url = apply_filters( 'wlf_get_latest_snapshot_url', $url, $api_url );
+		$url = apply_filters( 'iawmlf_get_latest_snapshot_url', $url, $api_url );
 
 		$response = wp_safe_remote_get(
 			$url,
 			array(
 				'headers' => $this->get_headers(),
-				'timeout' => apply_filters( 'wlf_get_latest_snapshot_timeout', 10 ),
+				'timeout' => apply_filters( 'iawmlf_get_latest_snapshot_timeout', 10 ),
 			)
 		);
 		return $this->extract_response( $response );
@@ -119,7 +119,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	public function get_closest_snapshot( string $url, \DateTime $date ): ?array {
 
 		// Strip any trailing slash from url.
-		$url = wpcomsp_wayback_link_fixer_normalize_url( $url );
+		$url = iawmlf_normalize_url( $url );
 
 		$api_url = $this->get_base_url();
 
@@ -130,13 +130,13 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$api_url = add_query_arg( 'timestamp', $date->format( 'Ymd' ), $api_url );
 
 		// Allow the url to be filtered.
-		$api_url = apply_filters( 'wlf_get_closest_snapshot_url', $api_url, $url, $date );
+		$api_url = apply_filters( 'iawmlf_get_closest_snapshot_url', $api_url, $url, $date );
 
 		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'headers' => $this->get_headers(),
-				'timeout' => apply_filters( 'wlf_get_closest_snapshot_timeout', 10 ),
+				'timeout' => apply_filters( 'iawmlf_get_closest_snapshot_timeout', 10 ),
 			)
 		);
 
@@ -159,18 +159,18 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	public function create_snapshot( string $url ): string {
 
 		// Strip any trailing slash from url.
-		$url = wpcomsp_wayback_link_fixer_normalize_url( $url );
+		$url = trim( $url, '/' );
 
 		$base_url = 'https://web.archive.org/save/';
 
 		// Base url.
-		$snapshot_url = apply_filters( 'wlf_create_snapshot_url', $base_url );
+		$snapshot_url = apply_filters( 'iawmlf_create_snapshot_url', $base_url );
 
 		// Trigger a post request with URL as a body param.
 		$response = wp_safe_remote_post(
 			esc_url( $snapshot_url ),
 			array(
-				'timeout'   => apply_filters( 'wlf_create_snapshot_timeout', 1000 ),
+				'timeout'   => apply_filters( 'iawmlf_create_snapshot_timeout', 1000 ),
 				'body'      => array( 'url' => $url ),
 				'sslverify' => false,
 				'headers'   => $this->get_headers(),
@@ -348,6 +348,6 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 	 * @return boolean
 	 */
 	public function is_online(): bool {
-		return wpcomsp_wayback_link_fixer_is_archive_api_online();
+		return iawmlf_is_archive_api_online();
 	}
 }

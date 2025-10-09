@@ -8,17 +8,17 @@
  * @since 1.0.0
  */
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax\Ajax_Controller;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Dashboard_Notifications;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Event\Event_Controller;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Settings_Page;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Controller;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\WP_Post\WP_Post_Table_Controller;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Setup_Wizard;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Dashboard_Page;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard\Report_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Ajax\Ajax_Controller;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Notifications;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Event_Controller;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller;
+use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Table_Controller;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Setup_Wizard;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page;
 
 
 defined( 'ABSPATH' ) || exit;

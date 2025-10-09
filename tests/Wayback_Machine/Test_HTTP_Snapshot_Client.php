@@ -5,16 +5,16 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass WPCOMSpecialProjects\Wayback_Link_Fixer\Link_Checker\HTTP_Snapshot_Client
+ * @coversDefaultClass Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests;
 
 use DateTime;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
 
 /**
  * Test class for HTTP_Snapshot_Client.
@@ -55,14 +55,14 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_strip_tailing_slash_from_url() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
 		add_filter(
 			'pre_http_request',
 			function ( $response, $args, $url ) {
-				$this->assertStringEndsWith( 'http%3A%2F%2Fexample.com', $url );
+				$this->assertStringEndsWith( 'http://example.com', $url );
 				return new \WP_Error( 'http_request_failed', 'Error' );
 			},
 			10,
@@ -79,7 +79,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_use_filter_to_change_base_url_for_find() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -94,7 +94,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		);
 
 		add_filter(
-			'wlf_find_snapshot_base_url',
+			'iawmlf_find_snapshot_base_url',
 			function ( $url ) {
 				return 'http://snashot.com';
 			}
@@ -110,7 +110,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_use_filter_to_change_url_for_find_latest_snapshot() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -125,7 +125,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		);
 
 		add_filter(
-			'wlf_get_latest_snapshot_url',
+			'iawmlf_get_latest_snapshot_url',
 			function ( $url ) {
 				return 'http://custom-snapshot.com';
 			}
@@ -144,7 +144,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @param boolean         $is_valid_response
 	 */
 	public function test_should_only_use_fully_formed_responses( $response, $is_valid_response ) {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -236,7 +236,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_get_snapshot_based_on_timestamp() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -268,14 +268,14 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_use_filter_to_change_url_for_get_closest_snapshot() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
 		add_filter(
 			'pre_http_request',
 			function ( $response, $args, $url ) {
-				$this->assertEquals( 'http://custom-snapshot.com?url=http%3A%2F%2Fexample.com&timestamp=20240422', $url );
+				$this->assertEquals( 'http://custom-snapshot.com?url=http://example.com&timestamp=20240422', $url );
 				return new \WP_Error( 'http_request_failed', 'Error' );
 			},
 			10,
@@ -283,7 +283,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		);
 
 		add_filter(
-			'wlf_get_closest_snapshot_url',
+			'iawmlf_get_closest_snapshot_url',
 			function ( $url, $queried_url, $timestamp ) {
 				return 'http://custom-snapshot.com?url=' . $queried_url . '&timestamp=' . $timestamp->format( 'Ymd' );
 			},
@@ -304,7 +304,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_create_snapshot() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -314,7 +314,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 				$this->assertStringStartsWith( 'https://web.archive.org/save', $url );
 				$this->assertArrayHasKey( 'body', $args );
 				$this->assertArrayHasKey( 'url', $args['body'] );
-				$this->assertEquals( 'http%3A%2F%2Fexample.com', $args['body']['url'] );
+				$this->assertEquals( 'http://example.com', $args['body']['url'] );
 				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
 
 				// Mock a valid response.
@@ -328,7 +328,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		);
 
 		$client = new HTTP_Snapshot_Client();
-		$client->create_snapshot( 'http://example.com' );
+		$client->create_snapshot( 'http://example.com/' );
 	}
 
 	/**
@@ -337,7 +337,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_use_filter_to_change_url_for_create_snapshot() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -356,7 +356,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		);
 
 		add_filter(
-			'wlf_create_snapshot_url',
+			'iawmlf_create_snapshot_url',
 			function ( $queried_url ) {
 				return 'http://custom-snapshot.com/';
 			}
@@ -372,7 +372,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_check_if_url_has_snapshot_valid() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -413,7 +413,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_check_if_url_has_snapshot_invalid() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -436,7 +436,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_set_correct_headers_no_api_keys() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -445,7 +445,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 			function ( $response, $args, $url ) {
 				$this->assertArrayHasKey( 'headers', $args );
 				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
-				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_VERSION, $args['headers']['WP-Wayback-Link-Fixer'] );
+				$this->assertEquals( IAWMLF_VERSION, $args['headers']['WP-Wayback-Link-Fixer'] );
 				return new \WP_Error( 'http_request_failed', 'Error' );
 			},
 			10,
@@ -462,7 +462,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_set_correct_headers_with_api_keys() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -481,7 +481,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 			function ( $response, $args, $url ) {
 				$this->assertArrayHasKey( 'headers', $args );
 				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
-				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_VERSION, $args['headers']['WP-Wayback-Link-Fixer'] );
+				$this->assertEquals( IAWMLF_VERSION, $args['headers']['WP-Wayback-Link-Fixer'] );
 				$this->assertArrayHasKey( 'Authorization', $args['headers'] );
 				$this->assertEquals( 'LOW test_access_key:test_secret_key', $args['headers']['Authorization'] );
 				return new \WP_Error( 'http_request_failed', 'Error' );
@@ -509,7 +509,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_check_snapshot_status_with_correct_headers() {
-		if ( $GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] === true ) {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
 			$this->markTestSkipped( 'Skipping live API tests' );
 		}
 
@@ -518,7 +518,7 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 			function ( $response, $args, $url ) {
 				$this->assertArrayHasKey( 'headers', $args );
 				$this->assertArrayHasKey( 'WP-Wayback-Link-Fixer', $args['headers'] );
-				$this->assertEquals( WPCOMSP_WAYBACK_LINK_FIXER_VERSION, $args['headers']['WP-Wayback-Link-Fixer'] );
+				$this->assertEquals( IAWMLF_VERSION, $args['headers']['WP-Wayback-Link-Fixer'] );
 				return array(
 					'body'     => json_encode( array( 'status' => 'success', 'job_id' => '12345' ) ),
 					'response' => array( 'code' => 200 ),

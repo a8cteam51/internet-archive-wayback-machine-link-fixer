@@ -3,8 +3,8 @@
  * PHPUnit bootstrap file
  */
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
 
 // Composer autoloader must be loaded before WP_PHPUNIT__DIR will be available
 require_once dirname( __DIR__ ) . '/vendor/autoload.php';
@@ -34,7 +34,7 @@ tests_add_filter(
 		include_once dirname( __DIR__ ) . '/functions.php';
 
 		// Denote if we should skip live API tests.
-		$GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] = false;
+		$GLOBALS['iawmlf_skip_live_api_tests'] = false;
 
 		// Get the snapshot client.
 		$client = new HTTP_Snapshot_Client();
@@ -42,7 +42,7 @@ tests_add_filter(
 
 		//If not online, skip live API tests.
 		if ( ! $online ) {
-			$GLOBALS['wpcomsp_wayback_link_fixer_skip_live_api_tests'] = true;
+			$GLOBALS['iawmlf_skip_live_api_tests'] = true;
 		}
 
 		// Ensure the settings to process links is enabled.

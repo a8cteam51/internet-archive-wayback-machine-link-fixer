@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Action;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Action;
 
 use Throwable;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -42,7 +42,7 @@ class Link_Check_Action {
 	 */
 	public function __construct() {
 		$this->link_repository = new Link_Repository();
-		$this->link_checker    = wpcomsp_wayback_link_fixer_get_link_checker_client();
+		$this->link_checker    = iawmlf_get_link_checker_client();
 	}
 
 	/**
@@ -73,7 +73,7 @@ class Link_Check_Action {
 		}
 
 		// If the link is an internet archive link, we don't need to check it.
-		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+		if ( iawmlf_is_archive_link( $link->get_href() ) ) {
 			return array(
 				'link'    => $link,
 				'checked' => false,

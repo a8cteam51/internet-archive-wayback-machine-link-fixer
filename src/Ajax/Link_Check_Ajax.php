@@ -8,14 +8,14 @@
 
 declare( strict_types = 1 );
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Ajax;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Ajax;
 
 use DateTime;
 use Exception;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link_Repository;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -27,12 +27,12 @@ class Link_Check_Ajax {
 	/**
 	 * The action name for the AJAX request.
 	 */
-	public const ACTION = 'wlf_link_check_ajax';
+	public const ACTION = 'iawmlf_link_check_ajax';
 
 	/**
 	 * The nonce name for the AJAX request.
 	 */
-	public const NONCE = 'wlf_link_check_nonce';
+	public const NONCE = 'iawmlf_link_check_nonce';
 
 	/**
 	 * Acces to the Link Repository.
@@ -69,7 +69,7 @@ class Link_Check_Ajax {
 	 */
 	private function setup(): void {
 		$this->link_repository = new Link_Repository();
-		$this->link_checker    = wpcomsp_wayback_link_fixer_get_link_checker_client();
+		$this->link_checker    = iawmlf_get_link_checker_client();
 	}
 
 	/**
@@ -126,7 +126,7 @@ class Link_Check_Ajax {
 		}
 
 		// If the link is an archive link, return false.
-		if ( wpcomsp_wayback_link_fixer_is_archive_link( $link->get_href() ) ) {
+		if ( iawmlf_is_archive_link( $link->get_href() ) ) {
 			return false;
 		}
 

@@ -5,14 +5,14 @@
  *
  * @since 1.3.0
  *
- * @package WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard
+ * @package Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Dashboard;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,8 +21,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Setup_Wizard {
 
-	private const OPTION_NAME   = 'wlf_setup_wizard';
-	private const HAS_COMPLETED = 'wlf_setup_wizard_completed';
+	private const OPTION_NAME   = 'iawmlf_setup_wizard';
+	private const HAS_COMPLETED = 'iawmlf_setup_wizard_completed';
 	private const PAGE_SLUG     = 'wayback-link-fixer-setup-wizard';
 	private const STEPS         = array(
 		'step-1'   => 'step-1.php',
@@ -150,18 +150,18 @@ class Setup_Wizard {
 		}
 		wp_enqueue_script(
 			self::PAGE_SLUG,
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/js/build/wizard.js',
+			IAWMLF_URL . 'assets/js/build/wizard.js',
 			array(),
-			WPCOMSP_WAYBACK_LINK_FIXER_VERSION,
+			IAWMLF_VERSION,
 			true
 		);
 
 		//  Register the styles.
 		wp_enqueue_style(
 			self::PAGE_SLUG,
-			WPCOMSP_WAYBACK_LINK_FIXER_URL . 'assets/css/build/style-style.scss.css',
+			IAWMLF_URL . 'assets/css/build/style-style.scss.css',
 			array(),
-			WPCOMSP_WAYBACK_LINK_FIXER_VERSION
+			IAWMLF_VERSION
 		);
 	}
 
@@ -171,19 +171,19 @@ class Setup_Wizard {
 	 * @return void
 	 */
 	public function handle_form(): void {
-		// If the post contains 'wlf-action'
-		if ( ! isset( $_POST['wlf-action'] ) ) {
+		// If the post contains 'iawmlf-action'
+		if ( ! isset( $_POST['iawmlf-action'] ) ) {
 			return;
 		}
 
 		// verify nonce and referer
-		if ( ! check_admin_referer( 'wlf_wizard_nonce', 'wlf_wizard_nonce' ) ) {
+		if ( ! check_admin_referer( 'iawmlf_wizard_nonce', 'iawmlf_wizard_nonce' ) ) {
 			$this->add_notice( __( 'Nonce verification failed', 'internet-archive-wayback-machine-link-fixer' ) );
 			return;
 		}
 
 		// Get the current step.
-		$current = sanitize_text_field( wp_unslash( $_POST['wlf-current-step'] ?? '' ) );
+		$current = sanitize_text_field( wp_unslash( $_POST['iawmlf-current-step'] ?? '' ) );
 
 		// If current is not set, bail.
 		if ( empty( $current ) ) {
@@ -192,7 +192,7 @@ class Setup_Wizard {
 		}
 
 		// If the post contains previous-step, handle the previous step.
-		if ( isset( $_POST['wlf-previous-step'] ) ) {
+		if ( isset( $_POST['iawmlf-previous-step'] ) ) {
 			$this->handle_previous_step( $current );
 			return;
 		}
@@ -235,25 +235,25 @@ class Setup_Wizard {
 	private function handle_step_1(): void {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		// Check we have the 2 api creds.
-		if ( ! isset( $_POST['wlf_wizard_archive_access_key'], $_POST['wlf_wizard_archive_secret_key'] ) ) {
+		if ( ! isset( $_POST['iawmlf_wizard_archive_access_key'], $_POST['iawmlf_wizard_archive_secret_key'] ) ) {
 			$this->add_notice( __( 'Missing archive.org credentials', 'internet-archive-wayback-machine-link-fixer' ), 'error' );
 			return;
 		}
 
 		// If next step is not set, bail.
-		if ( ! isset( $_POST['wlf-next-step'] ) ) {
+		if ( ! isset( $_POST['iawmlf-next-step'] ) ) {
 			$this->add_notice( __( 'Next step is not set', 'internet-archive-wayback-machine-link-fixer' ), 'error' );
 			return;
 		}
 
 		// Mark the step as completed.
 		$mark_completed = function () {
-			$next = sanitize_text_field( wp_unslash( $_POST['wlf-next-step'] ) );
+			$next = sanitize_text_field( wp_unslash( $_POST['iawmlf-next-step'] ) );
 			update_option( self::OPTION_NAME, $next );
 		};
 
-		$access_key = sanitize_text_field( wp_unslash( $_POST['wlf_wizard_archive_access_key'] ) );
-		$secret_key = sanitize_text_field( wp_unslash( $_POST['wlf_wizard_archive_secret_key'] ) );
+		$access_key = sanitize_text_field( wp_unslash( $_POST['iawmlf_wizard_archive_access_key'] ) );
+		$secret_key = sanitize_text_field( wp_unslash( $_POST['iawmlf_wizard_archive_secret_key'] ) );
 
 		// If both are empty.
 		if ( '' === $access_key && '' === $secret_key ) {
@@ -265,13 +265,13 @@ class Setup_Wizard {
 		}
 
 		// Check the users api credentials.
-		if ( ! wpcomsp_wayback_link_fixer_get_system_client()->is_valid_user( $access_key, $secret_key ) ) {
+		if ( ! iawmlf_get_system_client()->is_valid_user( $access_key, $secret_key ) ) {
 			$this->add_notice( __( 'Invalid Archive.org API credentials. Please verify your Access Key and Secret Key, or leave both fields blank to proceed without authentication.', 'internet-archive-wayback-machine-link-fixer' ), 'error' );
-			$_POST['wlf_wizard_invalid_keys'] = true; // Set a flag to indicate invalid keys.
+			$_POST['iawmlf_wizard_invalid_keys'] = true; // Set a flag to indicate invalid keys.
 
 			// Hold the entered values in post.
-			$_POST['wlf_wizard_archive_access_key_temp'] = $access_key;
-			$_POST['wlf_wizard_archive_secret_key_temp'] = $secret_key;
+			$_POST['iawmlf_wizard_archive_access_key_temp'] = $access_key;
+			$_POST['iawmlf_wizard_archive_secret_key_temp'] = $secret_key;
 		} else {
 			// Save the keys.
 			update_option( Settings::ARCHIVE_ORG_ACCESS_KEY, $access_key );
@@ -291,12 +291,12 @@ class Setup_Wizard {
 	private function handle_step_2(): void {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		// Get values from the form.
-		$is_active          = isset( $_POST['wlf_wizard_activate_link_fixer'] );
-		$allowed_post_types = isset( $_POST['wlf_wizard_post_types'] ) && is_array( $_POST['wlf_wizard_post_types'] )
-			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['wlf_wizard_post_types'] )
+		$is_active          = isset( $_POST['iawmlf_wizard_activate_link_fixer'] );
+		$allowed_post_types = isset( $_POST['iawmlf_wizard_post_types'] ) && is_array( $_POST['iawmlf_wizard_post_types'] )
+			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['iawmlf_wizard_post_types'] )
 			: array();
-		$scan_existing      = isset( $_POST['wlf_wizard_scan_existing_content'] );
-		$outcome            = isset( $_POST['wlf_wizard_outcome'] ) ? sanitize_text_field( wp_unslash( $_POST['wlf_wizard_outcome'] ) ) : 'do_nothing';
+		$scan_existing      = isset( $_POST['iawmlf_wizard_scan_existing_content'] );
+		$outcome            = isset( $_POST['iawmlf_wizard_outcome'] ) ? sanitize_text_field( wp_unslash( $_POST['iawmlf_wizard_outcome'] ) ) : 'do_nothing';
 
 		// Update all the settings.
 		update_option( Settings::PROCESS_LINKS, $is_active );
@@ -305,7 +305,7 @@ class Setup_Wizard {
 		update_option( Settings::FIXER_OPTION, $outcome );
 
 		// Update the step.
-		$next = sanitize_text_field( wp_unslash( $_POST['wlf-next-step'] ) );
+		$next = sanitize_text_field( wp_unslash( $_POST['iawmlf-next-step'] ) );
 		update_option( self::OPTION_NAME, $next );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
@@ -318,11 +318,11 @@ class Setup_Wizard {
 	private function handle_step_3(): void {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		// Get values from the form.
-		$is_active             = isset( $_POST['wlf_wizard_activate_auto_archiver'] );
-		$allowed_post_types    = isset( $_POST['wlf_wizard_post_types'] ) && is_array( $_POST['wlf_wizard_post_types'] )
-			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['wlf_wizard_post_types'] )
+		$is_active             = isset( $_POST['iawmlf_wizard_activate_auto_archiver'] );
+		$allowed_post_types    = isset( $_POST['iawmlf_wizard_post_types'] ) && is_array( $_POST['iawmlf_wizard_post_types'] )
+			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['iawmlf_wizard_post_types'] )
 			: array();
-		$enable_routine_update = isset( $_POST['wlf_wizard_recurring_backup'] );
+		$enable_routine_update = isset( $_POST['iawmlf_wizard_recurring_backup'] );
 
 		// Update all the settings.
 		update_option( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS, $is_active );
@@ -365,7 +365,7 @@ class Setup_Wizard {
 			'footer'     => $this->get_page_footer( $step_data ),
 		);
 
-		echo wpcomsp_wayback_link_fixer_render_template( $view_path, $view_data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo iawmlf_render_template( $view_path, $view_data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		echo '</div>';
 	}
@@ -434,7 +434,7 @@ class Setup_Wizard {
 			'header.php'
 		);
 
-		return wpcomsp_wayback_link_fixer_render_template(
+		return iawmlf_render_template(
 			$view_path,
 			array(
 				'step_data' => $step_data,
@@ -459,7 +459,7 @@ class Setup_Wizard {
 			'footer.php'
 		);
 
-		return wpcomsp_wayback_link_fixer_render_template(
+		return iawmlf_render_template(
 			$view_path,
 			array(
 				'step_data' => $step_data,

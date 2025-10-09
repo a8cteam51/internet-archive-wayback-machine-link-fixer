@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Event;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Settings\Settings;
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Check_Archive_Services_Online_Event {
 
-	public const HANDLE = 'wlf_check_archive_services_online';
+	public const HANDLE = 'iawmlf_check_archive_services_online';
 
 	/**
 	 * Wayback Machine Client.
@@ -52,7 +52,7 @@ class Check_Archive_Services_Online_Event {
 			0, // Forces the event to run immediately.
 			self::HANDLE,
 			array(),
-			'wlf_check_archive_services_online',
+			'iawmlf_check_archive_services_online',
 			'',
 			0
 		);
@@ -65,6 +65,6 @@ class Check_Archive_Services_Online_Event {
 	 */
 	public function __invoke(): void {
 		$this->setup();
-		wpcomsp_wayback_link_fixer_is_archive_api_online( true );
+		iawmlf_is_archive_api_online( true );
 	}
 }

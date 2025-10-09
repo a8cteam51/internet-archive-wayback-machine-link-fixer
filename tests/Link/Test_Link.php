@@ -5,16 +5,16 @@
  *
  * @since 1.2.0
  *
- * @coversDefaultClass \WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link
  *
  * @group Link
  */
 
 declare(strict_types=1);
 
-namespace WPCOMSpecialProjects\Wayback_Link_Fixer\Tests\Link;
+namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Link;
 
-use WPCOMSpecialProjects\Wayback_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 
 /**
  * Test_Link
@@ -24,8 +24,8 @@ class Test_Link extends \WP_UnitTestCase {
 	// Clear all custom actions on tear down.
 	public function tear_down(): void {
 		parent::tear_down();
-		remove_all_filters( 'wlf_failed_count' );
-		remove_all_filters( 'wlf_is_valid_check' );
+		remove_all_filters( 'iawmlf_failed_count' );
+		remove_all_filters( 'iawmlf_is_valid_check' );
 	}
 
 	/**
@@ -164,7 +164,7 @@ class Test_Link extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_check_if_link_is_valid(): void {
-		add_filter( 'wlf_failed_count', fn () => 3 );
+		add_filter( 'iawmlf_failed_count', fn () => 3 );
 		$link = new Link( 'https://example.com' );
 
 		// By default the link should be valid.
@@ -181,12 +181,12 @@ class Test_Link extends \WP_UnitTestCase {
 	/**
 	 * @testdox It should be possible to use a filter to change how many failed checks are needed to be considered invalid.
 	 *
-	 * @hook wlf_failed_count
+	 * @hook iawmlf_failed_count
 	 *
 	 * @return void
 	 */
 	public function test_can_use_filter_to_change_failed_count(): void {
-		add_filter( 'wlf_failed_count', fn () => 2 );
+		add_filter( 'iawmlf_failed_count', fn () => 2 );
 
 		$link = new Link( 'https://example.com' );
 
@@ -200,21 +200,21 @@ class Test_Link extends \WP_UnitTestCase {
 		$this->assertFalse( $link->is_valid() );
 
 		// Clear the filter.
-		remove_all_filters( 'wlf_failed_count' );
+		remove_all_filters( 'iawmlf_failed_count' );
 	}
 
 	/**
 	 * @testdox It should be possible to override the is_valid logic using a filter.
 	 *
-	 * @hook wlf_is_valid_check
+	 * @hook iawmlf_is_valid_check
 	 *
 	 * @return void
 	 */
 	public function test_can_use_filter_to_override_is_valid(): void {
-		add_filter( 'wlf_failed_count', fn () => 3 );
+		add_filter( 'iawmlf_failed_count', fn () => 3 );
 
 		add_filter(
-			'wlf_is_valid_check',
+			'iawmlf_is_valid_check',
 			/**
 			 * @param boolean                           $is_valid If the link is valid.
 			 * @param array{date:string, http_code:int} $check    The check.
@@ -243,8 +243,8 @@ class Test_Link extends \WP_UnitTestCase {
 		$this->assertFalse( $link->is_valid() );
 
 		// Clear the filter.
-		remove_all_filters( 'wlf_is_valid_check' );
-		remove_all_filters( 'wlf_failed_count' );
+		remove_all_filters( 'iawmlf_is_valid_check' );
+		remove_all_filters( 'iawmlf_failed_count' );
 	}
 
 	/**
@@ -364,7 +364,7 @@ class Test_Link extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_less_checks_than_min_failures(): void {
-		add_filter( 'wlf_failed_count', fn () => 3 );
+		add_filter( 'iawmlf_failed_count', fn () => 3 );
 
 		$link = new Link( 'https://example.com' );
 
