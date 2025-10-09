@@ -138,7 +138,12 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 										<?php else : ?>
 											<tr>
 										<?php endif; ?>
-												<td><?php echo esc_html( \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', esc_attr( $iawmlf_check['date'] ) )->format( iawmlf_get_date_format() ) ); ?></td>
+												<td>
+													<?php
+													$iawmlf_check_date = \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $iawmlf_check['date'] );
+													echo esc_html( $iawmlf_check_date ? $iawmlf_check_date->format( iawmlf_get_date_format() ) : $iawmlf_check['date'] );
+													?>
+												</td>
 												<?php if ( is_numeric( $iawmlf_check['http_code'] ) ) : ?>
 													<td class="iawmlf-archived__http-code"><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/<?php echo esc_attr( $iawmlf_check['http_code'] ); ?>" target="_blank"><?php echo esc_html( $iawmlf_check['http_code'] ); ?></a></td>
 												<?php else : ?>
