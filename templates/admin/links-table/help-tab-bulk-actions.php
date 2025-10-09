@@ -5,9 +5,7 @@
  * @since 1.3.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 ?>
 <div id="iawmlf_help_tab_bulk_actions" class="iawmlf_help_tab">

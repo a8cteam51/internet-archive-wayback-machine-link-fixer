@@ -18,6 +18,8 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Update Archive URL Event class.
  */

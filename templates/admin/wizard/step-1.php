@@ -12,9 +12,7 @@
  * @param string $footer The footer template.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 // Sets the type for api keys based on the current environment.
 $iawmlf_invalid_keys = isset( $_POST['iawmlf_wizard_invalid_keys'] ); // phpcs:ignore

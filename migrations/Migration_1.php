@@ -18,6 +18,8 @@ namespace Internet_Archive\Wayback_Machine_Link_Fixer_Migration;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Abstract_Migration;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Migration 1
  */

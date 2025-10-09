@@ -21,6 +21,8 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Action\Link_Latest_Snapshot_Acti
 use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Create_New_Snapshot_Event;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Util\List_Table_Action_Notification_Cache;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page;
+
+defined( 'ABSPATH' ) || exit;
 /**
  * The report table class.
  */

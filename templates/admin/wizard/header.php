@@ -8,9 +8,7 @@
  * @param array  $step_data The step data.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 ?>
 
 <div id="iawmlf_wizard" class="iawmlf_settings_card"> <!-- Wizard container -->

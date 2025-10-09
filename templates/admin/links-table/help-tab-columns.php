@@ -5,9 +5,7 @@
  * @since 1.3.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 
 $iawmlf_failed_count    = \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings::get_failed_count();

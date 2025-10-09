@@ -12,9 +12,7 @@
  * @param string $iawmlf_no_links_message Message to display when no links are available.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 ?>
 <div class="iawmlf_dashboard-accordion-content iawmlf_dashboard-accordion-content<?php echo esc_attr( $iawmlf_is_active ? '--active' : '' ); ?>" id="<?php echo esc_attr( $iawmlf_section_id ); ?>">
