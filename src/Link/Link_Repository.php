@@ -443,23 +443,25 @@ class Link_Repository {
 
 		// If we have statuses, add to the query.
 		if ( ! empty( $status ) ) {
-			$statuses = implode( ',', array_map( 'sanitize_text_field', $status ) );
-			$query   .= " WHERE is_broken IN ({$statuses})";
-			$where    = true;
+			$where  = true;
+			$format = sprintf( ' WHERE is_broken IN (%s)', join( ',', array_fill( 0, count( $status ), '%d' ) ) );
+			$query .= $this->wpdb->prepare( $format, $status ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Format is prepared.
 		}
 
 		// If we have archive statuses, add to the query.
 		if ( ! empty( $archive_status ) ) {
-			$query .= true === $where ? ' AND' : ' WHERE';
-			$query .= boolval( $archive_status[0] ) ? ' (archived != "" AND archived IS NOT NULL)' : ' (archived = "" OR archived IS NULL)';
-			$where  = true;
+			$archive_status = array_values( $archive_status );
+			$query         .= true === $where ? ' AND' : ' WHERE';
+			$query         .= boolval( $archive_status[0] ) ? ' (archived != "" AND archived IS NOT NULL)' : ' (archived = "" OR archived IS NULL)';
+			$where          = true;
 		}
 
 		// If we have link ids, add to the query.
 		if ( ! empty( $link_ids ) ) {
-			$ids    = implode( ',', array_map( 'absint', $link_ids ) );
-			$query .= true === $where ? ' AND' : ' WHERE';
-			$query .= " id IN ({$ids})";
+			$place_holders   = join( ',', array_fill( 0, count( $link_ids ), '%d' ) );
+			$link_ids_format = true === $where ? " AND id IN ({$place_holders})" : " WHERE id IN ({$place_holders})";
+
+			$query .= $this->wpdb->prepare( $link_ids_format, $link_ids ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared,  the column name is not interpolated.
 			$where  = true;
 		}
 
@@ -474,11 +476,13 @@ class Link_Repository {
 
 		// If we have a search term, add to the query.
 		if ( $search_term ) {
-			$search_term = sanitize_text_field( $search_term );
-			$query      .= true === $where ? ' AND' : ' WHERE';
-			$query      .= ' url LIKE %s';
-			$query       = $this->wpdb->prepare( $query, '%' . $search_term . '%' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
-			$where       = true;
+			// Prepare the search term.
+			$search_term        = str_replace( '%', '', sanitize_text_field( $search_term ) );
+			$search_term        = "%{$search_term}%";
+			$search_term_format = true === $where ? ' AND url LIKE %s' : ' WHERE url LIKE %s';
+
+			$query .= $this->wpdb->prepare( $search_term_format, $search_term ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
+			$where  = true;
 		}
 
 		// If we have excluded, add to the query.
@@ -491,7 +495,8 @@ class Link_Repository {
 		$query .= $this->compile_order_by( $order_by );
 
 		// Add the limit and offset.
-		$query .= " LIMIT {$limit} OFFSET " . ( ( $page - 1 ) * $limit );
+		$offset = ( $page - 1 ) * $limit;
+		$query .= $this->wpdb->prepare( ' LIMIT %d OFFSET %d', $limit, $offset ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
 
 		// Get the rows.
 		$rows = $this->wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
