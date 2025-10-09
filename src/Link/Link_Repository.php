@@ -461,7 +461,7 @@ class Link_Repository {
 			$place_holders = join( ',', array_fill( 0, count( $link_ids ), '%d' ) );
 			$ids_template  = true === $where ? " AND id IN ({$place_holders})" : " WHERE id IN ({$place_holders})";
 
-			$query .= $this->wpdb->prepare( $link_ids_format, $link_ids ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared,  the column name is not interpolated.
+			$query .= $this->wpdb->prepare( $ids_template, $link_ids ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared,  the column name is not interpolated.
 			$where  = true;
 		}
 
