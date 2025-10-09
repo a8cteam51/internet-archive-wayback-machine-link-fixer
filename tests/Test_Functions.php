@@ -4,6 +4,8 @@
  * Unit test for the assorted functions.
  *
  * @since 1.3.0
+ *
+ * @coversDefaultClass ::iawmlf_normalize_url
  */
 
 declare(strict_types=1);

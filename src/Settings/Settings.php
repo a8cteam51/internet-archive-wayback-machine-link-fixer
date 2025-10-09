@@ -38,7 +38,7 @@ class Settings {
 	public const ARCHIVE_ORG_CREDS_VALID_KEY  = self::SETTINGS_PREFIX . 'archive_api_creds_valid';
 
 	// Table names.
-	public const LINK_TABLE = 't51_wlf_link_archive';
+	public const LINK_TABLE = 'iawmlf_link_archive';
 
 
 	// Meta Keys

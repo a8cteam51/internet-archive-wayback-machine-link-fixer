@@ -5,7 +5,7 @@
  *
  * @since 1.3.0
  *
- * @coversDefaultClass Internet_Archive\Wayback_Machine_Link_Fixer\Report\Report_Table
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Report\Report_Table
  */
 
 declare(strict_types=1);

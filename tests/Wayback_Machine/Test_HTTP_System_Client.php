@@ -5,7 +5,7 @@
  *
  * @since 1.3.0
  *
- * @coversDefaultClass Internet_Archive\Wayback_Machine_Link_Fixer\Link_Checker\HTTP_System_Client
+ * @coversDefaultClass Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_System_Client
  */
 
 declare(strict_types=1);

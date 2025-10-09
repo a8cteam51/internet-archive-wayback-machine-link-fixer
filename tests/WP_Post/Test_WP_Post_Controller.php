@@ -4,6 +4,8 @@
  * Tests for the WP_Post_Controller class.
  *
  * @since 1.2.0
+ *
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller
  */
 declare(strict_types=1);
 

@@ -4,6 +4,8 @@
  * Tests for the Scan_Own_Posts_Event class.
  *
  * @since 1.2.0
+ *
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Event\Scan_Own_Posts_Event
  */
 declare(strict_types=1);
 

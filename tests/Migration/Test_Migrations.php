@@ -4,6 +4,8 @@
  * Unit tests for the migations
  *
  * @since 1.2.0
+ *
+ * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Migrations
  */
 
 declare(strict_types=1);
