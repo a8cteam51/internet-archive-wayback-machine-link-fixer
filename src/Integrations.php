@@ -20,7 +20,6 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Setup_Wizard;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page;
 
-
 defined( 'ABSPATH' ) || exit;
 
 /**

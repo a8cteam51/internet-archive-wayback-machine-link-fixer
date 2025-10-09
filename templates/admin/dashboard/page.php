@@ -25,9 +25,7 @@
  * @param array  $iawmlf_latest_links     Array of latest links with associated posts.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 
 // Extract link statistics

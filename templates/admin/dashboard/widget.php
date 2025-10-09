@@ -17,9 +17,7 @@
  * @param int    $iawmlf_failed_check_count      Number of failed checks before marking as broken.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 ?>
 

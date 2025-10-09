@@ -12,9 +12,7 @@
  * @param string $footer The footer template.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 

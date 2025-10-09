@@ -8,9 +8,7 @@
  * @param array $step_data The step data.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 $iawmlf_previous_state = 'step-1' === $step_data['step'] ? 'DISABLED' : '';
 $iawmlf_next_state     = 'complete' === $step_data['step'] ? 'DISABLED' : '';
