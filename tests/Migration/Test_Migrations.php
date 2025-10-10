@@ -178,10 +178,10 @@ class Test_Migrations extends \WP_UnitTestCase {
 
 	/**
 	 * @testdox Ensure that when migrations are run, there is a column called 'excluded' and it should be not null with a default of true.
-	 *
+	 * This is formally the 2nd migration, but it is now merged into the 1st migration.
 	 * @return void
 	 */
-	public function test_migration_2(): void {
+	public function test_excluded_column(): void {
 		global $wpdb;
 
 		$table = Settings::get_link_table_name();
@@ -200,10 +200,11 @@ class Test_Migrations extends \WP_UnitTestCase {
 
 	/**
 	 * @testdox Ensure the archive_process column was added with the 3rd migration.
+	 * This is formally the 3rd migration, but it is now merged into the 1st migration.
 	 *
 	 * @return void
 	 */
-	public function test_migration_3(): void {
+	public function test_archive_process_column(): void {
 		global $wpdb;
 
 		$table = Settings::get_link_table_name();
