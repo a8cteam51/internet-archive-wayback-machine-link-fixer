@@ -10,7 +10,7 @@
 
     >
     <testsuites>
-        <testsuite name="wlf">
+        <testsuite name="aiwmlf">
             <directory prefix="Test_" suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>

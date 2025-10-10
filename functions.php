@@ -14,6 +14,7 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Plugin;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Migrations;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\HTTP_Client\HTTP_Snapshot_Client;
@@ -111,7 +112,14 @@ function iawmlf_activate(): void {
  * @return  void
  */
 function iawmlf_uninstall(): void {
+	// If we are not dropping tables on deactivation, do nothing.
+	if ( ! Settings::drop_tables_on_uninstall() ) {
+		return;
+	}
+
 	Migrations::down();
+	Settings::clear_all_options();
+	WP_Post_Controller::clear_all_post_meta();
 }
 
 

@@ -92,8 +92,8 @@ class Test_Migrations extends \WP_UnitTestCase {
 		// Enable the drop tables on uninstall.
 		update_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY, true );
 
-		// Trigger the down process.
-		Migrations::down();
+		// Trigger the uninstall process.
+		iawmlf_uninstall();
 
 		// Check the meta has been removed.
 		$this->assertEmpty( get_post_meta( $post_id_1, Settings::LINK_META_KEY ) );
@@ -120,8 +120,7 @@ class Test_Migrations extends \WP_UnitTestCase {
 		// Disable the drop tables on uninstall.
 		update_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY, false );
 
-		// Trigger the down process.
-		Migrations::down();
+		iawmlf_uninstall();
 
 		// Check the meta has been removed.
 		$this->assertNotEmpty( get_post_meta( $post_id_1, Settings::LINK_META_KEY ) );
@@ -146,8 +145,7 @@ class Test_Migrations extends \WP_UnitTestCase {
 		// Add the migration to the list of migrations
 		Migrations::$migrations[] = $migration_class;
 
-		// Trigger the down process.
-		Migrations::down();
+		iawmlf_uninstall();
 
 		// Check there are no migrations.
 		$this->assertEmpty( Settings::migrations() );
@@ -171,8 +169,7 @@ class Test_Migrations extends \WP_UnitTestCase {
 		// Add the migration to the list of migrations
 		Migrations::$migrations[] = $migration_class;
 
-		// Trigger the down process.
-		Migrations::down();
+		iawmlf_uninstall();
 
 		// Check the migration is still in the list.
 		$this->assertNotEmpty( Settings::migrations() );
