@@ -8,7 +8,7 @@
  *
  * @since 1.3.0
  *
- * This is the finaliased version from development into production.
+ * This is the finalised version from development into production.
  */
 
 declare(strict_types=1);
