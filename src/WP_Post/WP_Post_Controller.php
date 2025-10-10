@@ -307,7 +307,7 @@ class WP_Post_Controller {
 			// This finds ALL meta entries, regardless of post type status
 			$wpdb->delete(
 				$wpdb->postmeta,
-				array( 'meta_key' => esc_attr($meta_key) ),
+				array( 'meta_key' => esc_attr( $meta_key ) ),
 				array( '%s' )
 			);
 		}

@@ -3,12 +3,12 @@
 /**
  * Migration 1
  *
- * Created: 12 Aug 2024
+ * Created: 10 Oct 2025
  * Iteration: 1
  *
  * @since 1.3.0
  *
- * This is a merge of the development migrations into a single migration.
+ * This is the finalised version from development into production.
  */
 
 declare(strict_types=1);
@@ -28,7 +28,7 @@ class Migration_1 extends Abstract_Migration {
 	/**
 	 * Run when the table is created.
 	 *
-	 * @since 0.1.0
+	 * @since 1.3.0
 	 *
 	 * @return void
 	 */
@@ -49,6 +49,8 @@ class Migration_1 extends Abstract_Migration {
 			checks JSON NOT NULL,
 			message longtext,
 			redirect_url longtext,
+			excluded TINYINT(1) NOT NULL DEFAULT 0,
+			archive_process VARCHAR(36) NOT NULL DEFAULT 'new',
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
@@ -61,7 +63,7 @@ class Migration_1 extends Abstract_Migration {
 	/**
 	 * Run when the table is dropped.
 	 *
-	 * @since 0.1.0
+	 * @since 1.3.0
 	 *
 	 * @return void
 	 */

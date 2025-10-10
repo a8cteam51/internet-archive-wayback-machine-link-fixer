@@ -70,8 +70,6 @@ if ( is_wp_error( IAWMLF_MINIMUM_REQUIREMENTS ) ) {
 	// Add all migrations.
 	\Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Migrations::$migrations = array( //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		\Internet_Archive\Wayback_Machine_Link_Fixer_Migration\Migration_1::class,
-		\Internet_Archive\Wayback_Machine_Link_Fixer_Migration\Migration_2::class,
-		\Internet_Archive\Wayback_Machine_Link_Fixer_Migration\Migration_3::class,
 	);
 
 	require_once IAWMLF_PATH . 'functions.php';
