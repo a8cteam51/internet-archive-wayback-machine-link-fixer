@@ -313,7 +313,7 @@ class Report_Page {
 		$table->prepare_items();
 		echo '<form method="get">';
 		echo '<input type="hidden" name="page" value="' . esc_attr( $current_page ) . '">'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
-		$table->search_box( __( 'Search', 'internet-archive-wayback-machine-link-fixer' ), 'wlf-link-search' );
+		$table->search_box( __( 'Search', 'internet-archive-wayback-machine-link-fixer' ), 'iawmlf-link-search' );
 		$table->display();
 		echo '</form>';
 

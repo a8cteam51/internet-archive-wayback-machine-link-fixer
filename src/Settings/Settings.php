@@ -396,4 +396,30 @@ class Settings {
 			'manage_options'
 		);
 	}
+
+	/**
+	 * Clear all the options.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return void
+	 */
+	public static function clear_all_options(): void {
+		// Clear all the options.
+		delete_option( self::PROCESS_LINKS );
+		delete_option( self::ALLOWED_POST_TYPES );
+		delete_option( self::MIGRATIONS_KEY );
+		delete_option( self::DROP_TABLES_ON_UNINSTALL_KEY );
+		delete_option( self::LINK_EXCLUSIONS );
+		delete_option( self::SCAN_EXISTING_POSTS );
+		delete_option( self::ARCHIVE_ORG_SECRET_KEY );
+		delete_option( self::ARCHIVE_ORG_ACCESS_KEY );
+		delete_option( self::FIXER_OPTION );
+		delete_option( self::ARCHIVE_ORG_STATUS_KEY );
+		delete_option( self::ARCHIVE_ORG_CREDS_VALID_KEY );
+		delete_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS );
+		delete_option( self::ALLOWED_OWN_CONTENT_POST_TYPES );
+		delete_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE );
+		delete_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL );
+	}
 }

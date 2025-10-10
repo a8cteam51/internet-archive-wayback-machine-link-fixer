@@ -258,4 +258,48 @@ class Test_Settings extends \WP_UnitTestCase {
 		// Set the scan existing posts to false.
 		update_option(Settings::SCAN_EXISTING_POSTS, false);
 	}
+
+	/**
+	 * @testdox It should be possible to clear all the settings, this can then be used to clear on uninistall.
+	 *
+	 * @return void
+	 */
+	public function test_can_clear_all_settings(): void {
+		// Set all the options with mock data.
+		update_option( Settings::PROCESS_LINKS, true );
+		update_option( Settings::ALLOWED_POST_TYPES, array( 'post', 'page', 'custom' ) );
+		update_option( Settings::MIGRATIONS_KEY, array( 'Migration_1', 'Migration_2' ) );
+		update_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY, true );
+		update_option( Settings::LINK_EXCLUSIONS, array( 'https://example.com/1', 'https://example.com/2' ) );
+		update_option( Settings::SCAN_EXISTING_POSTS, true );
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+		update_option( Settings::ARCHIVE_ORG_SECRET_KEY, 'secret_key' );
+		update_option( Settings::ARCHIVE_ORG_ACCESS_KEY, 'access_key' );
+		update_option( Settings::ARCHIVE_ORG_STATUS_KEY, 'status_key' );
+		update_option( Settings::ARCHIVE_ORG_CREDS_VALID_KEY, true );
+		update_option( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS, true );
+		update_option( Settings::ALLOWED_OWN_CONTENT_POST_TYPES, array( 'post', 'page', 'custom' ) );
+		update_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE, true );
+		update_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 10 );
+
+		// Clear all the settings.
+		Settings::clear_all_options();
+
+		// Check that all the settings are cleared.
+		$this->assertEmpty( get_option( Settings::PROCESS_LINKS ) );
+		$this->assertEmpty( get_option( Settings::ALLOWED_POST_TYPES ) );
+		$this->assertEmpty( get_option( Settings::MIGRATIONS_KEY ) );
+		$this->assertEmpty( get_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY ) );
+		$this->assertEmpty( get_option( Settings::LINK_EXCLUSIONS ) );
+		$this->assertEmpty( get_option( Settings::SCAN_EXISTING_POSTS ) );
+		$this->assertEmpty( get_option( Settings::FIXER_OPTION ) );
+		$this->assertEmpty( get_option( Settings::ARCHIVE_ORG_SECRET_KEY ) );
+		$this->assertEmpty( get_option( Settings::ARCHIVE_ORG_ACCESS_KEY ) );
+		$this->assertEmpty( get_option( Settings::ARCHIVE_ORG_STATUS_KEY ) );
+		$this->assertEmpty( get_option( Settings::ARCHIVE_ORG_CREDS_VALID_KEY ) );
+		$this->assertEmpty( get_option( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS ) );
+		$this->assertEmpty( get_option( Settings::ALLOWED_OWN_CONTENT_POST_TYPES ) );
+		$this->assertEmpty( get_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE ) );
+		$this->assertEmpty( get_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL ) );
+	}
 }

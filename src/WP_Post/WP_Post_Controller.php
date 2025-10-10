@@ -225,7 +225,7 @@ class WP_Post_Controller {
 
 		// Register the script.
 		wp_register_script(
-			'wpcomsp-wayback-link-fixer-front-link-checker',
+			'iawm-link-fixer-front-link-checker',
 			IAWMLF_URL . 'assets/js/build/front_link_checker.js',
 			$assets['dependencies'],
 			$assets['version'],
@@ -234,8 +234,8 @@ class WP_Post_Controller {
 
 		// localise the script.
 		wp_localize_script(
-			'wpcomsp-wayback-link-fixer-front-link-checker',
-			'wlfArchivedLinks',
+			'iawm-link-fixer-front-link-checker',
+			'iawmlfArchivedLinks',
 			array(
 				'links'           => wp_json_encode( $links ),
 				'linkCheckAjax'   => Link_Check_Ajax::ACTION,
@@ -248,7 +248,7 @@ class WP_Post_Controller {
 		);
 
 		// Enqueue the script.
-		wp_enqueue_script( 'wpcomsp-wayback-link-fixer-front-link-checker' );
+		wp_enqueue_script( 'iawm-link-fixer-front-link-checker' );
 	}
 
 	/**
@@ -286,8 +286,30 @@ class WP_Post_Controller {
 		}
 
 		$json      = esc_attr( wp_json_encode( $links ) );
-		$html_data = "<div class='__wlf-post-loop-links' style='display:none;' data-wlf-post-links='{$json}'></div>";
+		$html_data = "<div class='__iawmlf-post-loop-links' style='display:none;' data-iawmlf-post-links='{$json}'></div>";
 
 		return $html_data . $block_content;
+	}
+
+	/**
+	 * Clear all post meta.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return void
+	 */
+	public static function clear_all_post_meta(): void {
+		global $wpdb;
+
+		$meta_keys = array( Settings::LINK_META_KEY, Settings::OWN_LINK_LAST_PROCESSED );
+
+		foreach ( $meta_keys as $meta_key ) {
+			// This finds ALL meta entries, regardless of post type status
+			$wpdb->delete(
+				$wpdb->postmeta,
+				array( 'meta_key' => esc_attr($meta_key) ),
+				array( '%s' )
+			);
+		}
 	}
 }

@@ -7,21 +7,21 @@
 /**
  * Get all the links from the localized object
  */
-let allLinks = JSON.parse(wlfArchivedLinks.links);
+let allLinks = JSON.parse(iawmlfArchivedLinks.links);
 
 /**
  * Delays between checking the links
  */
-const linkDelay = wlfArchivedLinks.linkDelayInDays;
+const linkDelay = iawmlfArchivedLinks.linkDelayInDays;
 
 /**
  * The settings for the link check
  */
 const linkCheckSettings = {
-	'action': wlfArchivedLinks.linkCheckAjax,
-	'nonce': wlfArchivedLinks.linkCheckNonce,
-	'url': wlfArchivedLinks.ajaxUrl,
-	'fixerOption': wlfArchivedLinks.fixerOption
+	'action': iawmlfArchivedLinks.linkCheckAjax,
+	'nonce': iawmlfArchivedLinks.linkCheckNonce,
+	'url': iawmlfArchivedLinks.ajaxUrl,
+	'fixerOption': iawmlfArchivedLinks.fixerOption
 };
 
 /**
@@ -120,12 +120,12 @@ const getRenderedLinks = () => {
 		});
 	}
 
-	// Look for all divs with '__wlf-post-loop-links' class
-	const loopLinks = document.querySelectorAll('.__wlf-post-loop-links');
+	// Look for all divs with '__iawmlf-post-loop-links' class
+	const loopLinks = document.querySelectorAll('.__iawmlf-post-loop-links');
 
-	// Get the links from data-wlf-post-links attribute
+	// Get the links from data-iawmlf-post-links attribute
 	loopLinks.forEach((loopLink) => {
-		const links = JSON.parse(loopLink.getAttribute('data-wlf-post-links'));
+		const links = JSON.parse(loopLink.getAttribute('data-iawmlf-post-links'));
 		addLinks(links);
 	});
 
@@ -260,17 +260,17 @@ const addDataAttributes = (link) => {
 
 		// If the link is the same as the current link, add the data attributes
 		if (removeTrailingSlash(currentLink.href) === href) {
-			currentLink.setAttribute('data-wlf-archived-url', link.archived_href);
-			currentLink.setAttribute('data-wlf-current-url', href);
-			currentLink.setAttribute('data-wlf-archived-broken', link.broken);
+			currentLink.setAttribute('data-iawmlf-archived-url', link.archived_href);
+			currentLink.setAttribute('data-iawmlf-current-url', href);
+			currentLink.setAttribute('data-iawmlf-archived-broken', link.broken);
 			// If we have a last checked date, add it
 			if (link.last_checked !== null && link.last_checked.date !== null) {
-				currentLink.setAttribute('data-wlf-archived-last-checked', link.last_checked.date);
+				currentLink.setAttribute('data-iawmlf-archived-last-checked', link.last_checked.date);
 			}
 
 			// If the link is broken, add a class and change the href
 			if (link.broken && linkCheckSettings.fixerOption !== 'do_nothing') {
-				currentLink.classList.add('wlf-broken-link');
+				currentLink.classList.add('iawmlf-broken-link');
 				currentLink.href = '' !== link.archived_href ? link.archived_href : href;
 			}
 		}

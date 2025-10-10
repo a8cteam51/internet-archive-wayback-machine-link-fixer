@@ -510,7 +510,7 @@ The API status check result is cached for 1 hour by default.
 
 > **Relationship:** This event supports all other events by providing a centralized mechanism to confirm the archive service's availability. Events such as `Scan_Posts_Event` and `Process_Local_Post_Event` rely on this status check to decide whether to proceed or delay their operations.
 
-**Action:** `wlf_check_archive_services_online`
+**Action:** `iawmlf_check_archive_services_online`
 
 *This event takes no arguments.*
 

@@ -208,16 +208,16 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		do_action( 'wp_enqueue_scripts' );
 
 		// Check the script is enqueued.
-		$this->assertTrue( wp_script_is( 'wpcomsp-wayback-link-fixer-front-link-checker' ) );
+		$this->assertTrue( wp_script_is( 'iawm-link-fixer-front-link-checker' ) );
 
 		// Check the localized data.
-		$localized_data = wp_scripts()->get_data( 'wpcomsp-wayback-link-fixer-front-link-checker', 'data' );
+		$localized_data = wp_scripts()->get_data( 'iawm-link-fixer-front-link-checker', 'data' );
 
 		// Clean up.
 		unset( $GLOBALS['post'] );
 
-		// Check starts with var wlfArchivedLinks =
-		$this->assertStringStartsWith( 'var wlfArchivedLinks = ', $localized_data );
+		// Check starts with var iawmlfArchivedLinks =
+		$this->assertStringStartsWith( 'var iawmlfArchivedLinks = ', $localized_data );
 
 		// Extract everything between first and last {}
 		$matches = array();
@@ -264,16 +264,16 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		do_action( 'wp_enqueue_scripts' );
 
 		// Check the script is enqueued.
-		$this->assertTrue( wp_script_is( 'wpcomsp-wayback-link-fixer-front-link-checker' ) );
+		$this->assertTrue( wp_script_is( 'iawm-link-fixer-front-link-checker' ) );
 
 		// Check the localized data.
-		$localized_data = wp_scripts()->get_data( 'wpcomsp-wayback-link-fixer-front-link-checker', 'data' );
+		$localized_data = wp_scripts()->get_data( 'iawm-link-fixer-front-link-checker', 'data' );
 
 		// Clean up.
 		unset( $GLOBALS['post'] );
 
-		// Check starts with var wlfArchivedLinks =
-		$this->assertStringStartsWith( 'var wlfArchivedLinks = ', $localized_data );
+		// Check starts with var iawmlfArchivedLinks =
+		$this->assertStringStartsWith( 'var iawmlfArchivedLinks = ', $localized_data );
 
 		// Extract everything between first and last {}
 		$matches = array();
@@ -462,5 +462,36 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$this->assertCount( 1, $actions );
 
 		$this->assertSame( json_decode( $actions[0]->args )->post_id, $allowed_posts->ID );
+	}
+
+	/**
+	 * @testdox It should be possible to clear all the post meta, this can then be used to clear on uninistall.
+	 *
+	 * @return void
+	 */
+	public function test_can_clear_all_post_meta(): void {
+		// Create multiple posts in multiple post types with meta.
+		$post_id_1 = \WP_UnitTestCase_Base::factory()->post->create();
+		$post_id_2 = \WP_UnitTestCase_Base::factory()->post->create( array( 'post_type' => 'page' ) );
+		$post_id_3 = \WP_UnitTestCase_Base::factory()->post->create( array( 'post_type' => 'custom' ) );
+
+		// Add the meta.
+		update_post_meta( $post_id_1, Settings::LINK_META_KEY, array( 1, 2, 3 ) );
+		update_post_meta( $post_id_1, Settings::OWN_LINK_LAST_PROCESSED, time() );
+		update_post_meta( $post_id_2, Settings::LINK_META_KEY, array( 4, 5, 6 ) );
+		update_post_meta( $post_id_2, Settings::OWN_LINK_LAST_PROCESSED, time() );
+		update_post_meta( $post_id_3, Settings::LINK_META_KEY, array( 7, 8, 9 ) );
+		update_post_meta( $post_id_3, Settings::OWN_LINK_LAST_PROCESSED, time() );
+
+		// Clear all the post meta.
+		WP_Post_Controller::clear_all_post_meta();
+
+		// Check that the meta has been cleared.
+		$this->assertEmpty( get_post_meta( $post_id_1, Settings::LINK_META_KEY ) );
+		$this->assertEmpty( get_post_meta( $post_id_2, Settings::LINK_META_KEY ) );
+		$this->assertEmpty( get_post_meta( $post_id_3, Settings::LINK_META_KEY ) );
+		$this->assertEmpty( get_post_meta( $post_id_1, Settings::OWN_LINK_LAST_PROCESSED ) );
+		$this->assertEmpty( get_post_meta( $post_id_2, Settings::OWN_LINK_LAST_PROCESSED ) );
+		$this->assertEmpty( get_post_meta( $post_id_3, Settings::OWN_LINK_LAST_PROCESSED ) );
 	}
 }
