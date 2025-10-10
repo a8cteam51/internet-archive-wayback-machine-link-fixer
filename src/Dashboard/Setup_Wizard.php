@@ -289,6 +289,12 @@ class Setup_Wizard {
 	 * @return void
 	 */
 	private function handle_step_2(): void {
+		// If next step is not set, bail.
+		if ( ! isset( $_POST['iawmlf-next-step'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$this->add_notice( __( 'Next step is not set', 'internet-archive-wayback-machine-link-fixer' ), 'error' );
+			return;
+		}
+
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		// Get values from the form.
 		$is_active          = isset( $_POST['iawmlf_wizard_activate_link_fixer'] );
@@ -316,6 +322,12 @@ class Setup_Wizard {
 	 * @return void
 	 */
 	private function handle_step_3(): void {
+		// If next step is not set, bail.
+		if ( ! isset( $_POST['iawmlf-next-step'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$this->add_notice( __( 'Next step is not set', 'internet-archive-wayback-machine-link-fixer' ), 'error' );
+			return;
+		}
+
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		// Get values from the form.
 		$is_active             = isset( $_POST['iawmlf_wizard_activate_auto_archiver'] );
