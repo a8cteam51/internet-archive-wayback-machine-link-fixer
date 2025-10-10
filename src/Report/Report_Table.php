@@ -205,8 +205,8 @@ class Report_Table extends \WP_List_Table {
 			return;
 		}
 
-		// Verify the nonce and referrer.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-' . $this->_args['plural'] ) && check_admin_referer( 'bulk-' . $this->_args['plural'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
+		// Check if _wpnonce is not set or is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-' . $this->_args['plural'] ) || ! check_admin_referer( 'bulk-' . $this->_args['plural'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
 			// Add a notice.
 			$this->notices[] = array(
 				'message' => __( 'Something went wrong, please try again', 'internet-archive-wayback-machine-link-fixer' ),
