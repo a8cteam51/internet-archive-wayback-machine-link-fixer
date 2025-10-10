@@ -289,9 +289,8 @@ class Setup_Wizard {
 	 * @return void
 	 */
 	private function handle_step_2(): void {
-
 		// If next step is not set, bail.
-		if ( ! isset( $_POST['iawmlf-next-step'] ) ) {
+		if ( ! isset( $_POST['iawmlf-next-step'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$this->add_notice( __( 'Next step is not set', 'internet-archive-wayback-machine-link-fixer' ), 'error' );
 			return;
 		}
@@ -300,7 +299,7 @@ class Setup_Wizard {
 		// Get values from the form.
 		$is_active          = isset( $_POST['iawmlf_wizard_activate_link_fixer'] );
 		$allowed_post_types = isset( $_POST['iawmlf_wizard_post_types'] ) && is_array( $_POST['iawmlf_wizard_post_types'] )
-			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ),  $_POST['iawmlf_wizard_post_types'] )
+			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['iawmlf_wizard_post_types'] )
 			: array();
 		$scan_existing      = isset( $_POST['iawmlf_wizard_scan_existing_content'] );
 		$outcome            = isset( $_POST['iawmlf_wizard_outcome'] ) ? sanitize_text_field( wp_unslash( $_POST['iawmlf_wizard_outcome'] ) ) : 'do_nothing';
@@ -323,9 +322,8 @@ class Setup_Wizard {
 	 * @return void
 	 */
 	private function handle_step_3(): void {
-
 		// If next step is not set, bail.
-		if ( ! isset( $_POST['iawmlf-next-step'] ) ) {
+		if ( ! isset( $_POST['iawmlf-next-step'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$this->add_notice( __( 'Next step is not set', 'internet-archive-wayback-machine-link-fixer' ), 'error' );
 			return;
 		}
