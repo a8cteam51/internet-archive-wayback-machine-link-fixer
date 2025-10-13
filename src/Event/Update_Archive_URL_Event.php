@@ -87,7 +87,7 @@ class Update_Archive_URL_Event {
 				'link_id' => $link_id,
 				'attempt' => $attempt,
 			),
-			'wayback-link-fixer'
+			'iawmlf_event'
 		);
 	}
 

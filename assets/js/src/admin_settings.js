@@ -5,24 +5,30 @@
  */
 (function () {
 	"use strict";
-	jQuery(document).ready(function () {
+
+	// Wait for DOM to be ready
+	document.addEventListener('DOMContentLoaded', function () {
 
 		// Get the settings.
-		const PROCESS_LINK = jQuery('#iawmlf_process_links');
-		const AUTO_ARCHIVE = jQuery('#iawmlf_allow_own_content_submissions');
+		const PROCESS_LINK = document.getElementById('iawmlf_process_links');
+		const AUTO_ARCHIVE = document.getElementById('iawmlf_allow_own_content_submissions');
 
-		const EXCLUDED_LINKS = jQuery('#iawmlf_excluded_links');
-		const NEW_LINK = jQuery('#iawmlf_excluded_links_new');
-		const NEW_LINK_BUTTON = jQuery('#iawmlf_excluded_links_new_action');
+		const EXCLUDED_LINKS = document.getElementById('iawmlf_excluded_links');
+		const NEW_LINK = document.getElementById('iawmlf_excluded_links_new');
+		const NEW_LINK_BUTTON = document.getElementById('iawmlf_excluded_links_new_action');
 		const NEW_LINK_TEMPLATE = IawmlfSettings.newExcludedTemplate;
-		const NO_LINKS = jQuery('#iawmlf_excluded_empty');
+		const NO_LINKS = document.getElementById('iawmlf_excluded_empty');
 
 		// Handle removing a link.
-		EXCLUDED_LINKS.on('click', '.remove-exclusion', function (e) {
-			e.preventDefault();
-			jQuery(this).parent().remove();
-			checkNoLinks();
-		});
+		if (EXCLUDED_LINKS) {
+			EXCLUDED_LINKS.addEventListener('click', function (e) {
+				if (e.target.classList.contains('remove-exclusion')) {
+					e.preventDefault();
+					e.target.parentElement.remove();
+					checkNoLinks();
+				}
+			});
+		}
 
 		/**
 		 * Prevents default behavior of select elements.
@@ -35,17 +41,25 @@
 		}
 
 		// When a checkbox or radio has iawmlf-read-only class, prevent the user from changing it.
-		jQuery(document).on('click', '.iawmlf_settings_card input.iawmlf-read-only, .iawmlf_settings_card select.iawmlf-read-only', doNothing);
+		document.addEventListener('click', function (e) {
+			if (e.target.matches('.iawmlf_settings_card input.iawmlf-read-only, .iawmlf_settings_card select.iawmlf-read-only')) {
+				doNothing(e);
+			}
+		});
 
 		// When Process Links is checked, enable the excluded links.
-		PROCESS_LINK.on('change', function () {
-			toggleElements(this.checked, 'link_fixer');
-		});
+		if (PROCESS_LINK) {
+			PROCESS_LINK.addEventListener('change', function () {
+				toggleElements(this.checked, 'link_fixer');
+			});
+		}
 
 		// When Auto Archive is checked, enable the excluded links.
-		AUTO_ARCHIVE.on('change', function () {
-			toggleElements(this.checked, 'auto_archiver');
-		});
+		if (AUTO_ARCHIVE) {
+			AUTO_ARCHIVE.addEventListener('change', function () {
+				toggleElements(this.checked, 'auto_archiver');
+			});
+		}
 
 		/**
 		 * Toggles the state of elements in the specified group.
@@ -59,17 +73,23 @@
 				? '.iawmlf_toggle_setting__fixer'
 				: '.iawmlf_toggle_setting__auto_archiver';
 
-
-			if (!isChecked) {
-				jQuery(fieldList).addClass('hidden');
-			} else {
-				jQuery(fieldList).removeClass('hidden');
-			}
+			const elements = document.querySelectorAll(fieldList);
+			elements.forEach(function (element) {
+				if (!isChecked) {
+					element.classList.add('hidden');
+				} else {
+					element.classList.remove('hidden');
+				}
+			});
 		}
 
 		// Runs the checks on load
-		toggleElements(PROCESS_LINK.prop('checked'), 'link_fixer');
-		toggleElements(AUTO_ARCHIVE.prop('checked'), 'auto_archiver');
+		if (PROCESS_LINK) {
+			toggleElements(PROCESS_LINK.checked, 'link_fixer');
+		}
+		if (AUTO_ARCHIVE) {
+			toggleElements(AUTO_ARCHIVE.checked, 'auto_archiver');
+		}
 
 		/**
 		 * Get the last index from the links.
@@ -79,11 +99,13 @@
 		 * @return {int} The last index.
 		 */
 		function getNextIndex() {
-			const links = EXCLUDED_LINKS.find('input[type="text"]');
+			if (!EXCLUDED_LINKS) return 0;
+
+			const links = EXCLUDED_LINKS.querySelectorAll('input[type="text"]');
 			let lastIndex = 0;
-			links.each(function () {
+			links.forEach(function (link) {
 				// Get index from data-index attribute.
-				const index = jQuery(this).data('index');
+				const index = parseInt(link.dataset.index) || 0;
 				if (index > lastIndex) {
 					lastIndex = index;
 				}
@@ -104,16 +126,20 @@
 		const parseNewLink = (newLink, index) => NEW_LINK_TEMPLATE.replace(/{newIndex}/g, index).replace(/{newUrl}/g, newLink)
 
 		// When the user clicks the add new link button.
-		NEW_LINK_BUTTON.on('click', function (e) {
-			e.preventDefault();
-			const newLink = NEW_LINK.val();
-			if (newLink.length > 0) {
-				EXCLUDED_LINKS.append(parseNewLink(newLink, getNextIndex()));
-				NEW_LINK.val('');
-			}
+		if (NEW_LINK_BUTTON) {
+			NEW_LINK_BUTTON.addEventListener('click', function (e) {
+				e.preventDefault();
+				const newLink = NEW_LINK ? NEW_LINK.value : '';
+				if (newLink.length > 0 && EXCLUDED_LINKS) {
+					EXCLUDED_LINKS.insertAdjacentHTML('beforeend', parseNewLink(newLink, getNextIndex()));
+					if (NEW_LINK) {
+						NEW_LINK.value = '';
+					}
+				}
 
-			checkNoLinks();
-		});
+				checkNoLinks();
+			});
+		}
 
 		/**
 		 * Check if the no links message should be shown.
@@ -123,10 +149,13 @@
 		 * @return {void}
 		 */
 		function checkNoLinks() {
-			if (EXCLUDED_LINKS.find('div.link').length > 0) {
-				NO_LINKS.hide();
+			if (!EXCLUDED_LINKS || !NO_LINKS) return;
+
+			const linkDivs = EXCLUDED_LINKS.querySelectorAll('div.link');
+			if (linkDivs.length > 0) {
+				NO_LINKS.style.display = 'none';
 			} else {
-				NO_LINKS.show();
+				NO_LINKS.style.display = '';
 			}
 		}
 	});

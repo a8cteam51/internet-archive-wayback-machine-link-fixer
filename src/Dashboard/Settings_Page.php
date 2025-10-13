@@ -20,12 +20,12 @@ defined( 'ABSPATH' ) || exit;
  */
 class Settings_Page {
 
-	public const PAGE_SLUG             = 'wayback_link_fixer_settings';
-	public const SETTINGS_SECTION      = 'wayback-link-fixer-settings';
-	public const GROUP_IA_SETTINGS     = 'wayback_link_fixer_ia_settings';
-	public const GROUP_PLUGIN_SETTINGS = 'wayback_link_fixer_plugin_settings';
-	public const GROUP_LINK_FIXER      = 'wayback_link_fixer_group';
-	public const GROUP_AUTO_ARCHIVER   = 'wayback_link_fixer_auto_archiver';
+	public const PAGE_SLUG             = 'iawmlf_settings';
+	public const SETTINGS_SECTION      = 'iawmlf-settings';
+	public const GROUP_IA_SETTINGS     = 'iawmlf_ia_settings';
+	public const GROUP_PLUGIN_SETTINGS = 'iawmlf_plugin_settings';
+	public const GROUP_LINK_FIXER      = 'iawmlf_group';
+	public const GROUP_AUTO_ARCHIVER   = 'iawmlf_auto_archiver';
 
 	/**
 	 * The pages menu hook.

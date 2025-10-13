@@ -29,7 +29,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Dashboard_Page {
 
-	public const DASHBOARD_SLUG      = 'wayback-link-fixer-dashboard';
+	public const DASHBOARD_SLUG      = 'iawmlf-dashboard';
 	public const STATS_TRANSIENT_KEY = 'iawmlf_dashboard_stats';
 
 	/**

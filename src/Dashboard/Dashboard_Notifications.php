@@ -25,7 +25,7 @@ class Dashboard_Notifications {
 	/**
 	 * The page slug.
 	 */
-	const PAGE_SLUG = 'wayback_link_fixer_dashboard';
+	const PAGE_SLUG = 'iawmlf_dashboard';
 
 	/**
 	 * Initialize the dashboard notifications.
@@ -66,7 +66,7 @@ class Dashboard_Notifications {
 	 */
 	public function register_widgets(): void {
 		wp_add_dashboard_widget(
-			'wayback_link_fixer_dashboard_widget',
+			'iawmlf_dashboard_widget',
 			__( 'Wayback Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),
 			array( $this, 'render_widget' ),
 			null,
@@ -106,7 +106,7 @@ class Dashboard_Notifications {
 	 * @return array{available:int, daily_captures:int, daily_captures_limit:int, processing:int}|null
 	 */
 	public static function get_account_details(): ?array {
-		$cached = get_transient( 'wayback_link_fixer_account_details' );
+		$cached = get_transient( 'iawmlf_account_details' );
 		if ( false !== $cached ) {
 			return $cached;
 		}
@@ -117,7 +117,7 @@ class Dashboard_Notifications {
 			);
 
 			if ( is_array( $details ) ) {
-				set_transient( 'wayback_link_fixer_account_details', $details, HOUR_IN_SECONDS );
+				set_transient( 'iawmlf_account_details', $details, HOUR_IN_SECONDS );
 				return array(
 					'available'            => isset( $details['available'] ) ? (int) $details['available'] : 0,
 					'daily_captures'       => isset( $details['daily_captures'] ) ? (int) $details['daily_captures'] : 0,
