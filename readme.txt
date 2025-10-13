@@ -104,3 +104,9 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 
 Note: All versions prior to 1.3.0 were not publicly released.
 
+== Developer Documentation ==
+
+For developer docs and source code, see the GitHub repository:
+
+- Developer docs and source code: https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer
+

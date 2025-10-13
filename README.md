@@ -976,3 +976,27 @@ composer test:php
 ```
 
 > You can run the full set of linting and tests with `composer run:php`, this will install dev dependencies and run the tests and then optimize the autoloader with a production ready version.
+
+#### Frontend build (npm)
+
+Install dependencies and run common tasks:
+
+```bash
+npm install # Install JS/CSS dependencie
+
+npm run lint # Lint JS/CSS
+npm run format # Auto-fix JS/CSS where possible
+
+npm run start # Start watch builds for blocks, scripts, and styles
+npm run build # Create production builds for blocks, scripts, and styles	
+
+```
+
+#### Internationalization (i18n)
+
+Run the full internationalization workflow (generate POT, update PO, build JSON) with a single command:
+
+```bash
+composer internationalize
+
+
