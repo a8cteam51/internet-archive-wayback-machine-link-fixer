@@ -23,7 +23,7 @@ class Setup_Wizard {
 
 	private const OPTION_NAME   = 'iawmlf_setup_wizard';
 	private const HAS_COMPLETED = 'iawmlf_setup_wizard_completed';
-	private const PAGE_SLUG     = 'wayback-link-fixer-setup-wizard';
+	private const PAGE_SLUG     = 'iawmlf-setup-wizard';
 	private const STEPS         = array(
 		'step-1'   => 'step-1.php',
 		'step-2'   => 'step-2.php',

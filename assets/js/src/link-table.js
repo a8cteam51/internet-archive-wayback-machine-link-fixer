@@ -1,4 +1,3 @@
-console.log('link-table.js loaded');
 /**
  * JS used for the admin settings page.
  *

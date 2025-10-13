@@ -25,12 +25,7 @@ class Report_Page {
 	/**
 	 * The page slug.
 	 */
-	private const SLUG = 'wayback-link-fixer-links';
-
-	/**
-	 * The parent page slug.
-	 */
-	private const PARENT_SLUG = 'tools.php';
+	private const SLUG = 'iawmlf-links';
 
 	/**
 	 * The link repository.

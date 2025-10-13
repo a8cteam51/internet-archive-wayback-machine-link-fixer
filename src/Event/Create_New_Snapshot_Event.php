@@ -73,7 +73,7 @@ class Create_New_Snapshot_Event {
 				'link_id' => $link_id,
 				'attempt' => $attempt,
 			),
-			'wayback-link-fixer'
+			'iawmlf_event'
 		);
 	}
 
@@ -94,7 +94,7 @@ class Create_New_Snapshot_Event {
 				'link_id' => $link_id,
 				'attempt' => $attempt,
 			),
-			'wayback-link-fixer'
+			'iawmlf_event'
 		);
 	}
 

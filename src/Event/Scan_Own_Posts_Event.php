@@ -79,9 +79,9 @@ class Scan_Own_Posts_Event {
 
 		// If we have 0 interval, add as async action.
 		if ( 0 === $interval ) {
-			as_enqueue_async_action( self::HANDLE, array(), 'wayback-link-fixer' );
+			as_enqueue_async_action( self::HANDLE, array(), 'iawmlf_event' );
 		} else {
-			as_schedule_single_action( time() + $interval, self::HANDLE, array(), 'wayback-link-fixer' );
+			as_schedule_single_action( time() + $interval, self::HANDLE, array(), 'iawmlf_event' );
 		}
 	}
 
