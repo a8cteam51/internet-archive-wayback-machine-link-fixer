@@ -982,7 +982,7 @@ composer test:php
 Install dependencies and run common tasks:
 
 ```bash
-npm install # Install JS/CSS dependencie
+npm install # Install JS/CSS dependencies
 
 npm run lint # Lint JS/CSS
 npm run format # Auto-fix JS/CSS where possible

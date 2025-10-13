@@ -22,9 +22,10 @@
 		// Handle removing a link.
 		if (EXCLUDED_LINKS) {
 			EXCLUDED_LINKS.addEventListener('click', function (e) {
-				if (e.target.classList.contains('remove-exclusion')) {
+				const removeButton = e.target.closest('.remove-exclusion');
+				if (removeButton) {
 					e.preventDefault();
-					e.target.parentElement.remove();
+					removeButton.parentElement.remove();
 					checkNoLinks();
 				}
 			});
