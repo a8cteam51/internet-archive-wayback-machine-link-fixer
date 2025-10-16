@@ -66,7 +66,7 @@ Existing content is sent to the Wayback Machine in batch when the plugin is acti
 == Screenshots ==
 
 1. The Dashboard overview covering your current usage stats with the most recent checks and new links added.
-2. Overview of links found within your sites content.
+2. Overview of links found within your site's content.
 3. Help tab to explain the icons and the link table.
 4. Link details, show information about the link, all checks and any posts they appear in.
 
@@ -118,7 +118,7 @@ Note: All versions prior to 1.3.0 were not publicly released.
 == Upgrade Notice ==
 
 = 1.3.0 =
-This updates any pre release version to the new launched version.
+This updates any pre-release version to the new launched version.
 
 For developer docs and source code, see the GitHub repository:
 
