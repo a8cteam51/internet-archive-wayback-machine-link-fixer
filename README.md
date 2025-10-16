@@ -246,6 +246,24 @@ The link count is clickable, this will access a filtered link list for that post
 
 ![Alt text](./_docs/links--for-post.png)
 
+### Demo
+
+[Watch demo video](_docs/demo.mp4)
+
+![Demo](_docs/demo.gif)
+
+![Dashboard](./_docs/dashboard.png)
+> The main dashboard page.
+
+![Link List](./_docs/link-list.png)
+> The link list page.
+
+![Link List Help Tab](./_docs/help-tab.png)
+> The help tab on the link list page.
+
+![Link Details](./_docs/link-details.png)
+> The link details page.
+
 ## Developer Documentation
 
 ### Dependencies
