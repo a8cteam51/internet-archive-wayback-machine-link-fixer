@@ -47,7 +47,8 @@ jobs:
             "tests/*" \
             ".vscode/*" \
             "assets/css/src/*" \
-            "assets/js/src/*"
+            "assets/js/src/*" \
+            "_docs/*"
 
       - name:  Release
         uses: softprops/action-gh-release@v1

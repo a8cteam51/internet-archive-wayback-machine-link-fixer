@@ -131,6 +131,7 @@ class Scan_Own_Posts_Event {
 		if ( ! $posts->have_posts() ) {
 			return;
 		}
+
 		// Loop through the posts and add them to the queue.
 		foreach ( $posts->posts as $post ) {
 			$this->post_controller->add_own_post_to_wayback_machine( $post->ID );
