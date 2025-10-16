@@ -91,6 +91,7 @@ class Scan_Own_Posts_Event {
 	 * @return void
 	 */
 	public function __invoke(): void {
+		pclog(1);
 		// Run setup.
 		$this->setup();
 
@@ -99,7 +100,7 @@ class Scan_Own_Posts_Event {
 		$allowed_delay = 0 === $allowed_delay
 			? 0
 			: $allowed_delay * DAY_IN_SECONDS;
-
+pclog(2);
 		$allowed_post_types = Settings::own_link_allowed_post_types();
 		$posts_per_call     = absint( apply_filters( 'iawmlf_scan_own_posts_per_call', 10 ) );
 
@@ -123,7 +124,7 @@ class Scan_Own_Posts_Event {
 				),
 			),
 		);
-
+pclog(3);
 		// Get all posts that are in the defined post types and have not been checked since
 		$posts = new WP_Query( $args );
 
@@ -131,8 +132,10 @@ class Scan_Own_Posts_Event {
 		if ( ! $posts->have_posts() ) {
 			return;
 		}
+		pclog("Count of posts to add to wayback machine: {$posts->found_posts}");
 		// Loop through the posts and add them to the queue.
 		foreach ( $posts->posts as $post ) {
+			pclog("Adding post ID {$post->ID} to wayback machine");
 			$this->post_controller->add_own_post_to_wayback_machine( $post->ID );
 		}
 	}
