@@ -78,4 +78,3 @@ if ( is_wp_error( IAWMLF_MINIMUM_REQUIREMENTS ) ) {
 	register_activation_hook( __FILE__, 'iawmlf_activate' );
 	register_uninstall_hook( __FILE__, 'iawmlf_uninstall' );
 }
-
