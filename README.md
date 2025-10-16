@@ -57,27 +57,27 @@ When the plugin is first installed it will give the option to launch the setup w
 
 #### Wipe Data on Uninstall
 
-![image](./_docs/settings--drop-tables.png)
+![Wipe Data on Uninstall](./_docs/settings--drop-tables.png)
 
 Enable this option to remove all plugin data from the database when the plugin is uninstalled.
 
 > Enabled by default.
 
 ### Archive.org API
-![image](./_docs/settings--archive-api.png)
+![Archive.org API](./_docs/settings--archive-api.png)
 
 To increase your daily link processing limit, you can enter your free **Archive.org API credentials** in the plugin settings. Just visit [archive.org/account/s3.php](https://archive.org/account/s3.php) to generate your `Access Key` and `Secret Key`.
 
 ### Link Fixer Settings
 
 #### Enable Link Fixer
-![image](./_docs/settings--enable-link-fixer.png)
+![Link Fixer](./_docs/settings--enable-link-fixer.png)
 
 Enable this option to activate the Link Fixer. Once enabled, additional settings will appear to let you customize how links are scanned, archived, and redirected.
 
 #### Post Types
 
-![image](./_docs/settings--post-types.png)
+![Post Types](./_docs/settings--post-types.png)
 
 Choose which post types should be checked whenever a post is saved, updated, or when existing posts are scanned.
 
@@ -85,7 +85,7 @@ Choose which post types should be checked whenever a post is saved, updated, or 
 
 #### Scan Existing Posts
 
-![image](./_docs/settings--scan-existing.png)
+![Scan Existing Posts](./_docs/settings--scan-existing.png)
 
 Enable this option to scan all existing posts for broken links. Only posts that haven't been previously scanned will be checked.
 
@@ -93,7 +93,7 @@ Enable this option to scan all existing posts for broken links. Only posts that 
 
 #### Link Exclusions
 
-![image](./_docs/settings--link-exclusions.png)
+![Link Exclusions](./_docs/settings--link-exclusions.png)
 
 Specify links to exclude from being checked. This is useful for links known to be broken or irrelevant. The `*` wildcard can be used to match any character.
 
@@ -102,37 +102,34 @@ Specify links to exclude from being checked. This is useful for links known to b
 
 #### Fixer Option
 
-![image](./_docs/settings--fixer-option.png)
+![Fixer Option](./_docs/settings--fixer-option.png)
 
 You can choose what outcome you want to happen when a link is found to be broken. The options are:
  * **Do Nothing** - This will not change the link at all, but useful for monitoring content.
  * **Replace Link (No Notification)** - This will replace the broken link with the archived version, if one exists. If no archived version exists, the link will not be changed. No notice will be given to the user that the link has been replaced.
 
-
-[comment]: # (This actually is the most platform independent comment)
-
 ### Auto Archiver
 
-![image](./_docs/settings--auto-archiver.png)
+![Auto Archiver](./_docs/settings--auto-archiver.png)
 
 The Auto Archiver automatically creates Wayback Machine snapshots of your own content whenever it’s created or updated (based on allowed post types). You can also enable scheduled archiving to routinely update snapshots over time.
 
 #### Routinely Auto Archive
 
-![image](./_docs/settings--routinely-auto-archive.png)
+![Routinely Auto Archive](./_docs/settings--routinely-auto-archive.png)
 
 Enable this option to routinely update your posts in the Wayback Machine. This ensures all posts remain archived and up to date. You can also set how many days to wait between each snapshot.
 
 #### Allowed Post Types
 
-![image](./_docs/settings--allowed-auto-archive-post-types.png)
+![Allowed Post Types](./_docs/settings--allowed-auto-archive-post-types.png)
 
 Select which post types should be automatically archived when they are created or updated. Only the selected types will trigger the Auto Archiver on save.
 
 
 ## Dashboard Widget
 
-![image](./_docs/dashboard--widget.png)
+![Dashboard Widget](./_docs/dashboard--widget.png)
 
 The Dashboard Widget gives you a quick overview of the plugin’s current activity and settings. If you've connected your Archive.org account, it will display how many snapshots have been created today, how many are still pending (waiting to be processed by the Internet Archive), and the current status of various features.
 
@@ -143,13 +140,13 @@ You’ll see whether Link Processing and Auto Archiving are active, whether the 
 
 Every link which is scanned, is added to the Link Table, this can be accessed under `Link Fixer` in the `Tools` menu.
 
-![image](./_docs/link-fixer-table--overview.png)
+![Link Table Overview](./_docs/link-fixer-table--overview.png)
 
 Here you can see the status of each link, the number of snapshots available, and the date of the last snapshot.
 
 You can open the help context at any time for additional information.
 
-![image](./_docs/link-fixer-table--help.png)
+![Link Table Help](./_docs/link-fixer-table--help.png)
 
 
 ### URL
@@ -160,19 +157,19 @@ You can access the report for the link by clicking on the URL. This will take yo
 
 | | |
 |---|---|
-| ![image](./_docs/check-icon.png) | A checkmark indicates that we have a defined archived link for this URL. Clicking this will access the archived snapshot. |
-| ![image](./_docs/cross-icon.png) | A cross indicates that we do not have an archived link for this URL. |
-| ![image](./_docs/clock-icon.png) | A clock indicates that we are currently trying to create a new snapshot for this URL. |
-| ![image](./_docs/plus-icon.png) | A plus indicates that this is a new link that has not started the process yet. This will happen ASAP |
+| ![checkmark icon](./_docs/check-icon.png) | A checkmark indicates that we have a defined archived link for this URL. Clicking this will access the archived snapshot. |
+| ![cross icon](./_docs/cross-icon.png) | A cross indicates that we do not have an archived link for this URL. |
+| ![clock icon](./_docs/clock-icon.png) | A clock indicates that we are currently trying to create a new snapshot for this URL. |
+| ![plus icon](./_docs/plus-icon.png) | A plus indicates that this is a new link that has not started the process yet. This will happen ASAP |
 
 
 ### Link Health
 
 | Icon | Meaning |
 |---|---|
-| ![image](./_docs/check-icon.png) | A checkmark implies that the link was valid on the last check. |
-| ![image](./_docs/cross-icon.png) | A cross indicates that the link is broken |
-| ![image](./_docs/clock-icon.png) | A clock indicates that the link has not yet been checked. It might still be being processed. |
+| ![checkmark icon](./_docs/check-icon.png) | A checkmark implies that the link was valid on the last check. |
+| ![cross icon](./_docs/cross-icon.png) | A cross indicates that the link is broken |
+| ![clock icon](./_docs/clock-icon.png) | A clock indicates that the link has not yet been checked. It might still be being processed. |
 
 
 
@@ -186,7 +183,7 @@ Displays the date and time of the last check.
 
 ## Actions
 
-![image](./_docs/links--actions.png)
+![All actions](./_docs/links--actions.png)
 
 You can select which links you wish to apply the bulk actions to by checking the box next to the URL.
 
@@ -210,7 +207,7 @@ This will verify if a link allows checking. If it does not, the link will be exc
 
 ## Link Report
 
-![Alt text](./_docs/link--details.png)
+![Link Details](./_docs/link--details.png)
 
 Each link has a details page which gives more information about the link.
 
@@ -244,7 +241,25 @@ The number of links and how many are broken is shown on the post list table.
 
 The link count is clickable, this will access a filtered link list for that post.
 
-![Alt text](./_docs/links--for-post.png)
+![Show all links for a given post](./_docs/links--for-post.png)
+
+### Demo
+
+[Watch demo video](https://www.loom.com/share/7551a8aa791849fc81c9aa21ada268f1?sid=510daff9-40db-4986-8137-56471a3c8149)
+
+![Demo](_docs/demo.gif)
+
+![Dashboard](./_docs/dashboard.png)
+> The main dashboard page.
+
+![Link List](./_docs/link-list.png)
+> The link list page.
+
+![Link List Help Tab](./_docs/help-tab.png)
+> The help tab on the link list page.
+
+![Link Details](./_docs/link-details.png)
+> The link details page.
 
 ## Developer Documentation
 

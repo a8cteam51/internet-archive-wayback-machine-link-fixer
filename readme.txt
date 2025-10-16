@@ -1,5 +1,5 @@
 === Internet Archive Wayback Machine Link Fixer ===
-Contributors: waybackmachineplugin, wpcomspecialprojects
+Contributors: waybackmachineplugin, wpspecialprojects
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
 Tested up to: 6.9
@@ -29,6 +29,8 @@ Protect your links, preserve your content, and automate the archiving process—
 * Helps maintain long-term content reliability and SEO
 
 == Frequently Asked Questions ==
+
+https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/raw/refs/heads/trunk/_docs/demo.mp4
 
 = How does the link checker work? =
 Your content is checked for any links. When it finds a link it will check if we have already handled this link before, if not, it will find or create a snapshot of the webpage on the Internet Archive.
@@ -60,6 +62,13 @@ If the Internet Archive services go offline, the link fixer will delay all proce
 
 = How often are my own posts updated when auto archive is active? =
 Existing content is sent to the Wayback Machine in batch when the plugin is activated, then again every 30 days (by default, but can be changed). New content is sent to be archived shortly after it is published. Updates to existing content also trigger updates to be sent to the Wayback Machine.
+
+== Screenshots ==
+
+1. The Dashboard overview covering your current usage stats with the most recent checks and new links added.
+2. Overview of links found within your site's content.
+3. Help tab to explain the icons and the link table.
+4. Link details, show information about the link, all checks and any posts they appear in.
 
 == External Services ==
 
@@ -105,6 +114,11 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 Note: All versions prior to 1.3.0 were not publicly released.
 
 == Developer Documentation ==
+
+== Upgrade Notice ==
+
+= 1.3.0 =
+This updates any pre-release version to the new launched version.
 
 For developer docs and source code, see the GitHub repository:
 
