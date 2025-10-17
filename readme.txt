@@ -30,7 +30,7 @@ Protect your links, preserve your content, and automate the archiving process—
 
 == Frequently Asked Questions ==
 
-https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/raw/refs/heads/trunk/_docs/demo.mp4
+Watch Demo video: https://www.loom.com/share/7551a8aa791849fc81c9aa21ada268f1?sid=510daff9-40db-4986-8137-56471a3c8149
 
 = How does the link checker work? =
 Your content is checked for any links. When it finds a link it will check if we have already handled this link before, if not, it will find or create a snapshot of the webpage on the Internet Archive.
