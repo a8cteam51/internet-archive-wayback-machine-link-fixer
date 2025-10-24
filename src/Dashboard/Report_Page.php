@@ -136,7 +136,7 @@ class Report_Page {
 		wp_enqueue_script(
 			self::SLUG,
 			IAWMLF_URL . 'assets/js/build/link-table.js',
-			array( 'wp-element', 'wp-components' ),
+			array(),
 			IAWMLF_VERSION,
 			true
 		);
