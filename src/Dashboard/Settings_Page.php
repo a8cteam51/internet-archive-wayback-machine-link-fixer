@@ -47,7 +47,7 @@ class Settings_Page {
 		add_action( 'admin_init', array( $this, 'register_fields' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'register_page' ), 20, 0 );
-		add_action( 'admin_init', array( $this, 'validate_archive_org_keys' ), 99 );
+		add_action( 'admin_init', array( $this, 'validate_archive_org_keys' ), 1 );
 	}
 
 	/**
@@ -627,7 +627,8 @@ class Settings_Page {
 	 */
 	public function render_invalid_api_keys_message(): string {
 		if ( ! Settings::has_valid_archive_api_credentials() ) {
-			return '<div id="invalid_api_creds"><p class="description">' . esc_html__( 'The Archive.org API keys are invalid. Please check your settings.', 'internet-archive-wayback-machine-link-fixer' ) . '</p></div>';
+			return '<div id="invalid_api_creds"><p class="description">' . esc_html__( 'The Archive.org API keys are invalid. Please check your settings.', 'internet-archive-wayback-machine-link-fixer' ) . '</p></div>'.
+			'<div id="unchecked_api_creds" style="display: none;"><p class="description">' . esc_html__( 'API credentials will be verified when you save the settings.', 'internet-archive-wayback-machine-link-fixer' ) . '</p></div>';
 		}
 
 		return '';
@@ -953,6 +954,8 @@ class Settings_Page {
 			id="<?php echo esc_attr( Settings::ARCHIVE_ORG_SECRET_KEY ); ?>"
 			name="<?php echo esc_attr( Settings::ARCHIVE_ORG_SECRET_KEY ); ?>"
 			value="<?php echo esc_attr( Settings::get_archive_secret_key() ); ?>"
+			data-previous-value="<?php echo esc_attr( Settings::get_archive_secret_key() ); ?>"
+			data-is-valid="<?php echo esc_attr( Settings::has_valid_archive_api_credentials() ? '1' : '0' ); ?>"
 			style="width:80%;"
 		/>
 		<p class="description">
@@ -975,6 +978,8 @@ class Settings_Page {
 			id="<?php echo esc_attr( Settings::ARCHIVE_ORG_ACCESS_KEY ); ?>"
 			name="<?php echo esc_attr( Settings::ARCHIVE_ORG_ACCESS_KEY ); ?>"
 			value="<?php echo esc_attr( Settings::get_archive_access_key() ); ?>"
+			data-previous-value="<?php echo esc_attr( Settings::get_archive_access_key() ); ?>"
+			data-is-valid="<?php echo esc_attr( Settings::has_valid_archive_api_credentials() ? '1' : '0' ); ?>"
 			style="width:80%;"
 		/>
 		<p class="description">

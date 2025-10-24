@@ -18,6 +18,9 @@
 		const NEW_LINK_BUTTON = document.getElementById('iawmlf_excluded_links_new_action');
 		const NEW_LINK_TEMPLATE = IawmlfSettings.newExcludedTemplate;
 		const NO_LINKS = document.getElementById('iawmlf_excluded_empty');
+		const API_ACCESS_KEY = document.getElementById('iawmlf_archive_api_access');
+		const API_SECRET_KEY = document.getElementById('iawmlf_archive_api_secret');
+
 
 		// Handle removing a link.
 		if (EXCLUDED_LINKS) {
@@ -29,6 +32,67 @@
 					checkNoLinks();
 				}
 			});
+		}
+
+		/**
+		 * Watch for changes on the API key fields.
+		 *
+		 * @since 1.3.1
+		 */
+		if (API_ACCESS_KEY || API_SECRET_KEY) {
+			// Constants for API key UI management
+			const INVALID_API_KEYS_CLASS = 'iawmlf_toggle_setting__invalid_api_keys';
+			const UNCHECKED_API_KEYS_CLASS = 'iawmlf_toggle_setting__unchecked_api_keys';
+			const INVALID_API_CREDS_ID = 'invalid_api_creds';
+			const UNCHECKED_API_CREDS_ID = 'unchecked_api_creds';
+
+			// Check if either field has data-is-valid = 0
+			const shouldWatch = (API_ACCESS_KEY && API_ACCESS_KEY.dataset.isValid === '0') ||
+								(API_SECRET_KEY && API_SECRET_KEY.dataset.isValid === '0');
+
+			/**
+			 * Updates the API key UI state.
+			 *
+			 * @param {boolean} isUnchecked - Whether to show unchecked state.
+			 */
+			function updateApiKeyUI(isUnchecked) {
+				const parentDivs = document.querySelectorAll('.' + (isUnchecked ? INVALID_API_KEYS_CLASS : UNCHECKED_API_KEYS_CLASS));
+				const targetClass = isUnchecked ? UNCHECKED_API_KEYS_CLASS : INVALID_API_KEYS_CLASS;
+				const removeClass = isUnchecked ? INVALID_API_KEYS_CLASS : UNCHECKED_API_KEYS_CLASS;
+
+				parentDivs.forEach(function(parentDiv) {
+					parentDiv.classList.remove(removeClass);
+					parentDiv.classList.add(targetClass);
+				});
+
+				const invalidCreds = document.getElementById(INVALID_API_CREDS_ID);
+				const uncheckedCreds = document.getElementById(UNCHECKED_API_CREDS_ID);
+
+				if (invalidCreds) {
+					invalidCreds.style.display = isUnchecked ? 'none' : 'block';
+				}
+				if (uncheckedCreds) {
+					uncheckedCreds.style.display = isUnchecked ? 'block' : 'none';
+				}
+			}
+
+			if (shouldWatch) {
+				// Watch for changes on both fields
+				[API_ACCESS_KEY, API_SECRET_KEY].forEach(function(field) {
+					if (field) {
+						field.addEventListener('input', function() {
+							const currentValue = this.value;
+							const previousValue = this.dataset.previousValue || '';
+
+							if (currentValue !== previousValue) {
+								updateApiKeyUI(true);
+							} else if (currentValue === previousValue && previousValue !== '') {
+								updateApiKeyUI(false);
+							}
+						});
+					}
+				});
+			}
 		}
 
 		/**
