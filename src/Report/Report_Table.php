@@ -1102,6 +1102,11 @@ class Report_Table extends \WP_List_Table {
 
 			case self::COLUMN_LINK_HEALTH:
 				if ( $item->has_archived_href() || Link::PROCESS_DONE === $item->get_archive_process() ) {
+					// If we have no checks yet, show still pending.
+					if ( 0 === count( $item->get_checks() ) ) {
+						return $this->get_dashicon( 'dashicons-clock', __( 'Link has not been checked yet', 'internet-archive-wayback-machine-link-fixer' ) );
+					}
+
 					return ! $item->is_broken()
 						? $this->get_dashicon( 'dashicons-yes-alt', __( 'Link is active', 'internet-archive-wayback-machine-link-fixer' ) )
 						: $this->get_dashicon( 'dashicons-editor-unlink', __( 'Link is broken', 'internet-archive-wayback-machine-link-fixer' ) );
