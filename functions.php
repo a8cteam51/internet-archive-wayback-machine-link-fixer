@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Plugin;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Migrations;
-use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page;
 use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
