@@ -627,7 +627,7 @@ class Settings_Page {
 	 */
 	public function render_invalid_api_keys_message(): string {
 		if ( ! Settings::has_valid_archive_api_credentials() ) {
-			return '<div id="invalid_api_creds"><p class="description">' . esc_html__( 'The Archive.org API keys are invalid. Please check your settings.', 'internet-archive-wayback-machine-link-fixer' ) . '</p></div>'.
+			return '<div id="invalid_api_creds"><p class="description">' . esc_html__( 'The Archive.org API keys are invalid. Please check your settings.', 'internet-archive-wayback-machine-link-fixer' ) . '</p></div>' .
 			'<div id="unchecked_api_creds" style="display: none;"><p class="description">' . esc_html__( 'API credentials will be verified when you save the settings.', 'internet-archive-wayback-machine-link-fixer' ) . '</p></div>';
 		}
 
