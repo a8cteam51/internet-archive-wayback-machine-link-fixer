@@ -273,6 +273,44 @@ class Settings_Page {
 
 		register_setting(
 			self::PAGE_SLUG,
+			Settings::MINIMUM_CHECKS_BEFORE_BROKEN,
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => function ( $value ) {
+					$value = absint( $value );
+					return 0 === $value ? 5 : $value;
+				},
+				'default'           => 5,
+				'show_in_rest'      => array(
+					'name'   => Settings::MINIMUM_CHECKS_BEFORE_BROKEN,
+					'schema' => array(
+						'type' => 'integer',
+					),
+				),
+			)
+		);
+
+		\register_setting(
+			self::PAGE_SLUG,
+			Settings::LINK_CHECK_DURATION_IN_DAYS,
+			array(
+				'type'              => 'integer',
+				'sanitize_callback' => function ( $value ) {
+					$value = absint( $value );
+					return 0 === $value ? 7 : $value;
+				},
+				'default'           => 7,
+				'show_in_rest'      => array(
+					'name'   => Settings::LINK_CHECK_DURATION_IN_DAYS,
+					'schema' => array(
+						'type' => 'integer',
+					),
+				),
+			)
+		);
+
+		register_setting(
+			self::PAGE_SLUG,
 			Settings::ARCHIVE_ORG_SECRET_KEY,
 			array(
 				'type'              => 'string',
@@ -482,6 +520,24 @@ class Settings_Page {
 			Settings::LINK_EXCLUSIONS,
 			__( 'Link Exclusions', 'internet-archive-wayback-machine-link-fixer' ),
 			array( $this, 'render_link_exclusions_field' ),
+			self::PAGE_SLUG,
+			self::GROUP_LINK_FIXER,
+			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
+		);
+
+		add_settings_field(
+			Settings::LINK_CHECK_DURATION_IN_DAYS,
+			__( 'Check Frequency', 'internet-archive-wayback-machine-link-fixer' ),
+			array( $this, 'render_link_check_duration_field' ),
+			self::PAGE_SLUG,
+			self::GROUP_LINK_FIXER,
+			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
+		);
+
+		add_settings_field(
+			Settings::MINIMUM_CHECKS_BEFORE_BROKEN,
+			__( 'Failure Threshold', 'internet-archive-wayback-machine-link-fixer' ),
+			array( $this, 'render_minimum_checks_before_broken_field' ),
 			self::PAGE_SLUG,
 			self::GROUP_LINK_FIXER,
 			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
@@ -781,6 +837,54 @@ class Settings_Page {
 				?>
 		</div>
 
+		<?php
+	}
+
+	/**
+	 * Render the link check duration field.
+	 *
+	 * @since   1.3.1
+	 *
+	 * @return  void
+	 */
+	public function render_link_check_duration_field(): void {
+		?>
+		<input
+			type="number"
+			id="<?php echo esc_attr( Settings::LINK_CHECK_DURATION_IN_DAYS ); ?>"
+			name="<?php echo esc_attr( Settings::LINK_CHECK_DURATION_IN_DAYS ); ?>"
+			value="<?php echo esc_attr( Settings::get_link_check_duration() ); ?>"
+			min="1"
+			style="width:80px;"
+			data-group="link_fixer"
+		/>
+		<p class="description">
+			<?php esc_html_e( 'How often to recheck each link for validity. Avoid checking too often, as temporary outages or maintenance can cause false “broken” results. The default is 7 days.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Render the minimum checks before broken field.
+	 *
+	 * @since   1.3.1
+	 *
+	 * @return  void
+	 */
+	public function render_minimum_checks_before_broken_field(): void {
+		?>
+		<input
+			type="number"
+			id="<?php echo esc_attr( Settings::MINIMUM_CHECKS_BEFORE_BROKEN ); ?>"
+			name="<?php echo esc_attr( Settings::MINIMUM_CHECKS_BEFORE_BROKEN ); ?>"
+			value="<?php echo esc_attr( Settings::get_failed_count() ); ?>"
+			min="1"
+			style="width:80px;"
+			data-group="link_fixer"
+		/>
+		<p class="description">
+			<?php esc_html_e( 'Number of consecutive failed checks before a link is marked as broken. Occasional single failures are normal, so use a value high enough to confirm genuine link loss. The default is 5.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		</p>
 		<?php
 	}
 

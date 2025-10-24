@@ -100,6 +100,19 @@ Specify links to exclude from being checked. This is useful for links known to b
 * `https://example.com/*` - Excludes all links starting with `https://example.com/`
 * `https://x.com*` - Excludes all links containing `x/twitter` in the domain name
 
+#### Check Frequency
+
+![Check Frequency](./_docs/settings--check-frequency.png)
+
+Specify how often to recheck each link for validity. Avoid checking too often, as temporary outages or maintenance can cause false “broken” results. The default is 7 days.
+
+#### Failure Threshold
+
+![Failure Threshold](./_docs/settings--failure-threshold.png)
+
+Specify the number of consecutive failed checks before a link is marked as broken. Occasional single failures are normal, so use a value high enough to confirm genuine link loss. The default is 5.
+
+
 #### Fixer Option
 
 ![Fixer Option](./_docs/settings--fixer-option.png)
@@ -168,7 +181,7 @@ You can access the report for the link by clicking on the URL. This will take yo
 | Icon | Meaning |
 |---|---|
 | ![checkmark icon](./_docs/check-icon.png) | A checkmark implies that the link was valid on the last check. |
-| ![cross icon](./_docs/cross-icon.png) | A cross indicates that the link is broken |
+| ![unlinked icon](./_docs/unlink-icon.png) | This indicates that the link is broken |
 | ![clock icon](./_docs/clock-icon.png) | A clock indicates that the link has not yet been checked. It might still be being processed. |
 
 
