@@ -93,6 +93,23 @@ class Settings_Page {
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )
 		);
+
+		// If the setup has not been completed, add a on load hook.
+		if ( ! Setup_Wizard::is_setup_complete() ) {
+			add_action( 'load-' . $this->menu_hook, array( $this, 'redirect_to_setup_wizard' ) );
+		}
+	}
+
+	/**
+	 * Redirect to setup wizard if API keys are invalid.
+	 *
+	 * @since   1.3.1
+	 *
+	 * @return  void
+	 */
+	public function redirect_to_setup_wizard(): void {
+		wp_safe_redirect( Setup_Wizard::get_wizard_url() );
+		exit;
 	}
 
 	/**
