@@ -1086,26 +1086,27 @@ class Report_Table extends \WP_List_Table {
 			case self::COLUMN_LINK_ARCHIVE:
 				if ( $item->has_archived_href() ) {
 					return sprintf(
-						'<a href="%s" target="_blank"><span class="dashicons dashicons-yes-alt"></span></a>',
-						$item->get_archived_href()
+						'<a href="%s" target="_blank">%s</a>',
+						$item->get_archived_href(),
+						$this->get_dashicon( 'dashicons-yes-alt', __( 'Has a valid archive snapshot', 'internet-archive-wayback-machine-link-fixer' ) )
 					);
 				}
 				$process = $item->get_archive_process();
 				if ( Link::PROCESS_NEW === $process ) {
-					return '<span class="dashicons dashicons-plus-alt"></span>';
+					return $this->get_dashicon( 'dashicons-plus-alt', __( 'New link, not yet processed', 'internet-archive-wayback-machine-link-fixer' ) );
 				} elseif ( Link::PROCESS_PENDING === $process ) {
-					return '<span class="dashicons dashicons-clock"></span>';
+					return $this->get_dashicon( 'dashicons-clock', __( 'Processing in progress', 'internet-archive-wayback-machine-link-fixer' ) );
 				} else {
-					return '<span class="dashicons dashicons-dismiss"></span>';
+					return $this->get_dashicon( 'dashicons-dismiss', __( 'No archive available', 'internet-archive-wayback-machine-link-fixer' ) );
 				}
 
 			case self::COLUMN_LINK_HEALTH:
 				if ( $item->has_archived_href() || Link::PROCESS_DONE === $item->get_archive_process() ) {
 					return ! $item->is_broken()
-						? '<span class="dashicons dashicons-yes-alt"></span>'
-						: '<span class="dashicons dashicons-dismiss"></span>';
+						? $this->get_dashicon( 'dashicons-yes-alt', __( 'Link is active', 'internet-archive-wayback-machine-link-fixer' ) )
+						: $this->get_dashicon( 'dashicons-editor-unlink', __( 'Link is broken', 'internet-archive-wayback-machine-link-fixer' ) );
 				} else {
-					return '<span class="dashicons dashicons-clock"></span>';
+					return $this->get_dashicon( 'dashicons-clock', __( 'Link status pending verification', 'internet-archive-wayback-machine-link-fixer' ) );
 				}
 			case self::COLUMN_LINK_CHECKS:
 				return count( $item->get_checks() );
@@ -1114,8 +1115,8 @@ class Report_Table extends \WP_List_Table {
 				return $this->compile_details_cell( $item );
 			case self::COLUMN_LINK_EXCLUDE:
 				return $item->is_excluded()
-					? '<span class="dashicons dashicons-yes-alt"></span>'
-					: '<span class="dashicons dashicons-dismiss"></span>';
+					? $this->get_dashicon( 'dashicons-yes-alt', __( 'Link is excluded from checks', 'internet-archive-wayback-machine-link-fixer' ) )
+					: $this->get_dashicon( 'dashicons-dismiss', __( 'Link is not excluded from checks', 'internet-archive-wayback-machine-link-fixer' ) );
 			case 'cb':
 				return sprintf(
 					'<input type="checkbox" name="iawmlf_links[]" value="%d" />',
@@ -1124,6 +1125,25 @@ class Report_Table extends \WP_List_Table {
 			default:
 				return '';
 		}
+	}
+
+	/**
+	 * Returns a populate dash icon.
+	 *
+	 * @param string $icon  The icon name.
+	 * @param string $title The icon title.
+	 *
+	 * @return string
+	 */
+	private function get_dashicon( string $icon, string $title = '' ): string {
+		return '' === $title ? sprintf(
+			'<span class="dashicons %s"></span>',
+			esc_attr( $icon )
+		) : sprintf(
+			'<span class="dashicons %s" title="%s"></span>',
+			esc_attr( $icon ),
+			esc_attr( $title )
+		);
 	}
 
 	/**

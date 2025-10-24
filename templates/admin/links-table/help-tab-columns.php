@@ -37,7 +37,7 @@ $iawmlf_check_frequency = \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\
 	<p>
 		<span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e( 'Link is active', 'internet-archive-wayback-machine-link-fixer' ); ?><br>
 		<span class="dashicons dashicons-clock"></span> <?php esc_html_e( 'Link status pending verification', 'internet-archive-wayback-machine-link-fixer' ); ?><br>
-		<span class="dashicons dashicons-dismiss"></span> <?php esc_html_e( 'Link is broken', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		<span class="dashicons dashicons-editor-unlink"></span> <?php esc_html_e( 'Link is broken', 'internet-archive-wayback-machine-link-fixer' ); ?>
 	</p>
 
 	<h3><?php esc_html_e( 'Times Checked', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
