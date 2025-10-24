@@ -36,6 +36,8 @@ class Settings {
 	public const FIXER_OPTION                 = self::SETTINGS_PREFIX . 'fixer_option';
 	public const ARCHIVE_ORG_STATUS_KEY       = self::SETTINGS_PREFIX . 'archive_api_status';
 	public const ARCHIVE_ORG_CREDS_VALID_KEY  = self::SETTINGS_PREFIX . 'archive_api_creds_valid';
+	public const MINIMUM_CHECKS_BEFORE_BROKEN = self::SETTINGS_PREFIX . 'failed_count';
+	public const LINK_CHECK_DURATION_IN_DAYS  = self::SETTINGS_PREFIX . 'link_check_duration_in_days';
 
 	// Table names.
 	public const LINK_TABLE = 'iawmlf_link_archive';
@@ -170,7 +172,8 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_check_duration(): int {
-		return absint( apply_filters( 'iawmlf_link_check_duration_in_days', 7 ) );
+		$duration = absint( get_option( self::LINK_CHECK_DURATION_IN_DAYS, 7 ) );
+		return absint( apply_filters( 'iawmlf_link_check_duration_in_days', $duration ) );
 	}
 
 	/**
@@ -208,7 +211,8 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_failed_count(): int {
-		return absint( apply_filters( 'iawmlf_failed_count', 5 ) );
+		$retries = absint( get_option( self::MINIMUM_CHECKS_BEFORE_BROKEN, 5 ) );
+		return absint( apply_filters( 'iawmlf_failed_count', $retries ) );
 	}
 
 	/**
