@@ -166,6 +166,7 @@ class Dashboard_Page {
 	private function get_statistics(): array {
 		// Attempt to get from the transient.
 		$stats = get_transient( self::STATS_TRANSIENT_KEY );
+		$stats = false;
 
 		if ( false === $stats || ! is_array( $stats ) ) {
 			$stats = $this->compile_statistics();
@@ -205,7 +206,7 @@ class Dashboard_Page {
 
 		// Loop through all links to gather stats.
 		foreach ( $all_links as $link ) {
-			if ( $link->is_broken() ) {
+			if ( $link->is_broken() && ! empty( $link->get_archived_href() ) ) {
 				$broken[] = $link->get_id();
 			}
 			if ( ! empty( $link->get_archived_href() ) ) {
@@ -314,6 +315,7 @@ class Dashboard_Page {
 		$broken_link = add_query_arg(
 			array(
 				'iawmlf_status' => '1',
+				'iawmlf_has_archive' => '1',
 			),
 			$filtered_url_base
 		);

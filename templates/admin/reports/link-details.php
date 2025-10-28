@@ -90,17 +90,10 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 						<div class="inside">
 							<p class="iawmlf_link_broken">
 								<?php
-								$iawmlf_normal_state_string = ( 0 === count( $iawmlf_link->get_checks() ) )
-									? esc_html__( 'Not yet checked', 'internet-archive-wayback-machine-link-fixer' )
-									: sprintf(
-										// translators: %d is the number of consecutive failures required to mark a link as 'Broken'.
-										esc_html__( 'Monitoring: Link will be marked as \'Broken\' after %d consecutive failures.', 'internet-archive-wayback-machine-link-fixer' ),
-										Settings::get_failed_count()
-									);
 								printf(
 									'<strong>%s</strong>: %s',
 									esc_html__( 'Current Status', 'internet-archive-wayback-machine-link-fixer' ),
-									$iawmlf_link->is_broken() ? esc_html__( 'Broken', 'internet-archive-wayback-machine-link-fixer' ) : esc_html( $iawmlf_normal_state_string )
+									wp_kses_post( ( new Internet_Archive\Wayback_Machine_Link_Fixer\Util\Link_Summary_Factory( $iawmlf_link ) )->get_summary() )
 								);
 								?>
 							</p>
@@ -129,7 +122,7 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 										</tr>
 									<?php endif; ?>
 
-									<?php foreach ( $iawmlf_link->get_checks() as $iawmlf_index => $iawmlf_check ) : ?>
+									<?php foreach ( array_reverse( $iawmlf_link->get_checks() ) as $iawmlf_index => $iawmlf_check ) : ?>
 										<?php // Hide the first n posts to the value of $iawmlf_hide_check_count. ?>
 										<?php if ( $iawmlf_index < $iawmlf_hide_check_count ) : ?>
 											<tr class="iawmlf_hidden_check" style="display: none;">
