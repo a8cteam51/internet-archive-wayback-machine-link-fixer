@@ -166,13 +166,12 @@ class Dashboard_Page {
 	private function get_statistics(): array {
 		// Attempt to get from the transient.
 		$stats = get_transient( self::STATS_TRANSIENT_KEY );
-		$stats = false;
 
 		if ( false === $stats || ! is_array( $stats ) ) {
 			$stats = $this->compile_statistics();
 
-			// Store for 2 hours.
-			set_transient( self::STATS_TRANSIENT_KEY, $stats, 2 * HOUR_IN_SECONDS );
+			// Store for 15 minutes.
+			set_transient( self::STATS_TRANSIENT_KEY, $stats, 15 * MINUTE_IN_SECONDS );
 		}
 
 		return $stats;
