@@ -313,7 +313,7 @@ class Dashboard_Page {
 
 		$broken_link = add_query_arg(
 			array(
-				'iawmlf_status' => '1',
+				'iawmlf_status'      => '1',
 				'iawmlf_has_archive' => '1',
 			),
 			$filtered_url_base

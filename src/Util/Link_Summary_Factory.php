@@ -149,4 +149,3 @@ class Link_Summary_Factory {
 		return in_array( $http_code, Settings::get_valid_http_status_codes(), true );
 	}
 }
-
