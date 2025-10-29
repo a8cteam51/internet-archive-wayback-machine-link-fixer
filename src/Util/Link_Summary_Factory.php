@@ -59,6 +59,11 @@ class Link_Summary_Factory {
 	private function get_archive_snapshot_message(): string {
 		$last_check_status = $this->was_last_check_successful();
 		$last_failed_count = $this->get_consecutive_failed_checks_count();
+		$last_check        = $this->link->get_last_check();
+
+		if ( null === $last_check ) {
+			return __( 'The link is archived on archive.org. No check history yet.', 'internet-archive-wayback-machine-link-fixer' );
+		}
 
 		// If the last check was successful, return early.
 		if ( $last_check_status ) {
@@ -128,8 +133,8 @@ class Link_Summary_Factory {
 		$checks       = $this->link->get_checks();
 		$failed_count = 0;
 		foreach ( array_reverse( $checks ) as $check ) {
-			// If we dont have a http code, skip it.
-			if ( is_array( $check ) === false || ! isset( $check['http_code'] ) ) {
+			// Skip malformed items.
+			if ( ! is_array( $check ) || ! array_key_exists( 'http_code', $check ) ) {
 				continue;
 			}
 
