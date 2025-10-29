@@ -39,15 +39,14 @@ $iawmlf_process_new           = $iawmlf_link_stats['process_new'] ?? 0;
 $iawmlf_process_pending       = $iawmlf_link_stats['process_pending'] ?? 0;
 $iawmlf_still_processing      = $iawmlf_process_new + $iawmlf_process_pending;
 $iawmlf_broken_redirected     = $iawmlf_link_stats['broken_and_redirected_links'] ?? 0;
-$iawmlf_broken_not_redirected = $iawmlf_link_stats['broken_and_not_redirected_links'] ?? 0;
+$iawmlf_broken_not_redirected = $iawmlf_link_stats['broken_not_redirected_links'] ?? 0;
 
 // Compile the tooltips
-$iawmlf_tooltip_links_saved          = __( 'These broken links are being redirected to archived snapshots on the Wayback Machine.', 'internet-archive-wayback-machine-link-fixer' );
-$iawmlf_tooltip_archived_sucessfully = __( 'These links have snapshots available on the Wayback Machine.', 'internet-archive-wayback-machine-link-fixer' );
-$iawmlf_tooltip_with_archive         = __( 'These links do not have snapshots available on the Wayback Machine.', 'internet-archive-wayback-machine-link-fixer' );
-$iawmlf_tooltip_no_archive           = __( 'These links do not have archived snapshots on the Wayback Machine, so we can\'t redirect them.', 'internet-archive-wayback-machine-link-fixer' );
-$iawmlf_tooltip_checks_in_progress   = __( 'The plugin is still working through checking the status of these links and whether archived snapshots are available.', 'internet-archive-wayback-machine-link-fixer' );
-$iawmlf_tooltip_broken_links         = sprintf(
+$iawmlf_tooltip_links_saved           = __( 'These broken links are being redirected to archived snapshots on the Wayback Machine.', 'internet-archive-wayback-machine-link-fixer' );
+$iawmlf_tooltip_archived_successfully = __( 'These links have snapshots available on the Wayback Machine.', 'internet-archive-wayback-machine-link-fixer' );
+$iawmlf_tooltip_no_archive            = __( 'These links do not have archived snapshots on the Wayback Machine, so we can\'t redirect them.', 'internet-archive-wayback-machine-link-fixer' );
+$iawmlf_tooltip_checks_in_progress    = __( 'The plugin is still working through checking the status of these links and whether archived snapshots are available.', 'internet-archive-wayback-machine-link-fixer' );
+$iawmlf_tooltip_broken_links          = sprintf(
 	// translators: 1: number of broken links being redirected, 2: number of broken links not being redirected.
 	__( '%1$s being redirected, %2$s inedible for redirect', 'internet-archive-wayback-machine-link-fixer' ),
 	$iawmlf_broken_redirected,
@@ -136,10 +135,10 @@ $iawmlf_tooltip_broken_links         = sprintf(
 
 						<!-- Row 2: With Archive | Without -->
 						<div class="iawmlf_dashboard-stats-box iawmlf_dashboard-stats-box--success">
-							<a href="<?php echo esc_url( $iawmlf_filtered_has_archive ); ?>" title="<?php echo esc_attr( $iawmlf_tooltip_archived_sucessfully ); ?>" class="iawmlf_dashboard-stats-number iawmlf_dashboard-stats-link">
+							<a href="<?php echo esc_url( $iawmlf_filtered_has_archive ); ?>" title="<?php echo esc_attr( $iawmlf_tooltip_archived_successfully ); ?>" class="iawmlf_dashboard-stats-number iawmlf_dashboard-stats-link">
 								<?php echo esc_html( $iawmlf_links_with_archive ); ?>
 							</a>
-							<div class="iawmlf_dashboard-stats-label" title="<?php echo esc_attr( $iawmlf_tooltip_archived_sucessfully ); ?>"><?php esc_html_e( 'Archived Successfully', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
+							<div class="iawmlf_dashboard-stats-label" title="<?php echo esc_attr( $iawmlf_tooltip_archived_successfully ); ?>"><?php esc_html_e( 'Archived Successfully', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 						</div>
 						<div class="iawmlf_dashboard-stats-box iawmlf_dashboard-stats-box--warning">
 							<a href="<?php echo esc_url( $iawmlf_filtered_no_archive ); ?>" title="<?php echo esc_attr( $iawmlf_tooltip_no_archive ); ?>" class="iawmlf_dashboard-stats-number iawmlf_dashboard-stats-link">
