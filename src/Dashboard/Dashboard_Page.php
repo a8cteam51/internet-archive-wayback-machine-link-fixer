@@ -192,25 +192,32 @@ class Dashboard_Page {
 	 * }
 	 */
 	private function compile_statistics(): array {
-		$all_links = $this->link_repository->query_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, false );
+		$all_links = $this->link_repository->query_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null );
 
 		// Get all the links stats.
-		$broken           = array();
-		$has_archive_link = array();
-		$not_checked      = array();
-		$process_done     = array();
-		$process_new      = array();
-		$process_pending  = array();
-		$last_checks      = array();
+		$all_broken        = array();
+		$redirected_broken = array();
+		$has_archive_link  = array();
+		$not_checked       = array();
+		$process_done      = array();
+		$process_new       = array();
+		$process_pending   = array();
+		$last_checks       = array();
 
 		// Loop through all links to gather stats.
 		foreach ( $all_links as $link ) {
-			if ( $link->is_broken() && $link->has_archived_href() ) {
-				$broken[] = $link->get_id();
+			if ( $link->is_broken() ) {
+				$all_broken[] = $link->get_id();
 			}
+
+			if ( $link->is_broken() && $link->has_archived_href() ) {
+				$redirected_broken[] = $link->get_id();
+			}
+
 			if ( $link->has_archived_href() ) {
 				$has_archive_link[] = $link->get_id();
 			}
+
 			if ( null === $link->get_last_check() ) {
 				$not_checked[] = $link->get_id();
 			} else {
@@ -243,15 +250,17 @@ class Dashboard_Page {
 		);
 
 		$stats = array(
-			'total_links'           => count( $all_links ),
-			'broken_links'          => count( $broken ),
-			'links_with_archive'    => count( $has_archive_link ),
-			'links_without_archive' => count( $all_links ) - count( $has_archive_link ),
-			'not_checked'           => count( $not_checked ),
-			'process_done'          => count( $process_done ),
-			'process_new'           => count( $process_new ),
-			'process_pending'       => count( $process_pending ),
-			'last_checks'           => array_slice( $last_checks, 0, $this->links_per_section ),
+			'total_links'                 => count( $all_links ),
+			'all_broken_links'            => count( $all_broken ),
+			'broken_and_redirected_links' => count( $redirected_broken ),
+			'broken_not_redirected_links' => count( $all_broken ) - count( $redirected_broken ),
+			'links_with_archive'          => count( $has_archive_link ),
+			'links_without_archive'       => count( $all_links ) - count( $has_archive_link ),
+			'not_checked'                 => count( $not_checked ),
+			'process_done'                => count( $process_done ),
+			'process_new'                 => count( $process_new ),
+			'process_pending'             => count( $process_pending ),
+			'last_checks'                 => array_slice( $last_checks, 0, $this->links_per_section ),
 		);
 
 		return $stats;
@@ -311,10 +320,17 @@ class Dashboard_Page {
 			$filtered_url_base
 		);
 
-		$broken_link = add_query_arg(
+		$broken_with_redirected = add_query_arg(
 			array(
 				'iawmlf_status'      => '1',
 				'iawmlf_has_archive' => '1',
+			),
+			$filtered_url_base
+		);
+
+		$all_broken_link = add_query_arg(
+			array(
+				'iawmlf_status' => '1',
 			),
 			$filtered_url_base
 		);
@@ -329,24 +345,25 @@ class Dashboard_Page {
 		iawmlf_render_template(
 			'admin/dashboard/page.php',
 			array(
-				'iawmlf_link_stats'              => $link_stats,
-				'iawmlf_last_checks'             => $last_checks,
-				'iawmlf_latest_links'            => $latest_links,
-				'iawmlf_account_details'         => Dashboard_Notifications::get_account_details(),
-				'iawmlf_api_configured'          => Settings::is_archive_api_configured(),
-				'iawmlf_is_online'               => iawmlf_is_archive_api_online(),
-				'iawmlf_link_to_settings'        => Settings_Page::get_page_url(),
-				'iawmlf_link_table'              => Report_Page::get_page_url(),
-				'iawmlf_auto_archiver_enabled'   => Settings::add_own_links(),
-				'iawmlf_scan_existing_enabled'   => Settings::should_scan_existing_posts(),
-				'iawmlf_link_processing_enabled' => Settings::is_link_processing_enabled(),
-				'iawmlf_link_check_duration'     => Settings::get_link_check_duration(),
-				'iawmlf_failed_check_count'      => Settings::get_failed_count(),
-				'iawmlf_report_page_base'        => $report_page_base,
-				'iawmlf_filtered_broken'         => esc_url( $broken_link ),
-				'iawmlf_filtered_valid'          => esc_url( $valid_link ),
-				'iawmlf_filtered_has_archive'    => esc_url( $has_archive_link ),
-				'iawmlf_filtered_no_archive'     => esc_url( $has_no_archive_link ),
+				'iawmlf_link_stats'                 => $link_stats,
+				'iawmlf_last_checks'                => $last_checks,
+				'iawmlf_latest_links'               => $latest_links,
+				'iawmlf_account_details'            => Dashboard_Notifications::get_account_details(),
+				'iawmlf_api_configured'             => Settings::is_archive_api_configured(),
+				'iawmlf_is_online'                  => iawmlf_is_archive_api_online(),
+				'iawmlf_link_to_settings'           => Settings_Page::get_page_url(),
+				'iawmlf_link_table'                 => Report_Page::get_page_url(),
+				'iawmlf_auto_archiver_enabled'      => Settings::add_own_links(),
+				'iawmlf_scan_existing_enabled'      => Settings::should_scan_existing_posts(),
+				'iawmlf_link_processing_enabled'    => Settings::is_link_processing_enabled(),
+				'iawmlf_link_check_duration'        => Settings::get_link_check_duration(),
+				'iawmlf_failed_check_count'         => Settings::get_failed_count(),
+				'iawmlf_report_page_base'           => $report_page_base,
+				'iawmlf_filtered_broken_redirected' => esc_url( $broken_with_redirected ),
+				'iawmlf_filtered_broken_all'        => esc_url( $all_broken_link ),
+				'iawmlf_filtered_valid'             => esc_url( $valid_link ),
+				'iawmlf_filtered_has_archive'       => esc_url( $has_archive_link ),
+				'iawmlf_filtered_no_archive'        => esc_url( $has_no_archive_link ),
 			)
 		);
 	}
