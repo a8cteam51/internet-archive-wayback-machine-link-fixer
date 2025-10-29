@@ -112,6 +112,10 @@ class Link_Summary_Factory {
 			return false;
 		}
 
+		$last_check = $this->link->get_last_check();
+		if ( ! is_array( $last_check ) || ! isset( $last_check['http_code'] ) ) {
+			return false;
+		}
 		return $this->is_http_code_valid( absint( $last_check['http_code'] ) );
 	}
 
