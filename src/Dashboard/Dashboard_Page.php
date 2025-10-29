@@ -205,10 +205,10 @@ class Dashboard_Page {
 
 		// Loop through all links to gather stats.
 		foreach ( $all_links as $link ) {
-			if ( $link->is_broken() &&  $link->has_archived_href() ) {
+			if ( $link->is_broken() && $link->has_archived_href() ) {
 				$broken[] = $link->get_id();
 			}
-			if (  $link->has_archived_href() ) {
+			if ( $link->has_archived_href() ) {
 				$has_archive_link[] = $link->get_id();
 			}
 			if ( null === $link->get_last_check() ) {

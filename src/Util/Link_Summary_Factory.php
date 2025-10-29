@@ -113,11 +113,6 @@ class Link_Summary_Factory {
 	 */
 	private function was_last_check_successful(): bool {
 		$last_check = $this->link->get_last_check();
-		if ( null === $last_check ) {
-			return false;
-		}
-
-		$last_check = $this->link->get_last_check();
 		if ( ! is_array( $last_check ) || ! isset( $last_check['http_code'] ) ) {
 			return false;
 		}

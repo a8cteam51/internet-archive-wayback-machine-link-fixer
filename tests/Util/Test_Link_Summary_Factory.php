@@ -191,7 +191,7 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 		$summary = $factory->get_summary();
 
 		$this->assertStringContainsString( 'archived on archive.org', $summary );
-		$this->assertStringContainsString( 'not working', $summary );
+		$this->assertStringContainsString( 'No check history yet', $summary );
 	}
 
 	/**
