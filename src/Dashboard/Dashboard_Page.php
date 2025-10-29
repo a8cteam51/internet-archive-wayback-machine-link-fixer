@@ -170,8 +170,8 @@ class Dashboard_Page {
 		if ( false === $stats || ! is_array( $stats ) ) {
 			$stats = $this->compile_statistics();
 
-			// Store for 2 hours.
-			set_transient( self::STATS_TRANSIENT_KEY, $stats, 2 * HOUR_IN_SECONDS );
+			// Store for 15 minutes.
+			set_transient( self::STATS_TRANSIENT_KEY, $stats, 15 * MINUTE_IN_SECONDS );
 		}
 
 		return $stats;
@@ -205,10 +205,10 @@ class Dashboard_Page {
 
 		// Loop through all links to gather stats.
 		foreach ( $all_links as $link ) {
-			if ( $link->is_broken() ) {
+			if ( $link->is_broken() && $link->has_archived_href() ) {
 				$broken[] = $link->get_id();
 			}
-			if ( ! empty( $link->get_archived_href() ) ) {
+			if ( $link->has_archived_href() ) {
 				$has_archive_link[] = $link->get_id();
 			}
 			if ( null === $link->get_last_check() ) {
@@ -313,7 +313,8 @@ class Dashboard_Page {
 
 		$broken_link = add_query_arg(
 			array(
-				'iawmlf_status' => '1',
+				'iawmlf_status'      => '1',
+				'iawmlf_has_archive' => '1',
 			),
 			$filtered_url_base
 		);
