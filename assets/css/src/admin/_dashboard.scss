@@ -221,6 +221,12 @@
             color: #2271b1;
         }
     }
+    &--black {
+        border-left: 4px solid #000000;
+        .iawmlf_dashboard-stats-number {
+            color: #000000;
+        }
+    }
 }
 
 .iawmlf_dashboard-stats-link {
