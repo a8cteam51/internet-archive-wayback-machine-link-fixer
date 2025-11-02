@@ -1,1 +1,0 @@
-!function(){const e=document.getElementById("is_active");e&&e.addEventListener("change",(function(){document.querySelectorAll(".is_optional").forEach((function(c){c.querySelectorAll("input, select").forEach((function(c){c.disabled=!e.checked})),c.classList.toggle("disabled",!e.checked)}))}))}();
