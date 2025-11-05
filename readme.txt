@@ -32,6 +32,9 @@ Protect your links, preserve your content, and automate the archiving process—
 
 Watch Demo video: https://www.loom.com/share/7551a8aa791849fc81c9aa21ada268f1?sid=510daff9-40db-4986-8137-56471a3c8149
 
+= Multsite Compatible? =
+Sadly at present, it is not fully compatible. The only way it can currently be used on multisite is to only enable it site wide and not network wide. We plan to resolve this in the next release.
+
 = How does the link checker work? =
 Your content is checked for any links. When it finds a link it will check if we have already handled this link before, if not, it will find or create a snapshot of the webpage on the Internet Archive.
 Then if later that link's target site goes offline, we can change the link to the archived version.
@@ -110,6 +113,10 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 
 = 1.3.0 =
 * Initial public release.
+
+= 1.3.1 =
+* Makes various UI and UX changes around icons, tool tips and labels.
+* Also fixes a few minor bugs regarding the settings and wizard flows.
 
 Note: All versions prior to 1.3.0 were not publicly released.
 
