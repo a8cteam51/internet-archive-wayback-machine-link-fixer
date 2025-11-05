@@ -66,7 +66,7 @@ class Settings {
 	 */
 	public static function get_link_table_name(): string {
 		global $wpdb;
-		return $wpdb->prefix . self::LINK_TABLE;
+		return $wpdb->base_prefix . self::LINK_TABLE;
 	}
 
 	/**
