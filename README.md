@@ -624,6 +624,19 @@ add_filter( 'iawmlf_link_checker_timeout', function( int $timeout ): int {
 });
 ```
 
+#### `iawmlf_should_render_html_link_output`
+
+This filter allows you to control whether the HTML link output should be rendered in the frontend for post loops. By default, this is only enabled when the fixer option is set to "Replace Link".
+
+```php
+add_filter( 'iawmlf_should_render_html_link_output', function( bool $allowed, string $option ): bool {
+   // Example: Always render the HTML link output regardless of fixer option
+   return true;
+}, 10, 2 );
+```
+
+> **Note:** The HTML link output is used to provide link data to the frontend JavaScript for post loops. If disabled, the link data won't be available for JavaScript processing in loop contexts.
+
 #### `iawmlf_posts_per_batch`
 
 This is used to define how many posts should be checked, when the plugin is scanning existing posts.

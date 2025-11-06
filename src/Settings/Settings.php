@@ -402,6 +402,29 @@ class Settings {
 	}
 
 	/**
+	 * Checks if the HTML link output should be rendered in the frontend.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @return boolean
+	 */
+	public static function should_render_html_link_output(): bool {
+		$allowed = in_array( self::get_fixer_option(), array( self::FIXER_OPTION_REPLACE_LINK ), true );
+
+		/**
+		 * Filter to allow or disallow the HTML link output in the frontend.
+		 *
+		 * @since 1.3.1
+		 *
+		 * @param boolean $allowed Whether the HTML link output should be rendered.
+		 * @param string  $option  The current fixer option.
+		 *
+		 * @return boolean
+		 */
+		return (bool) apply_filters( 'iawmlf_should_render_html_link_output', $allowed, self::get_fixer_option() );
+	}
+
+	/**
 	 * Clear all the options.
 	 *
 	 * @since 1.3.0

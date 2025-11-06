@@ -61,7 +61,8 @@ class WP_Post_Controller {
 		add_action( 'save_post', array( $this, 'on_save_post_process_post_links' ), 10, 3 );
 		add_action( 'save_post', array( $this, 'on_save_post_process_own_post' ), 10, 3 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_script' ) );
-		add_filter( 'render_block', array( $this, 'render_block' ), 999, 2 );  }
+		add_filter( 'render_block', array( $this, 'render_block' ), 999, 2 );
+	}
 
 	/**
 	 * Handles the save post action.
@@ -260,6 +261,10 @@ class WP_Post_Controller {
 	 * @return string
 	 */
 	public function render_block( string $block_content, array $block ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		if ( ! Settings::should_render_html_link_output() ) {
+			return $block_content;
+		}
+
 		static $posts = array();
 
 		$post_id = get_the_ID();
