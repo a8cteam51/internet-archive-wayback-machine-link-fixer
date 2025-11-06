@@ -264,8 +264,23 @@ class Link implements \JsonSerializable {
 	 * @return string
 	 */
 	public function get_archived_href(): ?string {
-		return $this->archived_href;
+		$archived_href = $this->archived_href;
+
+		if ( null === $archived_href || '' === $archived_href ) {
+			return $archived_href;
+		}
+
+		// If the url starts http(s)://web.archive.org/web/, replace it with http(s)://web-wp.archive.org/web/
+		if ( 0 === strpos( $archived_href, 'https://web.archive.org/web/' ) ) {
+			$archived_href = str_replace( 'https://web.archive.org/web/', 'https://web-wp.archive.org/web/', $archived_href );
+		}
+		if ( 0 === strpos( $archived_href, 'http://web.archive.org/web/' ) ) {
+			$archived_href = str_replace( 'http://web.archive.org/web/', 'http://web-wp.archive.org/web/', $archived_href );
+		}
+
+		return $archived_href;
 	}
+
 
 	/**
 	 * Get the checks.

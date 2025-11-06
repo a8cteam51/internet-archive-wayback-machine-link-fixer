@@ -49,6 +49,28 @@ class Test_Functions extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Archive link check data provider.
+	 *
+	 * @return array
+	 */
+	public static function is_archive_link_provider(): array {
+		return array(
+			'HTTPS web.archive.org'         => array( 'https://web.archive.org/web/20230101000000/https://example.com', true ),
+			'HTTP web.archive.org'          => array( 'http://web.archive.org/web/20230101000000/https://example.com', true ),
+			'HTTPS web-wp.archive.org'      => array( 'https://web-wp.archive.org/web/20230101000000/https://example.com', true ),
+			'HTTP web-wp.archive.org'       => array( 'http://web-wp.archive.org/web/20230101000000/https://example.com', true ),
+			'HTTPS web.archive.org no path' => array( 'https://web.archive.org/web/', true ),
+			'HTTP web.archive.org no path'  => array( 'http://web.archive.org/web/', true ),
+			'Regular HTTPS URL'             => array( 'https://example.com', false ),
+			'Regular HTTP URL'              => array( 'http://example.com', false ),
+			'Archive.org but not web'       => array( 'https://archive.org/details/something', false ),
+			'Contains but not starts with'  => array( 'https://example.com/web.archive.org/web/', false ),
+			'Almost matching URL'           => array( 'https://web.archive.org/details/', false ),
+			'Empty string'                  => array( '', false ),
+		);
+	}
+
+	/**
 	 * @testdox It should be possible to normalize a URL.
 	 *
 	 * @dataProvider normalize_url_provider
@@ -60,6 +82,20 @@ class Test_Functions extends \WP_UnitTestCase {
 	 */
 	public function test_can_normalize_url( string $url, string $expected ): void {
 		$this->assertSame( $expected, \iawmlf_normalize_url( $url ) );
+	}
+
+	/**
+	 * @testdox It should correctly identify Internet Archive links.
+	 *
+	 * @dataProvider is_archive_link_provider
+	 *
+	 * @param string $url      The URL to check.
+	 * @param bool   $expected The expected result.
+	 *
+	 * @return void
+	 */
+	public function test_can_identify_archive_links( string $url, bool $expected ): void {
+		$this->assertSame( $expected, \iawmlf_is_archive_link( $url ) );
 	}
 
 	/**
