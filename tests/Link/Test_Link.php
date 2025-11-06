@@ -65,7 +65,7 @@ class Test_Link extends \WP_UnitTestCase {
 		$this->assertNull( $link->get_archived_href() );
 
 		$link->set_archived_href( 'https://web.archive.org/web/20240101000000/https://example.com' );
-		$this->assertSame( 'https://web.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
+		$this->assertSame( 'https://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
 	}
 
 	/**
@@ -257,7 +257,7 @@ class Test_Link extends \WP_UnitTestCase {
 			array(
 				'id'            => 1,
 				'href'          => 'https://example.com',
-				'archived_href' => 'https://web.archive.org/web/20240101000000/https://example.com',
+				'archived_href' => 'https://web-wp.archive.org/web/20240101000000/https://example.com',
 				'redirect_href' => 'https://example.com',
 				'checks'        => array(
 					array(
@@ -274,7 +274,7 @@ class Test_Link extends \WP_UnitTestCase {
 
 		$this->assertSame( 1, $link->get_id() );
 		$this->assertSame( 'https://example.com', $link->get_href() );
-		$this->assertSame( 'https://web.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
+		$this->assertSame( 'https://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
 		$this->assertSame( 'https://example.com', $link->get_redirect_href() );
 		$this->assertSame(
 			array(
@@ -395,5 +395,24 @@ class Test_Link extends \WP_UnitTestCase {
 
 		$link->set_excluded();
 		$this->assertTrue( $link->is_excluded() );
+	}
+
+	/**
+	 * @testdox When we get a snapshot url from the model, it should be reparsed as web-wp.archive.org to web.archive.org
+	 *
+	 * @since 1.3.2
+	 *
+	 * @return void
+	 */
+	public function test_can_reparse_snapshot_url(): void {
+		// HTTPS
+		$link = new Link( 'https://example.com' );
+		$link->set_archived_href( 'https://web.archive.org/web/20240101000000/https://example.com' );
+		$this->assertSame( 'https://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
+
+		// HTTP
+		$link = new Link( 'http://example.com' );
+		$link->set_archived_href( 'http://web.archive.org/web/20240101000000/https://example.com' );
+		$this->assertSame( 'http://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
 	}
 }

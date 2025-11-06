@@ -342,6 +342,8 @@ function iawmlf_is_archive_link( string $url ): bool {
 	$urls = array(
 		'https://web.archive.org/web/',
 		'http://web.archive.org/web/',
+		'https://web-wp.archive.org/web/',
+		'http://web-wp.archive.org/web/',
 	);
 
 	foreach ( $urls as $archive_url ) {
