@@ -302,4 +302,30 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEmpty( get_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE ) );
 		$this->assertEmpty( get_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL ) );
 	}
+
+	/**
+	 * @testdox It should be possible to check if the HTML link output should be rendered in the frontend.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @return void
+	 */
+	public function test_should_render_html_link_output(): void {
+		// Set the option to replace link.
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+		$this->assertTrue( Settings::should_render_html_link_output() );
+
+		// Set the option to do nothing.
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_DO_NOTHING );
+		$this->assertFalse( Settings::should_render_html_link_output() );
+
+		// Set the option to replace link via a filter.
+		add_filter( 'iawmlf_should_render_html_link_output', function () {
+			return true;
+		} );
+		$this->assertTrue( Settings::should_render_html_link_output() );
+
+		// Clean up.
+		remove_all_filters( 'iawmlf_should_render_html_link_output' );
+	}
 }
