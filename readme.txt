@@ -3,7 +3,7 @@ Contributors: waybackmachineplugin, wpspecialprojects
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -111,12 +111,15 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 
 == Changelog ==
 
-= 1.3.0 =
-* Initial public release.
+= 1.3.2 =
+* Bugfix
 
 = 1.3.1 =
 * Makes various UI and UX changes around icons, tool tips and labels.
 * Also fixes a few minor bugs regarding the settings and wizard flows.
+
+= 1.3.0 =
+* Initial public release.
 
 Note: All versions prior to 1.3.0 were not publicly released.
 
