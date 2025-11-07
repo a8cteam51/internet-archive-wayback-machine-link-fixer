@@ -30,7 +30,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'IAWMLF_BASENAME', plugin_basename( __FILE__ ) );
 define( 'IAWMLF_PATH', plugin_dir_path( __FILE__ ) );
 define( 'IAWMLF_URL', plugin_dir_url( __FILE__ ) );
-define( 'IAWMLF_VERSION', '1.3.3.1' );
+define( 'IAWMLF_VERSION', '1.3.3-RC1' );
 define(
 	'IAWMLF_MINIMUM_VERSIONS',
 	array(
