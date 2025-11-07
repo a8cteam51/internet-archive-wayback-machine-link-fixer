@@ -111,6 +111,11 @@ class Link_Latest_Snapshot_Action {
 		// Update the links archived URL.
 		$link->set_archived_href( $archive_url );
 
+		// If the link is excluded, set the link as valid.
+		if ( $link->is_excluded() ) {
+			$link = $link->set_excluded( false );
+		}
+
 		// Update the link in the database.
 		$link = $this->link_repository->upsert( $link );
 

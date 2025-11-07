@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-3.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Internet Archive Wayback Machine Link Fixer 1.3.0\n"
+"Project-Id-Version: Internet Archive Wayback Machine Link Fixer 1.3.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/internet-archive-wayback-machine-link-fixer\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-30T11:51:33+00:00\n"
+"POT-Creation-Date: 2025-11-07T09:42:48+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: internet-archive-wayback-machine-link-fixer\n"
@@ -55,7 +55,7 @@ msgstr ""
 msgid "Archive URL is the same."
 msgstr ""
 
-#: src/Action/Link_Latest_Snapshot_Action.php:121
+#: src/Action/Link_Latest_Snapshot_Action.php:126
 msgid "Link updated."
 msgstr ""
 
@@ -496,17 +496,17 @@ msgid "Archive Status"
 msgstr ""
 
 #: src/Report/Report_Table.php:746
-#: templates/admin/links-table/help-tab-columns.php:25
+#: templates/admin/links-table/help-tab-columns.php:26
 msgid "Link Health"
 msgstr ""
 
 #: src/Report/Report_Table.php:747
-#: templates/admin/links-table/help-tab-columns.php:43
+#: templates/admin/links-table/help-tab-columns.php:44
 msgid "Times Checked"
 msgstr ""
 
 #: src/Report/Report_Table.php:748
-#: templates/admin/links-table/help-tab-columns.php:56
+#: templates/admin/links-table/help-tab-columns.php:57
 msgid "Last Check"
 msgstr ""
 
@@ -585,75 +585,80 @@ msgstr ""
 msgid "Verify link allows checking"
 msgstr ""
 
-#: src/Report/Report_Table.php:1091
+#: src/Report/Report_Table.php:1089
+#: templates/admin/links-table/help-tab-columns.php:23
+msgid "Link is excluded from being archived."
+msgstr ""
+
+#: src/Report/Report_Table.php:1096
 #: templates/admin/links-table/help-tab-columns.php:19
 msgid "Has a valid archive snapshot"
 msgstr ""
 
-#: src/Report/Report_Table.php:1096
+#: src/Report/Report_Table.php:1101
 #: templates/admin/links-table/help-tab-columns.php:20
 msgid "New link, not yet processed"
 msgstr ""
 
-#: src/Report/Report_Table.php:1098
+#: src/Report/Report_Table.php:1103
 #: templates/admin/links-table/help-tab-columns.php:21
 msgid "Processing in progress"
 msgstr ""
 
-#: src/Report/Report_Table.php:1100
+#: src/Report/Report_Table.php:1105
 #: templates/admin/links-table/help-tab-columns.php:22
 msgid "No archive available"
 msgstr ""
 
-#: src/Report/Report_Table.php:1107
+#: src/Report/Report_Table.php:1112
 msgid "Link has not been checked yet"
 msgstr ""
 
-#: src/Report/Report_Table.php:1111
-#: templates/admin/links-table/help-tab-columns.php:38
+#: src/Report/Report_Table.php:1116
+#: templates/admin/links-table/help-tab-columns.php:39
 msgid "Link is active"
 msgstr ""
 
-#: src/Report/Report_Table.php:1112
-#: templates/admin/links-table/help-tab-columns.php:40
+#: src/Report/Report_Table.php:1117
+#: templates/admin/links-table/help-tab-columns.php:41
 msgid "Link is broken"
 msgstr ""
 
-#: src/Report/Report_Table.php:1114
-#: templates/admin/links-table/help-tab-columns.php:39
+#: src/Report/Report_Table.php:1119
+#: templates/admin/links-table/help-tab-columns.php:40
 msgid "Link status pending verification"
 msgstr ""
 
-#: src/Report/Report_Table.php:1123
+#: src/Report/Report_Table.php:1128
 msgid "Link is excluded from checks"
 msgstr ""
 
-#: src/Report/Report_Table.php:1124
+#: src/Report/Report_Table.php:1129
 msgid "Link is not excluded from checks"
 msgstr ""
 
-#: src/Report/Report_Table.php:1182
+#: src/Report/Report_Table.php:1187
 msgid "N/a"
 msgstr ""
 
-#: src/Report/Report_Table.php:1194
-#: src/Report/Report_Table.php:1204
+#: src/Report/Report_Table.php:1199
+#: src/Report/Report_Table.php:1209
 #: templates/admin/dashboard/link-list.php:60
 msgid "No HTTP Code"
 msgstr ""
 
 #. translators: %1$s is the last check date, %2$s is the last check http code.
-#: src/Report/Report_Table.php:1198
+#: src/Report/Report_Table.php:1203
 #: templates/admin/dashboard/link-list.php:65
 #, php-format
 msgid "%1$s with %2$s"
 msgstr ""
 
-#: src/Report/Report_Table.php:1201
+#: src/Report/Report_Table.php:1206
 msgid "Missing date"
 msgstr ""
 
-#: src/Report/Report_Table.php:1216
+#: src/Report/Report_Table.php:1221
 msgid "No links have been created yet."
 msgstr ""
 
@@ -661,32 +666,36 @@ msgstr ""
 msgid "The link is still being processed to find or create an archive snapshot. Please check back later."
 msgstr ""
 
-#: src/Util/Link_Summary_Factory.php:65
-msgid "The link is archived on archive.org. No check history yet."
+#: src/Util/Link_Summary_Factory.php:66
+msgid "The link is excluded from being archived."
 msgstr ""
 
 #: src/Util/Link_Summary_Factory.php:70
+msgid "The link is archived on archive.org. No check history yet."
+msgstr ""
+
+#: src/Util/Link_Summary_Factory.php:75
 msgid "The link is archived on archive.org and still working."
 msgstr ""
 
 #. translators: The number of failed checks.
-#: src/Util/Link_Summary_Factory.php:77
+#: src/Util/Link_Summary_Factory.php:82
 #, php-format
 msgid "This link is redirecting to the archived version, after %d failed checks."
 msgstr ""
 
 #. translators: 1: The number of failed checks. 2: The number of remaining checks before redirect. 3: Plural S if needed.
-#: src/Util/Link_Summary_Factory.php:84
+#: src/Util/Link_Summary_Factory.php:89
 #, php-format
 msgid "The link is archived on archive.org but currently not working. It has failed %1$d previous consecutive check%3$s, %2$d more and it will redirect to the archived version."
 msgstr ""
 
-#: src/Util/Link_Summary_Factory.php:98
+#: src/Util/Link_Summary_Factory.php:103
 msgid "The link is not archived on archive.org but is currently working."
 msgstr ""
 
 #. translators: 1: The number of failed checks. 2: The plural S if needed.
-#: src/Util/Link_Summary_Factory.php:103
+#: src/Util/Link_Summary_Factory.php:108
 #, php-format
 msgid "The link is not archived on archive.org and currently not working. It has failed %1$d previous consecutive check%2$s."
 msgstr ""
@@ -916,18 +925,18 @@ msgid "Indicates whether the link has a valid snapshot from the Internet Archive
 msgstr ""
 
 #. translators: %d is the number of consecutive failed checks required to mark a link as broken.
-#: templates/admin/links-table/help-tab-columns.php:31
+#: templates/admin/links-table/help-tab-columns.php:32
 #, php-format
 msgid "Indicates whether the live link is active or broken. A link is marked as broken after %d consecutive failed checks."
 msgstr ""
 
 #. translators: %d is the number of days between checks.
-#: templates/admin/links-table/help-tab-columns.php:49
+#: templates/admin/links-table/help-tab-columns.php:50
 #, php-format
 msgid "Shows how many times the link has been checked. Links are automatically checked every %d days."
 msgstr ""
 
-#: templates/admin/links-table/help-tab-columns.php:57
+#: templates/admin/links-table/help-tab-columns.php:58
 msgid "Displays the date and result (e.g., HTTP status code) of the most recent check on the live link, if available."
 msgstr ""
 
