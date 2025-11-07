@@ -174,6 +174,7 @@ You can access the report for the link by clicking on the URL. This will take yo
 | ![cross icon](./_docs/cross-icon.png) | A cross indicates that we do not have an archived link for this URL. |
 | ![clock icon](./_docs/clock-icon.png) | A clock indicates that we are currently trying to create a new snapshot for this URL. |
 | ![plus icon](./_docs/plus-icon.png) | A plus indicates that this is a new link that has not started the process yet. This will happen ASAP |
+| ![warning icon](./_docs/warning-icon.png) | A warning indicates that the link is excluded from being archived. |
 
 
 ### Link Health

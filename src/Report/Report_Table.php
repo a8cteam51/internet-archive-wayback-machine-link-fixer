@@ -1084,6 +1084,11 @@ class Report_Table extends \WP_List_Table {
 					$this->compile_link_name( $item )
 				);
 			case self::COLUMN_LINK_ARCHIVE:
+				// If the link is excluded, return the excluded icon.
+				if ( $item->is_excluded() ) {
+					return $this->get_dashicon( 'dashicons-warning', __( 'Link is excluded from being archived.', 'internet-archive-wayback-machine-link-fixer' ) );
+				}
+
 				if ( $item->has_archived_href() ) {
 					return sprintf(
 						'<a href="%s" target="_blank">%s</a>',

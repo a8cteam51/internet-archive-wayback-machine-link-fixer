@@ -2,7 +2,7 @@
     "name": "a8cteam51/wayback-link-fixer",
     "type": "wordpress-plugin",
     "description": "A WordPress plugin that scans content for links, replacing broken ones with archived versions from the Wayback Machine. It also features Auto Archiving, creating snapshots of your own pages and other site links that aren’t yet archived. Uses Action Scheduler for background tasks.",
-    "homepage": "https://github.com/a8cteam51/wayback-link-fixer",
+    "homepage": "https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer",
     "license": "GPL-2.0-or-later",
     "authors": [{
             "name": "WordPress.com Special Projects Team",
@@ -10,7 +10,7 @@
         },
         {
             "name": "Contributors",
-            "homepage": "https://github.com/a8cteam51/wayback-link-fixer/graphs/contributors"
+            "homepage": "https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/graphs/contributors"
         }
     ],
     "repositories": [{
@@ -80,7 +80,7 @@
             "@makejson"
         ],
         "makepot": "wp i18n make-pot . --include=src,templates,assets --exclude=vendor,node_modules,pack,tests,lib,migrations,coverage,coverate-reports ",
-        "updatepo": "wp i18n update-po ./languages/wayback-link-fixer.pot",
+        "updatepo": "wp i18n update-po ./languages/internet-archive-wayback-machine-link-fixer.pot",
         "makejson": "wp i18n make-json ./languages --pretty-print --no-purge",
         "makemo": "wp i18n make-mo ./languages",
         "packages-install": "@composer install --ignore-platform-reqs --no-interaction",

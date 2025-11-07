@@ -19,7 +19,8 @@ $iawmlf_check_frequency = \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\
 		<span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e( 'Has a valid archive snapshot', 'internet-archive-wayback-machine-link-fixer' ); ?><br>
 		<span class="dashicons dashicons-plus-alt"></span> <?php esc_html_e( 'New link, not yet processed', 'internet-archive-wayback-machine-link-fixer' ); ?><br>
 		<span class="dashicons dashicons-clock"></span> <?php esc_html_e( 'Processing in progress', 'internet-archive-wayback-machine-link-fixer' ); ?><br>
-		<span class="dashicons dashicons-dismiss"></span> <?php esc_html_e( 'No archive available', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		<span class="dashicons dashicons-dismiss"></span> <?php esc_html_e( 'No archive available', 'internet-archive-wayback-machine-link-fixer' ); ?><br>
+		<span class="dashicons dashicons-warning"></span> <?php esc_html_e( 'Link is excluded from being archived.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 	</p>
 
 	<h3><?php esc_html_e( 'Link Health', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
