@@ -283,4 +283,36 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 		$this->assertEquals( 'iawmlf_update_archive_url', $actions[0]->hook );
 		$this->assertEquals( json_encode( array( 'link_id' => $link->get_id(), 'attempt' => 0 ) ), $actions[0]->args );
 	}
+
+	/**
+	 * @testdox If a link is excluded, but now allows a snapshot to be created, without error, remove the excluded status.
+	 *
+	 * @return void
+	 */
+	public function test_success_status_removes_excluded_status(): void {
+		$this->set_snapshot_client_response( array( 'status' => 'success' ) );
+
+		$link = $this->link_repository->upsert( new Link( 'https://example.com' ) );
+		$link->set_excluded();
+		$this->link_repository->upsert( $link );
+
+		$event = new Check_Snapshot_Status_Event();
+		$event->setup();
+
+		$event( $link->get_id(), 'fake-id', 0 );
+
+		// Get the link from the repository.
+		$updated_link = $this->link_repository->find_by_id( $link->get_id() );
+
+		// Check the link is not excluded.
+		$this->assertFalse( $updated_link->is_excluded() );
+
+		// Check the link is in the queue.
+		$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions" );
+
+		$this->assertCount( 1, $actions );
+
+		$this->assertEquals( 'iawmlf_update_archive_url', $actions[0]->hook );
+		$this->assertEquals( json_encode( array( 'link_id' => $link->get_id(), 'attempt' => 0 ) ), $actions[0]->args );
+	}
 }

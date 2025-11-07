@@ -61,6 +61,11 @@ class Link_Summary_Factory {
 		$last_failed_count = $this->get_consecutive_failed_checks_count();
 		$last_check        = $this->link->get_last_check();
 
+		// If the link is excluded, return the excluded message.
+		if ( $this->link->is_excluded() ) {
+			return __( 'The link is excluded from being archived.', 'internet-archive-wayback-machine-link-fixer' );
+		}
+
 		if ( null === $last_check ) {
 			return __( 'The link is archived on archive.org. No check history yet.', 'internet-archive-wayback-machine-link-fixer' );
 		}

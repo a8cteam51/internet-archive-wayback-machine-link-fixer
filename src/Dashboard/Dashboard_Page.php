@@ -170,8 +170,8 @@ class Dashboard_Page {
 		if ( false === $stats || ! is_array( $stats ) ) {
 			$stats = $this->compile_statistics();
 
-			// Store for 15 minutes.
-			set_transient( self::STATS_TRANSIENT_KEY, $stats, 15 * MINUTE_IN_SECONDS );
+			// Store for 2 minutes.
+			set_transient( self::STATS_TRANSIENT_KEY, $stats, 2 * MINUTE_IN_SECONDS );
 		}
 
 		return $stats;
@@ -210,7 +210,7 @@ class Dashboard_Page {
 				$all_broken[] = $link->get_id();
 			}
 
-			if ( $link->is_broken() && $link->has_archived_href() ) {
+			if ( $link->is_broken() && $link->has_archived_href() && ! $link->is_excluded() ) {
 				$redirected_broken[] = $link->get_id();
 			}
 
