@@ -324,6 +324,7 @@ class Dashboard_Page {
 			array(
 				'iawmlf_status'      => '1',
 				'iawmlf_has_archive' => '1',
+				'iawmlf_is_excluded' => '0',
 			),
 			$filtered_url_base
 		);
