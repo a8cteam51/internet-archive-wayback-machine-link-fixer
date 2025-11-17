@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard;
 
-use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Setup_Wizard;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Setup_Wizard;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -140,6 +142,7 @@ class Settings_Page {
 			'IawmlfSettings',
 			array(
 				'newExcludedTemplate' => $this->render_excluded_url( '{newUrl}', '{newIndex}' ),
+				'environment'         => Environmental::is_production() ? 'production' : 'development',
 			)
 		);
 
@@ -481,11 +484,15 @@ class Settings_Page {
 			self::GROUP_AUTO_ARCHIVER,
 			__( 'Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ),
 			function () {
-				echo '<p class="description">' . esc_html__( 'Keep your content securely archived with the Auto Archiver. Each time you update a post, a fresh copy is saved to the Wayback Machine. Ensure your work remains accessible and preserved over time.', 'internet-archive-wayback-machine-link-fixer' ) . '</p>';
+				if ( Environmental::is_production() ) {
+					echo '<p class="description">' . esc_html__( 'Keep your content securely archived with the Auto Archiver. Each time you update a post, a fresh copy is saved to the Wayback Machine. Ensure your work remains accessible and preserved over time.', 'internet-archive-wayback-machine-link-fixer' ) . '</p>';
+				} else {
+					echo '<p class="description staging">' . esc_html__( 'Non-production environment detected - auto archiving is disabled to prevent staging and development sites from being archived.', 'internet-archive-wayback-machine-link-fixer' ) . '</p>';
+				}
 			},
 			self::PAGE_SLUG,
 			array(
-				'before_section' => '<div id="iawmlf_settings_auto_archiver_section" class="iawmlf_settings_postbox">',
+				'before_section' => sprintf( '<div id="iawmlf_settings_link_fixer_section" class="iawmlf_settings_postbox auto-archiver %s">', ! Environmental::is_production() ? 'staging' : '' ),
 				'after_section'  => '</div>',
 			)
 		);

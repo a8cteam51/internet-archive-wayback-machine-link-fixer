@@ -609,6 +609,26 @@ add_filter( 'iawmlf_link_exclusions', function( array $exclusions ): array {
 });
 ```
 
+#### `iawmlf_is_production_environment`
+
+This filter allows you to override the production environment detection. By default, the plugin uses WordPress's `wp_get_environment_type()` function to determine if the site is running in a production environment. You can use this filter to customize this behavior for your specific setup.
+
+```php
+add_filter( 'iawmlf_is_production_environment', function( bool $is_production ): bool {
+   // Example: Force production mode based on domain
+   if ( strpos( $_SERVER['HTTP_HOST'], '.com' ) !== false ) {
+      return true;
+   }
+   
+   // Example: Check for custom environment variable
+   if ( defined( 'MY_CUSTOM_PRODUCTION_FLAG' ) && MY_CUSTOM_PRODUCTION_FLAG ) {
+      return true;
+   }
+   
+   return $is_production;
+});
+```
+
 ---
 
 #### Configuration Filters

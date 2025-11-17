@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -201,7 +202,7 @@ class Setup_Wizard {
 			$this->handle_step_1();
 		} elseif ( 'step-2' === $current ) {
 			$this->handle_step_2();
-		} elseif ( 'step-3' === $current ) {
+		} elseif ( 'step-3' === $current && Environmental::is_production() ) {
 			$this->handle_step_3();
 		}
 	}
@@ -416,7 +417,14 @@ class Setup_Wizard {
 	private function get_step_data(): array {
 		$state = get_option( self::OPTION_NAME, 'step-1' );
 
-		$index      = array_keys( self::STEPS );
+		$steps = self::STEPS;
+
+		// If we are on staging, ensure, the step-3 is skipped.
+		if ( ! Environmental::is_production() ) {
+			unset( $steps['step-3'] );
+		}
+
+		$index      = array_keys( $steps );
 		$next_index = array_search( $state, $index, true ) + 1;
 
 		return array(

@@ -17,6 +17,7 @@
 		const NEW_LINK = document.getElementById('iawmlf_excluded_links_new');
 		const NEW_LINK_BUTTON = document.getElementById('iawmlf_excluded_links_new_action');
 		const NEW_LINK_TEMPLATE = IawmlfSettings.newExcludedTemplate;
+		const ENVIRONMENTAL = IawmlfSettings.environment;
 		const NO_LINKS = document.getElementById('iawmlf_excluded_empty');
 		const API_ACCESS_KEY = document.getElementById('iawmlf_archive_api_access');
 		const API_SECRET_KEY = document.getElementById('iawmlf_archive_api_secret');
@@ -118,6 +119,14 @@
 				toggleElements(this.checked, 'link_fixer');
 			});
 		}
+
+		// if not production, disable the auto archive option.
+		if ('production' !== ENVIRONMENTAL) {
+			AUTO_ARCHIVE.disabled = true;
+		}
+
+		console.log(ENVIRONMENTAL);
+
 
 		// When Auto Archive is checked, enable the excluded links.
 		if (AUTO_ARCHIVE) {
