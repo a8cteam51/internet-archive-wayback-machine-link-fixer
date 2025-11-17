@@ -44,7 +44,8 @@
         "phpstan/phpstan": "*",
         "szepeviktor/phpstan-wordpress": "*",
         "symfony/var-dumper": "^5.0",
-        "gin0115/wpunit-helpers": "^1.1"
+        "gin0115/wpunit-helpers": "^1.1",
+        "wpackagist-theme/twentytwentyone": "*"
     },
     "autoload": {
         "psr-4": {
