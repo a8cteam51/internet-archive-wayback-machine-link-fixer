@@ -125,9 +125,6 @@
 			AUTO_ARCHIVE.disabled = true;
 		}
 
-		console.log(ENVIRONMENTAL);
-
-
 		// When Auto Archive is checked, enable the excluded links.
 		if (AUTO_ARCHIVE) {
 			AUTO_ARCHIVE.addEventListener('change', function () {
