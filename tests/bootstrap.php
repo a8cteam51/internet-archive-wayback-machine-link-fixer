@@ -22,6 +22,13 @@ try {
 
 define( 'FIXTURES_PATH', __DIR__ . '/Fixtures' );
 
+// Register the vendor theme directory so WordPress can find composer-installed themes
+tests_add_filter(
+	'setup_theme',
+	function () {
+		register_theme_directory( dirname( __DIR__ ) . '/vendor/wpackagist-theme' );
+	}
+);
 
 tests_add_filter(
 	'muplugins_loaded',
