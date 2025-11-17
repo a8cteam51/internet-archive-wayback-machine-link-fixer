@@ -22,13 +22,21 @@ try {
 
 define( 'FIXTURES_PATH', __DIR__ . '/Fixtures' );
 
-// Register the vendor theme directory so WordPress can find composer-installed themes
-tests_add_filter(
-	'setup_theme',
-	function () {
-		register_theme_directory( dirname( __DIR__ ) . '/vendor/wpackagist-theme' );
+// Custom error handler to ignore specific errors.
+$previous_error_handler = set_error_handler(
+	function ( $errno, $errstr, $errfile, $errline ) use ( &$previous_error_handler ) {
+		// Ignore translation early errors, we need to do this before init to allow the action scheduler to load correctly.
+		if ( str_starts_with( $errstr, 'Function _load_textdomain_just_in_time was called' ) ) {
+			return true;
+		}
+		if ( $previous_error_handler ) {
+			return call_user_func( $previous_error_handler, $errno, $errstr, $errfile, $errline );
+		}
+		return false;
 	}
 );
+
+
 
 tests_add_filter(
 	'muplugins_loaded',
