@@ -12,6 +12,8 @@ require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 // Give access to tests_add_filter() function.
 require_once getenv( 'WP_PHPUNIT__DIR' ) . '/includes/functions.php';
 
+$GLOBALS['wp_theme_directories'] = array( dirname( __DIR__ ) . '/vendor/wp-phpunit/wp-phpunit/data/themedir1' );
+
 // Load all environment variables into $_ENV
 try {
 	$dotenv = Dotenv\Dotenv::createUnsafeImmutable( __DIR__ );
