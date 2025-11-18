@@ -3,7 +3,7 @@ Contributors: waybackmachineplugin, wpspecialprojects
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -110,6 +110,13 @@ This service checks if web pages are accessible and retrieves final URLs after r
 The Internet Archive is a non-profit organization dedicated to preserving digital content for public access. URLs sent to these services become part of the public archive and may be accessible through the Wayback Machine interface. No personal information beyond the URLs themselves is transmitted to these services.
 
 == Changelog ==
+
+= 1.3.3 =
+* Fixes bug where the links and scripts were loaded even if set to do nothing
+* Move to custom WP prefixed URLs
+* Fixes various issues with the dashboard icons and counts
+* Better handling of authentication issues and notices
+* Detect staging sites and prevent auto archiving from running.
 
 = 1.3.2 =
 * Bugfix
