@@ -36,7 +36,7 @@ $iawmlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 			<label for="iawmlf_wizard_activate_link_fixer">
 				<?php esc_html_e( 'Enable Link Fixer', 'internet-archive-wayback-machine-link-fixer' ); ?>
 			</label>
-			<input type="checkbox" id="is_active" name="iawmlf_wizard_activate_link_fixer" value="1" <?php checked( Settings::is_link_processing_enabled() ); ?> />
+			<input type="checkbox" id="is_active" name="iawmlf_wizard_activate_link_fixer" value="1" <?php checked( Settings::is_link_processing_enabled( true ) ); ?> />
 		</div>
 		<p class="description"><?php esc_html_e( 'When enabled, all links within your selected post types will be processed for potential archiving by the Link Fixer.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	</div>

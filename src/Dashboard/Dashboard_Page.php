@@ -206,7 +206,7 @@ class Dashboard_Page {
 
 		// Loop through all links to gather stats.
 		foreach ( $all_links as $link ) {
-			if ( $link->is_broken() ) {
+			if ( $link->is_broken() && ! $link->is_excluded() ) {
 				$all_broken[] = $link->get_id();
 			}
 
