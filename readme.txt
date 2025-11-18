@@ -117,6 +117,7 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 * Fixes various issues with the dashboard icons and counts
 * Better handling of authentication issues and notices
 * Detect staging sites and prevent auto archiving from running.
+* Fixes bug where a missing auto archiving database option can result in posts still be indexed.
 
 = 1.3.2 =
 * Bugfix
