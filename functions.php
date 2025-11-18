@@ -271,7 +271,6 @@ function iawmlf_get_date_format(): string {
  * @return void
  */
 function iawmlf_render_not_authenticated_notice(): void {
-
 	$in_unauthenticated_mode = __( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'internet-archive-wayback-machine-link-fixer' );
 
 	// If the archive api is not configured.

@@ -52,6 +52,4 @@ $iawmlf_existing_secret_key = isset( $_POST['iawmlf_wizard_archive_secret_key_te
 	<input type="<?php echo esc_html( $iawmlf_secret_type ); ?>" name="iawmlf_wizard_archive_secret_key" value="<?php echo esc_attr( $iawmlf_existing_secret_key ); ?>"<?php echo $iawmlf_invalid_keys ? ' class="invalid"' : ''; ?>/>
 </div>
 
-
-
 <?php echo wp_kses( $footer, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
