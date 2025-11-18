@@ -560,4 +560,27 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 
 		unset( $GLOBALS['post'] );
 	}
+
+	/**
+	 * @testdox When the HTML link output should not be rendered, it should not enqueue the script.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @return void
+	 */
+	public function test_do_nothing_option_not_enqueue_script(): void {
+		// Set the option to do nothing.
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_DO_NOTHING );
+		// update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		// Enqueue the script.
+		$handler = new WP_Post_Controller();
+		$handler->enqueue_frontend_script();
+		do_action( 'wp_enqueue_scripts' );
+
+		// Ensure the script is not enqueued.
+		$enqueued_scripts = wp_scripts()->queue;
+
+		$this->assertNotContains( 'iawm-link-fixer-front-link-checker', $enqueued_scripts );
+	}
 }

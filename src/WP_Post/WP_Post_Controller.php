@@ -206,6 +206,12 @@ class WP_Post_Controller {
 	 * @return void
 	 */
 	public function enqueue_frontend_script(): void {
+
+		// If the HTML link output should not be rendered, do not enqueue the script.
+		if ( ! Settings::should_render_html_link_output() ) {
+			return;
+		}
+
 		// Get the post id.
 		$post_id = get_the_ID();
 
