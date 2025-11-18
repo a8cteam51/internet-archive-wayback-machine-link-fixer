@@ -22,12 +22,6 @@ defined( 'ABSPATH' ) || exit;
 ?>
 
 <div class="iawmlf_dashboard-wrapper">
-	<?php if ( ! $iawmlf_api_configured ) : ?>
-		<div class="iawmlf_dashboard-warning">
-			<?php esc_html_e( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'internet-archive-wayback-machine-link-fixer' ); ?>
-		</div>
-	<?php endif; ?>
-
 	<?php if ( $iawmlf_api_configured && ! \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings::has_valid_archive_api_credentials() ) : ?>
 		<div class="iawmlf_dashboard-warning">
 			<?php esc_html_e( 'Your Archive.org API credentials are invalid. Please check your settings.', 'internet-archive-wayback-machine-link-fixer' ); ?>

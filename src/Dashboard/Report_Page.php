@@ -267,7 +267,6 @@ class Report_Page {
 
 		// Render any notices.
 		$table->render_notices();
-		iawmlf_render_not_authenticated_notice();
 
 		// Get the current page.
 		$current_page = isset( $_REQUEST['page'] ) ? \sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) : self::SLUG; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
