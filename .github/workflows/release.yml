@@ -23,7 +23,7 @@ jobs:
       - name: Run i18n Build
         run: |
           composer install --ignore-platform-reqs --no-interaction
-          composer internationalize --ignore-platform-reqs --no-interaction
+          composer internationalize
 
       # Install production dependencies
       - name: Install Composer Dependencies
