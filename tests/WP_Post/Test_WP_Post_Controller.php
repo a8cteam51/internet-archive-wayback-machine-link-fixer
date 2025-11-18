@@ -571,7 +571,6 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	public function test_do_nothing_option_not_enqueue_script(): void {
 		// Set the option to do nothing.
 		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_DO_NOTHING );
-		// update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
 
 		// Enqueue the script.
 		$handler = new WP_Post_Controller();
