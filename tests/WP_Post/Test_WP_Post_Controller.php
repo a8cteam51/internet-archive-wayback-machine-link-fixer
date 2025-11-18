@@ -494,4 +494,70 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$this->assertEmpty( get_post_meta( $post_id_2, Settings::OWN_LINK_LAST_PROCESSED ) );
 		$this->assertEmpty( get_post_meta( $post_id_3, Settings::OWN_LINK_LAST_PROCESSED ) );
 	}
+
+	/**
+	 * @testdox When an option is selected to fix links, it should be rendered out the HTML.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @return void
+	 */
+	public function test_render_html_link_output(): void {
+		// Set the option to render the HTML link output.
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		$post_id = \WP_UnitTestCase_Base::factory()->post->create();
+
+		$content = 'This is a post with a link to <a href="https://from.post/content">example</a><br>And another link to <a href="https://from.post/content_twice">example</a>';
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+				'post_type'    => 'post',
+			)
+		);
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		// Render the block.
+		$rendered = do_blocks( $GLOBALS['post']->post_content );
+
+		// Check contains the data-iawmlf-post-links attribute.
+		$this->assertStringContainsString( 'data-iawmlf-post-links', $rendered );
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox When an option is selected to do nothing, it should not render out the HTML link output.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @return void
+	 */
+	public function test_do_nothing_option_not_render_html_link_output(): void {
+		// Set the option to do nothing.
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_DO_NOTHING );
+
+		$post_id = \WP_UnitTestCase_Base::factory()->post->create();
+
+		$content = 'This is a post with a link to <a href="https://from.post/content">example</a><br>And another link to <a href="https://from.post/content_twice">example</a>';
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+				'post_type'    => 'post',
+			)
+		);
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		// Render the block.
+		$rendered = do_blocks( $GLOBALS['post']->post_content );
+
+		// Check does not contain the data-iawmlf-post-links attribute.
+		$this->assertStringNotContainsString( 'data-iawmlf-post-links', $rendered );
+
+		unset( $GLOBALS['post'] );
+	}
 }

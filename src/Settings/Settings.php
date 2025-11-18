@@ -10,8 +10,9 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Settings;
 
-use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Archive_Services_Online_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Abstract_Migration;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Archive_Services_Online_Event;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -297,9 +298,16 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function add_own_links(): bool {
+		$allow = (bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, true );
+
+		// If not production, force false.
+		if ( ! Environmental::is_production() ) {
+			$allow = false;
+		}
+
 		return (bool) apply_filters(
 			'iawmlf_add_own_content_to_wayback_machine',
-			(bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, true )
+			$allow
 		);
 	}
 
@@ -399,6 +407,29 @@ class Settings {
 			'iawmlf_reporting_page_capability',
 			'manage_options'
 		);
+	}
+
+	/**
+	 * Checks if the HTML link output should be rendered in the frontend.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @return boolean
+	 */
+	public static function should_render_html_link_output(): bool {
+		$allowed = in_array( self::get_fixer_option(), array( self::FIXER_OPTION_REPLACE_LINK ), true );
+
+		/**
+		 * Filter to allow or disallow the HTML link output in the frontend.
+		 *
+		 * @since 1.3.1
+		 *
+		 * @param boolean $allowed Whether the HTML link output should be rendered.
+		 * @param string  $option  The current fixer option.
+		 *
+		 * @return boolean
+		 */
+		return (bool) apply_filters( 'iawmlf_should_render_html_link_output', $allowed, self::get_fixer_option() );
 	}
 
 	/**

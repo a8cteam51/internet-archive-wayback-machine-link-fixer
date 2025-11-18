@@ -126,7 +126,7 @@ $iawmlf_tooltip_broken_links          = sprintf(
 							</a>
 							<div class="iawmlf_dashboard-stats-label"><?php esc_html_e( 'Total Links', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 						</div>
-						<div class="iawmlf_dashboard-stats-box iawmlf_dashboard-stats-box--danger">
+						<div class="iawmlf_dashboard-stats-box iawmlf_dashboard-stats-box--black">
 							<a href="<?php echo esc_url( $iawmlf_filtered_broken_redirected ); ?>" title="<?php echo esc_attr( $iawmlf_tooltip_links_saved ); ?>" class="iawmlf_dashboard-stats-number iawmlf_dashboard-stats-link">
 								<?php echo esc_html( $iawmlf_broken_redirected ); ?>
 							</a>

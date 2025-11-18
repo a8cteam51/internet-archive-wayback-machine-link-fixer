@@ -3,7 +3,7 @@ Contributors: waybackmachineplugin, wpspecialprojects
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.3.0
+Stable tag: 1.3.2
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -31,6 +31,9 @@ Protect your links, preserve your content, and automate the archiving process—
 == Frequently Asked Questions ==
 
 Watch Demo video: https://www.loom.com/share/7551a8aa791849fc81c9aa21ada268f1?sid=510daff9-40db-4986-8137-56471a3c8149
+
+= Multisite Compatible? =
+Sadly at present, it is not fully compatible. The only way it can currently be used on multisite is to only enable it site-wide and not network-wide. We plan to resolve this in the next release.
 
 = How does the link checker work? =
 Your content is checked for any links. When it finds a link it will check if we have already handled this link before, if not, it will find or create a snapshot of the webpage on the Internet Archive.
@@ -107,6 +110,13 @@ This service checks if web pages are accessible and retrieves final URLs after r
 The Internet Archive is a non-profit organization dedicated to preserving digital content for public access. URLs sent to these services become part of the public archive and may be accessible through the Wayback Machine interface. No personal information beyond the URLs themselves is transmitted to these services.
 
 == Changelog ==
+
+= 1.3.2 =
+* Bugfix
+
+= 1.3.1 =
+* Makes various UI and UX changes around icons, tool tips and labels.
+* Also fixes a few minor bugs regarding the settings and wizard flows.
 
 = 1.3.0 =
 * Initial public release.

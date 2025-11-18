@@ -145,7 +145,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		// Check the link status is now done.
 		$this->assertEquals( Link::PROCESS_DONE, $link->get_archive_process() );
 
-		$this->assertEquals( 'https://web.archive.org/web/iawmlf_glynn/https://example.com', $link->get_archived_href() );
+		$this->assertEquals( 'https://web-wp.archive.org/web/iawmlf_glynn/https://example.com', $link->get_archived_href() );
 
 		// Remove the filter.
 		remove_all_filters( 'iawmlf_snapshot_client' );

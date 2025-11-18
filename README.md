@@ -5,7 +5,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.8  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.3.0  
+**Stable tag:** 1.3.2 
 **License:** GPL-3.0-or-later  
 **License URI:** https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -174,6 +174,7 @@ You can access the report for the link by clicking on the URL. This will take yo
 | ![cross icon](./_docs/cross-icon.png) | A cross indicates that we do not have an archived link for this URL. |
 | ![clock icon](./_docs/clock-icon.png) | A clock indicates that we are currently trying to create a new snapshot for this URL. |
 | ![plus icon](./_docs/plus-icon.png) | A plus indicates that this is a new link that has not started the process yet. This will happen ASAP |
+| ![warning icon](./_docs/warning-icon.png) | A warning indicates that the link is excluded from being archived. |
 
 
 ### Link Health
@@ -608,6 +609,26 @@ add_filter( 'iawmlf_link_exclusions', function( array $exclusions ): array {
 });
 ```
 
+#### `iawmlf_is_production_environment`
+
+This filter allows you to override the production environment detection. By default, the plugin uses WordPress's `wp_get_environment_type()` function to determine if the site is running in a production environment. You can use this filter to customize this behavior for your specific setup.
+
+```php
+add_filter( 'iawmlf_is_production_environment', function( bool $is_production ): bool {
+   // Example: Force production mode based on domain
+   if ( strpos( $_SERVER['HTTP_HOST'], '.com' ) !== false ) {
+      return true;
+   }
+   
+   // Example: Check for custom environment variable
+   if ( defined( 'MY_CUSTOM_PRODUCTION_FLAG' ) && MY_CUSTOM_PRODUCTION_FLAG ) {
+      return true;
+   }
+   
+   return $is_production;
+});
+```
+
 ---
 
 #### Configuration Filters
@@ -623,6 +644,19 @@ add_filter( 'iawmlf_link_checker_timeout', function( int $timeout ): int {
    return 10000; // 10 seconds
 });
 ```
+
+#### `iawmlf_should_render_html_link_output`
+
+This filter allows you to control whether the HTML link output should be rendered in the frontend for post loops. By default, this is only enabled when the fixer option is set to "Replace Link".
+
+```php
+add_filter( 'iawmlf_should_render_html_link_output', function( bool $allowed, string $option ): bool {
+   // Example: Always render the HTML link output regardless of fixer option
+   return true;
+}, 10, 2 );
+```
+
+> **Note:** The HTML link output is used to provide link data to the frontend JavaScript for post loops. If disabled, the link data won't be available for JavaScript processing in loop contexts.
 
 #### `iawmlf_posts_per_batch`
 

@@ -298,7 +298,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 			throw new Exception( 'Invalid snapshot job id' );
 		}
 
-		$query_url = 'https://web.archive.org/save/status/' . $job_id;
+		$query_url = 'https://web-wp.archive.org/save/status/' . $job_id;
 
 		// Get the status of the job.
 		$response = wp_safe_remote_get( $query_url, array( 'headers' => $this->get_headers() ) );

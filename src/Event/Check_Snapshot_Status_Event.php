@@ -245,6 +245,13 @@ class Check_Snapshot_Status_Event {
 		// If the status is success, create Update_Archive_URL_Event.
 		if ( 'success' === $status['status'] ) {
 			$this->mark_as_pending( $link_id );
+
+			// If the link is excluded, but now is success, set the link as not excluded.
+			if ( $link->is_excluded() && 'success' === $status['status'] ) {
+				$link = $link->set_excluded( false );
+				$this->link_repository->upsert( $link );
+			}
+
 			Update_Archive_URL_Event::add_to_queue( $link_id );
 			return;
 		}
