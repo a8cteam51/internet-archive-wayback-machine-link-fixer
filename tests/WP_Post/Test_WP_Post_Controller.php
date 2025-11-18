@@ -35,7 +35,24 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		\remove_all_filters( 'iawmlf_own_content_post_types' );
 		\remove_all_filters( 'iawmlf_own_content_allow_post' );
 
+		// Reset the wp scripts globals
+		$GLOBALS['wp_scripts'] = new \WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
+
 		parent::set_up();
+	}
+
+	/**
+	 * Tare Down
+	 *
+	 * @return void
+	 */
+	public function tear_down(): void {
+		// Reset the wp scripts globals
+		$GLOBALS['wp_scripts'] = new \WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
+
+		parent::tear_down();
 	}
 
 	/**
