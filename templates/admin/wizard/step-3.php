@@ -36,7 +36,7 @@ $iawmlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
 			<label for="iawmlf_wizard_activate_auto_archiver">
 				<?php esc_html_e( 'Enable Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ); ?>
 			</label>
-			<input type="checkbox" id="is_active" name="iawmlf_wizard_activate_auto_archiver" value="1" <?php checked( Settings::add_own_links() ); ?> />
+			<input type="checkbox" id="is_active" name="iawmlf_wizard_activate_auto_archiver" value="1" <?php checked( Settings::add_own_links( true ) ); ?> />
 		</div>
 		<p class="description"><?php esc_html_e( 'When the Auto Archiver is enabled, your content is automatically archived on the Internet Archive each time you publish or save changes to a post of the selected types.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	</div>

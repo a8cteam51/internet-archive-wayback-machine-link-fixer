@@ -75,10 +75,12 @@ class Settings {
 	 *
 	 * @since 1.3.0
 	 *
+	 * @param boolean $default_value Optional default value if not set. Default false.
+	 *
 	 * @return boolean
 	 */
-	public static function is_link_processing_enabled(): bool {
-		return (bool) get_option( self::PROCESS_LINKS, true );
+	public static function is_link_processing_enabled( bool $default_value = false ): bool {
+		return (bool) get_option( self::PROCESS_LINKS, $default_value );
 	}
 
 	/**
@@ -295,10 +297,12 @@ class Settings {
 	 *
 	 * @since 1.3.0
 	 *
+	 * @param boolean $default_value Optional default value if not set. Default false.
+	 *
 	 * @return boolean
 	 */
-	public static function add_own_links(): bool {
-		$allow = (bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, true );
+	public static function add_own_links( bool $default_value = false ): bool {
+		$allow = (bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, $default_value );
 
 		// If not production, force false.
 		if ( ! Environmental::is_production() ) {
