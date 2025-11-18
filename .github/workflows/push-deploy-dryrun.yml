@@ -16,9 +16,11 @@ jobs:
           composer install --ignore-platform-reqs --no-interaction
           composer internationalize
 
+      # Install PROD Deps
       - name: Install Composer Dependencies
         run: composer install --no-dev
 
+      # Install Node Modules and Build Assets
       - name: Install Node Modules and Build Assets
         run: |
           npm install
