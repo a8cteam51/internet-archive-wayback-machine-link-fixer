@@ -3,7 +3,7 @@
  * The wayback-link-fixer bootstrap file.
  *
  * @since       1.0.0
- * @version     1.3.3-RC2
+ * @version     1.3.3-RC3
  * @author       Internet Archive
  * @license     GPL-3.0-or-later
  *
@@ -12,7 +12,7 @@
  * @wordpress-plugin
  * Plugin Name:             Internet Archive Wayback Machine Link Fixer
  * Description:             This plugin scans your content for links, replacing broken ones with archived versions from the Wayback Machine. It also features Auto Archiving, which automatically creates snapshots of your own pages and any other links on your site that aren’t yet archived, ensuring long-term accessibility.
- * Version:                 1.3.3-RC2
+ * Version:                 1.3.3-RC3
  * Requires at least:       6.4
  * Tested up to:            6.8
  * Requires PHP:            7.4
@@ -30,7 +30,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'IAWMLF_BASENAME', plugin_basename( __FILE__ ) );
 define( 'IAWMLF_PATH', plugin_dir_path( __FILE__ ) );
 define( 'IAWMLF_URL', plugin_dir_url( __FILE__ ) );
-define( 'IAWMLF_VERSION', '1.3.3-RC2' );
+define( 'IAWMLF_VERSION', '1.3.3-RC3' );
 define(
 	'IAWMLF_MINIMUM_VERSIONS',
 	array(
