@@ -56,6 +56,12 @@ jobs:
 
       - name: Install dependencies
         run: composer run-script packages-install
+
+      - name: Build Assets
+        run: |
+          npm install
+          npm run build
+
       - name: Run Tests on Latest Version - WP6.8
         env:
           environment_github: true
