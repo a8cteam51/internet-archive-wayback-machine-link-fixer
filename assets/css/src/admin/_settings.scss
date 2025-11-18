@@ -56,6 +56,11 @@
     >p.description {
         padding: 10px 15px 5px;
     }
+    &.auto-archiver.staging {
+        .form-table {
+            display: none;
+        }
+    }
 }
 
 .iawmlf_settings_card {

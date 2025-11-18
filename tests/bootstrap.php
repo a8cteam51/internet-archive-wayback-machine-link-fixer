@@ -22,10 +22,28 @@ try {
 
 define( 'FIXTURES_PATH', __DIR__ . '/Fixtures' );
 
+// Custom error handler to ignore specific errors.
+$previous_error_handler = set_error_handler(
+	function ( $errno, $errstr, $errfile, $errline ) use ( &$previous_error_handler ) {
+		// Ignore translation early errors, we need to do this before init to allow the action scheduler to load correctly.
+		if ( str_starts_with( $errstr, 'Function _load_textdomain_just_in_time was called' ) ) {
+			return true;
+		}
+		if ( $previous_error_handler ) {
+			return call_user_func( $previous_error_handler, $errno, $errstr, $errfile, $errline );
+		}
+		return false;
+	}
+);
+
+
 
 tests_add_filter(
 	'muplugins_loaded',
 	function () {
+
+		$GLOBALS['wp_theme_directories'] = array( dirname( __DIR__ ) . '/vendor/wp-phpunit/wp-phpunit/data/themedir1' );
+
 		// Activate the plugin.
 		include_once ABSPATH . 'wp-admin/includes/plugin.php';
 		activate_plugin( 'internet-archive-wayback-machine-link-fixer/internet-archive-wayback-machine-link-fixer.php' );

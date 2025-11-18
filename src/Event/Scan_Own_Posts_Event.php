@@ -14,6 +14,7 @@ namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
 use WP_Query;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental;
 use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller;
 
 defined( 'ABSPATH' ) || exit;
@@ -53,6 +54,11 @@ class Scan_Own_Posts_Event {
 	 * @return void
 	 */
 	public static function add_to_action_scheduler(): void {
+
+		// If we are not in production, bail.
+		if ( ! Environmental::is_production() ) {
+			return;
+		}
 
 		// If dont allow own links to be added, bail.
 		if ( ! Settings::add_own_links() ) {

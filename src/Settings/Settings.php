@@ -10,8 +10,9 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Settings;
 
-use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Archive_Services_Online_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Abstract_Migration;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Archive_Services_Online_Event;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -297,9 +298,16 @@ class Settings {
 	 * @return boolean
 	 */
 	public static function add_own_links(): bool {
+		$allow = (bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, true );
+
+		// If not production, force false.
+		if ( ! Environmental::is_production() ) {
+			$allow = false;
+		}
+
 		return (bool) apply_filters(
 			'iawmlf_add_own_content_to_wayback_machine',
-			(bool) get_option( self::ALLOW_OWN_CONTENT_SUBMISSIONS, true )
+			$allow
 		);
 	}
 
