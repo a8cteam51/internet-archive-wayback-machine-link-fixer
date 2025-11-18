@@ -567,6 +567,8 @@ class Settings_Page {
 			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
 		);
 
+		$empty_api_creds = '' === Settings::get_archive_access_key() && '' === Settings::get_archive_secret_key();
+
 		add_settings_field(
 			Settings::ARCHIVE_ORG_ACCESS_KEY,
 			__( 'Archive.org Access Key', 'internet-archive-wayback-machine-link-fixer' ),
@@ -574,7 +576,7 @@ class Settings_Page {
 			self::PAGE_SLUG,
 			self::GROUP_IA_SETTINGS,
 			array(
-				'class' => Settings::has_valid_archive_api_credentials() ? '' : 'iawmlf_toggle_setting__invalid_api_keys',
+				'class' => Settings::has_valid_archive_api_credentials() || $empty_api_creds ? '' : 'iawmlf_toggle_setting__invalid_api_keys',
 			)
 		);
 
@@ -585,7 +587,7 @@ class Settings_Page {
 			self::PAGE_SLUG,
 			self::GROUP_IA_SETTINGS,
 			array(
-				'class' => Settings::has_valid_archive_api_credentials() ? '' : 'iawmlf_toggle_setting__invalid_api_keys',
+				'class' => Settings::has_valid_archive_api_credentials() || $empty_api_creds ? '' : 'iawmlf_toggle_setting__invalid_api_keys',
 			)
 		);
 
@@ -633,6 +635,11 @@ class Settings_Page {
 	 * @return string
 	 */
 	public function render_invalid_api_keys_message(): string {
+		// If both keys are empty, do not show any message.
+		if ( '' === Settings::get_archive_access_key() && '' === Settings::get_archive_secret_key() ) {
+			return '';
+		}
+
 		if ( ! Settings::has_valid_archive_api_credentials() ) {
 			return '<div id="invalid_api_creds"><p class="description">' . esc_html__( 'The Archive.org API keys are invalid. Please check your settings.', 'internet-archive-wayback-machine-link-fixer' ) . '</p></div>' .
 			'<div id="unchecked_api_creds" style="display: none;"><p class="description">' . esc_html__( 'API credentials will be verified when you save the settings.', 'internet-archive-wayback-machine-link-fixer' ) . '</p></div>';

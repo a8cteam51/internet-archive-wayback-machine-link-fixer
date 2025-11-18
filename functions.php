@@ -276,7 +276,7 @@ function iawmlf_render_not_authenticated_notice(): void {
 	// If the archive api is not configured.
 	if ( ! Settings::is_archive_api_configured() ) {
 		?>
-		<div class="notice notice-error">
+		<div class="notice notice-error is-dismissible">
 			<p>
 				<?php echo esc_html( $in_unauthenticated_mode ); ?>
 			</p>
