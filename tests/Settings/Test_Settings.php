@@ -216,12 +216,28 @@ class Test_Settings extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_define_if_existing_posts_should_be_scanned(): void {
-		// By default, existing posts should be scanned.
-		$this->assertTrue( Settings::should_scan_existing_posts() );
+		// By default, existing posts should not be scanned.
+		$this->assertFalse( Settings::should_scan_existing_posts() );
 
 		\update_option( Settings::SCAN_EXISTING_POSTS, true );
 
 		$this->assertTrue( Settings::should_scan_existing_posts() );
+	}
+
+	/**
+	 * @testdox It should be possible to force the default value for getting if existing posts should be scanned.
+	 *
+	 * @return void
+	 */
+	public function test_can_force_default_value_for_should_scan_existing_posts(): void {
+		// Remove the option to ensure we are using the default.
+		\delete_option( Settings::SCAN_EXISTING_POSTS );
+
+		// When we force the default value to false, it should return false.
+		$this->assertFalse( Settings::should_scan_existing_posts( false ) );
+
+		// When we force the default value to true, it should return true.
+		$this->assertTrue( Settings::should_scan_existing_posts( true ) );
 	}
 
 	/**

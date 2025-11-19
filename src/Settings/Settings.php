@@ -196,14 +196,16 @@ class Settings {
 	 *
 	 * @since 1.2.0
 	 *
+	 * @param boolean $default_value Optional default value if not set. Default false.
+	 *
 	 * @return boolean
 	 */
-	public static function should_scan_existing_posts(): bool {
+	public static function should_scan_existing_posts( bool $default_value = false ): bool {
 		// If you can not process links, return false.
-		if ( ! self::is_link_processing_enabled() ) {
+		if ( ! self::is_link_processing_enabled( $default_value ) ) {
 			return false;
 		}
-		return (bool) get_option( self::SCAN_EXISTING_POSTS, true );
+		return (bool) get_option( self::SCAN_EXISTING_POSTS, $default_value );
 	}
 
 	/**
@@ -256,10 +258,12 @@ class Settings {
 	 *
 	 * @since 1.3.0
 	 *
+	 * @param string $default_value Optional default value if not set. Default FIXER_OPTION_REPLACE_LINK.
+	 *
 	 * @return string
 	 */
-	public static function get_fixer_option(): string {
-		return esc_attr( get_option( self::FIXER_OPTION, self::FIXER_OPTION_REPLACE_LINK ) );
+	public static function get_fixer_option( string $default_value = self::FIXER_OPTION_REPLACE_LINK ): string {
+		return esc_attr( get_option( self::FIXER_OPTION, $default_value ) );
 	}
 
 	/**
