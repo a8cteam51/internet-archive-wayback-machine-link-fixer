@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 
 // Holds the class to hide all inputs if not enabled.
-$iawmlf_hide_class = Settings::add_own_links() ? '' : ' disabled';
+$iawmlf_hide_class = Settings::add_own_links( true ) ? '' : ' disabled';
 ?>
 
 <?php echo wp_kses( $header, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>

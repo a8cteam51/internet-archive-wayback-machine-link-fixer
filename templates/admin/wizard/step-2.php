@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 
 // Holds the class to hide all inputs if not enabled.
-$iawmlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
+$iawmlf_hide_class = Settings::is_link_processing_enabled( true ) ? '' : ' disabled';
 ?>
 
 <?php echo wp_kses( $header, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
@@ -65,7 +65,7 @@ $iawmlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 			<label for="iawmlf_wizard_scan_existing_content">
 				<?php esc_html_e( 'Scan Existing Content', 'internet-archive-wayback-machine-link-fixer' ); ?>
 			</label>
-			<input type="checkbox" name="iawmlf_wizard_scan_existing_content" id="iawmlf_wizard_scan_existing_content" value="1" <?php checked( Settings::should_scan_existing_posts() ); ?> />
+			<input type="checkbox" name="iawmlf_wizard_scan_existing_content" id="iawmlf_wizard_scan_existing_content" value="1" <?php checked( Settings::should_scan_existing_posts( true ) ); ?> />
 		</div>
 		<p class="description"><?php esc_html_e( 'If enabled, all existing posts of the selected types will be scanned and processed. Please note this process can take significant time (potentially hours or days) depending on the amount of content and number of links.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	</div>
@@ -80,10 +80,10 @@ $iawmlf_hide_class = Settings::is_link_processing_enabled() ? '' : ' disabled';
 		id="iawmlf_wizard_outcome"
 		name="iawmlf_wizard_outcome"
 	>
-		<option value="<?php echo esc_attr( Settings::FIXER_OPTION_REPLACE_LINK ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_REPLACE_LINK ); ?>>
+		<option value="<?php echo esc_attr( Settings::FIXER_OPTION_REPLACE_LINK ); ?>" <?php selected( Settings::get_fixer_option( Settings::FIXER_OPTION_REPLACE_LINK ), Settings::FIXER_OPTION_REPLACE_LINK ); ?>>
 			<?php esc_html_e( 'Replace Link (No Notification)', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</option>
-		<option value="<?php echo esc_attr( Settings::FIXER_OPTION_DO_NOTHING ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_DO_NOTHING ); ?>>
+		<option value="<?php echo esc_attr( Settings::FIXER_OPTION_DO_NOTHING ); ?>" <?php selected( Settings::get_fixer_option( Settings::FIXER_OPTION_REPLACE_LINK ), Settings::FIXER_OPTION_DO_NOTHING ); ?>>
 			<?php esc_html_e( 'Do Nothing', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</option>
 	</select>

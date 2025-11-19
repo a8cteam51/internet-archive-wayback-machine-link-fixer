@@ -220,7 +220,19 @@ class Setup_Wizard {
 			return;
 		}
 
-		$index    = array_keys( self::STEPS );
+		$steps = self::STEPS;
+
+		// If we are on staging, ensure, the step-3 is skipped.
+		if ( ! Environmental::is_production() ) {
+			unset( $steps['step-3'] );
+
+			// If the current state is step-3, set to 2.
+			if ( 'step-3' === $current_step ) {
+				$current_step = 'step-2';
+			}
+		}
+
+		$index    = array_keys( $steps );
 		$previous = array_search( $current_step, $index, true ) - 1;
 
 		// Update the step.
@@ -312,8 +324,16 @@ class Setup_Wizard {
 		update_option( Settings::FIXER_OPTION, $outcome );
 
 		// Update the step.
-		$next = sanitize_text_field( wp_unslash( $_POST['iawmlf-next-step'] ) );
-		update_option( self::OPTION_NAME, $next );
+
+		// If we are not on production, mark the setup as complete, else just step 2.
+		if ( ! Environmental::is_production() ) {
+			// Update the step.
+			update_option( self::OPTION_NAME, 'complete' );
+			update_option( self::HAS_COMPLETED, true );
+		} else {
+			$next = sanitize_text_field( wp_unslash( $_POST['iawmlf-next-step'] ) );
+			update_option( self::OPTION_NAME, $next );
+		}
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
 
@@ -417,11 +437,21 @@ class Setup_Wizard {
 	private function get_step_data(): array {
 		$state = get_option( self::OPTION_NAME, 'step-1' );
 
+		// If state is not valid, set to step-1.
+		if ( ! array_key_exists( $state, self::STEPS ) ) {
+			$state = 'step-1';
+		}
+
 		$steps = self::STEPS;
 
 		// If we are on staging, ensure, the step-3 is skipped.
 		if ( ! Environmental::is_production() ) {
 			unset( $steps['step-3'] );
+
+			// If the current state is step-3, set to 2.
+			if ( 'step-3' === $state ) {
+				$state = 'step-2';
+			}
 		}
 
 		$index      = array_keys( $steps );
