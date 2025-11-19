@@ -35,3 +35,10 @@ jobs:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SLUG: internet-archive-wayback-machine-link-fixer
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{github.workspace}}/SVN-${{ github.event.repository.name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
