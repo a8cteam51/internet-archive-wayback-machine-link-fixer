@@ -556,5 +556,9 @@ class Settings {
 		delete_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE );
 		delete_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL );
 		delete_option( self::POST_ACTIVATION_ONBOARDING_KEY );
+		delete_option( self::MINIMUM_CHECKS_BEFORE_BROKEN );
+		delete_option( self::LINK_CHECK_DURATION_IN_DAYS );
+		delete_option( self::SETUP_WIZARD_STEP_KEY );
+		delete_option( self::SETUP_WIZARD_COMPLETED_KEY );
 	}
 }
