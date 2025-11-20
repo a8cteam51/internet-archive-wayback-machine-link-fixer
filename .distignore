@@ -5,7 +5,6 @@ coverage-report
 .git
 .github
 .gitignore
-index.php
 node_modules
 models
 package.json
