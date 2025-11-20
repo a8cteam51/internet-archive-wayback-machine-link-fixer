@@ -63,6 +63,33 @@ class Scan_Posts_Event {
 	}
 
 	/**
+	 * Force add to action scheduler. Will clear existing scheduled actions.
+	 *
+	 * @since 1.3.4
+	 *
+	 * @return void
+	 */
+	public static function force_add_to_action_scheduler(): void {
+		// Check if enabled in settings.
+		$allow = Settings::should_scan_existing_posts();
+
+		if ( ! $allow ) {
+			return;
+		}
+
+		// Bail if action scheduler is not available.
+		if ( ! function_exists( 'as_has_scheduled_action' ) ) {
+			return;
+		}
+
+		// Clear existing scheduled actions.
+		as_unschedule_all_actions( self::HANDLE );
+
+		// Add to action scheduler.
+		as_enqueue_async_action( self::HANDLE, array(), 'iawmlf_event', false, 0 );
+	}
+
+	/**
 	 * Add to action scheduler.
 	 *
 	 * @return void

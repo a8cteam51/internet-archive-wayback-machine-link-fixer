@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard;
 
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Scan_Posts_Event;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental;
 
@@ -315,11 +316,22 @@ class Setup_Wizard {
 			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['iawmlf_wizard_post_types'] )
 			: array();
 
+		// Checks if we should process links.
+		$process_links = empty( $allowed_post_types ) ? false : boolval( $is_active );
+
 		// Update all the settings.
-		update_option( Settings::PROCESS_LINKS, empty( $allowed_post_types ) ? false : $is_active );
+		update_option( Settings::PROCESS_LINKS, $process_links );
 		update_option( Settings::ALLOWED_POST_TYPES, $allowed_post_types );
-		update_option( Settings::SCAN_EXISTING_POSTS, true );
 		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		// If we do not have a saved value for this, set it match the process links option.
+		update_option( Settings::SCAN_EXISTING_POSTS, Settings::should_scan_existing_posts( $process_links ) );
+
+		// If we are still in initial onboarding, force the scan own content to true.
+		if ( Settings::ONBOARDING_PENDING_OPTION !== Settings::get_onboarding_status() ) {
+			// Force the scan own content to trigger early.
+			Scan_Posts_Event::force_add_to_action_scheduler();
+		}
 
 		// Mark as onboarding completed.
 		Settings::set_onboarding_status( Settings::ONBOARDING_COMPLETED_OPTION );

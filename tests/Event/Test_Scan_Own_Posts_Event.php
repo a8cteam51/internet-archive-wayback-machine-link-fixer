@@ -173,4 +173,6 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		// Check that the action is for the post 1.
 		$this->assertSame( $post_id_1, json_decode( $actions[0]->args )->post_id );
 	}
+
+
 }
