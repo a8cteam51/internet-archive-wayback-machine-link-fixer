@@ -120,7 +120,7 @@ class Setup_Wizard {
 		}
 
 		// If the url contains iawmlf_onboarding, do not redirect.
-		if ( isset( $_GET['iawmlf_onboarding'] ) ) {
+		if ( isset( $_GET['iawmlf_onboarding'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, only checking if exists
 			return;
 		}
 
@@ -285,7 +285,6 @@ class Setup_Wizard {
 		// Update the step.
 		$previous_step = $index[ $previous ];
 		Settings::update_setup_wizard_step( $previous_step );
-
 	}
 
 	/**

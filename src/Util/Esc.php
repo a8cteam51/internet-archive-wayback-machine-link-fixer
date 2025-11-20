@@ -39,9 +39,9 @@ class Esc {
 				'id'    => array(),
 			),
 			'button' => array(
-				'type'  => array(),
-				'name'  => array(),
-				'class' => array(),
+				'type'     => array(),
+				'name'     => array(),
+				'class'    => array(),
 				'disabled' => array(),
 			),
 			'p'      => array(

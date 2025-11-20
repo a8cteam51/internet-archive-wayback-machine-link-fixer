@@ -22,7 +22,7 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 <div class="iawmlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Step 3: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
 </div>
-<input type="shidden" name="iawmlf_wizard_activate_auto_archiver" value="<?php echo esc_attr( Settings::add_own_links( true ) ? '1' : '0' ); ?>"  />
+<input type="hidden" name="iawmlf_wizard_activate_auto_archiver" value="<?php echo esc_attr( Settings::add_own_links( true ) ? '1' : '0' ); ?>"  />
 
 <div class="iawmlf-wizard__content__intro">
 	<p><?php esc_html_e( 'Easily preserve your website’s content by enabling automatic archiving with the Internet Archive, setting up regular archiving, and choosing which post types to include.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>

@@ -19,7 +19,7 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 ?>
 
 <?php echo wp_kses( $header, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
-<input type="shidden" name="iawmlf_wizard_activate_link_fixer" value="<?php echo Settings::is_link_processing_enabled( true ) ? '1' : '0'; ?>" />
+<input type="hidden" name="iawmlf_wizard_activate_link_fixer" value="<?php echo Settings::is_link_processing_enabled( true ) ? '1' : '0'; ?>" />
 <div class="iawmlf-wizard__content__header">
 	<h2><?php esc_html_e( 'Step 2: Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
 </div>

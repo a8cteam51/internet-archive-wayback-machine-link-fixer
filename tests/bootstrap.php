@@ -65,6 +65,9 @@ tests_add_filter(
 
 		// Ensure the settings to process links is enabled.
 		update_option( Settings::PROCESS_LINKS, true );
+
+		// Ensure onboarding is marked as complete to prevent it interfering with tests.
+		update_option( Settings::POST_ACTIVATION_ONBOARDING_KEY, Settings::ONBOARDING_COMPLETED_OPTION );
 	}
 );
 
