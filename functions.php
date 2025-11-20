@@ -100,7 +100,18 @@ function iawmlf_get_plugin_instance(): Plugin {
  * @return  void
  */
 function iawmlf_activate(): void {
+
+	// Run migrations.
 	Migrations::up();
+
+	// If already marked as completed, do nothing.
+	if ( Settings::ONBOARDING_COMPLETED_OPTION === Settings::get_onboarding_status( Settings::ONBOARDING_PENDING_OPTION )
+	|| Settings::is_wizard_completed() ) {
+		return;
+	}
+
+	// Set the onboarding status to pending.
+	Settings::set_onboarding_status( Settings::ONBOARDING_PENDING_OPTION );
 }
 
 /**

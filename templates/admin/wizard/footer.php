@@ -29,7 +29,9 @@ $iawmlf_rerun_wizard = isset( $_GET['rerun-wizard'] ) && '1' === sanitize_text_f
 
 	<div id="iawmlf-wizard__footer">
 		<div class="iawmlf-wizard__footer__previous">
-			<?php if ( 'complete' !== $step_data['step'] || $iawmlf_rerun_wizard ) : ?>
+			<?php if ( 'step-1' === $step_data['step'] ) : ?>
+				<button class="button button-primary" type="button" name="" disabled <?php echo esc_attr( $iawmlf_previous_state ); ?>><?php esc_html_e( 'Previous Step', 'internet-archive-wayback-machine-link-fixer' ); ?></button>
+			<?php elseif ( 'complete' !== $step_data['step'] || $iawmlf_rerun_wizard ) : ?>
 				<button class="button button-primary" type="submit" name="iawmlf-previous-step" <?php echo esc_attr( $iawmlf_previous_state ); ?>><?php esc_html_e( 'Previous Step', 'internet-archive-wayback-machine-link-fixer' ); ?></button>
 			<?php endif; ?>
 		</div>

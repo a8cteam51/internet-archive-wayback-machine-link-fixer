@@ -26,19 +26,22 @@ class Settings {
 
 
 	// Option keys
-	public const PROCESS_LINKS                = self::SETTINGS_PREFIX . 'process_links';
-	public const ALLOWED_POST_TYPES           = self::SETTINGS_PREFIX . 'post_types';
-	public const MIGRATIONS_KEY               = self::SETTINGS_PREFIX . 'migration_log';
-	public const DROP_TABLES_ON_UNINSTALL_KEY = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
-	public const LINK_EXCLUSIONS              = self::SETTINGS_PREFIX . 'link_exclusions';
-	public const SCAN_EXISTING_POSTS          = self::SETTINGS_PREFIX . 'scan_existing_posts';
-	public const ARCHIVE_ORG_SECRET_KEY       = self::SETTINGS_PREFIX . 'archive_api_secret';
-	public const ARCHIVE_ORG_ACCESS_KEY       = self::SETTINGS_PREFIX . 'archive_api_access';
-	public const FIXER_OPTION                 = self::SETTINGS_PREFIX . 'fixer_option';
-	public const ARCHIVE_ORG_STATUS_KEY       = self::SETTINGS_PREFIX . 'archive_api_status';
-	public const ARCHIVE_ORG_CREDS_VALID_KEY  = self::SETTINGS_PREFIX . 'archive_api_creds_valid';
-	public const MINIMUM_CHECKS_BEFORE_BROKEN = self::SETTINGS_PREFIX . 'failed_count';
-	public const LINK_CHECK_DURATION_IN_DAYS  = self::SETTINGS_PREFIX . 'link_check_duration_in_days';
+	public const PROCESS_LINKS                  = self::SETTINGS_PREFIX . 'process_links';
+	public const ALLOWED_POST_TYPES             = self::SETTINGS_PREFIX . 'post_types';
+	public const MIGRATIONS_KEY                 = self::SETTINGS_PREFIX . 'migration_log';
+	public const DROP_TABLES_ON_UNINSTALL_KEY   = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
+	public const LINK_EXCLUSIONS                = self::SETTINGS_PREFIX . 'link_exclusions';
+	public const SCAN_EXISTING_POSTS            = self::SETTINGS_PREFIX . 'scan_existing_posts';
+	public const ARCHIVE_ORG_SECRET_KEY         = self::SETTINGS_PREFIX . 'archive_api_secret';
+	public const ARCHIVE_ORG_ACCESS_KEY         = self::SETTINGS_PREFIX . 'archive_api_access';
+	public const FIXER_OPTION                   = self::SETTINGS_PREFIX . 'fixer_option';
+	public const ARCHIVE_ORG_STATUS_KEY         = self::SETTINGS_PREFIX . 'archive_api_status';
+	public const ARCHIVE_ORG_CREDS_VALID_KEY    = self::SETTINGS_PREFIX . 'archive_api_creds_valid';
+	public const MINIMUM_CHECKS_BEFORE_BROKEN   = self::SETTINGS_PREFIX . 'failed_count';
+	public const LINK_CHECK_DURATION_IN_DAYS    = self::SETTINGS_PREFIX . 'link_check_duration_in_days';
+	public const POST_ACTIVATION_ONBOARDING_KEY = self::SETTINGS_PREFIX . 'post_activation_onboarding';
+	public const SETUP_WIZARD_STEP_KEY          = self::SETTINGS_PREFIX . 'setup_wizard';
+	public const SETUP_WIZARD_COMPLETED_KEY     = self::SETTINGS_PREFIX . 'setup_wizard_completed';
 
 	// Table names.
 	public const LINK_TABLE = 'iawmlf_link_archive';
@@ -51,6 +54,10 @@ class Settings {
 	// Fixer Options
 	public const FIXER_OPTION_DO_NOTHING   = 'do_nothing';
 	public const FIXER_OPTION_REPLACE_LINK = 'replace_link';
+
+	// Onboarding options.
+	public const ONBOARDING_COMPLETED_OPTION = self::SETTINGS_PREFIX . 'onboarding_completed';
+	public const ONBOARDING_PENDING_OPTION   = self::SETTINGS_PREFIX . 'onboarding_pending';
 
 	// Own content submissions.
 	public const ALLOW_OWN_CONTENT_SUBMISSIONS             = self::SETTINGS_PREFIX . 'allow_own_content_submissions';
@@ -441,6 +448,90 @@ class Settings {
 	}
 
 	/**
+	 * Get the current Wizard step
+	 *
+	 * @since 1.3.4
+	 *
+	 * @param string $default_value Optional default value if not set. Default 'step-1'.
+	 *
+	 * @return string
+	 */
+	public static function get_setup_wizard_step( string $default_value = 'step-1' ): string {
+		return (string) get_option( self::SETUP_WIZARD_STEP_KEY, $default_value );
+	}
+
+	/**
+	 * Sets the current Wizard step
+	 *
+	 * @since 1.3.4
+	 *
+	 * @param string $step The step to set.
+	 *
+	 * @return void
+	 */
+	public static function update_setup_wizard_step( string $step ): void {
+		update_option( self::SETUP_WIZARD_STEP_KEY, $step );
+	}
+
+	/**
+	 * Checks if the wizard has been completed.
+	 *
+	 * @since 1.3.4
+	 *
+	 * @return boolean
+	 */
+	public static function is_wizard_completed(): bool {
+		return (bool) get_option( self::SETUP_WIZARD_COMPLETED_KEY, false );
+	}
+
+	/**
+	 * Mark the wizard as completed or not.
+	 *
+	 * @since 1.3.4
+	 *
+	 * @param boolean $completed True if completed, false otherwise.
+	 *
+	 * @return void
+	 */
+	public static function set_wizard_completed( bool $completed ): void {
+		update_option( self::SETUP_WIZARD_COMPLETED_KEY, $completed );
+	}
+
+	/**
+	 * Sets the onboarding status.
+	 *
+	 * @since 1.3.4
+	 *
+	 * @param string $status The status to set.
+	 *
+	 * @return void
+	 */
+	public static function set_onboarding_status( string $status ): void {
+		// If the passed status is not valid, set as pending.
+		if ( ! in_array( $status, array( self::ONBOARDING_COMPLETED_OPTION, self::ONBOARDING_PENDING_OPTION ), true ) ) {
+			$status = self::ONBOARDING_PENDING_OPTION;
+		}
+
+		update_option( self::POST_ACTIVATION_ONBOARDING_KEY, $status, false );
+	}
+
+	/**
+	 * Get the current onboarding status.
+	 *
+	 * @since 1.3.4
+	 *
+	 * @param string $default_value Optional default value if not set. Default ONBOARDING_PENDING_OPTION.
+	 *
+	 * @return string
+	 */
+	public static function get_onboarding_status( string $default_value = self::ONBOARDING_COMPLETED_OPTION ): string {
+		$state = get_option( self::POST_ACTIVATION_ONBOARDING_KEY, $default_value );
+		return in_array( $state, array( self::ONBOARDING_COMPLETED_OPTION, self::ONBOARDING_PENDING_OPTION ), true )
+			? $state
+			: self::ONBOARDING_PENDING_OPTION;
+	}
+
+	/**
 	 * Clear all the options.
 	 *
 	 * @since 1.3.0
@@ -464,5 +555,6 @@ class Settings {
 		delete_option( self::ALLOWED_OWN_CONTENT_POST_TYPES );
 		delete_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE );
 		delete_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL );
+		delete_option( self::POST_ACTIVATION_ONBOARDING_KEY );
 	}
 }

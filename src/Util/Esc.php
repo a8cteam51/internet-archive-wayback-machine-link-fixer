@@ -42,6 +42,7 @@ class Esc {
 				'type'  => array(),
 				'name'  => array(),
 				'class' => array(),
+				'disabled' => array(),
 			),
 			'p'      => array(
 				'class' => array(),
