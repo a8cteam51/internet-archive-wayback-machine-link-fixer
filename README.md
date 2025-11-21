@@ -104,7 +104,7 @@ Specify links to exclude from being checked. This is useful for links known to b
 
 ![Check Frequency](./_docs/settings--check-frequency.png)
 
-Specify how often to recheck each link for validity. Avoid checking too often, as temporary outages or maintenance can cause false “broken” results. The default is 7 days.
+Specify how often to recheck each link for validity. Avoid checking too often, as temporary outages or maintenance can cause false “broken” results. The default is 3 days.
 
 #### Failure Threshold
 
@@ -670,7 +670,7 @@ add_filter( 'iawmlf_posts_per_batch', function( int $posts_per_batch ): int {
 
 ##### `iawmlf_link_check_duration_in_days`
 
-This is used to define how many days should be between checking if a link is still valid. The default is 7 days.
+This is used to define how many days should be between checking if a link is still valid. The default is 3 days.
 
 ```php
 add_filter( 'iawmlf_link_check_duration_in_days', function( int $days ): int {
@@ -691,13 +691,12 @@ add_filter( 'iawmlf_valid_http_status_codes', function( array $codes ): array {
 
 #### `iawmlf_failed_count`
 
-This is used to define how many checks with non valid status codes are encountered before marking a link as broken. The default is 5.
+This is used to define how many checks with non valid status codes are encountered before marking a link as broken. The default is 3.
 
 ```php
 add_filter( 'iawmlf_failed_count', function( int $checks ): int {
-   return 3;
+   return 4;
 });
-```
 
 #### `iawmlf_create_new_snapshot_attempts`
 
@@ -1080,5 +1079,6 @@ Run the full internationalization workflow (generate POT, update PO, build JSON)
 
 ```bash
 composer internationalize
+```
 
 

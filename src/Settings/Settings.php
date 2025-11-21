@@ -183,7 +183,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_link_check_duration(): int {
-		$duration = absint( get_option( self::LINK_CHECK_DURATION_IN_DAYS, 7 ) );
+		$duration = absint( get_option( self::LINK_CHECK_DURATION_IN_DAYS, 3 ) );
 		return absint( apply_filters( 'iawmlf_link_check_duration_in_days', $duration ) );
 	}
 
