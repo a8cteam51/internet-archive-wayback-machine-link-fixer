@@ -299,7 +299,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 8px;
+        margin-bottom: 0px;
         gap: 8px;
         min-width: 0; // Allow flex shrinking
     }
@@ -390,6 +390,7 @@
     &-posts {
         padding-top: 8px;
         border-top: 1px solid #f0f0f1;
+        margin-top: 13px;
         &-label {
             font-size: 12px;
             color: #50575e;
@@ -450,8 +451,12 @@
     }
     // Expanded state styling - more subtle
     &-item.expanded {
-        .iawmlf_dashboard-link-check-posts {
+        .iawmlf_dashboard-link-check-posts,
+        .iawmlf_dashboard-link-check-stats {
             animation: slideDown 0.2s ease-out;
+        }
+        .iawmlf_dashboard-link-check-stats {
+            margin-top: 15px;
         }
     }
     // Add smooth slide animation
@@ -465,6 +470,10 @@
             opacity: 1;
             max-height: 400px;
             padding-top: 8px;
+            margin-top: 8px;
         }
+    }
+    &-no-posts {
+        margin: 0;
     }
 }

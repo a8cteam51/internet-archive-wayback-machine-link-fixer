@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Template for displaying a list of links with their associated posts.
  * This template is reused for both "Recent Link Checks" and "Latest Links" sections.
@@ -11,6 +12,8 @@
  * @param string $iawmlf_link_table    URL to the links report page.
  * @param string $iawmlf_no_links_message Message to display when no links are available.
  */
+
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -77,8 +80,10 @@ defined( 'ABSPATH' ) || exit;
 								</span>
 							<?php endif; ?>
 						</div>
+
 					</div>
-					<?php if ( ! empty( $iawmlf_posts ) ) : ?>
+
+					<div class="iawmlf_dashboard-link-check-details">
 						<div class="iawmlf_dashboard-link-check-posts">
 							<div class="iawmlf_dashboard-link-check-details">
 								<div class="iawmlf_dashboard-link-check-details-item">
@@ -87,39 +92,107 @@ defined( 'ABSPATH' ) || exit;
 										<?php esc_html_e( 'View Full Report', 'internet-archive-wayback-machine-link-fixer' ); ?>
 									</a>
 								</div>
-							</div>
-							<span class="iawmlf_dashboard-link-check-posts-label">
-								<?php
-								printf(
-									/* translators: %d: number of posts */
-									esc_html( _n( 'Found in %d post:', 'Found in %d posts:', count( $iawmlf_posts ), 'internet-archive-wayback-machine-link-fixer' ) ),
-									count( $iawmlf_posts )
-								);
-								?>
-							</span>
-							<div class="iawmlf_dashboard-link-check-posts-list">
-								<?php
-								$iawmlf_displayed_posts = array_slice( $iawmlf_posts, 0, 12 ); // Show max 12 posts now
-								foreach ( $iawmlf_displayed_posts as $iawmlf_displayed_post ) :
-									?>
-									<a href="<?php echo esc_url( get_edit_post_link( $iawmlf_displayed_post->ID ) ); ?>" class="iawmlf_dashboard-link-check-post">
-										<?php echo esc_html( '' !== $iawmlf_displayed_post->post_title ? $iawmlf_displayed_post->post_title : __( '(No title)', 'internet-archive-wayback-machine-link-fixer' ) ); ?>
-									</a>
-								<?php endforeach; ?>
-								<?php if ( count( $iawmlf_posts ) > 12 ) : ?>
-									<span class="iawmlf_dashboard-link-check-posts-more">
+								<div class="iawmlf_dashboard-link-check-stats">
+									<!-- Current Status Section -->
+									<div class="iawmlf_link-status-section">
 										<?php
 										printf(
-											/* translators: %d: number of additional posts */
-											esc_html__( '... and %d more', 'internet-archive-wayback-machine-link-fixer' ),
-											count( $iawmlf_posts ) - 12
+											'<strong>%s</strong>: %s',
+											esc_html__( 'Current Status', 'internet-archive-wayback-machine-link-fixer' ),
+											wp_kses_post( ( new Internet_Archive\Wayback_Machine_Link_Fixer\Util\Link_Summary_Factory( $iawmlf_link ) )->get_summary() )
 										);
 										?>
-									</span>
-								<?php endif; ?>
+									</div>
+
+									<!-- Full URL Section -->
+									<div class="iawmlf_link-url-section">
+										<p>
+											<strong><?php esc_html_e( 'Full URL', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>: 
+											<a href="<?php echo esc_url( $iawmlf_link->get_href() ); ?>" target="_blank" rel="noopener noreferrer">
+												<?php echo esc_html( $iawmlf_link->get_href() ); ?>
+											</a>
+										</p>
+									</div>
+
+									<!-- Archive Status Section -->
+									<div class="iawmlf_link-archive-section">
+										<?php if ( $iawmlf_link->is_excluded() ) : ?>
+											<p class="iawmlf_link_archived_url">
+												<strong><?php esc_html_e( 'Archive Status', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>:
+												<?php esc_html_e( 'EXCLUDED', 'internet-archive-wayback-machine-link-fixer' ); ?>
+											</p>
+										<?php else : ?>
+											<p class="iawmlf_link_archived_url">
+												<strong><?php esc_html_e( 'Archive Status', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>:
+												<?php
+												if ( ! $iawmlf_link->is_processed() ) {
+													$iawmlf_archive_process = $iawmlf_link->get_archive_process();
+													if ( \Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link::PROCESS_NEW === $iawmlf_archive_process ) {
+														esc_html_e( 'NEW - This link has been queued and will be processed by the Internet Archive as soon as possible', 'internet-archive-wayback-machine-link-fixer' );
+													} else {
+														esc_html_e( 'PENDING – Queued for submission to the Internet Archive. Processing time varies based on queue size.', 'internet-archive-wayback-machine-link-fixer' );
+													}
+												} elseif ( '' !== $iawmlf_link->get_archived_href() ) {
+													esc_html_e( 'HAS ARCHIVE - A snapshot of this link is available on the Internet Archive', 'internet-archive-wayback-machine-link-fixer' );
+												} else {
+													esc_html_e( 'NO ARCHIVE - Unable to create or find a snapshot. This can happen if the URL is blocked by robots.txt, requires authentication, or is no longer accessible', 'internet-archive-wayback-machine-link-fixer' );
+												}
+												?>
+											</p>
+										<?php endif; ?>
+									</div>
+
+									<!-- Archived URL Section -->
+									<?php if ( ! $iawmlf_link->is_excluded() && '' !== $iawmlf_link->get_archived_href() ) : ?>
+										<div class="iawmlf_link-archived-url-section">
+											<p class="iawmlf_link_archived_url">
+												<strong><?php esc_html_e( 'Archived URL', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>:
+												<a href="<?php echo esc_url( $iawmlf_link->get_archived_href() ); ?>" target="_blank">
+													<?php echo esc_html( $iawmlf_link->get_archived_href() ); ?>
+												</a>
+											</p>
+										</div>
+									<?php endif; ?>
+								</div>
 							</div>
+							<?php if ( ! empty( $iawmlf_posts ) ) : ?>
+								<span class="iawmlf_dashboard-link-check-posts-label">
+									<?php
+									printf(
+										/* translators: %d: number of posts */
+										esc_html( _n( 'Found in %d post:', 'Found in %d posts:', count( $iawmlf_posts ), 'internet-archive-wayback-machine-link-fixer' ) ),
+										count( $iawmlf_posts )
+									);
+									?>
+								</span>
+								<div class="iawmlf_dashboard-link-check-posts-list">
+									<?php
+									$iawmlf_displayed_posts = array_slice( $iawmlf_posts, 0, 12 ); // Show max 12 posts now
+									foreach ( $iawmlf_displayed_posts as $iawmlf_displayed_post ) :
+										?>
+										<a href="<?php echo esc_url( get_edit_post_link( $iawmlf_displayed_post->ID ) ); ?>" class="iawmlf_dashboard-link-check-post">
+											<?php echo esc_html( '' !== $iawmlf_displayed_post->post_title ? $iawmlf_displayed_post->post_title : __( '(No title)', 'internet-archive-wayback-machine-link-fixer' ) ); ?>
+										</a>
+									<?php endforeach; ?>
+									<?php if ( count( $iawmlf_posts ) > 12 ) : ?>
+										<span class="iawmlf_dashboard-link-check-posts-more">
+											<?php
+											printf(
+												/* translators: %d: number of additional posts */
+												esc_html__( '... and %d more', 'internet-archive-wayback-machine-link-fixer' ),
+												count( $iawmlf_posts ) - 12
+											);
+											?>
+										</span>
+									<?php endif; ?>
+								</div>
+							<?php else : ?>
+								<p class="iawmlf_dashboard-link-check-no-posts">
+									<?php esc_html_e( 'No posts found with this link.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+								</p>
+							<?php endif; ?>
 						</div>
-					<?php endif; ?>
+					</div>
 				</div>
 			<?php endforeach; ?>
 		<?php else : ?>
