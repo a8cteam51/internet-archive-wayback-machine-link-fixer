@@ -159,7 +159,7 @@ defined( 'ABSPATH' ) || exit;
 		<?php endif; ?>
 		<a href="<?php echo esc_url( $iawmlf_link_to_settings ); ?>" class="button">
 			<span class="dashicons dashicons-admin-settings" style="margin-top: 3px;"></span>
-			<?php esc_html_e( 'Settings', 'internet-archive-wayback-machine-link-fixer' ); ?>
+			<?php esc_html_e( 'Advanced Settings', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</a>
 		<a href="<?php echo esc_url( $iawmlf_link_table ); ?>" class="button">
 			<span class="dashicons dashicons-list-view" style="margin-top: 3px;"></span>
