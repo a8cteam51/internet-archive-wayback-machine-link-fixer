@@ -406,7 +406,8 @@ class Setup_Wizard {
 		echo '<div class="wrap">';
 
 		echo '<div class="iawmlf-wizard__header">';
-			printf('<img src="%1$s" alt="%2$s" class="iawmlf-wizard__title__logo" /> ',
+			printf(
+				'<img src="%1$s" alt="%2$s" class="iawmlf-wizard__title__logo" /> ',
 				esc_url( IAWMLF_URL . 'assets/images/icon.svg' ),
 				__( 'Internet Archive Logo', 'internet-archive-wayback-machine-link-fixer' )
 			);
