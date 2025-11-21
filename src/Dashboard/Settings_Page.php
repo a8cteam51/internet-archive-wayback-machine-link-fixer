@@ -90,7 +90,7 @@ class Settings_Page {
 		$this->menu_hook = add_submenu_page(
 			Dashboard_Page::DASHBOARD_SLUG,
 			__( 'Wayback Link Fixer Settings', 'internet-archive-wayback-machine-link-fixer' ),
-			__( 'Settings', 'internet-archive-wayback-machine-link-fixer' ),
+			__( 'Advanced Settings', 'internet-archive-wayback-machine-link-fixer' ),
 			'manage_options',
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )
@@ -183,7 +183,7 @@ class Settings_Page {
 			<h1 class="wp-heading-inline iawmlf-settings__header">%s</h1>
 			%s
 			</div>',
-			esc_html__( 'Wayback Link Fixer - Settings', 'internet-archive-wayback-machine-link-fixer' ),
+			esc_html__( 'Wayback Link Fixer - Advanced Settings', 'internet-archive-wayback-machine-link-fixer' ),
 			$wizard_link // phpcs:ignore
 		);
 
