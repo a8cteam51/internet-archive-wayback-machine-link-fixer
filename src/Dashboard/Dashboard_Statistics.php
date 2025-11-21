@@ -208,7 +208,6 @@ class Dashboard_Statistics {
 	public static function get_onboarding_statistics(): array {
 		$from_cache = get_transient( self::ONBOARDING_STATS_TRANSIENT_KEY );
 
-		dump($from_cache);
 		// If we dont have an array or invalid data, compile fresh.
 		if ( false === $from_cache || ! is_array( $from_cache ) ) {
 			$stats = self::compile_onboarding_statistics();
@@ -221,6 +220,10 @@ class Dashboard_Statistics {
 				return $stats;
 			}
 		}
+
+		// Set the cache.
+		$expiry = absint( apply_filters( 'iawmlf_dashboard_onboarding_stats_cache_expiry', 2 * \MINUTE_IN_SECONDS ) );
+		set_transient( self::ONBOARDING_STATS_TRANSIENT_KEY, $stats, $expiry );
 
 		return $stats;
 	}

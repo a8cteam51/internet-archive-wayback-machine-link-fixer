@@ -78,7 +78,7 @@ class Scan_Posts_Event {
 		}
 
 		// Bail if action scheduler is not available.
-		if ( ! function_exists( 'as_has_scheduled_action' ) ) {
+		if ( ! function_exists( 'as_unschedule_all_actions' ) || ! function_exists( 'as_enqueue_async_action' ) ) {
 			return;
 		}
 

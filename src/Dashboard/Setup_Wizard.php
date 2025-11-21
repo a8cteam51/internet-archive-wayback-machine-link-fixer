@@ -343,13 +343,13 @@ class Setup_Wizard {
 		// Update all the settings.
 		update_option( Settings::PROCESS_LINKS, $process_links );
 		update_option( Settings::ALLOWED_POST_TYPES, $allowed_post_types );
-		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+		update_option( Settings::FIXER_OPTION, Settings::get_fixer_option( Settings::FIXER_OPTION_REPLACE_LINK ) );
 
 		// If we do not have a saved value for this, set it match the process links option.
 		update_option( Settings::SCAN_EXISTING_POSTS, Settings::should_scan_existing_posts( $process_links ) );
 
 		// If we are still in initial onboarding, force the scan own content to true.
-		if ( Settings::ONBOARDING_PENDING_OPTION !== Settings::get_onboarding_status() ) {
+		if ( Settings::ONBOARDING_PENDING_OPTION === Settings::get_onboarding_status() ) {
 			// Force the scan own content to trigger early.
 			Scan_Posts_Event::force_add_to_action_scheduler();
 		}

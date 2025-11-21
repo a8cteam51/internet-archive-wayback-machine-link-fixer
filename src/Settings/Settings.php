@@ -346,12 +346,14 @@ class Settings {
 	 *
 	 * @since 1.3.0
 	 *
+	 * @param boolean $default_value Optional default value if not set. Default false.
+	 *
 	 * @return boolean
 	 */
-	public static function own_link_routinely_update(): bool {
+	public static function own_link_routinely_update( bool $default_value = false ): bool {
 		return (bool) apply_filters(
 			'iawmlf_routinely_update_wayback_machine',
-			(bool) get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE, false )
+			(bool) get_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE, $default_value )
 		);
 	}
 
