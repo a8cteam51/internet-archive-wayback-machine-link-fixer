@@ -20,20 +20,16 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 
 <?php echo wp_kses( $header, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
 <input type="hidden" name="iawmlf_wizard_activate_link_fixer" value="<?php echo Settings::is_link_processing_enabled( true ) ? '1' : '0'; ?>" />
-<div class="iawmlf-wizard__content__header">
-	<h2><?php esc_html_e( 'Step 2: Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
-</div>
 
 <div class="iawmlf-wizard__content__intro">
-	<p><?php esc_html_e( '?? You can set the Link Fixer to work only with specific post types and apply it to existing posts.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
+	<p><?php esc_html_e( 'We\'ll scan your site\'s content for links and redirect the broken ones to snapshots on the Wayback Machine of what those links used to show.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 </div>
 
 
 <div class="iawmlf-wizard__content__field" >
 	<label for="iawmlf_wizard_post_types">
-		<?php esc_html_e( 'Post Types', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		<?php esc_html_e( 'Automatically fix broken links in:', 'internet-archive-wayback-machine-link-fixer' ); ?>
 	</label>
-	<p class="description"><?php esc_html_e( '?? Select the post types you want to enable the link fixer for.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	<div class="iawmlf-wizard__content__inner-field checkboxes">
 		<?php foreach ( $post_types as $iawmlf_pt_slug => $iawmlf_pt_name ) : ?>
 			<div class="inner-spaced-between__list">

@@ -19,20 +19,16 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 
 <?php echo wp_kses( $header, \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Esc::wizard_allowed_tags() ); ?>
 
-<div class="iawmlf-wizard__content__header">
-	<h2><?php esc_html_e( 'Step 3: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
-</div>
 <input type="hidden" name="iawmlf_wizard_activate_auto_archiver" value="<?php echo esc_attr( Settings::add_own_links( true ) ? '1' : '0' ); ?>"  />
 
 <div class="iawmlf-wizard__content__intro">
-	<p><?php esc_html_e( 'Easily preserve your website’s content by enabling automatic archiving with the Internet Archive, setting up regular archiving, and choosing which post types to include.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
+	<p><?php esc_html_e( 'In addition to fixing broken links, this plugin can preserve your content on the Wayback Machine in case your site goes offline. New posts will be preserved when published, and we\'ll schedule regular snapshots so your content stays preserved over time.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 </div>
 
 <div class="iawmlf-wizard__content__field" >
 	<label for="iawmlf_wizard_post_types">
-		<?php esc_html_e( 'Post Types', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		<?php esc_html_e( 'Automatically preserve:', 'internet-archive-wayback-machine-link-fixer' ); ?>
 	</label>
-	<p class="description"><?php esc_html_e( 'Select which post types should be archived on the Wayback Machine.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 	<div class="iawmlf-wizard__content__inner-field checkboxes">
 		<?php foreach ( $post_types as $iawmlf_pt_slug => $iawmlf_pt_name ) : ?>
 			<div class="inner-spaced-between__list">

@@ -24,17 +24,30 @@ $iawmlf_progress_string = sprintf(
 );
 $iawmlf_progress_pc  = ( $step_data['progress']['current'] / $step_data['progress']['total'] ) * 100;
 $iawmlf_rerun_wizard = isset( $_GET['rerun-wizard'] ) && '1' === sanitize_text_field( $_GET['rerun-wizard'] ); // phpcs:ignore
+
+// Based on the current step, set the button labels.
+switch ( $step_data['step'] ) {
+	case 'step-1':
+		$iawmlf_next_label     = esc_html__( 'Next Step: Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_previous_label = '';
+		break;
+	case 'step-2':
+		$iawmlf_next_label     = esc_html__( 'Next Step: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_previous_label = esc_html__( 'Previous Step: About', 'internet-archive-wayback-machine-link-fixer' );
+		break;
+	case 'step-3':
+		$iawmlf_next_label     = esc_html__( 'Finish Setup', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_previous_label = esc_html__( 'Previous Step: Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
+		break;
+	case 'complete':
+		$iawmlf_next_label     = '';
+		$iawmlf_previous_label = esc_html__( 'Previous Step: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' );
+		break;
+}
 ?>
 	</div> <!-- END Wizard content -->
 
 	<div id="iawmlf-wizard__footer">
-		<div class="iawmlf-wizard__footer__previous">
-			<?php if ( 'step-1' === $step_data['step'] ) : ?>
-				<button class="button button-primary" type="button" name="" disabled <?php echo esc_attr( $iawmlf_previous_state ); ?>><?php esc_html_e( 'Previous Step', 'internet-archive-wayback-machine-link-fixer' ); ?></button>
-			<?php elseif ( 'complete' !== $step_data['step'] || $iawmlf_rerun_wizard ) : ?>
-				<button class="button button-primary" type="submit" name="iawmlf-previous-step" <?php echo esc_attr( $iawmlf_previous_state ); ?>><?php esc_html_e( 'Previous Step', 'internet-archive-wayback-machine-link-fixer' ); ?></button>
-			<?php endif; ?>
-		</div>
 		<div class="iawmlf-wizard__footer__progress">
 			<?php if ( 'complete' !== $step_data['step'] ) : ?>
 			<div class="iawmlf-wizard__footer__progress__bar">
@@ -43,11 +56,24 @@ $iawmlf_rerun_wizard = isset( $_GET['rerun-wizard'] ) && '1' === sanitize_text_f
 			</div>
 			<?php endif; ?>
 		</div>
-		<div class="iawmlf-wizard__footer__next">
+
+		<div class="iawmlf-wizard__footer__actions">
+			<div class="iawmlf-wizard__footer__previous">
+			<?php if ( 'step-1' === $step_data['step'] ) : ?>
+				<span></span>
+			<?php elseif ( 'complete' !== $step_data['step'] || $iawmlf_rerun_wizard ) : ?>
+				<button class="button button-primary" type="submit" name="iawmlf-previous-step" <?php echo esc_attr( $iawmlf_previous_state ); ?>><?php echo esc_html( $iawmlf_previous_label ); ?></button>
+			<?php endif; ?>
+		</div>
+			<div class="iawmlf-wizard__footer__next">
 			<?php if ( 'complete' !== $step_data['step'] ) : ?>
 				<button class="button button-primary" type="submit" name="next-step" <?php echo esc_attr( $iawmlf_next_state ); ?>><?php echo esc_html( $iawmlf_next_label ); ?></button>
 			<?php endif; ?>
 		</div>
+		</div>
+
+
+
 	</div>
 	</form> <!-- END Wizard form -->
 </div> <!-- END Wizard container -->
