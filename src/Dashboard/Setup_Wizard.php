@@ -69,7 +69,7 @@ class Setup_Wizard {
 	}
 
 	/**
-	 * Adds the oboarding admin body class.
+	 * Adds the onboarding admin body class.
 	 *
 	 * @param string $class_str The existing classes.
 	 *
@@ -267,13 +267,6 @@ class Setup_Wizard {
 		// If current step is step-1, then we can't go back.
 		if ( 'step-1' === $current_step ) {
 			return;
-		}
-
-		// Upadate the current step to previous for rendering.
-		if ( 'step-3' === $current_step ) {
-			$this->handle_step_3();
-		} elseif ( 'step-2' === $current_step ) {
-			$this->handle_step_2();
 		}
 
 		$steps = self::STEPS;
