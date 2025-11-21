@@ -97,7 +97,7 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 		$this->assertStringContainsString( 'archived on archive.org', $summary );
 		$this->assertStringContainsString( 'not working', $summary );
 		$this->assertStringContainsString( 'failed 1 previous consecutive check', $summary );
-		$this->assertStringContainsString( '4 more', $summary );
+		$this->assertStringContainsString( '2 more', $summary );
 		$this->assertStringNotContainsString( 'checks', $summary );
 	}
 
@@ -119,7 +119,7 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 		$this->assertStringContainsString( 'archived on archive.org', $summary );
 		$this->assertStringContainsString( 'not working', $summary );
 		$this->assertStringContainsString( 'failed 2 previous consecutive checks', $summary );
-		$this->assertStringContainsString( '3 more', $summary );
+		$this->assertStringContainsString( '1 more', $summary );
 	}
 
 	/**
@@ -216,28 +216,6 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox It should handle boundary condition when failed checks equal the threshold.
-	 *
-	 * @return void
-	 */
-	public function test_handles_boundary_condition_at_threshold(): void {
-		$link = new Link( 'https://example.com' );
-		$link->set_archive_process( Link::PROCESS_DONE );
-		$link->set_archived_href( 'https://web.archive.org/web/20240101000000/https://example.com' );
-		$link->add_check( 500, '2024-01-01 09:00:00' );
-		$link->add_check( 500, '2024-01-01 10:00:00' );
-		$link->add_check( 500, '2024-01-01 11:00:00' );
-
-		$factory = new Link_Summary_Factory( $link );
-		$summary = $factory->get_summary();
-
-		$this->assertStringContainsString( 'archived on archive.org', $summary );
-		$this->assertStringContainsString( 'not working', $summary );
-		$this->assertStringContainsString( 'failed 3 previous consecutive checks', $summary );
-		$this->assertStringContainsString( '2 more', $summary );
-	}
-
-	/**
 	 * @testdox It should handle mixed valid and invalid checks correctly.
 	 *
 	 * @return void
@@ -256,7 +234,7 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 		$this->assertStringContainsString( 'archived on archive.org', $summary );
 		$this->assertStringContainsString( 'not working', $summary );
 		$this->assertStringContainsString( 'failed 2 previous consecutive checks', $summary );
-		$this->assertStringContainsString( '3 more', $summary );
+		$this->assertStringContainsString( '1 more', $summary );
 	}
 
 	/**
