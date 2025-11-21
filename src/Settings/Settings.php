@@ -42,6 +42,7 @@ class Settings {
 	public const POST_ACTIVATION_ONBOARDING_KEY = self::SETTINGS_PREFIX . 'post_activation_onboarding';
 	public const SETUP_WIZARD_STEP_KEY          = self::SETTINGS_PREFIX . 'setup_wizard';
 	public const SETUP_WIZARD_COMPLETED_KEY     = self::SETTINGS_PREFIX . 'setup_wizard_completed';
+	public const ONBOARDING_DATE_KEY            = self::SETTINGS_PREFIX . 'onboarding_date';
 
 	// Table names.
 	public const LINK_TABLE = 'iawmlf_link_archive';
@@ -495,6 +496,31 @@ class Settings {
 	 */
 	public static function set_wizard_completed( bool $completed ): void {
 		update_option( self::SETUP_WIZARD_COMPLETED_KEY, $completed );
+	}
+
+	/**
+	 * Gets the onboarding date.
+	 *
+	 * @since 1.3.4
+	 *
+	 * @return string|null
+	 */
+	public static function get_onboarding_date(): ?string {
+		$date = get_option( self::ONBOARDING_DATE_KEY, null );
+		return is_string( $date ) ? $date : null;
+	}
+
+	/**
+	 * Sets the onboarding date.
+	 *
+	 * @since 1.3.4
+	 *
+	 * @param string $date The date to set.
+	 *
+	 * @return void
+	 */
+	public static function set_onboarding_date( string $date ): void {
+		update_option( self::ONBOARDING_DATE_KEY, $date );
 	}
 
 	/**

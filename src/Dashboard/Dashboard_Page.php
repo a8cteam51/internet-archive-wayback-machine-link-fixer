@@ -70,6 +70,25 @@ class Dashboard_Page {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
+	/**
+	 * Checks if this page is the current page.
+	 *
+	 * @return boolean
+	 */
+	public static function is_current_page(): bool {
+		$screen = get_current_screen();
+		return $screen && 'toplevel_page_' . self::DASHBOARD_SLUG === $screen->id;
+	}
+
+	/**
+	 * Gets the page URL.
+	 *
+	 * @return string
+	 */
+	public static function get_page_url(): string {
+		return admin_url( 'admin.php?page=' . self::DASHBOARD_SLUG );
+	}
+
 
 	/**
 	 * Enqueue dashboard assets (styles and scripts).
@@ -149,131 +168,12 @@ class Dashboard_Page {
 	}
 
 	/**
-	 * Get the statistics for display on the dashboard.
-	 *
-	 * @return array{
-	 *     total_links: int<0, max>,
-	 *     broken_links: int<0, max>,
-	 *     links_with_archive: int<0, max>,
-	 *     links_without_archive: int<0, max>,
-	 *     not_checked: int<0, max>,
-	 *     process_done: int<0, max>,
-	 *     process_new: int<0, max>,
-	 *     process_pending: int<0, max>,
-	 *     last_checks: list<LastCheck>
-	 * }
-	 */
-	private function get_statistics(): array {
-		// Attempt to get from the transient.
-		$stats = get_transient( self::STATS_TRANSIENT_KEY );
-
-		if ( false === $stats || ! is_array( $stats ) ) {
-			$stats = $this->compile_statistics();
-
-			// Store for 2 minutes.
-			set_transient( self::STATS_TRANSIENT_KEY, $stats, 2 * MINUTE_IN_SECONDS );
-		}
-
-		return $stats;
-	}
-
-	/**
-	 * Compile the statistics.
-	 *
-	 * @return array{
-	 *     total_links: int<0, max>,
-	 *     broken_links: int<0, max>,
-	 *     links_with_archive: int<0, max>,
-	 *     links_without_archive: int<0, max>,
-	 *     not_checked: int<0, max>,
-	 *     process_done: int<0, max>,
-	 *     process_new: int<0, max>,
-	 *     process_pending: int<0, max>,
-	 * }
-	 */
-	private function compile_statistics(): array {
-		$all_links = $this->link_repository->query_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null );
-
-		// Get all the links stats.
-		$all_broken        = array();
-		$redirected_broken = array();
-		$has_archive_link  = array();
-		$not_checked       = array();
-		$process_done      = array();
-		$process_new       = array();
-		$process_pending   = array();
-		$last_checks       = array();
-
-		// Loop through all links to gather stats.
-		foreach ( $all_links as $link ) {
-			if ( $link->is_broken() && ! $link->is_excluded() ) {
-				$all_broken[] = $link->get_id();
-			}
-
-			if ( $link->is_broken() && $link->has_archived_href() && ! $link->is_excluded() ) {
-				$redirected_broken[] = $link->get_id();
-			}
-
-			if ( $link->has_archived_href() ) {
-				$has_archive_link[] = $link->get_id();
-			}
-
-			if ( null === $link->get_last_check() ) {
-				$not_checked[] = $link->get_id();
-			} else {
-				$last          = $link->get_last_check();
-				$last_checks[] = array(
-					'id'         => $link->get_id(),
-					'last_check' => $last,
-				);
-			}
-
-			switch ( $link->get_archive_process() ) {
-				case Link::PROCESS_NEW:
-					$process_new[] = $link->get_id();
-					break;
-				case Link::PROCESS_PENDING:
-					$process_pending[] = $link->get_id();
-					break;
-				default:
-					$process_done[] = $link->get_id();
-					break;
-			}
-		}
-
-		// Sort the last checks by date desc.
-		usort(
-			$last_checks,
-			function ( $a, $b ) {
-				return strtotime( $b['last_check']['date'] ) <=> strtotime( $a['last_check']['date'] );
-			}
-		);
-
-		$stats = array(
-			'total_links'                 => count( $all_links ),
-			'all_broken_links'            => count( $all_broken ),
-			'broken_and_redirected_links' => count( $redirected_broken ),
-			'broken_not_redirected_links' => count( $all_broken ) - count( $redirected_broken ),
-			'links_with_archive'          => count( $has_archive_link ),
-			'links_without_archive'       => count( $all_links ) - count( $has_archive_link ),
-			'not_checked'                 => count( $not_checked ),
-			'process_done'                => count( $process_done ),
-			'process_new'                 => count( $process_new ),
-			'process_pending'             => count( $process_pending ),
-			'last_checks'                 => array_slice( $last_checks, 0, $this->links_per_section ),
-		);
-
-		return $stats;
-	}
-
-
-	/**
 	 * Render the dashboard page.
 	 *
 	 * @return void
 	 */
 	public function render_page(): void {
-		$link_stats = $this->get_statistics();
+		$link_stats = Dashboard_Statistics::get_link_statistics();
 
 		$last_checks = array_map(
 			function ( $check ) {
@@ -346,7 +246,7 @@ class Dashboard_Page {
 		iawmlf_render_template(
 			'admin/dashboard/page.php',
 			array(
-				'iawmlf_link_stats'                 => $link_stats,
+				'iawmlf_link_stats'                 => Dashboard_Statistics::get_link_statistics(),
 				'iawmlf_last_checks'                => $last_checks,
 				'iawmlf_latest_links'               => $latest_links,
 				'iawmlf_account_details'            => Dashboard_Notifications::get_account_details(),
@@ -365,6 +265,7 @@ class Dashboard_Page {
 				'iawmlf_filtered_valid'             => esc_url( $valid_link ),
 				'iawmlf_filtered_has_archive'       => esc_url( $has_archive_link ),
 				'iawmlf_filtered_no_archive'        => esc_url( $has_no_archive_link ),
+				'iawmlf_onboarding_details'         => Dashboard_Statistics::get_onboarding_statistics(),
 			)
 		);
 	}

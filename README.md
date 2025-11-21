@@ -808,6 +808,26 @@ add_filter( 'iawmlf_dashboard_link_count', function( int $link_count ): int {
 });
 ```
 
+#### `iawmlf_dashboard_link_stats_cache_expiry`
+
+This is used to define how long dashboard link statistics are cached for. The default is 120 seconds (2 minutes).
+
+```php
+add_filter( 'iawmlf_dashboard_link_stats_cache_expiry', function( int $cache_expiry ): int {
+	return 5 * \MINUTE_IN_SECONDS; // Cache for 5 minutes
+});
+```
+
+#### `iawmlf_dashboard_onboarding_stats_cache_expiry`
+
+This is used to define how long dashboard onboarding statistics are cached for. The default is 120 seconds (2 minutes).
+
+```php
+add_filter( 'iawmlf_dashboard_onboarding_stats_cache_expiry', function( int $cache_expiry ): int {
+	return 5 * \MINUTE_IN_SECONDS; // Cache for 5 minutes
+});
+```
+
 #### `iawmlf_menu_icon_base64`
 
 This is used to override the base64 encoded PNG for the admin menu item icon. This allows you to customize the plugin's menu icon.

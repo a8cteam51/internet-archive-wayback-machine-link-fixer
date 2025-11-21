@@ -116,6 +116,14 @@ class Setup_Wizard {
 	 * @return void
 	 */
 	public function maybe_trigger_onboarding_wizard(): void {
+		if ( wp_doing_ajax() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		if ( Settings::ONBOARDING_COMPLETED_OPTION === Settings::get_onboarding_status() || Settings::is_wizard_completed() ) {
 			return;
 		}
@@ -289,6 +297,19 @@ class Setup_Wizard {
 	}
 
 	/**
+	 * Marks the onboarding as completed.
+	 *
+	 * @return void
+	 */
+	private function complete_onboarding(): void {
+		Settings::set_onboarding_status( Settings::ONBOARDING_COMPLETED_OPTION );
+		// If we do not have an onboarding date, set it now.
+		if ( ! Settings::get_onboarding_date() ) {
+			Settings::set_onboarding_date( current_time( 'mysql' ) );
+		}
+	}
+
+	/**
 	 * Handles step 1 form submission.
 	 *
 	 * @return void
@@ -334,7 +355,7 @@ class Setup_Wizard {
 		}
 
 		// Mark as onboarding completed.
-		Settings::set_onboarding_status( Settings::ONBOARDING_COMPLETED_OPTION );
+		$this->complete_onboarding();
 
 		// If we are not on production, mark the setup as complete, else just step 2.
 		if ( ! Environmental::is_production() ) {
@@ -366,6 +387,8 @@ class Setup_Wizard {
 		$allowed_post_types = isset( $_POST['iawmlf_wizard_post_types'] ) && is_array( $_POST['iawmlf_wizard_post_types'] )
 			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['iawmlf_wizard_post_types'] )
 			: array();
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
 		// Update all the settings.
 		update_option( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS, empty( $allowed_post_types ) ? false : (bool) $is_active );
 		update_option( Settings::ALLOWED_OWN_CONTENT_POST_TYPES, $allowed_post_types );
@@ -374,8 +397,9 @@ class Setup_Wizard {
 		// Update the step.
 		Settings::update_setup_wizard_step( 'complete' );
 		Settings::set_wizard_completed( true );
-		Settings::set_onboarding_status( Settings::ONBOARDING_COMPLETED_OPTION );
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		// Mark as onboarding completed.
+		$this->complete_onboarding();
 	}
 
 	/**
