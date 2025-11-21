@@ -13,6 +13,20 @@ body.iawmlf-onboarding-active #wpbody-content {
     }
 }
 
+.iawmlf-wizard__header {
+    width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    img {
+        width: 100px;
+    }
+}
+
 #iawmlf_wizard {
     padding: 20px 30px;
     background: white;
@@ -69,7 +83,7 @@ body.iawmlf-onboarding-active #wpbody-content {
     display: flex;
     width: 100%;
     align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
 }
 
 .iawmlf-wizard__footer__progress {
@@ -82,6 +96,14 @@ body.iawmlf-onboarding-active #wpbody-content {
     @media (max-width: 499px) {
         display: none;
     }
+    padding-bottom: 12px;
+}
+
+.iawmlf-wizard__footer__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .iawmlf-wizard__footer__progress__bar {
@@ -91,6 +113,10 @@ body.iawmlf-onboarding-active #wpbody-content {
     display: inline;
     text-align: center;
     position: relative;
+    p {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
     .iawmlf-wizard__footer__progress__bar__inner {
         background-color: #2271b1;
         height: 5px;

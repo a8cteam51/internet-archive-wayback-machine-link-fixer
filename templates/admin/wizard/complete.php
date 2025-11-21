@@ -27,7 +27,7 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page;
 	printf(
 		// translators: %s is a link to the plugin settings page.
 		esc_html__( 'Setup is now complete! You can edit these settings at any time from the %s page.', 'internet-archive-wayback-machine-link-fixer' ),
-		'<a href="' . esc_url( Settings_Page::get_page_url() ) . '">' . esc_html__( 'Wayback Link Fixer Settings', 'internet-archive-wayback-machine-link-fixer' ) . '</a>'
+		'<a href="' . esc_url( Settings_Page::get_page_url() ) . '">' . esc_html__( 'Advanced Settings page', 'internet-archive-wayback-machine-link-fixer' ) . '</a>'
 	);
 	?>
 	</p>

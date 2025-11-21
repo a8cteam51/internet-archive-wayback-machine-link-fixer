@@ -49,7 +49,7 @@ $iawmlf_tooltip_no_archive            = __( 'These links do not have archived sn
 $iawmlf_tooltip_checks_in_progress    = __( 'The plugin is still working through checking the status of these links and whether archived snapshots are available.', 'internet-archive-wayback-machine-link-fixer' );
 $iawmlf_tooltip_broken_links          = sprintf(
 	// translators: 1: number of broken links being redirected, 2: number of broken links not being redirected.
-	__( '%1$s being redirected, %2$s inedible for redirect', 'internet-archive-wayback-machine-link-fixer' ),
+	__( '%1$s being redirected, %2$s ineligible for redirect', 'internet-archive-wayback-machine-link-fixer' ),
 	$iawmlf_broken_redirected,
 	$iawmlf_broken_not_redirected
 );
