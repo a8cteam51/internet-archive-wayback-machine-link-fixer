@@ -224,7 +224,7 @@ class Settings {
 	 * @return integer
 	 */
 	public static function get_failed_count(): int {
-		$retries = absint( get_option( self::MINIMUM_CHECKS_BEFORE_BROKEN, 5 ) );
+		$retries = absint( get_option( self::MINIMUM_CHECKS_BEFORE_BROKEN, 3 ) );
 		return absint( apply_filters( 'iawmlf_failed_count', $retries ) );
 	}
 
