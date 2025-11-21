@@ -54,7 +54,7 @@
 
 		linkCheckItems.forEach(function (item) {
 			const titleLink = item.querySelector('.iawmlf_dashboard-link-check-title');
-			const posts = item.querySelector('.iawmlf_dashboard-link-check-posts');
+			const posts = item.querySelector('.iawmlf_dashboard-link-check-details');
 
 			if (titleLink && posts) {
 				// Initially hide the posts section
