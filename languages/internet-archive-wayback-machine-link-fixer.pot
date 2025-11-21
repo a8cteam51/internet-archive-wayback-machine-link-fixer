@@ -783,7 +783,7 @@ msgstr ""
 #. translators: 1: number of broken links being redirected, 2: number of broken links not being redirected.
 #: templates/admin/dashboard/page.php:51
 #, php-format
-msgid "%1$s being redirected, %2$s inedible for redirect"
+msgid "%1$s being redirected, %2$s ineligible for redirect"
 msgstr ""
 
 #: templates/admin/dashboard/page.php:58
