@@ -172,8 +172,8 @@ class Test_Settings extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_change_link_check_duration_via_filter(): void {
-		// By default, the link check duration is 7 day.
-		$this->assertEquals( 7, Settings::get_link_check_duration() );
+		// By default, the link check duration is 3 day.
+		$this->assertEquals( 3, Settings::get_link_check_duration() );
 
 		add_filter(
 			'iawmlf_link_check_duration_in_days',

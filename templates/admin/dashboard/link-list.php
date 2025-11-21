@@ -107,7 +107,7 @@ defined( 'ABSPATH' ) || exit;
 									<!-- Full URL Section -->
 									<div class="iawmlf_link-url-section">
 										<p>
-											<strong><?php esc_html_e( 'Full URL', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>: 
+											<strong><?php esc_html_e( 'Full URL', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>:
 											<a href="<?php echo esc_url( $iawmlf_link->get_href() ); ?>" target="_blank" rel="noopener noreferrer">
 												<?php echo esc_html( $iawmlf_link->get_href() ); ?>
 											</a>
