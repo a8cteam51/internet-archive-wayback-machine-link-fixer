@@ -390,9 +390,10 @@ class Setup_Wizard {
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		// Update all the settings.
-		update_option( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS, empty( $allowed_post_types ) ? false : (bool) $is_active );
+		$allow_own = empty( $allowed_post_types ) ? false : (bool) $is_active;
+		update_option( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS, $allow_own );
 		update_option( Settings::ALLOWED_OWN_CONTENT_POST_TYPES, $allowed_post_types );
-		update_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE, true );
+		update_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE, Settings::own_link_routinely_update( $allow_own ) );
 
 		// Update the step.
 		Settings::update_setup_wizard_step( 'complete' );

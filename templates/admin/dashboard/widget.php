@@ -20,7 +20,6 @@
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page;
 
 defined( 'ABSPATH' ) || exit;
-// dump( get_defined_vars() );
 ?>
 
 <div class="iawmlf_dashboard-wrapper">
