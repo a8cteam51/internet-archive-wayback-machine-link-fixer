@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard;
 
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Scan_Posts_Event;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental;
 
@@ -22,10 +23,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Setup_Wizard {
 
-	private const OPTION_NAME   = 'iawmlf_setup_wizard';
-	private const HAS_COMPLETED = 'iawmlf_setup_wizard_completed';
-	private const PAGE_SLUG     = 'iawmlf-setup-wizard';
-	private const STEPS         = array(
+	private const PAGE_SLUG = 'iawmlf-setup-wizard';
+	private const STEPS     = array(
 		'step-1'   => 'step-1.php',
 		'step-2'   => 'step-2.php',
 		'step-3'   => 'step-3.php',
@@ -43,15 +42,19 @@ class Setup_Wizard {
 		add_action( 'admin_menu', array( $this, 'register_setup_wizard' ) );
 		add_action( 'admin_init', array( $this, 'render_admin_notice' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'admin_init', array( $this, 'maybe_trigger_onboarding_wizard' ), 1 );
+		add_filter( 'admin_body_class', array( $this, 'add_onboarding_body_class' ) );
 	}
 
 	/**
 	 * Checks if the setup wizard is complete.
 	 *
+	 * @deprecated 1.3.4 Use Settings::is_wizard_completed() instead.
+	 *
 	 * @return boolean
 	 */
 	public static function is_setup_complete(): bool {
-		return (bool) get_option( self::HAS_COMPLETED, false );
+		return Settings::is_wizard_completed();
 	}
 
 	/**
@@ -66,12 +69,26 @@ class Setup_Wizard {
 	}
 
 	/**
+	 * Adds the onboarding admin body class.
+	 *
+	 * @param string $class_str The existing classes.
+	 *
+	 * @return string
+	 */
+	public static function add_onboarding_body_class( string $class_str ): string {
+		if ( array_key_exists( 'iawmlf_onboarding', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$class_str .= ' iawmlf-onboarding-active';
+		}
+		return $class_str;
+	}
+
+	/**
 	 * Render the admin notice.
 	 *
 	 * @return void
 	 */
 	public function render_admin_notice(): void {
-		if ( self::is_setup_complete() ) {
+		if ( Settings::is_wizard_completed() ) {
 			return;
 		}
 
@@ -91,6 +108,38 @@ class Setup_Wizard {
 				printf( '<div class="notice notice-warning is-dismissible"><p>%s</p></div>', wp_kses( $message, array( 'a' => array( 'href' => array() ) ) ) );
 			}
 		);
+	}
+
+	/**
+	 * Will trigger the wizard if not completed.
+	 *
+	 * @return void
+	 */
+	public function maybe_trigger_onboarding_wizard(): void {
+		if ( wp_doing_ajax() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		if ( Settings::ONBOARDING_COMPLETED_OPTION === Settings::get_onboarding_status() || Settings::is_wizard_completed() ) {
+			return;
+		}
+
+		// If the url contains iawmlf_onboarding, do not redirect.
+		if ( isset( $_GET['iawmlf_onboarding'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, only checking if exists
+			return;
+		}
+
+		$wizard_url = self::get_wizard_url();
+
+		// Add param to indicate onboarding.
+		$wizard_url = add_query_arg( 'iawmlf_onboarding', '1', $wizard_url );
+
+		wp_safe_redirect( $wizard_url );
+		exit;
 	}
 
 	/**
@@ -237,7 +286,20 @@ class Setup_Wizard {
 
 		// Update the step.
 		$previous_step = $index[ $previous ];
-		update_option( self::OPTION_NAME, $previous_step );
+		Settings::update_setup_wizard_step( $previous_step );
+	}
+
+	/**
+	 * Marks the onboarding as completed.
+	 *
+	 * @return void
+	 */
+	private function complete_onboarding(): void {
+		Settings::set_onboarding_status( Settings::ONBOARDING_COMPLETED_OPTION );
+		// If we do not have an onboarding date, set it now.
+		if ( ! Settings::get_onboarding_date() ) {
+			Settings::set_onboarding_date( current_time( 'mysql' ) );
+		}
 	}
 
 	/**
@@ -246,54 +308,7 @@ class Setup_Wizard {
 	 * @return void
 	 */
 	private function handle_step_1(): void {
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		// Check we have the 2 api creds.
-		if ( ! isset( $_POST['iawmlf_wizard_archive_access_key'], $_POST['iawmlf_wizard_archive_secret_key'] ) ) {
-			$this->add_notice( __( 'Missing archive.org credentials', 'internet-archive-wayback-machine-link-fixer' ), 'error' );
-			return;
-		}
-
-		// If next step is not set, bail.
-		if ( ! isset( $_POST['iawmlf-next-step'] ) ) {
-			$this->add_notice( __( 'Next step is not set', 'internet-archive-wayback-machine-link-fixer' ), 'error' );
-			return;
-		}
-
-		// Mark the step as completed.
-		$mark_completed = function () {
-			$next = sanitize_text_field( wp_unslash( $_POST['iawmlf-next-step'] ) );
-			update_option( self::OPTION_NAME, $next );
-		};
-
-		$access_key = sanitize_text_field( wp_unslash( $_POST['iawmlf_wizard_archive_access_key'] ) );
-		$secret_key = sanitize_text_field( wp_unslash( $_POST['iawmlf_wizard_archive_secret_key'] ) );
-
-		// If both are empty.
-		if ( '' === $access_key && '' === $secret_key ) {
-			// Mark the account as not valid.
-			Settings::update_archive_api_credentials_validity( false );
-			// If the user has not set any keys, we can mark the step as completed.
-			$mark_completed();
-			return;
-		}
-
-		// Check the users api credentials.
-		if ( ! iawmlf_get_system_client()->is_valid_user( $access_key, $secret_key ) ) {
-			$this->add_notice( __( 'Invalid Archive.org API credentials. Please verify your Access Key and Secret Key, or leave both fields blank to proceed without authentication.', 'internet-archive-wayback-machine-link-fixer' ), 'error' );
-			$_POST['iawmlf_wizard_invalid_keys'] = true; // Set a flag to indicate invalid keys.
-
-			// Hold the entered values in post.
-			$_POST['iawmlf_wizard_archive_access_key_temp'] = $access_key;
-			$_POST['iawmlf_wizard_archive_secret_key_temp'] = $secret_key;
-		} else {
-			// Save the keys.
-			update_option( Settings::ARCHIVE_ORG_ACCESS_KEY, $access_key );
-			update_option( Settings::ARCHIVE_ORG_SECRET_KEY, $secret_key );
-			// Mark the keys as valid.
-			Settings::update_archive_api_credentials_validity( true );
-			$mark_completed();
-		}
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
+		Settings::update_setup_wizard_step( 'step-2' );
 	}
 
 	/**
@@ -314,25 +329,35 @@ class Setup_Wizard {
 		$allowed_post_types = isset( $_POST['iawmlf_wizard_post_types'] ) && is_array( $_POST['iawmlf_wizard_post_types'] )
 			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['iawmlf_wizard_post_types'] )
 			: array();
-		$scan_existing      = isset( $_POST['iawmlf_wizard_scan_existing_content'] );
-		$outcome            = isset( $_POST['iawmlf_wizard_outcome'] ) ? sanitize_text_field( wp_unslash( $_POST['iawmlf_wizard_outcome'] ) ) : 'do_nothing';
+
+		// Checks if we should process links.
+		$process_links = empty( $allowed_post_types ) ? false : boolval( $is_active );
 
 		// Update all the settings.
-		update_option( Settings::PROCESS_LINKS, $is_active );
+		update_option( Settings::PROCESS_LINKS, $process_links );
 		update_option( Settings::ALLOWED_POST_TYPES, $allowed_post_types );
-		update_option( Settings::SCAN_EXISTING_POSTS, $scan_existing );
-		update_option( Settings::FIXER_OPTION, $outcome );
+		update_option( Settings::FIXER_OPTION, Settings::get_fixer_option( Settings::FIXER_OPTION_REPLACE_LINK ) );
 
-		// Update the step.
+		// If we do not have a saved value for this, set it match the process links option.
+		update_option( Settings::SCAN_EXISTING_POSTS, Settings::should_scan_existing_posts( $process_links ) );
+
+		// If we are still in initial onboarding, force the scan own content to true.
+		if ( Settings::ONBOARDING_PENDING_OPTION === Settings::get_onboarding_status() ) {
+			// Force the scan own content to trigger early.
+			Scan_Posts_Event::force_add_to_action_scheduler();
+		}
+
+		// Mark as onboarding completed.
+		$this->complete_onboarding();
 
 		// If we are not on production, mark the setup as complete, else just step 2.
 		if ( ! Environmental::is_production() ) {
 			// Update the step.
-			update_option( self::OPTION_NAME, 'complete' );
-			update_option( self::HAS_COMPLETED, true );
+			Settings::update_setup_wizard_step( 'complete' );
+			Settings::set_wizard_completed( true );
 		} else {
 			$next = sanitize_text_field( wp_unslash( $_POST['iawmlf-next-step'] ) );
-			update_option( self::OPTION_NAME, $next );
+			Settings::update_setup_wizard_step( $next );
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
@@ -351,21 +376,24 @@ class Setup_Wizard {
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		// Get values from the form.
-		$is_active             = isset( $_POST['iawmlf_wizard_activate_auto_archiver'] );
-		$allowed_post_types    = isset( $_POST['iawmlf_wizard_post_types'] ) && is_array( $_POST['iawmlf_wizard_post_types'] )
+		$is_active          = isset( $_POST['iawmlf_wizard_activate_auto_archiver'] );
+		$allowed_post_types = isset( $_POST['iawmlf_wizard_post_types'] ) && is_array( $_POST['iawmlf_wizard_post_types'] )
 			? array_map( fn( $type ) => sanitize_text_field( wp_unslash( $type ) ), $_POST['iawmlf_wizard_post_types'] )
 			: array();
-		$enable_routine_update = isset( $_POST['iawmlf_wizard_recurring_backup'] );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		// Update all the settings.
-		update_option( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS, $is_active );
+		$allow_own = empty( $allowed_post_types ) ? false : (bool) $is_active;
+		update_option( Settings::ALLOW_OWN_CONTENT_SUBMISSIONS, $allow_own );
 		update_option( Settings::ALLOWED_OWN_CONTENT_POST_TYPES, $allowed_post_types );
-		update_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE, $enable_routine_update );
+		update_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE, Settings::own_link_routinely_update( $allow_own ) );
 
 		// Update the step.
-		update_option( self::OPTION_NAME, 'complete' );
-		update_option( self::HAS_COMPLETED, true );
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
+		Settings::update_setup_wizard_step( 'complete' );
+		Settings::set_wizard_completed( true );
+
+		// Mark as onboarding completed.
+		$this->complete_onboarding();
 	}
 
 	/**
@@ -435,7 +463,7 @@ class Setup_Wizard {
 	 * @return array{template: string, step: string, next: string, progress: array{current: int, total: int}}
 	 */
 	private function get_step_data(): array {
-		$state = get_option( self::OPTION_NAME, 'step-1' );
+		$state = Settings::get_setup_wizard_step( 'step-1' );
 
 		// If state is not valid, set to step-1.
 		if ( ! array_key_exists( $state, self::STEPS ) ) {

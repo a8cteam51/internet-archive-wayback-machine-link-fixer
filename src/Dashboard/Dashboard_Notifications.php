@@ -96,6 +96,8 @@ class Dashboard_Notifications {
 				'iawmlf_link_processing_enabled' => Settings::is_link_processing_enabled(),
 				'iawmlf_link_check_duration'     => Settings::get_link_check_duration(),
 				'iawmlf_failed_check_count'      => Settings::get_failed_count(),
+				'iawmlf_onboarding_details'      => Dashboard_Statistics::get_onboarding_statistics(),
+				'iawmlf_link_stats'              => Dashboard_Statistics::get_link_statistics(),
 			)
 		);
 	}

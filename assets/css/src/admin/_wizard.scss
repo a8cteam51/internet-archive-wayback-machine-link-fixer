@@ -1,3 +1,18 @@
+// If onboarding is active.
+body.iawmlf-onboarding-active #wpbody-content {
+    position: fixed;
+    left: 0;
+    z-index: 9999;
+    background: #f1f1f1;
+    height: 100%;
+    width: 100%;
+    padding: 0 32px;
+    .wrap>h1 {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+}
+
 #iawmlf_wizard {
     padding: 20px 30px;
     background: white;

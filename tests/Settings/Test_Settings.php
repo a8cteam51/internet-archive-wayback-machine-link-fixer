@@ -297,6 +297,11 @@ class Test_Settings extends \WP_UnitTestCase {
 		update_option( Settings::ALLOWED_OWN_CONTENT_POST_TYPES, array( 'post', 'page', 'custom' ) );
 		update_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE, true );
 		update_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL, 10 );
+		update_option( Settings::POST_ACTIVATION_ONBOARDING_KEY, 'pending' );
+		update_option( Settings::MINIMUM_CHECKS_BEFORE_BROKEN, 3 );
+		update_option( Settings::LINK_CHECK_DURATION_IN_DAYS, 14 );
+		update_option( Settings::SETUP_WIZARD_STEP_KEY, 'step-2' );
+		update_option( Settings::SETUP_WIZARD_COMPLETED_KEY, true );
 
 		// Clear all the settings.
 		Settings::clear_all_options();
@@ -317,6 +322,11 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEmpty( get_option( Settings::ALLOWED_OWN_CONTENT_POST_TYPES ) );
 		$this->assertEmpty( get_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE ) );
 		$this->assertEmpty( get_option( Settings::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL ) );
+		$this->assertEmpty( get_option( Settings::POST_ACTIVATION_ONBOARDING_KEY ) );
+		$this->assertEmpty( get_option( Settings::MINIMUM_CHECKS_BEFORE_BROKEN ) );
+		$this->assertEmpty( get_option( Settings::LINK_CHECK_DURATION_IN_DAYS ) );
+		$this->assertEmpty( get_option( Settings::SETUP_WIZARD_STEP_KEY ) );
+		$this->assertEmpty( get_option( Settings::SETUP_WIZARD_COMPLETED_KEY ) );
 	}
 
 	/**

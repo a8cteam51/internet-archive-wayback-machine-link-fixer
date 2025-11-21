@@ -17,11 +17,32 @@
  * @param int    $iawmlf_failed_check_count      Number of failed checks before marking as broken.
  */
 
-defined( 'ABSPATH' ) || exit;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page;
 
+defined( 'ABSPATH' ) || exit;
 ?>
 
 <div class="iawmlf_dashboard-wrapper">
+	<?php if ( ! $iawmlf_api_configured ) : ?>
+		<div class="iawmlf_dashboard-warning">
+			<?php esc_html_e( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		</div>
+	<?php endif; ?>
+		<?php if ( $iawmlf_onboarding_details['show_onboarding'] && ! Dashboard_Page::is_current_page() ) : ?>
+			<div class="iawmlf_dashboard-status-section">
+				<?php
+				iawmlf_render_template(
+					'admin/dashboard/onboarding.php',
+					array(
+						'iawmlf_onboarding_details' => $iawmlf_onboarding_details,
+						'iawmlf_total_links_count'  => $iawmlf_link_stats['total_links'],
+						'iawmlf_link_table'         => \Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page::get_page_url(),
+					)
+				);
+				?>
+			</div>
+		<?php endif; ?>
+
 	<?php if ( $iawmlf_api_configured && ! \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings::has_valid_archive_api_credentials() ) : ?>
 		<div class="iawmlf_dashboard-warning">
 			<?php esc_html_e( 'Your Archive.org API credentials are invalid. Please check your settings.', 'internet-archive-wayback-machine-link-fixer' ); ?>
@@ -38,6 +59,7 @@ defined( 'ABSPATH' ) || exit;
 			?>
 		</strong>
 	</div>
+
 
 	<?php if ( $iawmlf_details && is_array( $iawmlf_details ) ) : ?>
 		<div class="iawmlf_dashboard-status-section">
@@ -129,6 +151,12 @@ defined( 'ABSPATH' ) || exit;
 	</div>
 
 	<div class="iawmlf_dashboard-navigation">
+		<?php if ( ! Dashboard_Page::is_current_page() ) : ?>
+		<a href="<?php echo esc_url( Dashboard_Page::get_page_url() ); ?>" class="button">
+			<span class="dashicons dashicons-dashboard" style="margin-top: 3px;"></span>
+			<?php esc_html_e( 'Dashboard', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		</a>
+		<?php endif; ?>
 		<a href="<?php echo esc_url( $iawmlf_link_to_settings ); ?>" class="button">
 			<span class="dashicons dashicons-admin-settings" style="margin-top: 3px;"></span>
 			<?php esc_html_e( 'Settings', 'internet-archive-wayback-machine-link-fixer' ); ?>

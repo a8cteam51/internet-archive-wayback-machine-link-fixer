@@ -97,7 +97,7 @@ class Settings_Page {
 		);
 
 		// If the setup has not been completed, add a on load hook.
-		if ( ! Setup_Wizard::is_setup_complete() ) {
+		if ( ! Settings::is_wizard_completed() ) {
 			add_action( 'load-' . $this->menu_hook, array( $this, 'redirect_to_setup_wizard' ) );
 		}
 	}
@@ -169,7 +169,7 @@ class Settings_Page {
 
 		// Check if the wizard has been completed.
 		$wizard_link = '';
-		if ( Setup_Wizard::is_setup_complete() ) {
+		if ( Settings::is_wizard_completed() ) {
 			$wizard_link = \sprintf(
 				'<a href="%s" class="button button-primary">%s</a>',
 				esc_url( Setup_Wizard::get_wizard_url() . '&rerun-wizard=1' ),
