@@ -22,12 +22,13 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 <input type="hidden" name="iawmlf_wizard_activate_auto_archiver" value="<?php echo esc_attr( Settings::add_own_links( true ) ? '1' : '0' ); ?>"  />
 
 <div class="iawmlf-wizard__content__intro">
-	<p><?php esc_html_e( 'In addition to fixing broken links, this plugin can preserve your content on the Wayback Machine in case your site goes offline. New posts will be preserved when published, and we\'ll schedule regular snapshots so your content stays preserved over time.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
+	<h3><?php esc_html_e( 'Preserve your content', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
+	<p><?php esc_html_e( 'Archive your own content on the Wayback Machine to protect against future loss. New posts are preserved on publish, with regular snapshots scheduled automatically.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 </div>
 
 <div class="iawmlf-wizard__content__field" >
 	<label for="iawmlf_wizard_post_types">
-		<?php esc_html_e( 'Automatically preserve:', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		<?php esc_html_e( 'Select content types to preserve:', 'internet-archive-wayback-machine-link-fixer' ); ?>
 	</label>
 	<div class="iawmlf-wizard__content__inner-field checkboxes">
 		<?php foreach ( $post_types as $iawmlf_pt_slug => $iawmlf_pt_name ) : ?>

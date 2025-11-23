@@ -28,20 +28,20 @@ $iawmlf_rerun_wizard = isset( $_GET['rerun-wizard'] ) && '1' === sanitize_text_f
 // Based on the current step, set the button labels.
 switch ( $step_data['step'] ) {
 	case 'step-1':
-		$iawmlf_next_label     = esc_html__( 'Next Step: Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_next_label     = esc_html__( 'Configure the Link Fixer →', 'internet-archive-wayback-machine-link-fixer' );
 		$iawmlf_previous_label = '';
 		break;
 	case 'step-2':
-		$iawmlf_next_label     = esc_html__( 'Next Step: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' );
-		$iawmlf_previous_label = esc_html__( 'Previous Step: About', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_next_label     = esc_html__( 'Configure the Auto Archiver →', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_previous_label = esc_html__( '← About', 'internet-archive-wayback-machine-link-fixer' );
 		break;
 	case 'step-3':
 		$iawmlf_next_label     = esc_html__( 'Finish Setup', 'internet-archive-wayback-machine-link-fixer' );
-		$iawmlf_previous_label = esc_html__( 'Previous Step: Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_previous_label = esc_html__( '← Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
 		break;
 	case 'complete':
-		$iawmlf_next_label     = '';
-		$iawmlf_previous_label = esc_html__( 'Previous Step: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_next_label     = esc_html__( 'Go to the dashboard →', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_previous_label = esc_html__( '← Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' );
 		break;
 }
 ?>
@@ -66,7 +66,9 @@ switch ( $step_data['step'] ) {
 			<?php endif; ?>
 		</div>
 			<div class="iawmlf-wizard__footer__next">
-			<?php if ( 'complete' !== $step_data['step'] ) : ?>
+			<?php if ( 'complete' === $step_data['step'] ) : ?>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=iawmlf-link-fixer' ) ); ?>" class="button button-primary"><?php echo esc_html( $iawmlf_next_label ); ?></a>
+			<?php else : ?>
 				<button class="button button-primary" type="submit" name="next-step" <?php echo esc_attr( $iawmlf_next_state ); ?>><?php echo esc_html( $iawmlf_next_label ); ?></button>
 			<?php endif; ?>
 		</div>

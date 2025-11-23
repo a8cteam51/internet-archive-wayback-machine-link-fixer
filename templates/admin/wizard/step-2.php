@@ -22,14 +22,12 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 <input type="hidden" name="iawmlf_wizard_activate_link_fixer" value="<?php echo Settings::is_link_processing_enabled( true ) ? '1' : '0'; ?>" />
 
 <div class="iawmlf-wizard__content__intro">
-	<p><?php esc_html_e( 'We\'ll scan your site\'s content for links and redirect the broken ones to snapshots on the Wayback Machine of what those links used to show.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
+	<h3><?php esc_html_e( 'Choose what to fix', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
+	<p><?php esc_html_e( 'Select which content types should have their broken links automatically redirected to Wayback Machine snapshots:', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 </div>
 
 
-<div class="iawmlf-wizard__content__field" >
-	<label for="iawmlf_wizard_post_types">
-		<?php esc_html_e( 'Automatically fix broken links in:', 'internet-archive-wayback-machine-link-fixer' ); ?>
-	</label>
+<div class="iawmlf-wizard__content__field">
 	<div class="iawmlf-wizard__content__inner-field checkboxes">
 		<?php foreach ( $post_types as $iawmlf_pt_slug => $iawmlf_pt_name ) : ?>
 			<div class="inner-spaced-between__list">
