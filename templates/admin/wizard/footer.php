@@ -36,7 +36,7 @@ switch ( $step_data['step'] ) {
 		$iawmlf_previous_label = esc_html__( '← About', 'internet-archive-wayback-machine-link-fixer' );
 		break;
 	case 'step-3':
-		$iawmlf_next_label     = esc_html__( 'Finish Setup', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_next_label     = esc_html__( 'Finish Setup →', 'internet-archive-wayback-machine-link-fixer' );
 		$iawmlf_previous_label = esc_html__( '← Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
 		break;
 	case 'complete':
@@ -66,9 +66,7 @@ switch ( $step_data['step'] ) {
 			<?php endif; ?>
 		</div>
 			<div class="iawmlf-wizard__footer__next">
-			<?php if ( 'complete' === $step_data['step'] ) : ?>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=iawmlf-link-fixer' ) ); ?>" class="button button-primary"><?php echo esc_html( $iawmlf_next_label ); ?></a>
-			<?php else : ?>
+			<?php if ( 'complete' !== $step_data['step'] ) : ?>
 				<button class="button button-primary" type="submit" name="next-step" <?php echo esc_attr( $iawmlf_next_state ); ?>><?php echo esc_html( $iawmlf_next_label ); ?></button>
 			<?php endif; ?>
 		</div>
