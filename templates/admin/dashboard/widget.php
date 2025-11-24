@@ -4,17 +4,19 @@
  *
  * @since 1.3.0
  *
- * @param array  $iawmlf_details          The account details from Archive.org.
- * @param bool   $iawmlf_api_configured   Whether the Archive.org API is configured.
- * @param bool   $iawmlf_is_online        Whether the Archive.org API is online.
- * @param string $iawmlf_link_to_settings URL to the settings page.
- * @param string $iawmlf_link_table       URL to the links report page.
- * @param array  $iawmlf_total_links      Array of all links in the system.
+ * @param array  $iawmlf_details                 The account details from Archive.org.
+ * @param bool   $iawmlf_api_configured          Whether the Archive.org API is configured.
+ * @param bool   $iawmlf_is_online               Whether the Archive.org API is online.
+ * @param string $iawmlf_link_to_settings        URL to the settings page.
+ * @param string $iawmlf_link_table              URL to the links report page.
+ * @param array  $iawmlf_total_links             Array of all links in the system.
  * @param bool   $iawmlf_auto_archiver_enabled   Whether auto archiver is enabled.
  * @param bool   $iawmlf_scan_existing_enabled   Whether scanning existing posts is enabled.
  * @param bool   $iawmlf_link_processing_enabled Whether link processing is enabled.
  * @param int    $iawmlf_link_check_duration     Number of days between link checks.
  * @param int    $iawmlf_failed_check_count      Number of failed checks before marking as broken.
+ * @param array  $iawmlf_onboarding_details      Array containing onboarding status and details.
+ * @param array  $iawmlf_link_stats              Array containing link statistics including total_links count.
  */
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page;
