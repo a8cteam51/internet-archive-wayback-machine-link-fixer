@@ -49,6 +49,13 @@ class Esc {
 				'id'    => array(),
 				'style' => array(),
 			),
+			'a'      => array(
+				'href'   => array(),
+				'target' => array(),
+				'class'  => array(),
+				'id'     => array(),
+				'style'  => array(),
+			),
 		);
 	}
 }
