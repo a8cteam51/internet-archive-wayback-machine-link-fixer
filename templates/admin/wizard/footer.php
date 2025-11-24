@@ -8,6 +8,8 @@
  * @param array $step_data The step data.
  */
 
+use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental;
+
 defined( 'ABSPATH' ) || exit;
 
 $iawmlf_previous_state = 'step-1' === $step_data['step'] ? 'DISABLED' : '';
@@ -28,20 +30,20 @@ $iawmlf_rerun_wizard = isset( $_GET['rerun-wizard'] ) && '1' === sanitize_text_f
 // Based on the current step, set the button labels.
 switch ( $step_data['step'] ) {
 	case 'step-1':
-		$iawmlf_next_label     = esc_html__( 'Next Step: Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_next_label     = esc_html__( 'Configure the Link Fixer →', 'internet-archive-wayback-machine-link-fixer' );
 		$iawmlf_previous_label = '';
 		break;
 	case 'step-2':
-		$iawmlf_next_label     = esc_html__( 'Next Step: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' );
-		$iawmlf_previous_label = esc_html__( 'Previous Step: About', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_next_label     = Environmental::is_production() ? esc_html__( 'Configure the Auto Archiver →', 'internet-archive-wayback-machine-link-fixer' ) : esc_html__( 'Finish Setup →', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_previous_label = esc_html__( '← About', 'internet-archive-wayback-machine-link-fixer' );
 		break;
 	case 'step-3':
-		$iawmlf_next_label     = esc_html__( 'Finish Setup', 'internet-archive-wayback-machine-link-fixer' );
-		$iawmlf_previous_label = esc_html__( 'Previous Step: Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_next_label     = esc_html__( 'Finish Setup →', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_previous_label = esc_html__( '← Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
 		break;
 	case 'complete':
-		$iawmlf_next_label     = '';
-		$iawmlf_previous_label = esc_html__( 'Previous Step: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_next_label     = esc_html__( 'Go to the dashboard →', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_previous_label = Environmental::is_production() ? esc_html__( '← Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ) : esc_html__( '← Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
 		break;
 }
 ?>
@@ -68,6 +70,8 @@ switch ( $step_data['step'] ) {
 			<div class="iawmlf-wizard__footer__next">
 			<?php if ( 'complete' !== $step_data['step'] ) : ?>
 				<button class="button button-primary" type="submit" name="next-step" <?php echo esc_attr( $iawmlf_next_state ); ?>><?php echo esc_html( $iawmlf_next_label ); ?></button>
+			<?php else : ?>
+				<a href="<?php echo esc_url( \Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page::get_page_url() ); ?>" class="button button-primary"><?php echo esc_html( $iawmlf_next_label ); ?></a>
 			<?php endif; ?>
 		</div>
 		</div>
