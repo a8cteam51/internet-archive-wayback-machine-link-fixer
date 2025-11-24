@@ -32,7 +32,7 @@ switch ( $step_data['step'] ) {
 		$iawmlf_previous_label = '';
 		break;
 	case 'step-2':
-		$iawmlf_next_label     = esc_html__( 'Next Step: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_next_label     = \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings::is_production() ? esc_html__( 'Next Step: Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ) : esc_html__( 'Next Step: Configure the Auto Archiver (Staging)', 'internet-archive-wayback-machine-link-fixer' );
 		$iawmlf_previous_label = esc_html__( 'Previous Step: About', 'internet-archive-wayback-machine-link-fixer' );
 		break;
 	case 'step-3':
