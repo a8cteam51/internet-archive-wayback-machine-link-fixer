@@ -8,8 +8,6 @@
  * @param array $step_data The step data.
  */
 
-use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental;
-
 defined( 'ABSPATH' ) || exit;
 
 $iawmlf_previous_state = 'step-1' === $step_data['step'] ? 'DISABLED' : '';
@@ -34,7 +32,9 @@ switch ( $step_data['step'] ) {
 		$iawmlf_previous_label = '';
 		break;
 	case 'step-2':
-		$iawmlf_next_label     = Environmental::is_production() ? esc_html__( 'Configure the Auto Archiver →', 'internet-archive-wayback-machine-link-fixer' ) : esc_html__( 'Finish Setup →', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_next_label     = \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental::is_production()
+			? esc_html__( 'Configure the Auto Archiver →', 'internet-archive-wayback-machine-link-fixer' )
+			: esc_html__( 'Finish Setup →', 'internet-archive-wayback-machine-link-fixer' );
 		$iawmlf_previous_label = esc_html__( '← About', 'internet-archive-wayback-machine-link-fixer' );
 		break;
 	case 'step-3':
@@ -43,7 +43,9 @@ switch ( $step_data['step'] ) {
 		break;
 	case 'complete':
 		$iawmlf_next_label     = esc_html__( 'Go to the dashboard →', 'internet-archive-wayback-machine-link-fixer' );
-		$iawmlf_previous_label = Environmental::is_production() ? esc_html__( '← Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' ) : esc_html__( '← Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
+		$iawmlf_previous_label = \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental::is_production()
+			? esc_html__( '← Configure the Auto Archiver', 'internet-archive-wayback-machine-link-fixer' )
+			: esc_html__( '← Configure the Link Fixer', 'internet-archive-wayback-machine-link-fixer' );
 		break;
 }
 ?>
@@ -71,7 +73,7 @@ switch ( $step_data['step'] ) {
 			<?php if ( 'complete' !== $step_data['step'] ) : ?>
 				<button class="button button-primary" type="submit" name="next-step" <?php echo esc_attr( $iawmlf_next_state ); ?>><?php echo esc_html( $iawmlf_next_label ); ?></button>
 			<?php else : ?>
-				<a href="<?php echo esc_url( \Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page::get_page_url() ); ?>" class="button button-primary"><?php echo esc_html( $iawmlf_next_label ); ?></a>
+				<a href="<?php echo esc_url( \Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page::get_page_url() ); ?>" class="button button-primary"><?php echo esc_html( $iawmlf_next_label ); ?></a>
 			<?php endif; ?>
 		</div>
 		</div>

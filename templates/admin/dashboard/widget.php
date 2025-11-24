@@ -4,17 +4,19 @@
  *
  * @since 1.3.0
  *
- * @param array  $iawmlf_details          The account details from Archive.org.
- * @param bool   $iawmlf_api_configured   Whether the Archive.org API is configured.
- * @param bool   $iawmlf_is_online        Whether the Archive.org API is online.
- * @param string $iawmlf_link_to_settings URL to the settings page.
- * @param string $iawmlf_link_table       URL to the links report page.
- * @param array  $iawmlf_total_links      Array of all links in the system.
+ * @param array  $iawmlf_details                 The account details from Archive.org.
+ * @param bool   $iawmlf_api_configured          Whether the Archive.org API is configured.
+ * @param bool   $iawmlf_is_online               Whether the Archive.org API is online.
+ * @param string $iawmlf_link_to_settings        URL to the settings page.
+ * @param string $iawmlf_link_table              URL to the links report page.
+ * @param array  $iawmlf_total_links             Array of all links in the system.
  * @param bool   $iawmlf_auto_archiver_enabled   Whether auto archiver is enabled.
  * @param bool   $iawmlf_scan_existing_enabled   Whether scanning existing posts is enabled.
  * @param bool   $iawmlf_link_processing_enabled Whether link processing is enabled.
  * @param int    $iawmlf_link_check_duration     Number of days between link checks.
  * @param int    $iawmlf_failed_check_count      Number of failed checks before marking as broken.
+ * @param array  $iawmlf_onboarding_details      Array containing onboarding status and details.
+ * @param array  $iawmlf_link_stats              Array containing link statistics including total_links count.
  */
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page;
@@ -23,25 +25,20 @@ defined( 'ABSPATH' ) || exit;
 ?>
 
 <div class="iawmlf_dashboard-wrapper">
-	<?php if ( ! $iawmlf_api_configured ) : ?>
-		<div class="iawmlf_dashboard-warning">
-			<?php esc_html_e( 'You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+	<?php if ( $iawmlf_onboarding_details['show_onboarding'] && ! Dashboard_Page::is_current_page() ) : ?>
+		<div class="iawmlf_dashboard-status-section">
+			<?php
+			iawmlf_render_template(
+				'admin/dashboard/onboarding.php',
+				array(
+					'iawmlf_onboarding_details' => $iawmlf_onboarding_details,
+					'iawmlf_total_links_count'  => $iawmlf_link_stats['total_links'],
+					'iawmlf_link_table'         => \Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page::get_page_url(),
+				)
+			);
+			?>
 		</div>
 	<?php endif; ?>
-		<?php if ( $iawmlf_onboarding_details['show_onboarding'] && ! Dashboard_Page::is_current_page() ) : ?>
-			<div class="iawmlf_dashboard-status-section">
-				<?php
-				iawmlf_render_template(
-					'admin/dashboard/onboarding.php',
-					array(
-						'iawmlf_onboarding_details' => $iawmlf_onboarding_details,
-						'iawmlf_total_links_count'  => $iawmlf_link_stats['total_links'],
-						'iawmlf_link_table'         => \Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page::get_page_url(),
-					)
-				);
-				?>
-			</div>
-		<?php endif; ?>
 
 	<?php if ( $iawmlf_api_configured && ! \Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings::has_valid_archive_api_credentials() ) : ?>
 		<div class="iawmlf_dashboard-warning">
