@@ -78,3 +78,14 @@ if ( is_wp_error( IAWMLF_MINIMUM_REQUIREMENTS ) ) {
 	register_activation_hook( __FILE__, 'iawmlf_activate' );
 	register_uninstall_hook( __FILE__, 'iawmlf_uninstall' );
 }
+
+// Add some mock admin notices.
+add_action(
+	'admin_notices',
+	static function () {
+		printf(
+			'<div class="notice notice-info is-dismissible"><p>%s</p></div>',
+			esc_html__( 'Im a mock notice and im just as annoying as a real notice. Please rate our things', 'internet-archive-wayback-machine-link-fixer' )
+		);
+	}
+);

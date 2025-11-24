@@ -404,6 +404,7 @@ class Setup_Wizard {
 	public function render_page(): void {
 
 		echo '<div class="wrap">';
+		echo '<h2></h2>'; // Empty h2 to force admin notice below the admin header.
 
 		echo '<div class="iawmlf-wizard__header">';
 			printf(
