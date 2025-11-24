@@ -27,16 +27,16 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 </div>
 
 <div class="iawmlf-wizard__content__field" >
-	<label for="iawmlf_wizard_post_types">
+	<label>
 		<?php esc_html_e( 'Select content types to preserve:', 'internet-archive-wayback-machine-link-fixer' ); ?>
 	</label>
 	<div class="iawmlf-wizard__content__inner-field checkboxes">
 		<?php foreach ( $post_types as $iawmlf_pt_slug => $iawmlf_pt_name ) : ?>
 			<div class="inner-spaced-between__list">
-				<label>
+				<label for="iawmlf_wizard_post_types_<?php echo esc_attr( $iawmlf_pt_slug ); ?>">
 					<?php echo esc_html( $iawmlf_pt_name ); ?>
 				</label>
-					<input type="checkbox" name="iawmlf_wizard_post_types[]" value="<?php echo esc_attr( $iawmlf_pt_slug ); ?>" <?php checked( in_array( $iawmlf_pt_slug, Settings::own_link_allowed_post_types(), true ) ); ?> />
+					<input type="checkbox" name="iawmlf_wizard_post_types[]" id="iawmlf_wizard_post_types_<?php echo esc_attr( $iawmlf_pt_slug ); ?>" value="<?php echo esc_attr( $iawmlf_pt_slug ); ?>" <?php checked( in_array( $iawmlf_pt_slug, Settings::own_link_allowed_post_types(), true ) ); ?> />
 			</div>
 		<?php endforeach; ?>
 	</div>
