@@ -1035,6 +1035,10 @@ add_filter( 'iawmlf_snapshot_client', function( Snapshot_Client $client ): Snaps
 });
 ```
 
+#### Assorted Hints and Tips
+
+If you ever need to restart the wizard, you can access the follow url `wp-admin/admin.php?page=iawmlf-setup-wizard&rerun-wizard=1` while logged in as an admin user, this will reset the wizard and allow you to run through it again. This is helpful for testing or fixing issues where the wizard will keep showing after completion.
+
 ### Contribute
 
 If you would like to contribute to the this plugin, feel free to do so. There are a number of tools which can be used to help in your development.
