@@ -73,7 +73,7 @@ switch ( $step_data['step'] ) {
 			<?php if ( 'complete' !== $step_data['step'] ) : ?>
 				<button class="button button-primary" type="submit" name="next-step" <?php echo esc_attr( $iawmlf_next_state ); ?>><?php echo esc_html( $iawmlf_next_label ); ?></button>
 			<?php else : ?>
-				<a href="<?php echo esc_url( \Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page::get_page_url() ); ?>" class="button button-primary"><?php echo esc_html( $iawmlf_next_label ); ?></a>
+				<a href="<?php echo esc_url( \Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page::get_page_url() ); ?>" class="button button-primary"><?php echo esc_html( $iawmlf_next_label ); ?></a>
 			<?php endif; ?>
 		</div>
 		</div>
