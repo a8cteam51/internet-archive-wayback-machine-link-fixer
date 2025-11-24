@@ -179,12 +179,8 @@ class Settings_Page {
 
 		echo '<div class="wrap">';
 		printf(
-			'<div id="iawmlf_settings_header" class="iawmlf-settings__header">
-			<h1 class="wp-heading-inline iawmlf-settings__header">%s</h1>
-			%s
-			</div>',
-			esc_html__( 'Wayback Link Fixer - Advanced Settings', 'internet-archive-wayback-machine-link-fixer' ),
-			$wizard_link // phpcs:ignore
+			'<div id="iawmlf_settings_header" class="iawmlf-settings__header"><h1 class="wp-heading-inline iawmlf-settings__header">%s</h1></div>',
+			esc_html__( 'Wayback Link Fixer - Advanced Settings', 'internet-archive-wayback-machine-link-fixer' )
 		);
 
 		echo '<hr class="wp-header-end"><form action="options.php" method="post">';
