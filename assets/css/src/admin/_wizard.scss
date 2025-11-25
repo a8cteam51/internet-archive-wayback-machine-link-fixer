@@ -190,4 +190,9 @@ body.iawmlf-onboarding-active #wpbody-content {
             width: 100%;
         }
     }
+    &__intro {
+        ul {
+            list-style: disc;
+        }
+    }
 }

@@ -30,8 +30,6 @@ Protect your links, preserve your content, and automate the archiving process—
 
 == Frequently Asked Questions ==
 
-Watch Demo video: https://www.loom.com/share/7551a8aa791849fc81c9aa21ada268f1?sid=510daff9-40db-4986-8137-56471a3c8149
-
 = Multisite Compatible? =
 Sadly at present, it is not fully compatible. The only way it can currently be used on multisite is to only enable it site-wide and not network-wide. We plan to resolve this in the next release.
 
@@ -133,12 +131,10 @@ Note: All versions prior to 1.3.0 were not publicly released.
 
 == Developer Documentation ==
 
+For developer docs and source code, see the GitHub repository: https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer
+
 == Upgrade Notice ==
 
 = 1.3.0 =
 This updates any pre-release version to the new launched version.
-
-For developer docs and source code, see the GitHub repository:
-
-- Developer docs and source code: https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer
 

@@ -445,8 +445,12 @@
     }
     &-title {
         cursor: pointer !important;
-        &:hover {
-            text-decoration: underline !important;
+        color: #50575e;
+        &:hover,
+        &:focus,
+        &:active {
+            text-decoration: none;
+            color: #50575e;
         }
     }
     // Expanded state styling - more subtle
