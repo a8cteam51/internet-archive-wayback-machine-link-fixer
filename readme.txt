@@ -81,6 +81,7 @@ This plugin connects to external services provided by the Internet Archive to pr
 The Internet Archive Wayback Machine is a digital archive of the World Wide Web. This plugin uses their API to check for existing archived versions of web pages, create new snapshots of pages, and verify the status of archiving jobs.
 
 **What data is sent and when:**
+
 - **System Status Check**: No personal data is sent. Used to verify if the Wayback Machine service is online.
 - **User Account Validation**: When you configure an API key, your access key and secret key are sent in the Authorization header to validate your account and retrieve usage statistics (available snapshots, daily limits, etc.).
 - **URL Archiving**: URLs from your website content are sent to create new snapshots in the Wayback Machine. This includes both external links found in your content and your own post URLs when auto-archiving is enabled.
@@ -88,8 +89,9 @@ The Internet Archive Wayback Machine is a digital archive of the World Wide Web.
 - **Existing Snapshot Lookups**: URLs are sent to search for existing archived versions of web pages.
 
 **Service Terms and Privacy Policy:**
-- Terms of Service: https://archive.org/about/terms.php
-- Privacy Policy: https://archive.org/about/privacy.php
+
+- Terms of Service: [https://archive.org/about/terms.php](https://archive.org/about/terms.php)
+- Privacy Policy: [https://archive.org/about/privacy.php](https://archive.org/about/privacy.php)
 
 = Internet Archive Bot API (iabot-api.archive.org) =
 
@@ -97,12 +99,14 @@ The Internet Archive Wayback Machine is a digital archive of the World Wide Web.
 This service checks if web pages are accessible and retrieves final URLs after redirects. It's used to determine if links are broken and need to be replaced with archived versions.
 
 **What data is sent and when:**
+
 - **Link Accessibility Checks**: URLs from your website content are sent to check if they are accessible and to get the final destination URL after any redirects.
 - **Impersonation Parameter**: A technical parameter (`impersonate=1`) is sent to ensure proper link checking behavior.
 
 **Service Terms and Privacy Policy:**
-- Terms of Service: https://archive.org/about/terms.php
-- Privacy Policy: https://archive.org/about/privacy.php
+
+- Terms of Service: [https://archive.org/about/terms.php](https://archive.org/about/terms.php)
+- Privacy Policy: [https://archive.org/about/privacy.php](https://archive.org/about/privacy.php)
 
 **Data Retention and Privacy:**
 The Internet Archive is a non-profit organization dedicated to preserving digital content for public access. URLs sent to these services become part of the public archive and may be accessible through the Wayback Machine interface. No personal information beyond the URLs themselves is transmitted to these services.
@@ -136,7 +140,7 @@ Note: All versions prior to 1.3.0 were not publicly released.
 
 == Developer Documentation ==
 
-For developer docs and source code, see the GitHub repository: https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer
+For developer docs and source code, see the GitHub repository: [https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer)
 
 == Upgrade Notice ==
 
