@@ -50,6 +50,7 @@ class Dashboard_Statistics {
 			$stats = self::normalize_link_statistics( $from_cache );
 			if ( null === $stats ) {
 				$stats = self::compile_link_statistics();
+				$stats = self::normalize_link_statistics( $stats );
 			} else {
 				return $stats;
 			}
@@ -91,15 +92,18 @@ class Dashboard_Statistics {
 
 		// Only return the required keys.
 		$stats = array(
-			'total_links'           => \absint( $stats['total_links'] ),
-			'broken_links'          => \absint( $stats['all_broken_links'] ),
-			'links_with_archive'    => \absint( $stats['links_with_archive'] ),
-			'links_without_archive' => \absint( $stats['links_without_archive'] ),
-			'not_checked'           => \absint( $stats['not_checked'] ),
-			'process_done'          => \absint( $stats['process_done'] ),
-			'process_new'           => \absint( $stats['process_new'] ),
-			'process_pending'       => \absint( $stats['process_pending'] ),
-			'last_checks'           => $stats['last_checks'],
+			'total_links'                 => \absint( $stats['total_links'] ),
+			'broken_links'                => \absint( $stats['all_broken_links'] ),
+			'all_broken_links'            => \absint( $stats['all_broken_links'] ),
+			'links_with_archive'          => \absint( $stats['links_with_archive'] ),
+			'links_without_archive'       => \absint( $stats['links_without_archive'] ),
+			'not_checked'                 => \absint( $stats['not_checked'] ),
+			'process_done'                => \absint( $stats['process_done'] ),
+			'process_new'                 => \absint( $stats['process_new'] ),
+			'process_pending'             => \absint( $stats['process_pending'] ),
+			'broken_and_redirected_links' => \absint( $stats['broken_and_redirected_links'] ),
+			'broken_not_redirected_links' => \absint( $stats['broken_not_redirected_links'] ),
+			'last_checks'                 => $stats['last_checks'],
 		);
 
 		return $stats;
