@@ -379,15 +379,17 @@ class Link_Repository {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param integer      $limit          The limit of links to return.
-	 * @param integer      $page           The page of links to return.
-	 * @param array        $status         The status of the links to return.
-	 * @param array        $link_ids       The link ids to query.
-	 * @param array        $archive_status The archive status of the links to return.
-	 * @param string       $order_by       The order by.
-	 * @param string|NULL  $search_term    The search term to query.
-	 * @param string|NULL  $date           The date of the links to return (yy-mm).
-	 * @param boolean|NULL $excluded       Whether to return excluded links.
+	 * @param integer       $limit            The limit of links to return.
+	 * @param integer       $page             The page of links to return.
+	 * @param array         $status           The status of the links to return.
+	 * @param array         $link_ids         The link ids to query.
+	 * @param array         $archive_status   The archive status of the links to return.
+	 * @param string        $order_by         The order by.
+	 * @param string|NULL   $search_term      The search term to query.
+	 * @param string|NULL   $date             The date of the links to return (yy-mm).
+	 * @param boolean|NULL  $excluded         Whether to return excluded links.
+	 * @param string[]|NULL $snapshot_process The snapshot status of the links to return.
+	 * @param boolean|NULL  $has_checks       Whether to return links with or without checks.
 	 *
 	 * @return Link[]
 	 */
@@ -400,9 +402,78 @@ class Link_Repository {
 		string $order_by = self::ORDER_DATE_DESC,
 		?string $search_term = null,
 		?string $date = null,
-		?bool $excluded = null
+		?bool $excluded = null,
+		?array $snapshot_process = null,
+		?bool $has_checks = null
 	): array {
-		// Remove any invalid statuses.
+		$rows = $this->perform_query( $limit, $page, $status, $link_ids, $archive_status, $order_by, $search_term, $date, $excluded, $snapshot_process, $has_checks );
+		return array_map( array( $this, 'map_link' ), $rows );
+	}
+
+	/**
+	 * Gets the count of links for a given query.
+	 *
+	 * @param integer       $limit            The limit of links to return.
+	 * @param integer       $page             The page of links to return.
+	 * @param array         $status           The status of the links to return.
+	 * @param array         $link_ids         The link ids to query.
+	 * @param array         $archive_status   The archive status of the links to return.
+	 * @param string        $order_by         The order by.
+	 * @param string|NULL   $search_term      The search term to query.
+	 * @param string|NULL   $date             The date of the links to return (yy-mm).
+	 * @param boolean|NULL  $excluded         Whether to return excluded links.
+	 * @param string[]|NULL $snapshot_process The snapshot status of the links to return.
+	 * @param boolean|NULL  $has_checks       Whether to return links with or without checks.
+	 *
+	 * @return integer
+	 */
+	public function count_links(
+		int $limit = 10,
+		int $page = 1,
+		array $status = array(),
+		array $link_ids = array(),
+		array $archive_status = array(),
+		string $order_by = self::ORDER_DATE_DESC,
+		?string $search_term = null,
+		?string $date = null,
+		?bool $excluded = null,
+		?array $snapshot_process = null,
+		?bool $has_checks = null
+	): int {
+		return count( $this->perform_query( $limit, $page, $status, $link_ids, $archive_status, $order_by, $search_term, $date, $excluded, $snapshot_process, $has_checks ) );
+	}
+
+	/**
+	 * Performs a link query.
+	 *
+	 * @param integer       $limit            The limit of links to return.
+	 * @param integer       $page             The page of links to return.
+	 * @param array         $status           The status of the links to return.
+	 * @param array         $link_ids         The link ids to query.
+	 * @param array         $archive_status   The archive status of the links to return.
+	 * @param string        $order_by         The order by.
+	 * @param string|NULL   $search_term      The search term to query.
+	 * @param string|NULL   $date             The date of the links to return (yy-mm).
+	 * @param boolean|NULL  $excluded         Whether to return excluded links.
+	 * @param string[]|NULL $snapshot_process The snapshot status of the links to return.
+	 * @param boolean|NULL  $has_checks       Whether to return links with or without checks.
+	 *
+	 * @return stdClass[]
+	 */
+	private function perform_query(
+		int $limit = 10,
+		int $page = 1,
+		array $status = array(),
+		array $link_ids = array(),
+		array $archive_status = array(),
+		string $order_by = self::ORDER_DATE_DESC,
+		?string $search_term = null,
+		?string $date = null,
+		?bool $excluded = null,
+		?array $snapshot_process = null,
+		?bool $has_checks = null
+	): array {
+				// Remove any invalid statuses.
 		$status = array_filter(
 			$status,
 			function ( $status ): bool {
@@ -474,6 +545,29 @@ class Link_Repository {
 			$where      = true;
 		}
 
+		// If we are looking for links with or without checks, add to the query.
+		if ( null !== $has_checks ) {
+			$query .= true === $where ? ' AND' : ' WHERE';
+			$query .= $has_checks ? ' JSON_LENGTH(`checks`) > 0' : ' JSON_LENGTH(`checks`) = 0';
+			$where  = true;
+		}
+
+		// If we have snapshot process status, add to the query.
+		if ( ! empty( $snapshot_process ) ) {
+			// Remove any invalid snapshot statuses.
+			$snapshot_process = array_filter(
+				$snapshot_process,
+				function ( $status ): bool {
+					return is_string( $status ) && in_array( $status, array( Link::PROCESS_NEW, Link::PROCESS_PENDING, Link::PROCESS_DONE ), true );
+				}
+			);
+
+			$place_holders     = join( ',', array_fill( 0, count( $snapshot_process ), '%s' ) );
+			$snapshot_template = true === $where ? " AND archive_process IN ({$place_holders})" : " WHERE archive_process IN ({$place_holders})";
+			$query            .= $this->wpdb->prepare( $snapshot_template, $snapshot_process ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
+			$where             = true;
+		}
+
 		// If we have a search term, add to the query.
 		if ( $search_term ) {
 			// Prepare the search term.
@@ -489,6 +583,7 @@ class Link_Repository {
 		if ( null !== $excluded ) {
 			$query .= true === $where ? ' AND' : ' WHERE';
 			$query .= $excluded ? ' excluded = 1' : ' excluded = 0';
+			$where  = true;
 		}
 
 		// Add the order by.
@@ -506,7 +601,7 @@ class Link_Repository {
 			return array();
 		}
 
-		return array_map( array( $this, 'map_link' ), $rows );
+		return $rows;
 	}
 
 	/**
