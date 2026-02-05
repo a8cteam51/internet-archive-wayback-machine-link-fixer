@@ -70,8 +70,10 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 	public function test_error_status_sets_message(): void {
 		$this->set_snapshot_client_response(
 			array(
-				'status'  => 'error',
-				'message' => 'Error message',
+				'status'     => 'error',
+				'message'    => 'Error message',
+				'status_ext' => 'issue:no-access',
+
 			)
 		);
 
@@ -92,8 +94,8 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 		$updated_link = $this->link_repository->find_by_id( $link->get_id() );
 
 		// Check the message is set.
-		$this->assertEquals( 'Error message', $updated_link->get_message() );
-		$this->assertEquals(Link::PROCESS_PENDING, $updated_link->get_archive_process() );
+		$this->assertEquals( 'issue:no-access', $updated_link->get_message() );
+		$this->assertEquals( Link::PROCESS_PENDING, $updated_link->get_archive_process() );
 	}
 
 	/**
@@ -128,7 +130,7 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 
 		// Check the message is set.
 		$this->assertTrue( $updated_link->is_excluded() );
-		$this->assertEquals(Link::PROCESS_DONE, $updated_link->get_archive_process() );
+		$this->assertEquals( Link::PROCESS_DONE, $updated_link->get_archive_process() );
 	}
 
 	/**
@@ -281,7 +283,15 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 		$this->assertCount( 1, $actions );
 
 		$this->assertEquals( 'iawmlf_update_archive_url', $actions[0]->hook );
-		$this->assertEquals( json_encode( array( 'link_id' => $link->get_id(), 'attempt' => 0 ) ), $actions[0]->args );
+		$this->assertEquals(
+			json_encode(
+				array(
+					'link_id' => $link->get_id(),
+					'attempt' => 0,
+				)
+			),
+			$actions[0]->args
+		);
 	}
 
 	/**
@@ -313,6 +323,14 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 		$this->assertCount( 1, $actions );
 
 		$this->assertEquals( 'iawmlf_update_archive_url', $actions[0]->hook );
-		$this->assertEquals( json_encode( array( 'link_id' => $link->get_id(), 'attempt' => 0 ) ), $actions[0]->args );
+		$this->assertEquals(
+			json_encode(
+				array(
+					'link_id' => $link->get_id(),
+					'attempt' => 0,
+				)
+			),
+			$actions[0]->args
+		);
 	}
 }

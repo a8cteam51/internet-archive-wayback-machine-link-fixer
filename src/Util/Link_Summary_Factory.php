@@ -157,4 +157,34 @@ class Link_Summary_Factory {
 	private function is_http_code_valid( int $http_code ): bool {
 		return in_array( $http_code, Settings::get_valid_http_status_codes(), true );
 	}
+
+	/**
+	 * Gets the links current message.
+	 *
+	 * @return string
+	 */
+	public function get_current_message(): string {
+		$message = $this->link->get_message();
+		// If the message doesnt start with error:, return the original message.
+		if ( 0 !== strpos( $message, 'error:' ) ) {
+			return $message;
+		}
+
+		// If the link is still is still pending.
+		if ( Link::PROCESS_DONE !== $this->link->get_archive_process() ) {
+			return sprintf(
+				// translators: 1: The error message.
+				'<span class="dashicons dashicons-info" title="%s"></span> - %s',
+				__( 'Error encountered while processing the link, will retry shortly.', 'internet-archive-wayback-machine-link-fixer' ),
+				iawmlf_get_human_readable_status_message( $message )
+			);
+		}
+
+		return sprintf(
+			// translators: 1: The error message.
+			'<span class="dashicons dashicons-warning" title="%s"></span> - %s',
+			__( 'Error encountered while processing the link, no more retries will be made.', 'internet-archive-wayback-machine-link-fixer' ),
+			iawmlf_get_human_readable_status_message( $message )
+		);
+	}
 }

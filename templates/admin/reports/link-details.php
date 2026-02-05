@@ -73,7 +73,7 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 							<?php endif; ?>
 
 							<?php if ( '' !== $iawmlf_link->get_message() ) : ?>
-								<p class="iawmlf_link_message"><strong><?php esc_html_e( 'Message', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>: <?php echo esc_html( $iawmlf_link->get_message() ); ?></p>
+								<p class="iawmlf_link_message"><strong><?php esc_html_e( 'Message', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>:   <?php echo wp_kses_post( ( new Internet_Archive\Wayback_Machine_Link_Fixer\Util\Link_Summary_Factory( $iawmlf_link ) )->get_current_message() ) ;// phpcs:ignore?></p>
 							<?php endif; ?>
 
 							<?php if ( $iawmlf_link->is_excluded() ) : ?>

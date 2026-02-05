@@ -689,6 +689,31 @@ add_filter( 'iawmlf_valid_http_status_codes', function( array $codes ): array {
 });
 ```
 
+#### `iawmlf_human_readable_status_message`
+
+This filter allows you to customize the human-readable message for a given Wayback Machine status code.
+
+```php
+add_filter( 'iawmlf_human_readable_status_message', function( string $message, string $status_code ): string {
+   if ( 'error:not-found' === $status_code ) {
+      return 'Custom 404 message.';
+   }
+   return $message;
+}, 10, 2 );
+```
+
+#### `iawmlf_excluded_status_codes`
+
+This filter controls the allowlist of Wayback Machine error codes that **do not** exclude a link. Any error code not in this list will be treated as excluded.
+
+```php
+add_filter( 'iawmlf_excluded_status_codes', function( array $allowed_codes ): array {
+   $allowed_codes[] = 'error:browsing-timeout';
+   return $allowed_codes;
+});
+```
+```
+
 #### `iawmlf_failed_count`
 
 This is used to define how many checks with non valid status codes are encountered before marking a link as broken. The default is 3.
