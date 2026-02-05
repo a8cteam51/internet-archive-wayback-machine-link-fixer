@@ -62,7 +62,7 @@ jobs:
           npm install
           npm run build
 
-      - name: Run Tests on Latest Version - WP6.8
+      - name: Run Tests on Latest Version - WP6.9
         env:
           environment_github: true
         run: composer test:php

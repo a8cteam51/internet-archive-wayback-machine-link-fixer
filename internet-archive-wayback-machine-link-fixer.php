@@ -14,7 +14,7 @@
  * Description:             This plugin scans your content for links, replacing broken ones with archived versions from the Wayback Machine. It also features Auto Archiving, which automatically creates snapshots of your own pages and any other links on your site that aren’t yet archived, ensuring long-term accessibility.
  * Version:                 1.3.4
  * Requires at least:       6.4
- * Tested up to:            6.8
+ * Tested up to:            6.9
  * Requires PHP:            7.4
  * Author:                  Internet Archive
  * Author URI:              https://archive.org
