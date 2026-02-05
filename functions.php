@@ -526,7 +526,7 @@ function iawmlf_is_archive_api_online( bool $force = false ): bool {
 /**
  * Converts a Internet Archive status code to a human readable message.
  *
- * @since 1.4.0
+ * @since 1.3.5
  *
  * @param string $status_code The status code to convert.
  *
@@ -590,7 +590,7 @@ function iawmlf_get_human_readable_status_message( string $status_code ): string
 /**
  * Checks if a given status code should make the link excluded.
  *
- * @since 1.4.0
+ * @since 1.3.5
  *
  * @param string $status_code The status code to check.
  *
