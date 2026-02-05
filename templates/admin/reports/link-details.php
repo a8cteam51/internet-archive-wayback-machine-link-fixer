@@ -73,16 +73,6 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 							<?php endif; ?>
 
 							<?php if ( '' !== $iawmlf_link->get_message() ) : ?>
-								<?php
-								// Compile the message
-								$iawmlf_link_message = sprintf(
-									/* translators: 1. An icon indicating the status (e.g., warning or info), 2. A message indicating if the link is excluded or will be retried, 3. The human readable status message based on the error code */
-									'<span class="dashicons dashicons-%s" title="%s"></span> - %s',
-									( iawmlf_is_excluded_status_code( $iawmlf_link->get_message() ) || $iawmlf_link->is_excluded() ) ? 'warning' : 'info',
-									( iawmlf_is_excluded_status_code( $iawmlf_link->get_message() ) || $iawmlf_link->is_excluded() ) ? esc_html__( 'This link is currently excluded from processing. Due to the errors given creating a snapshot', 'internet-archive-wayback-machine-link-fixer' ) : esc_html__( 'There was an issue creating the snapshot, will retry', 'internet-archive-wayback-machine-link-fixer' ),
-									esc_html( iawmlf_get_human_readable_status_message( $iawmlf_link->get_message() ) )
-								);
-								?>
 								<p class="iawmlf_link_message"><strong><?php esc_html_e( 'Message', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>:   <?php echo wp_kses_post( ( new Internet_Archive\Wayback_Machine_Link_Fixer\Util\Link_Summary_Factory( $iawmlf_link ) )->get_current_message() ) ;// phpcs:ignore?></p>
 							<?php endif; ?>
 
