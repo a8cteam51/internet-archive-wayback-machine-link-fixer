@@ -1,9 +1,9 @@
 === Internet Archive Wayback Machine Link Fixer ===
-Contributors: waybackmachineplugin, wpspecialprojects
+Contributors: waybackmachineplugin, wpspecialprojects, cagrimmett, glynnquelch
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.3.4
+Stable tag: 1.3.5-RC1
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -112,6 +112,10 @@ This service checks if web pages are accessible and retrieves final URLs after r
 The Internet Archive is a non-profit organization dedicated to preserving digital content for public access. URLs sent to these services become part of the public archive and may be accessible through the Wayback Machine interface. No personal information beyond the URLs themselves is transmitted to these services.
 
 == Changelog ==
+
+= 1.3.5 =
+* Minor tweak to how we log errors in snapshot creation process.
+* Improvement on how link stats are generated.
 
 = 1.3.4 =
 * Minor UI tweaks and changes
