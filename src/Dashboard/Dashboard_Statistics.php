@@ -124,78 +124,43 @@ class Dashboard_Statistics {
 	 * }
 	 */
 	private static function compile_link_statistics(): array {
-		$all_links = ( new Link_Repository() )->query_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null );
+		$links = new Link_Repository();
 
-		// Get all the links stats.
-		$all_broken        = array();
-		$redirected_broken = array();
-		$has_archive_link  = array();
-		$not_checked       = array();
-		$process_done      = array();
-		$process_new       = array();
-		$process_pending   = array();
-		$last_checks       = array();
+		// Get all the link stats.
+		$all_links          = $links->count_links( \PHP_INT_MAX, 1 );
+		$all_broken         = $links->count_links( \PHP_INT_MAX, 1, array( Link_Repository::LINK_STATUS_BROKEN ), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, false );
+		$has_archive_link   = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array( Link_Repository::LINK_HAS_ARCHIVE ) );
+		$redirected_broken_ = $links->count_links( \PHP_INT_MAX, 1, array( Link_Repository::LINK_STATUS_BROKEN ), array(), array( Link_Repository::LINK_HAS_ARCHIVE ), Link_Repository::ORDER_DATE_DESC, null, null, false );
+		$not_checked        = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, null, false );
+		$process_new        = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, array( Link::PROCESS_NEW ) );
+		$process_done_      = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, array( Link::PROCESS_DONE ) );
+		$process_pending    = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, array( Link::PROCESS_PENDING ) );
+		$last_checks        = $links->query_links( 10, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, null, null, true );
 
-		// Loop through all links to gather stats.
-		foreach ( $all_links as $link ) {
-			if ( $link->is_broken() && ! $link->is_excluded() ) {
-				$all_broken[] = $link->get_id();
-			}
-
-			if ( $link->is_broken() && $link->has_archived_href() && ! $link->is_excluded() ) {
-				$redirected_broken[] = $link->get_id();
-			}
-
-			if ( $link->has_archived_href() ) {
-				$has_archive_link[] = $link->get_id();
-			}
-
-			if ( null === $link->get_last_check() ) {
-				$not_checked[] = $link->get_id();
-			} else {
-				$last          = $link->get_last_check();
-				$last_checks[] = array(
+		// Extract the details from last checks.
+		$last_checks = array_map(
+			function ( $link ) {
+				return array(
 					'id'         => $link->get_id(),
-					'last_check' => $last,
+					'last_check' => $link->get_last_check(),
 				);
-			}
-
-			switch ( $link->get_archive_process() ) {
-				case Link::PROCESS_NEW:
-					$process_new[] = $link->get_id();
-					break;
-				case Link::PROCESS_PENDING:
-					$process_pending[] = $link->get_id();
-					break;
-				default:
-					$process_done[] = $link->get_id();
-					break;
-			}
-		}
-
-		// Sort the last checks by date desc.
-		usort(
-			$last_checks,
-			function ( $a, $b ) {
-				return strtotime( $b['last_check']['date'] ) <=> strtotime( $a['last_check']['date'] );
-			}
+			},
+			$last_checks
 		);
 
-		$stats = array(
-			'total_links'                 => count( $all_links ),
-			'all_broken_links'            => count( $all_broken ),
-			'broken_and_redirected_links' => count( $redirected_broken ),
-			'broken_not_redirected_links' => count( $all_broken ) - count( $redirected_broken ),
-			'links_with_archive'          => count( $has_archive_link ),
-			'links_without_archive'       => count( $all_links ) - count( $has_archive_link ),
-			'not_checked'                 => count( $not_checked ),
-			'process_done'                => count( $process_done ),
-			'process_new'                 => count( $process_new ),
-			'process_pending'             => count( $process_pending ),
-			'last_checks'                 => array_slice( $last_checks, 0, absint( apply_filters( 'iawmlf_dashboard_link_count', 10 ) ) ),
+		return array(
+			'total_links'                 => $all_links,
+			'all_broken_links'            => $all_broken,
+			'broken_and_redirected_links' => $redirected_broken_,
+			'broken_not_redirected_links' => $all_broken - $redirected_broken_,
+			'links_with_archive'          => $has_archive_link,
+			'links_without_archive'       => $all_links - $has_archive_link,
+			'not_checked'                 => $not_checked,
+			'process_done'                => $process_done_,
+			'process_new'                 => $process_new,
+			'process_pending'             => $process_pending,
+			'last_checks'                 => $last_checks,
 		);
-
-		return $stats;
 	}
 
 	/**
