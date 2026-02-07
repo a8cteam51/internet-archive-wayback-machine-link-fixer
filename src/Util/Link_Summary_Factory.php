@@ -88,7 +88,7 @@ class Link_Summary_Factory {
 
 		return sprintf(
 			// translators: 1: The number of consecutive failed checks (e.g. "3 consecutive checks"). 2: The number of remaining failed checks before redirect (e.g. "2 more failed checks").
-			__( 'The link is archived on archive.org but currently not working. It has failed %1$s, and after %2$s it will redirect to the archived version.', 'internet-archive-wayback-machine-link-fixer' ),
+			__( 'The link is archived on archive.org but currently not working on the live site. It has failed %1$s, and after %2$s it will redirect to the archived version.', 'internet-archive-wayback-machine-link-fixer' ),
 			sprintf(
 				// translators: %d: The number of consecutive failed checks.
 				_n( '%d consecutive check', '%d consecutive checks', $last_failed_count, 'internet-archive-wayback-machine-link-fixer' ),
@@ -114,7 +114,7 @@ class Link_Summary_Factory {
 
 		return sprintf(
 			// translators: %s: The number of consecutive failed checks (e.g. "3 consecutive checks").
-			__( 'The link is not archived on archive.org and currently not working. It has failed %s.', 'internet-archive-wayback-machine-link-fixer' ),
+			__( 'The link is not archived on archive.org and currently not working on the live site. It has failed %s.', 'internet-archive-wayback-machine-link-fixer' ),
 			sprintf(
 				// translators: %d: The number of consecutive failed checks.
 				_n( '%d consecutive check', '%d consecutive checks', $this->get_consecutive_failed_checks_count(), 'internet-archive-wayback-machine-link-fixer' ),
