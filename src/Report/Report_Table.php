@@ -518,7 +518,7 @@ class Report_Table extends \WP_List_Table {
 			$this->notices[] = array(
 				'message' => sprintf(
 					// translators: %s is the link url.
-					__( 'Link %s added to the queue and a new snapshot will be created and added as the archived url in the coming minutes..', 'internet-archive-wayback-machine-link-fixer' ),
+					__( 'Link %s added to the queue and a new snapshot will be created and added as the archived URL in the coming minutes.', 'internet-archive-wayback-machine-link-fixer' ),
 					iawmlf_trim_string( $result['link']->get_href(), 54 )
 				),
 				'type'    => 'success',
