@@ -1199,7 +1199,7 @@ class Report_Table extends \WP_List_Table {
 			: __( 'No HTTP Code', 'internet-archive-wayback-machine-link-fixer' );
 
 		return sprintf(
-			// translators: %1$s is the last check date, %2$s is the last check http code.
+			// translators: %1$s: last check date (e.g. "5 Jan 2025"), %2$s: HTTP status code (e.g. "404 status").
 			__( '%1$s with %2$s', 'internet-archive-wayback-machine-link-fixer' ),
 			$last_check['date']
 				? DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) )
