@@ -101,7 +101,7 @@ class Link_New_Snapshot_Action {
 			return array(
 				'link'    => $link,
 				'job_id'  => null,
-				'message' => __( 'Link is an archive link already.', 'internet-archive-wayback-machine-link-fixer' ),
+				'message' => __( 'This URL is already an archived link.', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 		}
 

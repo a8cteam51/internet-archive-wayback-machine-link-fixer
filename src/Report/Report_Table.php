@@ -435,7 +435,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
-						__( 'No archived link found for %s', 'internet-archive-wayback-machine-link-fixer' ),
+						__( 'No archived version found for %s.', 'internet-archive-wayback-machine-link-fixer' ),
 						esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 					),
 					'type'    => 'error',
@@ -460,7 +460,7 @@ class Report_Table extends \WP_List_Table {
 			$this->notices[] = array(
 				'message' => sprintf(
 					// translators: %s is the link url.
-					__( 'Link %s updated successfully', 'internet-archive-wayback-machine-link-fixer' ),
+					__( 'Archived URL for %s updated successfully.', 'internet-archive-wayback-machine-link-fixer' ),
 					esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 				),
 				'type'    => 'success',
@@ -808,8 +808,8 @@ class Report_Table extends \WP_List_Table {
 			<option value=""><?php esc_html_e( 'Show with or without archived link', 'internet-archive-wayback-machine-link-fixer' ); ?></option>
 			<?php
 			$has_archive = array(
-				Link_Repository::LINK_HAS_ARCHIVE => __( 'Show links with archived link', 'internet-archive-wayback-machine-link-fixer' ),
-				Link_Repository::LINK_NO_ARCHIVE  => __( 'Show links without archived link', 'internet-archive-wayback-machine-link-fixer' ),
+				Link_Repository::LINK_HAS_ARCHIVE => __( 'Show links with archived version', 'internet-archive-wayback-machine-link-fixer' ),
+				Link_Repository::LINK_NO_ARCHIVE  => __( 'Show links without archived version', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 			foreach ( $has_archive as $archive => $label ) {
 				printf(
