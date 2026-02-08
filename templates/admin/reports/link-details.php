@@ -49,7 +49,7 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 										if ( Link::PROCESS_NEW === $iawmlf_archive_process ) {
 											esc_html_e( 'NEW - This link has been queued and will be processed by the Internet Archive as soon as possible.', 'internet-archive-wayback-machine-link-fixer' );
 										} else {
-											esc_html_e( 'PENDING – Queued for submission to the Internet Archive. Processing time varies based on queue size.', 'internet-archive-wayback-machine-link-fixer' );
+											esc_html_e( 'PENDING - Queued for submission to the Internet Archive. Processing time varies based on queue size.', 'internet-archive-wayback-machine-link-fixer' );
 										}
 									} elseif ( '' !== $iawmlf_link->get_archived_href() ) {
 										printf(

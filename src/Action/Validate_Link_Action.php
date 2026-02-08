@@ -65,7 +65,7 @@ class Validate_Link_Action {
 			return array(
 				'link'    => $link,
 				'job_id'  => null,
-				'message' => __( 'Service is offline', 'internet-archive-wayback-machine-link-fixer' ),
+				'message' => __( 'Service is offline.', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 		}
 
@@ -73,7 +73,7 @@ class Validate_Link_Action {
 			return array(
 				'link'    => null,
 				'job_id'  => null,
-				'message' => __( 'Link not found', 'internet-archive-wayback-machine-link-fixer' ),
+				'message' => __( 'Link not found.', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 		}
 
@@ -82,7 +82,7 @@ class Validate_Link_Action {
 			return array(
 				'link'    => $link,
 				'job_id'  => null,
-				'message' => __( 'Link is an archive link already', 'internet-archive-wayback-machine-link-fixer' ),
+				'message' => __( 'Link is an archive link already.', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 		}
 
@@ -95,7 +95,7 @@ class Validate_Link_Action {
 				return array(
 					'link'    => $link,
 					'job_id'  => null,
-					'message' => __( 'Exceeded snapshot limit', 'internet-archive-wayback-machine-link-fixer' ),
+					'message' => __( 'Exceeded snapshot limit.', 'internet-archive-wayback-machine-link-fixer' ),
 				);
 			} else {
 				return array(
