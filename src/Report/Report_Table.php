@@ -504,7 +504,7 @@ class Report_Table extends \WP_List_Table {
 			if ( ! $result['job_id'] ) {
 				$this->notices[] = array(
 					'message' => sprintf(
-						// translators: %s is the link url.
+						// translators: 1: the link URL, 2: error message.
 						__( 'Could not create a new snapshot for %1$s: %2$s', 'internet-archive-wayback-machine-link-fixer' ),
 						iawmlf_trim_string( $result['link']->get_href(), 54 ),
 						esc_html( $result['message'] )
