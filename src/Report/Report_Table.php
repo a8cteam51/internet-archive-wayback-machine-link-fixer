@@ -353,7 +353,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
-						__( 'It was not possible to check %s', 'internet-archive-wayback-machine-link-fixer' ),
+						__( 'Could not check the status of %s.', 'internet-archive-wayback-machine-link-fixer' ),
 						esc_html( iawmlf_trim_string( $results['link']->get_href(), 54 ) )
 					),
 					'type'    => 'error',
@@ -448,7 +448,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
-						__( 'It was not possible to update %s, the latest archive link is the same', 'internet-archive-wayback-machine-link-fixer' ),
+						__( 'Could not update %s: the archived URL is already the latest.', 'internet-archive-wayback-machine-link-fixer' ),
 						esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) )
 					),
 					'type'    => 'notice',
@@ -505,7 +505,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %s is the link url.
-						__( 'Link %1$s could not have a new snapshot created: %2$s', 'internet-archive-wayback-machine-link-fixer' ),
+						__( 'Could not create a new snapshot for %1$s: %2$s', 'internet-archive-wayback-machine-link-fixer' ),
 						iawmlf_trim_string( $result['link']->get_href(), 54 ),
 						esc_html( $result['message'] )
 					),

@@ -72,7 +72,7 @@ class Link_Summary_Factory {
 
 		// If the last check was successful, return early.
 		if ( $last_check_status ) {
-			return __( 'The link is archived on archive.org and still working.', 'internet-archive-wayback-machine-link-fixer' );
+			return __( 'This link has an archived version on archive.org, and the original URL is still accessible.', 'internet-archive-wayback-machine-link-fixer' );
 		}
 
 		// If we have more failed checks than the threshold, return the redirected already message.
@@ -86,7 +86,7 @@ class Link_Summary_Factory {
 
 		return sprintf(
 		// translators: 1: The number of failed checks. 2: The number of remaining checks before redirect. 3: Plural S if needed.
-			__( 'The link is archived on archive.org but currently not working. It has failed %1$d previous consecutive check%3$s, %2$d more and it will redirect to the archived version.', 'internet-archive-wayback-machine-link-fixer' ),
+			__( 'This link has an archived version on archive.org, but the original URL is not accessible. It has failed %1$d previous consecutive check%3$s, %2$d more and it will redirect to the archived version.', 'internet-archive-wayback-machine-link-fixer' ),
 			$last_failed_count,
 			Settings::get_failed_count() - $last_failed_count,
 			1 === $last_failed_count ? '' : 's'
