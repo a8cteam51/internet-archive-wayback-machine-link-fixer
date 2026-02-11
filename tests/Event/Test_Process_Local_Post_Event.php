@@ -134,7 +134,7 @@ class Test_Process_Local_Post_Event extends TestCase {
 					'claim_id'             => 0,
 					'extended_args'        => null,
 				),
-				array( '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d', '%s', '%s', '%d', '%s' )
+				array( '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d', '%s', '%s', '%d', '%s', '%s', '%s' ),
 			);
 		}
 
@@ -378,7 +378,7 @@ class Test_Process_Local_Post_Event extends TestCase {
 		$event( $post_id );
 
 		// Check there is NO pending actions for that post.
-		$actions = $actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions where status='pending'" );
+		$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions where status='pending'" );
 		$this->assertEmpty( $actions );
 
 

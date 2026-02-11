@@ -138,13 +138,16 @@ class Process_Local_Post_Event {
 	 * @return void
 	 */
 	private static function ensure_single_event( int $post_id ): void {
-		add_action( 'action_scheduler_canceled_action', array( self::class, 'handle_hard_delete' ) );
+		try {
+			// Add the bulk cancel action to prevent interference with other events.
+			add_action( 'action_scheduler_canceled_action', array( self::class, 'handle_hard_delete' ) );
 
-		// Unschedule any existing events for this post ID.
-		as_unschedule_all_actions( self::HANDLE, array( 'post_id' => $post_id ) );
-
-		// Remove the bulk cancel action to prevent interference with other events.
-		remove_action( 'action_scheduler_canceled_action', array( self::class, 'handle_hard_delete' ) );
+			// Unschedule any existing events for this post ID.
+			as_unschedule_all_actions( self::HANDLE, array( 'post_id' => $post_id ) );
+		} finally {
+			// Remove the bulk cancel action to prevent interference with other events.
+			remove_action( 'action_scheduler_canceled_action', array( self::class, 'handle_hard_delete' ) );
+		}
 	}
 
 	/**
