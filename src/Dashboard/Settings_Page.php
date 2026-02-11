@@ -360,6 +360,22 @@ class Settings_Page {
 
 		register_setting(
 			self::PAGE_SLUG,
+			Settings::CAST_ARCHIVED_TO_HTTPS,
+			array(
+				'type'              => 'boolean',
+				'sanitize_callback' => 'wp_validate_boolean',
+				'default'           => false,
+				'show_in_rest'      => array(
+					'name'   => Settings::CAST_ARCHIVED_TO_HTTPS,
+					'schema' => array(
+						'type' => 'boolean',
+					),
+				),
+			)
+		);
+
+		register_setting(
+			self::PAGE_SLUG,
 			Settings::ALLOW_OWN_CONTENT_SUBMISSIONS,
 			array(
 				'type'              => 'boolean',
@@ -558,6 +574,15 @@ class Settings_Page {
 			Settings::MINIMUM_CHECKS_BEFORE_BROKEN,
 			__( 'Failure Threshold', 'internet-archive-wayback-machine-link-fixer' ),
 			array( $this, 'render_minimum_checks_before_broken_field' ),
+			self::PAGE_SLUG,
+			self::GROUP_LINK_FIXER,
+			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
+		);
+
+		add_settings_field(
+			Settings::CAST_ARCHIVED_TO_HTTPS,
+			__( 'Cast Archived Links to HTTPS', 'internet-archive-wayback-machine-link-fixer' ),
+			array( $this, 'render_cast_archived_to_https_field' ),
 			self::PAGE_SLUG,
 			self::GROUP_LINK_FIXER,
 			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
@@ -912,6 +937,32 @@ class Settings_Page {
 		/>
 		<p class="description">
 			<?php esc_html_e( 'Number of consecutive failed checks before a link is marked as broken. Occasional single failures are normal, so use a value high enough to confirm genuine link loss. The default is 5.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Render the setting to cast archived links to HTTPS.
+	 *
+	 * @since 1.3.5
+	 *
+	 * @return void
+	 */
+	public function render_cast_archived_to_https_field(): void {
+		?>
+		<label for="<?php echo esc_attr( Settings::CAST_ARCHIVED_TO_HTTPS ); ?>">
+			<input
+				type="checkbox"
+				id="<?php echo esc_attr( Settings::CAST_ARCHIVED_TO_HTTPS ); ?>"
+				name="<?php echo esc_attr( Settings::CAST_ARCHIVED_TO_HTTPS ); ?>"
+				value="1"
+				data-group="link_fixer"
+				<?php checked( Settings::should_cast_archived_to_https() ); ?>
+			/>
+			<?php esc_html_e( 'Force HTTPS', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		</label>
+		<p class="description">
+			<?php esc_html_e( 'Enabling this will convert all archived urls from http to https.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</p>
 		<?php
 	}

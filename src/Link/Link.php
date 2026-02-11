@@ -278,6 +278,12 @@ class Link implements \JsonSerializable {
 			$archived_href = str_replace( 'http://web.archive.org/web/', 'http://web-wp.archive.org/web/', $archived_href );
 		}
 
+		// If the setting to cast to https is enabled, cast the start of the url to https.
+		if ( Settings::should_cast_archived_to_https() ) {
+			// Replace http with https at the start of the url.
+			$archived_href = preg_replace( '#^http://web-wp\.archive\.org/#i', 'https://web-wp.archive.org/', $archived_href );
+		}
+
 		return $archived_href;
 	}
 
@@ -486,7 +492,7 @@ class Link implements \JsonSerializable {
 		return array(
 			'id'            => $this->id,
 			'href'          => $this->href,
-			'archived_href' => $this->archived_href,
+			'archived_href' => $this->get_archived_href(),
 			'redirect_href' => $this->redirect_href,
 			'checks'        => $this->checks,
 			'broken'        => $this->is_broken,

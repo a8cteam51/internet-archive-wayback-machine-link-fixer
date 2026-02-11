@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Link;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 
 /**
  * Test_Link
@@ -304,7 +305,8 @@ class Test_Link extends \WP_UnitTestCase {
 		$this->assertJson( $json );
 		$this->assertStringContainsString( '"id":1', $json );
 		$this->assertStringContainsString( '"href":"https:\/\/example.com"', $json );
-		$this->assertStringContainsString( '"archived_href":"https:\/\/web.archive.org\/web\/20240101000000\/https:\/\/example.com"', $json );
+		// Also check we are casting to wp urls.
+		$this->assertStringContainsString( '"archived_href":"https:\/\/web-wp.archive.org\/web\/20240101000000\/https:\/\/example.com"', $json );
 		$this->assertStringContainsString( '"redirect_href":"https:\/\/example.com"', $json );
 		$this->assertStringContainsString( '"checks":[{', $json );
 		$this->assertStringContainsString( '"date":"20240101000000"', $json );
@@ -414,5 +416,29 @@ class Test_Link extends \WP_UnitTestCase {
 		$link = new Link( 'http://example.com' );
 		$link->set_archived_href( 'http://web.archive.org/web/20240101000000/https://example.com' );
 		$this->assertSame( 'http://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
+	}
+
+	/**
+	 * @testdox When an archive link is fetched, it should be possible to cast to https based on settings.
+	 *
+	 * @since 1.3.5
+	 *
+	 * @return void
+	 */
+	public function test_cast_to_https_based_on_settings(): void {
+		$link = new Link( 'http://example.com' );
+		$link->set_archived_href( 'http://web.archive.org/web/20240101000000/https://example.com' );
+
+		// By default, should not cast to https.
+		$this->assertSame( 'http://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
+
+		// Set the option to cast to https.
+		update_option( Settings::CAST_ARCHIVED_TO_HTTPS, true );
+
+		// Should now NOT cast to https.
+		$this->assertSame( 'https://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
+
+		// Clear the option.
+		delete_option( Settings::CAST_ARCHIVED_TO_HTTPS );
 	}
 }

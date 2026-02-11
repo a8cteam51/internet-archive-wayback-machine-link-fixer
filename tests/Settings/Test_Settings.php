@@ -30,8 +30,9 @@ class Test_Settings extends \WP_UnitTestCase {
 		delete_option( Settings::LINK_EXCLUSIONS );
 		delete_option( Settings::SCAN_EXISTING_POSTS );
 		delete_option( Settings::FIXER_OPTION );
+		delete_option( Settings::CAST_ARCHIVED_TO_HTTPS );
 
-		update_option(Settings::PROCESS_LINKS, true);
+		update_option( Settings::PROCESS_LINKS, true );
 	}
 
 	/**
@@ -80,7 +81,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	public function test_can_set_and_get_migrations(): void {
 		$migration_1 = $this->createMock( Abstract_Migration::class );
 		$migration_2 = $this->createMock( Abstract_Migration::class );
-		$migrations = [get_class($migration_1), get_class($migration_2)];
+		$migrations  = array( get_class( $migration_1 ), get_class( $migration_2 ) );
 		Settings::update_migrations( $migrations );
 		$this->assertEquals( $migrations, Settings::migrations() );
 	}
@@ -260,23 +261,39 @@ class Test_Settings extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_should_scan_existing_posts_should_return_false_if_option_is_not_enabled(): void {
-		update_option(Settings::PROCESS_LINKS, false);
-		$this->assertFalse(Settings::should_scan_existing_posts());
+		update_option( Settings::PROCESS_LINKS, false );
+		$this->assertFalse( Settings::should_scan_existing_posts() );
 
 		// Set the scan existing posts to true.
-		update_option(Settings::SCAN_EXISTING_POSTS, true);
-		$this->assertFalse(Settings::should_scan_existing_posts());
+		update_option( Settings::SCAN_EXISTING_POSTS, true );
+		$this->assertFalse( Settings::should_scan_existing_posts() );
 
 		// Set the process links to true.
-		update_option(Settings::PROCESS_LINKS, true);
-		$this->assertTrue(Settings::should_scan_existing_posts());
+		update_option( Settings::PROCESS_LINKS, true );
+		$this->assertTrue( Settings::should_scan_existing_posts() );
 
 		// Set the scan existing posts to false.
-		update_option(Settings::SCAN_EXISTING_POSTS, false);
+		update_option( Settings::SCAN_EXISTING_POSTS, false );
 	}
 
 	/**
-	 * @testdox It should be possible to clear all the settings, this can then be used to clear on uninistall.
+	 * @testdox It should be possible to get the cast to HTTPS option.
+	 *
+	 * @since 1.3.5
+	 *
+	 * @return void
+	 */
+	public function test_can_get_cast_to_https_option_with_fallbacks(): void {
+		// By default, the cast to HTTPS option should be false.
+		$this->assertFalse( Settings::should_cast_archived_to_https() );
+
+		// When set.
+		update_option( Settings::CAST_ARCHIVED_TO_HTTPS, true );
+		$this->assertTrue( Settings::should_cast_archived_to_https() );
+	}
+
+	/**
+	 * @testdox It should be possible to clear all the settings, this can then be used to clear on uninstall.
 	 *
 	 * @return void
 	 */
@@ -302,6 +319,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		update_option( Settings::LINK_CHECK_DURATION_IN_DAYS, 14 );
 		update_option( Settings::SETUP_WIZARD_STEP_KEY, 'step-2' );
 		update_option( Settings::SETUP_WIZARD_COMPLETED_KEY, true );
+		update_option( Settings::CAST_ARCHIVED_TO_HTTPS, true );
 
 		// Clear all the settings.
 		Settings::clear_all_options();
@@ -327,6 +345,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEmpty( get_option( Settings::LINK_CHECK_DURATION_IN_DAYS ) );
 		$this->assertEmpty( get_option( Settings::SETUP_WIZARD_STEP_KEY ) );
 		$this->assertEmpty( get_option( Settings::SETUP_WIZARD_COMPLETED_KEY ) );
+		$this->assertEmpty( get_option( Settings::CAST_ARCHIVED_TO_HTTPS ) );
 	}
 
 	/**
@@ -346,9 +365,12 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertFalse( Settings::should_render_html_link_output() );
 
 		// Set the option to replace link via a filter.
-		add_filter( 'iawmlf_should_render_html_link_output', function () {
-			return true;
-		} );
+		add_filter(
+			'iawmlf_should_render_html_link_output',
+			function () {
+				return true;
+			}
+		);
 		$this->assertTrue( Settings::should_render_html_link_output() );
 
 		// Clean up.

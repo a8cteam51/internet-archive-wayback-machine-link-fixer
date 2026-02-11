@@ -43,6 +43,7 @@ class Settings {
 	public const SETUP_WIZARD_STEP_KEY          = self::SETTINGS_PREFIX . 'setup_wizard';
 	public const SETUP_WIZARD_COMPLETED_KEY     = self::SETTINGS_PREFIX . 'setup_wizard_completed';
 	public const ONBOARDING_DATE_KEY            = self::SETTINGS_PREFIX . 'onboarding_date';
+	public const CAST_ARCHIVED_TO_HTTPS         = self::SETTINGS_PREFIX . 'cast_to_https';
 
 	// Table names.
 	public const LINK_TABLE = 'iawmlf_link_archive';
@@ -560,6 +561,17 @@ class Settings {
 	}
 
 	/**
+	 * Checks if archived links should be cast as HTTPS.
+	 *
+	 * @since 1.3.5
+	 *
+	 * @return boolean
+	 */
+	public static function should_cast_archived_to_https(): bool {
+		return (bool) get_option( self::CAST_ARCHIVED_TO_HTTPS, false );
+	}
+
+	/**
 	 * Clear all the options.
 	 *
 	 * @since 1.3.0
@@ -588,5 +600,7 @@ class Settings {
 		delete_option( self::LINK_CHECK_DURATION_IN_DAYS );
 		delete_option( self::SETUP_WIZARD_STEP_KEY );
 		delete_option( self::SETUP_WIZARD_COMPLETED_KEY );
+		delete_option( self::ONBOARDING_DATE_KEY );
+		delete_option( self::CAST_ARCHIVED_TO_HTTPS );
 	}
 }

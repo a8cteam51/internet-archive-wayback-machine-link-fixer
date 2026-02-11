@@ -345,6 +345,9 @@ class Setup_Wizard {
 		if ( Settings::ONBOARDING_PENDING_OPTION === Settings::get_onboarding_status() ) {
 			// Force the scan own content to trigger early.
 			Scan_Posts_Event::force_add_to_action_scheduler();
+
+			// Set to true on first run to ensure the archived urls are cast to https by default.
+			update_option( Settings::CAST_ARCHIVED_TO_HTTPS, true );
 		}
 
 		// Mark as onboarding completed.
