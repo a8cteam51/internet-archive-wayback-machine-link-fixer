@@ -179,9 +179,6 @@ $iawmlf_tooltip_broken_links          = sprintf(
 					// Set up variables for the widget (it expects $iawmlf_details, not $iawmlf_account_details)
 					$iawmlf_details = $iawmlf_account_details;
 
-					// Create a total links array for the widget (pass the actual count)
-					$iawmlf_total_links = array_fill( 0, $iawmlf_total_link_count, null ); // Mock array with correct count
-
 					// Include the existing widget template
 					require __DIR__ . '/widget.php';
 					?>
