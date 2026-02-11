@@ -14,7 +14,6 @@ namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Settings;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Abstract_Migration;
-use PhpParser\Node\Expr\Cast\Void_;
 
 class Test_Settings extends \WP_UnitTestCase {
 
@@ -277,7 +276,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox It should be possible to get the cast to HTTPS option, with defineable fallbacks.
+	 * @testdox It should be possible to get the cast to HTTPS option, with definable fallbacks.
 	 *
 	 * @since 1.3.5
 	 *
