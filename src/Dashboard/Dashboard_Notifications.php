@@ -90,16 +90,32 @@ class Dashboard_Notifications {
 				'iawmlf_is_online'               => iawmlf_is_archive_api_online(),
 				'iawmlf_link_to_settings'        => Settings_Page::get_page_url(),
 				'iawmlf_link_table'              => Report_Page::get_page_url(),
-				'iawmlf_total_links'             => ( new Link_Repository() )->query_links( PHP_INT_MAX ),
+				'iawmlf_total_link_count'        => self::get_link_count(),
 				'iawmlf_auto_archiver_enabled'   => Settings::add_own_links(),
 				'iawmlf_scan_existing_enabled'   => Settings::should_scan_existing_posts(),
 				'iawmlf_link_processing_enabled' => Settings::is_link_processing_enabled(),
 				'iawmlf_link_check_duration'     => Settings::get_link_check_duration(),
 				'iawmlf_failed_check_count'      => Settings::get_failed_count(),
 				'iawmlf_onboarding_details'      => Dashboard_Statistics::get_onboarding_statistics(),
-				'iawmlf_link_stats'              => Dashboard_Statistics::get_link_statistics(),
 			)
 		);
+	}
+
+	/**
+	 * Gets the link count from cache.
+	 *
+	 * @since 1.3.5
+	 *
+	 * @return integer
+	 */
+	public static function get_link_count(): int {
+		$cached = get_transient( 'iawmlf_link_count' );
+		if ( false !== $cached ) {
+			return (int) $cached;
+		}
+		$count = ( new Link_Repository() )->count_links( PHP_INT_MAX, 1, array(), array(), array(), 'any' );
+		set_transient( 'iawmlf_link_count', $count, 15 * MINUTE_IN_SECONDS );
+		return $count;
 	}
 
 	/**

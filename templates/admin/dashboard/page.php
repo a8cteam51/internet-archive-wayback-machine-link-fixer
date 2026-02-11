@@ -30,7 +30,7 @@ defined( 'ABSPATH' ) || exit;
 
 
 // Extract link statistics
-$iawmlf_total_links_count     = $iawmlf_link_stats['total_links'] ?? 0;
+$iawmlf_total_link_count      = $iawmlf_link_stats['total_links'] ?? 0;
 $iawmlf_all_broken_links      = $iawmlf_link_stats['all_broken_links'] ?? 0;
 $iawmlf_links_with_archive    = $iawmlf_link_stats['links_with_archive'] ?? 0;
 $iawmlf_links_without_archive = $iawmlf_link_stats['links_without_archive'] ?? 0;
@@ -134,7 +134,7 @@ $iawmlf_tooltip_broken_links          = sprintf(
 								<!-- Row 1: Total Links | Being Redirected -->
 								<div class="iawmlf_dashboard-stats-box">
 									<a href="<?php echo esc_url( $iawmlf_link_table ); ?>" class="iawmlf_dashboard-stats-number iawmlf_dashboard-stats-link">
-										<?php echo esc_html( $iawmlf_total_links_count ); ?>
+										<?php echo esc_html( $iawmlf_total_link_count ); ?>
 									</a>
 									<div class="iawmlf_dashboard-stats-label"><?php esc_html_e( 'Total Links', 'internet-archive-wayback-machine-link-fixer' ); ?></div>
 								</div>
@@ -180,7 +180,7 @@ $iawmlf_tooltip_broken_links          = sprintf(
 					$iawmlf_details = $iawmlf_account_details;
 
 					// Create a total links array for the widget (pass the actual count)
-					$iawmlf_total_links = array_fill( 0, $iawmlf_total_links_count, null ); // Mock array with correct count
+					$iawmlf_total_links = array_fill( 0, $iawmlf_total_link_count, null ); // Mock array with correct count
 
 					// Include the existing widget template
 					require __DIR__ . '/widget.php';
