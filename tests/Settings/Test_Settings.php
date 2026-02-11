@@ -30,6 +30,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		delete_option( Settings::LINK_EXCLUSIONS );
 		delete_option( Settings::SCAN_EXISTING_POSTS );
 		delete_option( Settings::FIXER_OPTION );
+		delete_option( Settings::CAST_ARCHIVED_TO_HTTPS );
 
 		update_option( Settings::PROCESS_LINKS, true );
 	}
