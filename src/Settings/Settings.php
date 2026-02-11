@@ -564,7 +564,6 @@ class Settings {
 	 * Checks if archived links should be cast as HTTPS.
 	 *
 	 * @since 1.3.5
-
 	 *
 	 * @return boolean
 	 */
