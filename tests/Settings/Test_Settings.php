@@ -14,6 +14,7 @@ namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Settings;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Abstract_Migration;
+use PhpParser\Node\Expr\Cast\Void_;
 
 class Test_Settings extends \WP_UnitTestCase {
 
@@ -276,6 +277,25 @@ class Test_Settings extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox It should be possible to get the cast to HTTPS option, with defineable fallbacks.
+	 *
+	 * @since 1.3.5
+	 *
+	 * @return void
+	 */
+	public function test_can_get_cast_to_https_option_with_fallbacks(): void {
+		// By default, the cast to HTTPS option should be false.
+		$this->assertFalse( Settings::should_cast_archived_to_https() );
+
+		// You should be able to set the default value to true.
+		$this->assertTrue( Settings::should_cast_archived_to_https( true ) );
+
+		// When set, the defined option should override the default.
+		update_option( Settings::CAST_ARCHIVED_TO_HTTPS, true );
+		$this->assertTrue( Settings::should_cast_archived_to_https( false ) );
+	}
+
+	/**
 	 * @testdox It should be possible to clear all the settings, this can then be used to clear on uninistall.
 	 *
 	 * @return void
@@ -302,6 +322,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		update_option( Settings::LINK_CHECK_DURATION_IN_DAYS, 14 );
 		update_option( Settings::SETUP_WIZARD_STEP_KEY, 'step-2' );
 		update_option( Settings::SETUP_WIZARD_COMPLETED_KEY, true );
+		update_option(Settings::CAST_ARCHIVED_TO_HTTPS, true);
 
 		// Clear all the settings.
 		Settings::clear_all_options();
@@ -327,6 +348,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEmpty( get_option( Settings::LINK_CHECK_DURATION_IN_DAYS ) );
 		$this->assertEmpty( get_option( Settings::SETUP_WIZARD_STEP_KEY ) );
 		$this->assertEmpty( get_option( Settings::SETUP_WIZARD_COMPLETED_KEY ) );
+		$this->assertEmpty( get_option( Settings::CAST_ARCHIVED_TO_HTTPS ) );
 	}
 
 	/**
