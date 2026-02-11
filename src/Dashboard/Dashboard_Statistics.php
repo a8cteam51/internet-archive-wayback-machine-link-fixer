@@ -128,13 +128,13 @@ class Dashboard_Statistics {
 
 		// Get all the link stats.
 		$all_links          = $links->count_links( \PHP_INT_MAX, 1 );
-		$all_broken         = $links->count_links( \PHP_INT_MAX, 1, array( Link_Repository::LINK_STATUS_BROKEN ), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, false );
+		$all_broken         = $links->count_links( \PHP_INT_MAX, 1, array( Link_Repository::LINK_STATUS_BROKEN ), array(), array(), 'fallback', null, null, false );
 		$has_archive_link   = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array( Link_Repository::LINK_HAS_ARCHIVE ) );
-		$redirected_broken_ = $links->count_links( \PHP_INT_MAX, 1, array( Link_Repository::LINK_STATUS_BROKEN ), array(), array( Link_Repository::LINK_HAS_ARCHIVE ), Link_Repository::ORDER_DATE_DESC, null, null, false );
-		$not_checked        = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, null, false );
-		$process_new        = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, array( Link::PROCESS_NEW ) );
-		$process_done_      = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, array( Link::PROCESS_DONE ) );
-		$process_pending    = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, array( Link::PROCESS_PENDING ) );
+		$redirected_broken_ = $links->count_links( \PHP_INT_MAX, 1, array( Link_Repository::LINK_STATUS_BROKEN ), array(), array( Link_Repository::LINK_HAS_ARCHIVE ), 'fallback', null, null, false );
+		$not_checked        = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), 'fallback', null, null, null, null, false );
+		$process_new        = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), 'fallback', null, null, null, array( Link::PROCESS_NEW ) );
+		$process_done_      = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), 'fallback', null, null, null, array( Link::PROCESS_DONE ) );
+		$process_pending    = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), 'fallback', null, null, null, array( Link::PROCESS_PENDING ) );
 		$last_checks        = $links->query_links( 10, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, null, null, true );
 
 		// Extract the details from last checks.
