@@ -277,7 +277,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox It should be possible to get the cast to HTTPS option, with definable fallbacks.
+	 * @testdox It should be possible to get the cast to HTTPS option.
 	 *
 	 * @since 1.3.5
 	 *
@@ -287,7 +287,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		// By default, the cast to HTTPS option should be false.
 		$this->assertFalse( Settings::should_cast_archived_to_https() );
 
-		// When set, the defined option should override the default.
+		// When set.
 		update_option( Settings::CAST_ARCHIVED_TO_HTTPS, true );
 		$this->assertTrue( Settings::should_cast_archived_to_https() );
 	}
