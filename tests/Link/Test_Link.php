@@ -305,7 +305,8 @@ class Test_Link extends \WP_UnitTestCase {
 		$this->assertJson( $json );
 		$this->assertStringContainsString( '"id":1', $json );
 		$this->assertStringContainsString( '"href":"https:\/\/example.com"', $json );
-		$this->assertStringContainsString( '"archived_href":"https:\/\/web.archive.org\/web\/20240101000000\/https:\/\/example.com"', $json );
+		// Also check we are casting to wp urls.
+		$this->assertStringContainsString( '"archived_href":"https:\/\/web-wp.archive.org\/web\/20240101000000\/https:\/\/example.com"', $json );
 		$this->assertStringContainsString( '"redirect_href":"https:\/\/example.com"', $json );
 		$this->assertStringContainsString( '"checks":[{', $json );
 		$this->assertStringContainsString( '"date":"20240101000000"', $json );
@@ -434,7 +435,7 @@ class Test_Link extends \WP_UnitTestCase {
 		// Set the option to cast to https.
 		update_option( Settings::CAST_ARCHIVED_TO_HTTPS, true );
 
-		// Should now cast to https.
+		// Should now NOT cast to https.
 		$this->assertSame( 'https://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
 
 		// Clear the option.

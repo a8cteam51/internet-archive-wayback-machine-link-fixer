@@ -957,7 +957,7 @@ class Settings_Page {
 				name="<?php echo esc_attr( Settings::CAST_ARCHIVED_TO_HTTPS ); ?>"
 				value="1"
 				data-group="link_fixer"
-				<?php checked( Settings::should_cast_archived_to_https() ); ?>
+				<?php checked( Settings::should_cast_archived_to_https( false ) ); ?>
 			/>
 			<?php esc_html_e( 'Force HTTPS', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</label>

@@ -492,7 +492,7 @@ class Link implements \JsonSerializable {
 		return array(
 			'id'            => $this->id,
 			'href'          => $this->href,
-			'archived_href' => $this->archived_href,
+			'archived_href' => $this->get_archived_href(),
 			'redirect_href' => $this->redirect_href,
 			'checks'        => $this->checks,
 			'broken'        => $this->is_broken,
