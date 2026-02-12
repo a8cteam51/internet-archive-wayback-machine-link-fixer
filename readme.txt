@@ -30,9 +30,6 @@ Protect your links, preserve your content, and automate the archiving process—
 
 == Frequently Asked Questions ==
 
-= Multisite Compatible? =
-Sadly at present, it is not fully compatible. The only way it can currently be used on multisite is to only enable it site-wide and not network-wide. We plan to resolve this in the next release.
-
 = How does the link checker work? =
 Your content is checked for any links. When it finds a link it will check if we have already handled this link before, if not, it will find or create a snapshot of the webpage on the Internet Archive.
 Then if later that link's target site goes offline, we can change the link to the archived version.
@@ -63,6 +60,12 @@ If the Internet Archive services go offline, the link fixer will delay all proce
 
 = How often are my own posts updated when auto archive is active? =
 Existing content is sent to the Wayback Machine in batch when the plugin is activated, then again every 30 days (by default, but can be changed). New content is sent to be archived shortly after it is published. Updates to existing content also trigger updates to be sent to the Wayback Machine.
+
+= Multisite Compatible? =
+Sadly at present, it is not fully compatible. The only way it can currently be used on multisite is to only enable it site-wide and not network-wide. We plan to resolve this in a future release.
+
+= Page builder plugins and custom fields support? =
+Right now the plugin works best with the core block editor and we have some more work to do to support page builder plugins and custom fields.
 
 == Screenshots ==
 
@@ -152,4 +155,5 @@ For developer docs and source code, see the GitHub repository: [https://github.c
 
 = 1.3.0 =
 This updates any pre-release version to the new launched version.
+
 
