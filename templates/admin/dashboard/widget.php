@@ -132,11 +132,13 @@ defined( 'ABSPATH' ) || exit;
 							?>
 						<?php else : ?>
 							<?php
-							printf(
-								/* translators: 1: opening link tag, 2: closing link tag */
-								esc_html__( 'Links are not being checked. %1$sEnable Link Processing%2$s to turn this back on.', 'internet-archive-wayback-machine-link-fixer' ),
-								'<a href="' . esc_url( $iawmlf_link_to_settings ) . '">',
-								'</a>'
+							echo wp_kses(
+								sprintf(
+									/* translators: %s: URL to the settings page */
+									__( 'Links are not being checked. <a href="%s">Enable Link Processing</a> to turn this back on.', 'internet-archive-wayback-machine-link-fixer' ),
+									esc_url( $iawmlf_link_to_settings )
+								),
+								array( 'a' => array( 'href' => array() ) )
 							);
 							?>
 						<?php endif; ?>
