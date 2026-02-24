@@ -82,7 +82,7 @@ class Link_Latest_Snapshot_Action {
 				'link'    => $link,
 				'found'   => true,
 				'updated' => false,
-				'message' => __( 'Link is already an archived link.', 'internet-archive-wayback-machine-link-fixer' ),
+				'message' => __( 'This URL is already an archived link.', 'internet-archive-wayback-machine-link-fixer' ),
 			);
 		}
 
@@ -123,7 +123,7 @@ class Link_Latest_Snapshot_Action {
 			'link'    => $link,
 			'found'   => true,
 			'updated' => true,
-			'message' => __( 'Link updated.', 'internet-archive-wayback-machine-link-fixer' ),
+			'message' => __( 'Archived URL updated.', 'internet-archive-wayback-machine-link-fixer' ),
 		);
 	}
 }

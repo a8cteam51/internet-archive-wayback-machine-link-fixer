@@ -64,7 +64,7 @@ defined( 'ABSPATH' ) || exit;
 
 									if ( $iawmlf_date_time && $iawmlf_clean_http_code ) {
 										printf(
-											/* translators: %1$s is the last check date, %2$s is the last check http code. */
+											/* translators: %1$s: last check date (e.g. "5 Jan 2025"), %2$s: HTTP status code (e.g. "404 status") */
 											esc_html__( '%1$s with %2$s', 'internet-archive-wayback-machine-link-fixer' ),
 											esc_html( $iawmlf_date_time->format( 'j M Y' ) ),
 											$iawmlf_http_status_display // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, already escaped above
@@ -128,14 +128,14 @@ defined( 'ABSPATH' ) || exit;
 												if ( ! $iawmlf_link->is_processed() ) {
 													$iawmlf_archive_process = $iawmlf_link->get_archive_process();
 													if ( \Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link::PROCESS_NEW === $iawmlf_archive_process ) {
-														esc_html_e( 'NEW - This link has been queued and will be processed by the Internet Archive as soon as possible', 'internet-archive-wayback-machine-link-fixer' );
+														esc_html_e( 'NEW - This link has been queued and will be processed by the Internet Archive as soon as possible.', 'internet-archive-wayback-machine-link-fixer' );
 													} else {
-														esc_html_e( 'PENDING – Queued for submission to the Internet Archive. Processing time varies based on queue size.', 'internet-archive-wayback-machine-link-fixer' );
+														esc_html_e( 'PENDING - Queued for submission to the Internet Archive. Processing time varies based on queue size.', 'internet-archive-wayback-machine-link-fixer' );
 													}
 												} elseif ( '' !== $iawmlf_link->get_archived_href() ) {
 													esc_html_e( 'HAS ARCHIVE - A snapshot of this link is available on the Internet Archive', 'internet-archive-wayback-machine-link-fixer' );
 												} else {
-													esc_html_e( 'NO ARCHIVE - Unable to create or find a snapshot. This can happen if the URL is blocked by robots.txt, requires authentication, or is no longer accessible', 'internet-archive-wayback-machine-link-fixer' );
+													esc_html_e( 'NO ARCHIVE - Unable to create or find a snapshot. This can happen if the URL is blocked by robots.txt, requires authentication, or is no longer accessible.', 'internet-archive-wayback-machine-link-fixer' );
 												}
 												?>
 											</p>
@@ -178,7 +178,7 @@ defined( 'ABSPATH' ) || exit;
 										<span class="iawmlf_dashboard-link-check-posts-more">
 											<?php
 											printf(
-												/* translators: %d: number of additional posts */
+												/* translators: %d: number of additional posts containing this link beyond the first 12 shown */
 												esc_html__( '... and %d more', 'internet-archive-wayback-machine-link-fixer' ),
 												count( $iawmlf_posts ) - 12
 											);

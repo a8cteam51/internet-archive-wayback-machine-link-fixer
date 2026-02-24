@@ -72,7 +72,7 @@ class Link_Summary_Factory {
 
 		// If the last check was successful, return early.
 		if ( $last_check_status ) {
-			return __( 'The link is archived on archive.org and still working.', 'internet-archive-wayback-machine-link-fixer' );
+			return __( 'This link has an archived version on archive.org, and the original URL is still accessible.', 'internet-archive-wayback-machine-link-fixer' );
 		}
 
 		// If we have more failed checks than the threshold, return the redirected already message.
