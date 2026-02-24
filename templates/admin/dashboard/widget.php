@@ -9,14 +9,13 @@
  * @param bool   $iawmlf_is_online               Whether the Archive.org API is online.
  * @param string $iawmlf_link_to_settings        URL to the settings page.
  * @param string $iawmlf_link_table              URL to the links report page.
- * @param array  $iawmlf_total_links             Array of all links in the system.
+ * @param int    $iawmlf_total_link_count        Total number of links in the system.
  * @param bool   $iawmlf_auto_archiver_enabled   Whether auto archiver is enabled.
  * @param bool   $iawmlf_scan_existing_enabled   Whether scanning existing posts is enabled.
  * @param bool   $iawmlf_link_processing_enabled Whether link processing is enabled.
  * @param int    $iawmlf_link_check_duration     Number of days between link checks.
  * @param int    $iawmlf_failed_check_count      Number of failed checks before marking as broken.
  * @param array  $iawmlf_onboarding_details      Array containing onboarding status and details.
- * @param array  $iawmlf_link_stats              Array containing link statistics including total_links count.
  */
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page;
@@ -32,7 +31,7 @@ defined( 'ABSPATH' ) || exit;
 				'admin/dashboard/onboarding.php',
 				array(
 					'iawmlf_onboarding_details' => $iawmlf_onboarding_details,
-					'iawmlf_total_links_count'  => $iawmlf_link_stats['total_links'],
+					'iawmlf_total_links_count'  => $iawmlf_total_link_count,
 					'iawmlf_link_table'         => \Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page::get_page_url(),
 				)
 			);
@@ -133,11 +132,13 @@ defined( 'ABSPATH' ) || exit;
 							?>
 						<?php else : ?>
 							<?php
-							printf(
-								/* translators: 1: opening link tag, 2: closing link tag */
-								esc_html__( 'Links are not being checked. %1$sEnable Link Processing%2$s to turn this back on.', 'internet-archive-wayback-machine-link-fixer' ),
-								'<a href="' . esc_url( $iawmlf_link_to_settings ) . '">',
-								'</a>'
+							echo wp_kses(
+								sprintf(
+									/* translators: %s: URL to the settings page */
+									__( 'Links are not being checked. <a href="%s">Enable Link Processing</a> to turn this back on.', 'internet-archive-wayback-machine-link-fixer' ),
+									esc_url( $iawmlf_link_to_settings )
+								),
+								array( 'a' => array( 'href' => array() ) )
 							);
 							?>
 						<?php endif; ?>
@@ -164,7 +165,7 @@ defined( 'ABSPATH' ) || exit;
 			printf(
 				/* translators: %d: number of links */
 				esc_html__( 'View Links (%d)', 'internet-archive-wayback-machine-link-fixer' ),
-				count( $iawmlf_total_links )
+				absint( $iawmlf_total_link_count )
 			);
 			?>
 		</a>

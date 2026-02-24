@@ -84,12 +84,21 @@ class Link_Summary_Factory {
 			);
 		}
 
+		$remaining = Settings::get_failed_count() - $last_failed_count;
+
 		return sprintf(
-		// translators: 1: The number of failed checks. 2: The number of remaining checks before redirect. 3: Plural S if needed.
-			__( 'This link has an archived version on archive.org, but the original URL is not accessible. It has failed %1$d previous consecutive check%3$s, %2$d more and it will redirect to the archived version.', 'internet-archive-wayback-machine-link-fixer' ),
-			$last_failed_count,
-			Settings::get_failed_count() - $last_failed_count,
-			1 === $last_failed_count ? '' : 's'
+			// translators: 1: The number of consecutive failed checks (e.g. "3 consecutive checks"). 2: The number of remaining failed checks before redirect (e.g. "2 more failed checks").
+			__( 'The link is archived on archive.org but currently not working on the live site. It has failed %1$s, and after %2$s it will redirect to the archived version.', 'internet-archive-wayback-machine-link-fixer' ),
+			sprintf(
+				// translators: %d: The number of consecutive failed checks.
+				_n( '%d consecutive check', '%d consecutive checks', $last_failed_count, 'internet-archive-wayback-machine-link-fixer' ),
+				$last_failed_count
+			),
+			sprintf(
+				// translators: %d: The number of remaining failed checks before redirect.
+				_n( '%d more failed check', '%d more failed checks', $remaining, 'internet-archive-wayback-machine-link-fixer' ),
+				$remaining
+			)
 		);
 	}
 
@@ -104,10 +113,13 @@ class Link_Summary_Factory {
 		}
 
 		return sprintf(
-		// translators: 1: The number of failed checks. 2: The plural S if needed.
-			__( 'The link is not archived on archive.org and currently not working. It has failed %1$d previous consecutive check%2$s.', 'internet-archive-wayback-machine-link-fixer' ),
-			$this->get_consecutive_failed_checks_count(),
-			1 === $this->get_consecutive_failed_checks_count() ? '' : 's'
+			// translators: %s: The number of consecutive failed checks (e.g. "3 consecutive checks").
+			__( 'The link is not archived on archive.org and currently not working on the live site. It has failed %s.', 'internet-archive-wayback-machine-link-fixer' ),
+			sprintf(
+				// translators: %d: The number of consecutive failed checks.
+				_n( '%d consecutive check', '%d consecutive checks', $this->get_consecutive_failed_checks_count(), 'internet-archive-wayback-machine-link-fixer' ),
+				$this->get_consecutive_failed_checks_count()
+			)
 		);
 	}
 

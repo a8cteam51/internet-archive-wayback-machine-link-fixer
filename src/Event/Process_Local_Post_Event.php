@@ -64,8 +64,8 @@ class Process_Local_Post_Event {
 	 * @return void
 	 */
 	public static function add_to_queue_with_delay( int $post_id, int $delay = 1 * \HOUR_IN_SECONDS ): void {
-		// If there is already a scheduled event with this post ID, cancel it.
-		as_unschedule_action( self::HANDLE, array( 'post_id' => $post_id ) );
+		// Ensure there are no duplicate events in the queue for this post ID.
+		self::ensure_single_event( $post_id );
 
 		$time_to_run = time() + $delay;
 		as_schedule_single_action(
@@ -123,5 +123,54 @@ class Process_Local_Post_Event {
 
 		// Add the last updated meta key.
 		update_post_meta( $post_id, Settings::OWN_LINK_LAST_PROCESSED, time() );
+
+		// Ensure there are no duplicate events in the queue for this post ID.
+		self::ensure_single_event( $post_id );
+	}
+
+	/**
+	 * Ensure that any duplicated events are removed from the queue, and that there is only ever one event per post ID in the queue.
+	 *
+	 * @since 1.3.5
+	 *
+	 * @param integer $post_id The post ID.
+	 *
+	 * @return void
+	 */
+	private static function ensure_single_event( int $post_id ): void {
+		try {
+			// Add the bulk cancel action to prevent interference with other events.
+			add_action( 'action_scheduler_canceled_action', array( self::class, 'handle_hard_delete' ) );
+
+			// Unschedule any existing events for this post ID.
+			as_unschedule_all_actions( self::HANDLE, array( 'post_id' => $post_id ) );
+		} finally {
+			// Remove the bulk cancel action to prevent interference with other events.
+			remove_action( 'action_scheduler_canceled_action', array( self::class, 'handle_hard_delete' ) );
+		}
+	}
+
+	/**
+	 * Handle hard delete of events.
+	 *
+	 * @param integer $action_id The action ID.
+	 *
+	 * @return void
+	 */
+	public static function handle_hard_delete( int $action_id ): void {
+		// Bail if not set.
+		if ( ! class_exists( 'ActionScheduler' ) ) {
+			return;
+		}
+
+		// Get the action.
+		$store  = \ActionScheduler::store();
+		$action = $store->fetch_action( $action_id );
+
+		// If we have the right action.
+		if ( self::HANDLE === $action->get_hook() ) {
+			// Delete the action.
+			$store->delete_action( $action_id );
+		}
 	}
 }

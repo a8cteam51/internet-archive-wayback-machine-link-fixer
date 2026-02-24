@@ -156,19 +156,17 @@ class WP_Post_Table_Controller {
 			return;
 		}
 
-		print wp_kses(
-			sprintf(
-			// translators: %2$s is the url to view the links in a report, %2$s is the number of broken links, %3$s is the total number of links.
-				__( '<a href="%1$s"><strong>%2$s</strong> broken out of <strong>%3$s</strong></a>', 'internet-archive-wayback-machine-link-fixer' ),
-				$this->generate_report_page_url( $links, $post_id ),
-				absint( $stats['broken'] ),
-				absint( $stats['total'] )
-			),
-			array(
-				'strong' => array(),
-				'a'      => array(
-					'href' => array(),
+		printf(
+			'<a href="%1$s">%2$s</a>',
+			esc_url( $this->generate_report_page_url( $links, $post_id ) ),
+			wp_kses(
+				sprintf(
+					/* translators: 1: number of broken links, 2: total number of links */
+					__( '%1$s broken out of %2$s', 'internet-archive-wayback-machine-link-fixer' ),
+					'<strong>' . esc_html( absint( $stats['broken'] ) ) . '</strong>',
+					'<strong>' . esc_html( absint( $stats['total'] ) ) . '</strong>'
 				),
+				array( 'strong' => array() )
 			)
 		);
 	}

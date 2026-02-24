@@ -360,6 +360,22 @@ class Settings_Page {
 
 		register_setting(
 			self::PAGE_SLUG,
+			Settings::CAST_ARCHIVED_TO_HTTPS,
+			array(
+				'type'              => 'boolean',
+				'sanitize_callback' => 'wp_validate_boolean',
+				'default'           => false,
+				'show_in_rest'      => array(
+					'name'   => Settings::CAST_ARCHIVED_TO_HTTPS,
+					'schema' => array(
+						'type' => 'boolean',
+					),
+				),
+			)
+		);
+
+		register_setting(
+			self::PAGE_SLUG,
 			Settings::ALLOW_OWN_CONTENT_SUBMISSIONS,
 			array(
 				'type'              => 'boolean',
@@ -558,6 +574,15 @@ class Settings_Page {
 			Settings::MINIMUM_CHECKS_BEFORE_BROKEN,
 			__( 'Failure Threshold', 'internet-archive-wayback-machine-link-fixer' ),
 			array( $this, 'render_minimum_checks_before_broken_field' ),
+			self::PAGE_SLUG,
+			self::GROUP_LINK_FIXER,
+			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
+		);
+
+		add_settings_field(
+			Settings::CAST_ARCHIVED_TO_HTTPS,
+			__( 'Cast Archived Links to HTTPS', 'internet-archive-wayback-machine-link-fixer' ),
+			array( $this, 'render_cast_archived_to_https_field' ),
 			self::PAGE_SLUG,
 			self::GROUP_LINK_FIXER,
 			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
@@ -917,6 +942,32 @@ class Settings_Page {
 	}
 
 	/**
+	 * Render the setting to cast archived links to HTTPS.
+	 *
+	 * @since 1.3.5
+	 *
+	 * @return void
+	 */
+	public function render_cast_archived_to_https_field(): void {
+		?>
+		<label for="<?php echo esc_attr( Settings::CAST_ARCHIVED_TO_HTTPS ); ?>">
+			<input
+				type="checkbox"
+				id="<?php echo esc_attr( Settings::CAST_ARCHIVED_TO_HTTPS ); ?>"
+				name="<?php echo esc_attr( Settings::CAST_ARCHIVED_TO_HTTPS ); ?>"
+				value="1"
+				data-group="link_fixer"
+				<?php checked( Settings::should_cast_archived_to_https() ); ?>
+			/>
+			<?php esc_html_e( 'Force HTTPS', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		</label>
+		<p class="description">
+			<?php esc_html_e( 'Enabling this will convert all archived urls from http to https.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
 	 * Renders a row for excluded urls.
 	 *
 	 * @since 1.0.0
@@ -1013,10 +1064,10 @@ class Settings_Page {
 			data-group="link_fixer"
 		>
 			<option value="<?php echo esc_attr( Settings::FIXER_OPTION_REPLACE_LINK ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_REPLACE_LINK ); ?>>
-				<?php esc_html_e( 'Replace Link (No Notification)', 'internet-archive-wayback-machine-link-fixer' ); ?>
+				<?php esc_html_e( 'Redirect broken links to snapshots on the Wayback Machine', 'internet-archive-wayback-machine-link-fixer' ); ?>
 			</option>
 			<option value="<?php echo esc_attr( Settings::FIXER_OPTION_DO_NOTHING ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_DO_NOTHING ); ?>>
-				<?php esc_html_e( 'Do Nothing', 'internet-archive-wayback-machine-link-fixer' ); ?>
+				<?php esc_html_e( 'Do not redirect broken links', 'internet-archive-wayback-machine-link-fixer' ); ?>
 			</option>
 		</select>
 		<p class="description">

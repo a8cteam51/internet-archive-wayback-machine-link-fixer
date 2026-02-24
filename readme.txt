@@ -3,7 +3,7 @@ Contributors: waybackmachineplugin, wpspecialprojects, cagrimmett, glynnquelch
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.3.5-RC1
+Stable tag: 1.3.5
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -29,9 +29,6 @@ Protect your links, preserve your content, and automate the archiving process—
 * Helps maintain long-term content reliability and SEO
 
 == Frequently Asked Questions ==
-
-= Multisite Compatible? =
-Sadly at present, it is not fully compatible. The only way it can currently be used on multisite is to only enable it site-wide and not network-wide. We plan to resolve this in the next release.
 
 = How does the link checker work? =
 Your content is checked for any links. When it finds a link it will check if we have already handled this link before, if not, it will find or create a snapshot of the webpage on the Internet Archive.
@@ -63,6 +60,12 @@ If the Internet Archive services go offline, the link fixer will delay all proce
 
 = How often are my own posts updated when auto archive is active? =
 Existing content is sent to the Wayback Machine in batch when the plugin is activated, then again every 30 days (by default, but can be changed). New content is sent to be archived shortly after it is published. Updates to existing content also trigger updates to be sent to the Wayback Machine.
+
+= Multisite Compatible? =
+Sadly at present, it is not fully compatible. The only way it can currently be used on multisite is to only enable it site-wide and not network-wide. We plan to resolve this in a future release.
+
+= Page builder plugins and custom fields support? =
+Right now the plugin works best with the core block editor and we have some more work to do to support page builder plugins and custom fields.
 
 == Screenshots ==
 
@@ -116,6 +119,8 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 = 1.3.5 =
 * Minor tweak to how we log errors in snapshot creation process.
 * Improvement on how link stats are generated.
+* Casts all archived urls to https://, can be disabled in settings.
+* Improvements to how we handle cancelled scan own post actions, to prevent flooding database with cancelled jobs.
 
 = 1.3.4 =
 * Minor UI tweaks and changes
@@ -150,4 +155,5 @@ For developer docs and source code, see the GitHub repository: [https://github.c
 
 = 1.3.0 =
 This updates any pre-release version to the new launched version.
+
 
