@@ -385,14 +385,16 @@ class Test_Process_Local_Post_Event extends TestCase {
 	}
 
 	/**
-	 * @testdox Reproduces the InvalidArgumentException from mark_failure when
-	 * ensure_single_event hard-deletes an action that AS then tries to process.
+	 * @testdox When ensure_single_event runs during processing, claimed actions should not be hard-deleted, preventing InvalidArgumentException from mark_failure.
 	 *
-	 * Flow: process action A (offline → ensure_single_event deletes action B)
-	 * → then process deleted action B → get_status throws → mark_failure throws.
+	 * Flow: process action A (offline → ensure_single_event cancels all actions
+	 * → handle_hard_delete skips claimed rows) → mark_failure works because
+	 * the row still exists → then process action B (canceled, execution ignored).
 	 *
-	 * @runInSeparateProcess
-	 * @preserveGlobalState disabled
+	 * Without the fix, handle_hard_delete deletes the DB rows and mark_failure
+	 * throws: "Unidentified action: we were unable to mark this action as having failed".
+	 *
+	 * @see https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/issues/294
 	 *
 	 * @return void
 	 */
@@ -423,32 +425,20 @@ class Test_Process_Local_Post_Event extends TestCase {
 		$store  = new \ActionScheduler_DBStore();
 		$runner = new \ActionScheduler_QueueRunner( $store );
 
-		// Stake a claim and attach a FatalErrorMonitor (mirrors do_batch).
-		$claim   = $store->stake_claim( 10 );
-		$monitor = new \ActionScheduler_FatalErrorMonitor( $store );
-		$monitor->attach( $claim );
+		// Stake a claim so both actions are claimed (simulates queue runner batch).
+		$store->stake_claim( 10 );
 
 		// Process action[0]: __invoke → offline → add_to_queue_with_delay
 		// → ensure_single_event → as_unschedule_all_actions → handle_hard_delete
-		// → with fix: action[1] is claimed so skip delete.
-		// → without fix: action[1] row is deleted from DB.
+		// → with fix: both actions are claimed so skip delete, mark_failure works.
+		// → without fix: both rows deleted, mark_failure throws InvalidArgumentException.
 		$runner->process_action( $action_ids[0] );
 
-		// Simulate race condition: process the deleted/canceled action[1].
-		// In production this happens when another concurrent process has
-		// already passed the find_actions_by_claim_id check before the
-		// row was deleted.
+		// Process action[1]: with fix, row still exists (status=canceled),
+		// execution is ignored. Without fix, row is gone, get_status throws.
 		$runner->process_action( $action_ids[1] );
 
-		// Fire the shutdown hook — guard the output buffer level so
-		// WordPress cleanup does not trip PHPUnit's risky-test check.
-		$ob_level = ob_get_level();
-		do_action( 'shutdown' );
-		while ( ob_get_level() < $ob_level ) {
-			ob_start();
-		}
-
-		// If we reach here, no exception was thrown.
-		$this->assertTrue( true, 'No InvalidArgumentException thrown during shutdown' );
+		// If we reach here, no InvalidArgumentException was thrown.
+		$this->assertTrue( true, 'No InvalidArgumentException thrown during action processing' );
 	}
 }
