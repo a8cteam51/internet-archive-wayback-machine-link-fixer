@@ -19,4 +19,8 @@ tests
 assets/css/src
 assets/js/src
 _docs
+# Agent context (development-only, do not deploy)
+AGENTS.md
+CLAUDE.md
+.agents
 
