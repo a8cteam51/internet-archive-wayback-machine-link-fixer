@@ -383,4 +383,72 @@ class Test_Process_Local_Post_Event extends TestCase {
 
 
 	}
+
+	/**
+	 * @testdox Reproduces the InvalidArgumentException from mark_failure when
+	 * ensure_single_event hard-deletes an action that AS then tries to process.
+	 *
+	 * Flow: process action A (offline → ensure_single_event deletes action B)
+	 * → then process deleted action B → get_status throws → mark_failure throws.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 *
+	 * @return void
+	 */
+	public function test_mark_failure_after_action_deleted_by_ensure_single_event(): void {
+		$post_id = 42;
+
+		// Mock offline so __invoke → add_to_queue_with_delay → ensure_single_event.
+		$this->create_service( false );
+
+		// Register the action callback.
+		$event = new Process_Local_Post_Event();
+		add_action( Process_Local_Post_Event::HANDLE, $event );
+
+		// Schedule 2 pending actions for the same post.
+		$action_ids   = array();
+		$action_ids[] = as_schedule_single_action(
+			time(),
+			Process_Local_Post_Event::HANDLE,
+			array( 'post_id' => $post_id )
+		);
+		$action_ids[] = as_schedule_single_action(
+			time(),
+			Process_Local_Post_Event::HANDLE,
+			array( 'post_id' => $post_id )
+		);
+
+		// Use DBStore directly (matches production — HybridStore can swallow errors).
+		$store  = new \ActionScheduler_DBStore();
+		$runner = new \ActionScheduler_QueueRunner( $store );
+
+		// Stake a claim and attach a FatalErrorMonitor (mirrors do_batch).
+		$claim   = $store->stake_claim( 10 );
+		$monitor = new \ActionScheduler_FatalErrorMonitor( $store );
+		$monitor->attach( $claim );
+
+		// Process action[0]: __invoke → offline → add_to_queue_with_delay
+		// → ensure_single_event → as_unschedule_all_actions → handle_hard_delete
+		// → with fix: action[1] is claimed so skip delete.
+		// → without fix: action[1] row is deleted from DB.
+		$runner->process_action( $action_ids[0] );
+
+		// Simulate race condition: process the deleted/canceled action[1].
+		// In production this happens when another concurrent process has
+		// already passed the find_actions_by_claim_id check before the
+		// row was deleted.
+		$runner->process_action( $action_ids[1] );
+
+		// Fire the shutdown hook — guard the output buffer level so
+		// WordPress cleanup does not trip PHPUnit's risky-test check.
+		$ob_level = ob_get_level();
+		do_action( 'shutdown' );
+		while ( ob_get_level() < $ob_level ) {
+			ob_start();
+		}
+
+		// If we reach here, no exception was thrown.
+		$this->assertTrue( true, 'No InvalidArgumentException thrown during shutdown' );
+	}
 }

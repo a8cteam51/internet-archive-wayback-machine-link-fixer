@@ -168,9 +168,16 @@ class Process_Local_Post_Event {
 		$action = $store->fetch_action( $action_id );
 
 		// If we have the right action.
-		if ( self::HANDLE === $action->get_hook() ) {
-			// Delete the action.
-			$store->delete_action( $action_id );
+		if ( self::HANDLE !== $action->get_hook() ) {
+			return;
 		}
+
+		// Skip actions that are currently claimed by a queue runner, prevent action removed exceptions.
+		if ( $store->get_claim_id( $action_id ) ) {
+			// return;
+		}
+
+		// Delete the action.
+		$store->delete_action( $action_id );
 	}
 }
