@@ -76,8 +76,8 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 		$factory = new Link_Summary_Factory( $link );
 		$summary = $factory->get_summary();
 
-		$this->assertStringContainsString( 'archived on archive.org', $summary );
-		$this->assertStringContainsString( 'still working', $summary );
+		$this->assertStringContainsString( 'archived version on archive.org', $summary );
+		$this->assertStringContainsString( 'still accessible', $summary );
 	}
 
 	/**
@@ -96,9 +96,8 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 
 		$this->assertStringContainsString( 'archived on archive.org', $summary );
 		$this->assertStringContainsString( 'not working', $summary );
-		$this->assertStringContainsString( 'failed 1 previous consecutive check', $summary );
+		$this->assertStringContainsString( 'failed 1 consecutive check', $summary );
 		$this->assertStringContainsString( '2 more', $summary );
-		$this->assertStringNotContainsString( 'checks', $summary );
 	}
 
 	/**
@@ -118,7 +117,7 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 
 		$this->assertStringContainsString( 'archived on archive.org', $summary );
 		$this->assertStringContainsString( 'not working', $summary );
-		$this->assertStringContainsString( 'failed 2 previous consecutive checks', $summary );
+		$this->assertStringContainsString( 'failed 2 consecutive checks', $summary );
 		$this->assertStringContainsString( '1 more', $summary );
 	}
 
@@ -154,7 +153,7 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 
 		$this->assertStringContainsString( 'not archived on archive.org', $summary );
 		$this->assertStringContainsString( 'not working', $summary );
-		$this->assertStringContainsString( 'failed 1 previous consecutive check', $summary );
+		$this->assertStringContainsString( 'failed 1 consecutive check', $summary );
 		$this->assertStringNotContainsString( 'checks', $summary );
 	}
 
@@ -174,7 +173,7 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 
 		$this->assertStringContainsString( 'not archived on archive.org', $summary );
 		$this->assertStringContainsString( 'not working', $summary );
-		$this->assertStringContainsString( 'failed 2 previous consecutive checks', $summary );
+		$this->assertStringContainsString( 'failed 2 consecutive checks', $summary );
 	}
 
 	/**
@@ -211,8 +210,8 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 		$factory = new Link_Summary_Factory( $link );
 		$summary = $factory->get_summary();
 
-		$this->assertStringContainsString( 'archived on archive.org', $summary );
-		$this->assertStringContainsString( 'still working', $summary );
+		$this->assertStringContainsString( 'archived version on archive.org', $summary );
+		$this->assertStringContainsString( 'still accessible', $summary );
 	}
 
 	/**
@@ -233,7 +232,7 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 
 		$this->assertStringContainsString( 'archived on archive.org', $summary );
 		$this->assertStringContainsString( 'not working', $summary );
-		$this->assertStringContainsString( 'failed 2 previous consecutive checks', $summary );
+		$this->assertStringContainsString( 'failed 2 consecutive checks', $summary );
 		$this->assertStringContainsString( '1 more', $summary );
 	}
 

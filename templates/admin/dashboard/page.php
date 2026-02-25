@@ -142,10 +142,12 @@ $iawmlf_tooltip_broken_links          = sprintf(
 									<a href="<?php echo esc_url( $iawmlf_filtered_broken_redirected ); ?>" title="<?php echo esc_attr( $iawmlf_tooltip_links_saved ); ?>" class="iawmlf_dashboard-stats-number iawmlf_dashboard-stats-link">
 										<?php echo esc_html( $iawmlf_broken_redirected ); ?>
 									</a>
-									<div class="iawmlf_dashboard-stats-label" title="<?php echo esc_attr( $iawmlf_tooltip_links_saved ); ?>"><?php
+									<div class="iawmlf_dashboard-stats-label" title="<?php echo esc_attr( $iawmlf_tooltip_links_saved ); ?>">
+										<?php
 										/* translators: "Links Saved" refers to broken links that are now being redirected to their archived versions on archive.org */
 										esc_html_e( 'Links Saved', 'internet-archive-wayback-machine-link-fixer' );
-										?></div>
+										?>
+									</div>
 								</div>
 
 								<!-- Row 2: With Archive | Without -->
