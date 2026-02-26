@@ -153,10 +153,10 @@ class Settings_Page {
 			self::PAGE_SLUG,
 			'IawmlfSettings',
 			array(
-				'newExcludedTemplate'       => $this->render_excluded_url( '{newUrl}', '{newIndex}' ),
-				'environment'               => Environmental::is_production() ? 'production' : 'development',
-				'ajaxUrl'                   => admin_url( 'admin-ajax.php' ),
-				'dismissDonationCtaNonce'   => wp_create_nonce( 'iawmlf_dismiss_donation_cta' ),
+				'newExcludedTemplate'     => $this->render_excluded_url( '{newUrl}', '{newIndex}' ),
+				'environment'             => Environmental::is_production() ? 'production' : 'development',
+				'ajaxUrl'                 => admin_url( 'admin-ajax.php' ),
+				'dismissDonationCtaNonce' => wp_create_nonce( 'iawmlf_dismiss_donation_cta' ),
 			)
 		);
 
@@ -496,11 +496,13 @@ class Settings_Page {
 			self::GROUP_IA_SETTINGS,
 			__( 'Archive.org API', 'internet-archive-wayback-machine-link-fixer' ),
 			function () {
-				echo '<p class="description">' . sprintf(
-					// Translators: %s is the URL to the Internet Archive S3 keys page.
-					__( 'To increase your daily link processing limit, you can enter your free Archive.org API credentials. Visit <a href="%s" target="_blank">archive.org/account/s3.php</a> to generate your Access Key and Secret Key.', 'internet-archive-wayback-machine-link-fixer' ),
-					esc_url( 'https://archive.org/account/s3.php' )
-				) . '</p>';
+				printf(
+					/* translators: 1: Opening sentence, 2: URL to the Internet Archive S3 keys page, 3: Closing sentence. */
+					'<p class="description">%1$s <a href="%2$s" target="_blank">%3$s</a></p>',
+					esc_html__( 'To increase your daily link processing limit, you can enter your free Archive.org API credentials. Visit', 'internet-archive-wayback-machine-link-fixer' ),
+					esc_url( 'https://archive.org/account/s3.php' ),
+					esc_html__( 'archive.org/account/s3.php to generate your Access Key and Secret Key.', 'internet-archive-wayback-machine-link-fixer' )
+				);
 			},
 			self::PAGE_SLUG,
 			array(
