@@ -97,6 +97,29 @@
     }
 }
 
+.iawmlf_donation_cta {
+    background-color: #F9BF3B;
+    border-radius: 8px;
+    padding: 20px 40px 20px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    &__logo {
+        max-width: 9.375rem;
+        height: auto;
+        flex-shrink: 0;
+    }
+    p {
+        margin: 0;
+        flex: 1;
+    }
+    &__button {
+        white-space: nowrap;
+    }
+}
+
 #unchecked_api_creds {
     text-align: center;
     display: none;

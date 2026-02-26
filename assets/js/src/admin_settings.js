@@ -9,6 +9,24 @@
 	// Wait for DOM to be ready
 	document.addEventListener('DOMContentLoaded', function () {
 
+		// Handle dismissing the donation CTA.
+		const DONATION_CTA = document.getElementById('iawmlf_donation_cta');
+		if (DONATION_CTA) {
+			const dismissButton = DONATION_CTA.querySelector('.notice-dismiss');
+			if (dismissButton) {
+				dismissButton.addEventListener('click', function () {
+					DONATION_CTA.remove();
+					const formData = new FormData();
+					formData.append('action', 'iawmlf_dismiss_donation_cta');
+					formData.append('_ajax_nonce', IawmlfSettings.dismissDonationCtaNonce);
+					fetch(IawmlfSettings.ajaxUrl, {
+						method: 'POST',
+						body: formData,
+					});
+				});
+			}
+		}
+
 		// Get the settings.
 		const PROCESS_LINK = document.getElementById('iawmlf_process_links');
 		const AUTO_ARCHIVE = document.getElementById('iawmlf_allow_own_content_submissions');

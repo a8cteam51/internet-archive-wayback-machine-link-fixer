@@ -50,6 +50,7 @@ class Settings_Page {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'register_page' ), 20, 0 );
 		add_action( 'admin_init', array( $this, 'validate_archive_org_keys' ), 1 );
+		add_action( 'wp_ajax_iawmlf_dismiss_donation_cta', array( $this, 'dismiss_donation_cta' ) );
 	}
 
 	/**
@@ -115,6 +116,17 @@ class Settings_Page {
 	}
 
 	/**
+	 * AJAX handler to dismiss the donation CTA.
+	 *
+	 * @return void
+	 */
+	public function dismiss_donation_cta(): void {
+		check_ajax_referer( 'iawmlf_dismiss_donation_cta' );
+		update_user_meta( get_current_user_id(), 'iawmlf_dismiss_donation_cta', true );
+		wp_send_json_success();
+	}
+
+	/**
 	 * Enqueue the settings page scripts.
 	 *
 	 * @since   1.0.0
@@ -141,8 +153,10 @@ class Settings_Page {
 			self::PAGE_SLUG,
 			'IawmlfSettings',
 			array(
-				'newExcludedTemplate' => $this->render_excluded_url( '{newUrl}', '{newIndex}' ),
-				'environment'         => Environmental::is_production() ? 'production' : 'development',
+				'newExcludedTemplate'     => $this->render_excluded_url( '{newUrl}', '{newIndex}' ),
+				'environment'             => Environmental::is_production() ? 'production' : 'development',
+				'ajaxUrl'                 => admin_url( 'admin-ajax.php' ),
+				'dismissDonationCtaNonce' => wp_create_nonce( 'iawmlf_dismiss_donation_cta' ),
 			)
 		);
 
@@ -183,7 +197,21 @@ class Settings_Page {
 			esc_html__( 'Wayback Link Fixer - Advanced Settings', 'internet-archive-wayback-machine-link-fixer' )
 		);
 
-		echo '<hr class="wp-header-end"><form action="options.php" method="post">';
+		echo '<hr class="wp-header-end">';
+
+		if ( ! get_user_meta( get_current_user_id(), 'iawmlf_dismiss_donation_cta', true ) ) {
+			printf(
+				'<div class="iawmlf_donation_cta" id="iawmlf_donation_cta"><img src="%s" alt="%s" class="iawmlf_donation_cta__logo" /><p>%s</p><a href="%s" target="_blank" class="button button-primary iawmlf_donation_cta__button">%s</a><button type="button" class="notice-dismiss"><span class="screen-reader-text">%s</span></button></div>',
+				esc_url( IAWMLF_URL . 'assets/images/ia-logo.svg' ),
+				esc_attr__( 'Internet Archive', 'internet-archive-wayback-machine-link-fixer' ),
+				esc_html__( 'This plugin is powered by the Internet Archive. If you find the plugin useful, please chip in! Your support will help us build the web we deserve.', 'internet-archive-wayback-machine-link-fixer' ),
+				esc_url( 'https://archive.org/donate/?origin=wdps-wbmlf' ),
+				esc_html__( 'Donate', 'internet-archive-wayback-machine-link-fixer' ),
+				esc_attr__( 'Dismiss', 'internet-archive-wayback-machine-link-fixer' )
+			);
+		}
+
+		echo '<form action="options.php" method="post">';
 
 		do_settings_sections( self::PAGE_SLUG );
 		settings_fields( self::PAGE_SLUG );
@@ -467,15 +495,19 @@ class Settings_Page {
 		add_settings_section(
 			self::GROUP_IA_SETTINGS,
 			__( 'Archive.org API', 'internet-archive-wayback-machine-link-fixer' ),
-			'__return_empty_string',
+			function () {
+				printf(
+					/* translators: 1: Opening sentence, 2: URL to the Internet Archive S3 keys page, 3: Closing sentence. */
+					'<p class="description">%1$s <a href="%2$s" target="_blank">%3$s</a></p>',
+					esc_html__( 'To increase your daily link processing limit, you can enter your free Archive.org API credentials. Visit', 'internet-archive-wayback-machine-link-fixer' ),
+					esc_url( 'https://archive.org/account/s3.php' ),
+					esc_html__( 'archive.org/account/s3.php to generate your Access Key and Secret Key.', 'internet-archive-wayback-machine-link-fixer' )
+				);
+			},
 			self::PAGE_SLUG,
 			array(
 				'before_section' => '<div id="iawmlf_settings_ia_section" class="iawmlf_settings_postbox">',
-				'after_section'  => $this->render_invalid_api_keys_message() . '<p class="description">' . sprintf(
-						// Translators: %s is the link to the Internet account setup.
-					__( "To get your API key and secret, please visit the <a href='%s' target='_blank'>Internet Archive</a> and create a new 'S3 access key' (this is a type of credential used by Archive.org).", 'internet-archive-wayback-machine-link-fixer' ),
-					esc_url( 'https://archive.org/account/s3.php' )
-				) . '</p></div>',
+				'after_section'  => $this->render_invalid_api_keys_message() . '</div>',
 			)
 		);
 
