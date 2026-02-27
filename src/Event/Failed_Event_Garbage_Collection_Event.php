@@ -14,11 +14,8 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
-use DateTime;
 use DateTimeImmutable;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Action_Scheduler_Garbage_Collection;
-
-// use
 
 defined( 'ABSPATH' ) || exit;
 
