@@ -88,7 +88,23 @@ class Test_Process_Local_Post_Event extends TestCase {
 
 		// Check that the action has been added to the queue.
 		$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions" );
-		$this->assertCount( 1, $actions );
+
+		$pending = array_filter(
+			$actions,
+			function ( $action ) use ( $post_id ) {
+				return $action->status === 'pending' && $action->hook === Process_Local_Post_Event::HANDLE && $action->args === json_encode( array( 'post_id' => $post_id ) );
+			}
+		);
+
+		$cancelled = array_filter(
+			$actions,
+			function ( $action ) use ( $post_id ) {
+				return $action->status === 'canceled' && $action->hook === Process_Local_Post_Event::HANDLE && $action->args === json_encode( array( 'post_id' => $post_id ) );
+			}
+		);
+
+		$this->assertCount( 1, $pending );
+		$this->assertCount( 4, $cancelled );
 
 		// Check to ensure the hard delete handler is removed, to prevent interference with other events.
 		$this->assertFalse( has_action( 'action_scheduler_canceled_action', array( Process_Local_Post_Event::class, 'handle_hard_delete' ) ) );
@@ -328,59 +344,4 @@ class Test_Process_Local_Post_Event extends TestCase {
 		$this->assertGreaterThan( -10, abs( time() - $meta ) );
 	}
 
-	/**
-	 * @testdox When we run the event, any other pending events for the same post should be removed from the queue.
-	 *
-	 * @see https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/issues/294
-	 *
-	 * @return void
-	 */
-	public function test_process_local_post_event_removes_duplicates_from_queue(): void {
-		// Mock the snapshot client to return success.
-		$this->create_service(
-			true,
-			function ( array $config ): array {
-				$config['snapshot']
-					->method( 'create_snapshot' )
-					->willReturnCallback( fn( $url ) => $url );
-				return $config;
-			}
-		);
-
-		// Create a post.
-		$post_id = \wp_insert_post(
-			array(
-				'post_title'   => 'Test Post',
-				'post_content' => 'Test Content',
-				'post_status'  => 'publish',
-			)
-		);
-
-		// Add 10 events to the queue for the same post ID.
-		$now     = time();
-		for ( $i = 0; $i < 10; $i++ ) {
-			$ts = $now + $i;
-
-			as_schedule_single_action(
-				$ts,
-				Process_Local_Post_Event::HANDLE,
-				array(
-					'post_id' => $post_id,
-				)
-			);
-		}
-
-		// Add the event to the queue.
-		Process_Local_Post_Event::add_to_queue_with_delay( $post_id, 0 );
-
-		// Process the event.
-		$event = new Process_Local_Post_Event();
-		$event( $post_id );
-
-		// Check there is NO pending actions for that post.
-		$actions = $this->wpdb->get_results( "SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions where status='pending'" );
-		$this->assertEmpty( $actions );
-
-
-	}
 }
