@@ -545,6 +545,22 @@ The API status check result is cached for 1 hour by default.
 
 ---
 
+#### Failed Event Garbage Collection Event
+
+This event runs daily at midnight to clean up old failed Action Scheduler events, preventing them from accumulating over time. It removes duplicate failed retry attempts for snapshot, archive URL, and validator events older than a configurable threshold, keeping only the most recent attempt for each unique event.
+
+**Action:** `iawmlf_failed_event_garbage_collection`
+
+*This event takes no arguments.*
+
+**Filters:**
+
+| **Configuration** | **Filter** | **Default** | **Description** |
+|-------------------|------------|-------------|-----------------|
+| Days threshold | [`iawmlf_failed_event_gc_days_threshold`](#iawmlf_failed_event_gc_days_threshold) | 7 days | How old failed events must be before cleanup |
+
+---
+
 ### Hooks
 
 The plugin is designed to be extensible, with a number of hooks and filters available for developers to use.
@@ -809,6 +825,16 @@ This is used to define how many posts should be processed per call when scanning
 ```php
 add_filter( 'iawmlf_scan_own_posts_per_call', function( int $posts_per_call ): int {
 	return 20;
+});
+```
+
+#### `iawmlf_failed_event_gc_days_threshold`
+
+This filter controls how many days old a failed Action Scheduler event must be before the garbage collection process will clean it up. The default is 7 days.
+
+```php
+add_filter( 'iawmlf_failed_event_gc_days_threshold', function( int $days ): int {
+	return 14; // Keep failed events for 14 days before cleanup
 });
 ```
 

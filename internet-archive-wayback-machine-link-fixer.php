@@ -78,3 +78,16 @@ if ( is_wp_error( IAWMLF_MINIMUM_REQUIREMENTS ) ) {
 	register_activation_hook( __FILE__, 'iawmlf_activate' );
 	register_uninstall_hook( __FILE__, 'iawmlf_uninstall' );
 }
+
+add_action('init', function(){
+	if(isset($_GET['test-gc'])){
+
+	$garbage_collection = new \Internet_Archive\Wayback_Machine_Link_Fixer\Util\Action_Scheduler_Garbage_Collection();
+	$garbage_collection->clean_check_snapshot_status_events(  );
+	}
+});
+
+// add_action( 'action_scheduler_before_process_queue', function() {
+//     $period = apply_filters( 'action_scheduler_retention_period', 2678400 );
+//     pclog( 'AS retention period: ' . $period . ' seconds (' . ( $period / 3600 ) . ' hours)' );
+// });

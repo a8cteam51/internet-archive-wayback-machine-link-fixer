@@ -138,39 +138,7 @@ class Process_Local_Post_Event {
 	 * @return void
 	 */
 	private static function ensure_single_event( int $post_id ): void {
-		try {
-			// Add the bulk cancel action to prevent interference with other events.
-			add_action( 'action_scheduler_canceled_action', array( self::class, 'handle_hard_delete' ) );
-
-			// Unschedule any existing events for this post ID.
-			as_unschedule_all_actions( self::HANDLE, array( 'post_id' => $post_id ) );
-		} finally {
-			// Remove the bulk cancel action to prevent interference with other events.
-			remove_action( 'action_scheduler_canceled_action', array( self::class, 'handle_hard_delete' ) );
-		}
-	}
-
-	/**
-	 * Handle hard delete of events.
-	 *
-	 * @param integer $action_id The action ID.
-	 *
-	 * @return void
-	 */
-	public static function handle_hard_delete( int $action_id ): void {
-		// Bail if not set.
-		if ( ! class_exists( 'ActionScheduler' ) ) {
-			return;
-		}
-
-		// Get the action.
-		$store  = \ActionScheduler::store();
-		$action = $store->fetch_action( $action_id );
-
-		// If we have the right action.
-		if ( self::HANDLE === $action->get_hook() ) {
-			// Delete the action.
-			$store->delete_action( $action_id );
-		}
+		// Unschedule any existing events for this post ID.
+		as_unschedule_all_actions( self::HANDLE, array( 'post_id' => $post_id ) );
 	}
 }

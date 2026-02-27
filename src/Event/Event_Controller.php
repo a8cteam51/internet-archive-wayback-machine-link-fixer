@@ -38,5 +38,6 @@ class Event_Controller {
 		// Ensure the post scan event is added to the action scheduler.
 		add_action( 'init', array( Scan_Posts_Event::class, 'add_to_action_scheduler' ) );
 		add_action( 'init', array( Scan_Own_Posts_Event::class, 'add_to_action_scheduler' ) );
+		add_action( 'init', array( Failed_Event_Garbage_Collection_Event::class, 'add_to_action_scheduler' ) );
 	}
 }
