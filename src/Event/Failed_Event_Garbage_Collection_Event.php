@@ -63,8 +63,8 @@ class Failed_Event_Garbage_Collection_Event {
 		try {
 			$this->setup();
 
-			// Compile the threashold datetime.
-			$threshold_datetime = DateTimeImmutable::createFromFormat( 'U', (string) time() )->modify( '-' . $this->days_threshold . ' days' );
+			// Compile the threshold datetime.
+			$threshold_datetime = ( new DateTimeImmutable() )->modify( '-' . $this->days_threshold . ' days' );
 
 			// Garbage cleaner
 			$cleaner = new Action_Scheduler_Garbage_Collection();
@@ -73,7 +73,7 @@ class Failed_Event_Garbage_Collection_Event {
 			$cleaner->clean_update_archive_url_events( $threshold_datetime );
 			$cleaner->clean_check_validator_status_events( $threshold_datetime );
 		} catch ( \Throwable $e ) {
-			throw new \RuntimeException( esc_html( 'Error during failed event garbage collection: ' . $e->getMessage() ));
+			throw new \RuntimeException( esc_html( 'Error during failed event garbage collection: ' . $e->getMessage() ) );
 		} finally {
 			// Reschedule itself for the next day.
 			self::add_to_action_scheduler();
