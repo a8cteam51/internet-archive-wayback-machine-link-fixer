@@ -73,7 +73,7 @@ class Failed_Event_Garbage_Collection_Event {
 			$cleaner->clean_update_archive_url_events( $threshold_datetime );
 			$cleaner->clean_check_validator_status_events( $threshold_datetime );
 		} catch ( \Throwable $e ) {
-			throw new \RuntimeException( 'Error during failed event garbage collection: ' . esc_html( $e->getMessage() ), 0, $e );
+			throw new \RuntimeException( 'Error during failed event garbage collection: ' . esc_html( $e->getMessage() ), 0, $e ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		} finally {
 			// Reschedule itself for the next day.
 			self::add_to_action_scheduler();
