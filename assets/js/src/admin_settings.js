@@ -6,6 +6,353 @@
 (function () {
 	"use strict";
 
+	/**
+	 * Reusable exclusion list manager.
+	 *
+	 * Handles adding items from a template, removing items via event delegation,
+	 * and toggling an empty-state message. Used by link exclusions and post exclusions.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @param {Object}      config
+	 * @param {HTMLElement}  config.container    - The wrapper element containing the list items.
+	 * @param {HTMLElement}  config.emptyMessage - The "no items" element to show/hide.
+	 * @param {string}       config.template     - HTML template string with placeholders.
+	 * @param {string}       config.removeClass  - CSS class on the remove buttons.
+	 * @param {string}       config.itemClass    - CSS class on each item row.
+	 * @param {string}       config.indexSelector - CSS selector to find elements with data-index (for getNextIndex).
+	 *
+	 * @return {Object|null} API with addItem, hasItem, checkEmpty methods. Null if container missing.
+	 */
+	function ExclusionList(config) {
+		const container     = config.container;
+		const emptyMessage  = config.emptyMessage;
+		const template      = config.template;
+		const removeClass   = config.removeClass;
+		const itemClass     = config.itemClass;
+		const indexSelector = config.indexSelector;
+
+		if (!container) {
+			return null;
+		}
+
+		// Event delegation for remove buttons.
+		container.addEventListener('click', function (e) {
+			const removeButton = e.target.closest('.' + removeClass);
+			if (removeButton) {
+				e.preventDefault();
+				removeButton.closest('.' + itemClass).remove();
+				checkEmpty();
+			}
+		});
+
+		/**
+		 * Get the next available index.
+		 *
+		 * @return {number}
+		 */
+		function getNextIndex() {
+			const elements = container.querySelectorAll(indexSelector);
+			let lastIndex = 0;
+			elements.forEach(function (el) {
+				const index = parseInt(el.dataset.index) || 0;
+				if (index > lastIndex) {
+					lastIndex = index;
+				}
+			});
+			return lastIndex + 1;
+		}
+
+		/**
+		 * Toggle the empty-state message visibility.
+		 */
+		function checkEmpty() {
+			if (!emptyMessage) {
+				return;
+			}
+			const items = container.querySelectorAll('.' + itemClass);
+			emptyMessage.style.display = items.length > 0 ? 'none' : '';
+		}
+
+		/**
+		 * Add an item to the list.
+		 *
+		 * @param {Object} replacements - Key/value pairs to replace in the template.
+		 *                                Keys should include the curly braces, e.g. {newUrl}.
+		 */
+		function addItem(replacements) {
+			let html = template;
+			replacements['{newIndex}'] = getNextIndex();
+			Object.keys(replacements).forEach(function (key) {
+				html = html.replace(new RegExp(key.replace(/[{}]/g, '\\$&'), 'g'), replacements[key]);
+			});
+			container.insertAdjacentHTML('beforeend', html);
+			checkEmpty();
+		}
+
+		/**
+		 * Check if an item with a given data attribute value already exists.
+		 *
+		 * @param {string} attr  - The data attribute name (without "data-" prefix).
+		 * @param {string} value - The value to check for.
+		 *
+		 * @return {boolean}
+		 */
+		function hasItem(attr, value) {
+			return container.querySelector('[data-' + attr + '="' + value + '"]') !== null;
+		}
+
+		return {
+			addItem: addItem,
+			hasItem: hasItem,
+			checkEmpty: checkEmpty,
+		};
+	}
+
+	/**
+	 * Reusable AJAX-powered search dropdown.
+	 *
+	 * Debounces input, fetches results via AJAX, renders a dropdown with
+	 * highlighted search terms, and supports keyboard navigation.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @param {Object}      config
+	 * @param {HTMLElement}  config.input    - The search input element.
+	 * @param {HTMLElement}  config.dropdown - The dropdown container element.
+	 * @param {string}       config.ajaxUrl  - The WordPress AJAX URL.
+	 * @param {string}       config.nonce    - The nonce for the AJAX request.
+	 * @param {string}       config.action   - The AJAX action name.
+	 * @param {Function}     config.onSelect    - Callback when a result is selected. Receives the result object.
+	 * @param {Function}     [config.isExcluded] - Optional callback to filter out results. Receives result, returns true to exclude.
+	 *
+	 * @return {Object|null} API with close method. Null if input or dropdown missing.
+	 */
+	function PostSearchDropdown(config) {
+		const input    = config.input;
+		const dropdown = config.dropdown;
+		const ajaxUrl  = config.ajaxUrl;
+		const nonce    = config.nonce;
+		const action   = config.action;
+		const onSelect   = config.onSelect;
+		const isExcluded = config.isExcluded || function () { return false; };
+		const debounceMs = 300;
+		const minChars   = 2;
+
+		if (!input || !dropdown) {
+			return null;
+		}
+
+		let debounceTimer  = null;
+		let abortCtrl      = null;
+		let activeIndex    = -1;
+		let currentResults = [];
+
+		/**
+		 * Highlight search term in text using <mark> tags.
+		 *
+		 * @param {string} text   - The text to highlight within.
+		 * @param {string} search - The search term to highlight.
+		 *
+		 * @return {string} HTML string with highlighted matches.
+		 */
+		function highlight(text, search) {
+			if (!search || !text) {
+				return text || '';
+			}
+			const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+			return text.replace(new RegExp('(' + escaped + ')', 'gi'), '<mark>$1</mark>');
+		}
+
+		/**
+		 * Show the dropdown.
+		 */
+		function show() {
+			dropdown.style.display = '';
+		}
+
+		/**
+		 * Hide the dropdown and reset state.
+		 */
+		function close() {
+			dropdown.style.display = 'none';
+			activeIndex = -1;
+			currentResults = [];
+		}
+
+		/**
+		 * Render a loading state in the dropdown.
+		 */
+		function showLoading() {
+			dropdown.innerHTML = '<div class="iawmlf-post-search__loading">Searching\u2026</div>';
+			show();
+		}
+
+		/**
+		 * Render a no-results state in the dropdown.
+		 */
+		function showNoResults() {
+			dropdown.innerHTML = '<div class="iawmlf-post-search__no-results">No posts found.</div>';
+			show();
+		}
+
+		/**
+		 * Render the search results in the dropdown.
+		 *
+		 * @param {Array}  results - Array of result objects.
+		 * @param {string} search  - The search term for highlighting.
+		 */
+		function renderResults(results, search) {
+			currentResults = results;
+			activeIndex = -1;
+
+			let html = '';
+			results.forEach(function (result, i) {
+				html += '<div class="iawmlf-post-search__item" data-index="' + i + '">';
+				html += '<div class="iawmlf-post-search__item-title">' + highlight(result.title, search) + '</div>';
+				html += '<div class="iawmlf-post-search__item-meta">' + result.post_type + ' &middot; ID: ' + result.id + ' &middot; /' + highlight(result.slug, search) + '</div>';
+				html += '</div>';
+			});
+
+			dropdown.innerHTML = html;
+			show();
+		}
+
+		/**
+		 * Update the active (highlighted) item in the dropdown.
+		 */
+		function updateActive() {
+			const items = dropdown.querySelectorAll('.iawmlf-post-search__item');
+			items.forEach(function (item, i) {
+				if (i === activeIndex) {
+					item.classList.add('iawmlf-post-search__item--active');
+					item.scrollIntoView({ block: 'nearest' });
+				} else {
+					item.classList.remove('iawmlf-post-search__item--active');
+				}
+			});
+		}
+
+		/**
+		 * Perform the AJAX search.
+		 *
+		 * @param {string} search - The search term.
+		 */
+		function doSearch(search) {
+			// Abort any in-flight request.
+			if (abortCtrl) {
+				abortCtrl.abort();
+			}
+			abortCtrl = new AbortController();
+
+			showLoading();
+
+			const formData = new FormData();
+			formData.append('action', action);
+			formData.append('nonce', nonce);
+			formData.append('search', search);
+
+			fetch(ajaxUrl, {
+				method: 'POST',
+				body: formData,
+				signal: abortCtrl.signal,
+			})
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					if (data.success && data.data && data.data.length > 0) {
+						var filtered = data.data.filter(function (result) {
+							return !isExcluded(result);
+						});
+						if (filtered.length > 0) {
+							renderResults(filtered, search);
+						} else {
+							showNoResults();
+						}
+					} else {
+						showNoResults();
+					}
+				})
+				.catch(function (err) {
+					if (err.name !== 'AbortError') {
+						showNoResults();
+					}
+				});
+		}
+
+		// Debounced input listener.
+		input.addEventListener('input', function () {
+			const value = input.value.trim();
+
+			if (debounceTimer) {
+				clearTimeout(debounceTimer);
+			}
+
+			if (value.length < minChars) {
+				close();
+				return;
+			}
+
+			debounceTimer = setTimeout(function () {
+				doSearch(value);
+			}, debounceMs);
+		});
+
+		// Keyboard navigation.
+		input.addEventListener('keydown', function (e) {
+			if (dropdown.style.display === 'none' || currentResults.length === 0) {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+				}
+				return;
+			}
+
+			if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				activeIndex = activeIndex < currentResults.length - 1 ? activeIndex + 1 : 0;
+				updateActive();
+			} else if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				activeIndex = activeIndex > 0 ? activeIndex - 1 : currentResults.length - 1;
+				updateActive();
+			} else if (e.key === 'Enter') {
+				e.preventDefault();
+				if (activeIndex >= 0 && activeIndex < currentResults.length) {
+					onSelect(currentResults[activeIndex]);
+					input.value = '';
+					close();
+				}
+			} else if (e.key === 'Escape') {
+				close();
+			}
+		});
+
+		// Click on result.
+		dropdown.addEventListener('click', function (e) {
+			const item = e.target.closest('.iawmlf-post-search__item');
+			if (item) {
+				const idx = parseInt(item.dataset.index, 10);
+				if (idx >= 0 && idx < currentResults.length) {
+					onSelect(currentResults[idx]);
+					input.value = '';
+					close();
+				}
+			}
+		});
+
+		// Click outside closes dropdown.
+		document.addEventListener('click', function (e) {
+			if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+				close();
+			}
+		});
+
+		return {
+			close: close,
+		};
+	}
+
 	// Wait for DOM to be ready
 	document.addEventListener('DOMContentLoaded', function () {
 
@@ -30,26 +377,69 @@
 		// Get the settings.
 		const PROCESS_LINK = document.getElementById('iawmlf_process_links');
 		const AUTO_ARCHIVE = document.getElementById('iawmlf_allow_own_content_submissions');
-
-		const EXCLUDED_LINKS = document.getElementById('iawmlf_excluded_links');
-		const NEW_LINK = document.getElementById('iawmlf_excluded_links_new');
-		const NEW_LINK_BUTTON = document.getElementById('iawmlf_excluded_links_new_action');
-		const NEW_LINK_TEMPLATE = IawmlfSettings.newExcludedTemplate;
 		const ENVIRONMENTAL = IawmlfSettings.environment;
-		const NO_LINKS = document.getElementById('iawmlf_excluded_empty');
 		const API_ACCESS_KEY = document.getElementById('iawmlf_archive_api_access');
 		const API_SECRET_KEY = document.getElementById('iawmlf_archive_api_secret');
 
+		// --- Link Exclusions (using ExclusionList) ---
+		const linkExclusionList = ExclusionList({
+			container:     document.getElementById('iawmlf_excluded_links'),
+			emptyMessage:  document.getElementById('iawmlf_excluded_empty'),
+			template:      IawmlfSettings.newExcludedTemplate,
+			removeClass:   'remove-exclusion',
+			itemClass:     'link',
+			indexSelector: 'input[data-index]',
+		});
 
-		// Handle removing a link.
-		if (EXCLUDED_LINKS) {
-			EXCLUDED_LINKS.addEventListener('click', function (e) {
-				const removeButton = e.target.closest('.remove-exclusion');
-				if (removeButton) {
-					e.preventDefault();
-					removeButton.parentElement.remove();
-					checkNoLinks();
+		const NEW_LINK = document.getElementById('iawmlf_excluded_links_new');
+		const NEW_LINK_BUTTON = document.getElementById('iawmlf_excluded_links_new_action');
+
+		if (NEW_LINK_BUTTON && NEW_LINK && linkExclusionList) {
+			NEW_LINK_BUTTON.addEventListener('click', function (e) {
+				e.preventDefault();
+				const newLink = NEW_LINK.value.trim();
+				if (newLink.length > 0) {
+					linkExclusionList.addItem({
+						'{newUrl}': newLink,
+					});
+					NEW_LINK.value = '';
 				}
+			});
+		}
+
+		// --- Post Exclusions (using ExclusionList) ---
+		const postExclusionContainer = document.getElementById('iawmlf_excluded_posts');
+		const postExclusionList = ExclusionList({
+			container:     postExclusionContainer,
+			emptyMessage:  postExclusionContainer ? postExclusionContainer.querySelector('.iawmlf-exclusion-list__empty') : null,
+			template:      IawmlfSettings.newExcludedPostTemplate,
+			removeClass:   'iawmlf-exclusion-list__remove',
+			itemClass:     'iawmlf-exclusion-list__item',
+			indexSelector: '[data-index]',
+		});
+
+		// AJAX post search for adding post exclusions.
+		const POST_SEARCH_INPUT = postExclusionContainer ? postExclusionContainer.querySelector('.iawmlf-post-search__input') : null;
+		const POST_SEARCH_DROPDOWN = postExclusionContainer ? postExclusionContainer.querySelector('.iawmlf-post-search__dropdown') : null;
+		if (POST_SEARCH_INPUT && POST_SEARCH_DROPDOWN && postExclusionList) {
+			PostSearchDropdown({
+				input:    POST_SEARCH_INPUT,
+				dropdown: POST_SEARCH_DROPDOWN,
+				ajaxUrl:  IawmlfSettings.ajaxUrl,
+				nonce:    IawmlfSettings.postSearchNonce,
+				action:   'iawmlf_post_search',
+				isExcluded: function (result) {
+					return postExclusionList.hasItem('post-id', result.id.toString());
+				},
+				onSelect: function (result) {
+					if (!postExclusionList.hasItem('post-id', result.id.toString())) {
+						postExclusionList.addItem({
+							'{postId}':    result.id,
+							'{postTitle}': result.title,
+							'{postType}': result.post_type,
+						});
+					}
+				},
 			});
 		}
 
@@ -77,10 +467,10 @@
 			function updateApiKeyUI(isUnchecked) {
 				const parentDivs = document.querySelectorAll('.' + (isUnchecked ? INVALID_API_KEYS_CLASS : UNCHECKED_API_KEYS_CLASS));
 				const targetClass = isUnchecked ? UNCHECKED_API_KEYS_CLASS : INVALID_API_KEYS_CLASS;
-				const removeClass = isUnchecked ? INVALID_API_KEYS_CLASS : UNCHECKED_API_KEYS_CLASS;
+				const removeClassName = isUnchecked ? INVALID_API_KEYS_CLASS : UNCHECKED_API_KEYS_CLASS;
 
 				parentDivs.forEach(function(parentDiv) {
-					parentDiv.classList.remove(removeClass);
+					parentDiv.classList.remove(removeClassName);
 					parentDiv.classList.add(targetClass);
 				});
 
@@ -178,74 +568,6 @@
 		}
 		if (AUTO_ARCHIVE) {
 			toggleElements(AUTO_ARCHIVE.checked, 'auto_archiver');
-		}
-
-		/**
-		 * Get the last index from the links.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @return {int} The last index.
-		 */
-		function getNextIndex() {
-			if (!EXCLUDED_LINKS) return 0;
-
-			const links = EXCLUDED_LINKS.querySelectorAll('input[type="text"]');
-			let lastIndex = 0;
-			links.forEach(function (link) {
-				// Get index from data-index attribute.
-				const index = parseInt(link.dataset.index) || 0;
-				if (index > lastIndex) {
-					lastIndex = index;
-				}
-			});
-			return lastIndex;
-		}
-
-		/**
-		 * Parses a new link.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param {string} newLink The new link.
-		 * @param {int} index The index of the new link.
-		 *
-		 * @return {string} The parsed link.
-		 */
-		const parseNewLink = (newLink, index) => NEW_LINK_TEMPLATE.replace(/{newIndex}/g, index).replace(/{newUrl}/g, newLink)
-
-		// When the user clicks the add new link button.
-		if (NEW_LINK_BUTTON) {
-			NEW_LINK_BUTTON.addEventListener('click', function (e) {
-				e.preventDefault();
-				const newLink = NEW_LINK ? NEW_LINK.value : '';
-				if (newLink.length > 0 && EXCLUDED_LINKS) {
-					EXCLUDED_LINKS.insertAdjacentHTML('beforeend', parseNewLink(newLink, getNextIndex()));
-					if (NEW_LINK) {
-						NEW_LINK.value = '';
-					}
-				}
-
-				checkNoLinks();
-			});
-		}
-
-		/**
-		 * Check if the no links message should be shown.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @return {void}
-		 */
-		function checkNoLinks() {
-			if (!EXCLUDED_LINKS || !NO_LINKS) return;
-
-			const linkDivs = EXCLUDED_LINKS.querySelectorAll('div.link');
-			if (linkDivs.length > 0) {
-				NO_LINKS.style.display = 'none';
-			} else {
-				NO_LINKS.style.display = '';
-			}
 		}
 	});
 })();

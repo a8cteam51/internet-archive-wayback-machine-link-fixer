@@ -703,7 +703,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function define_pagination_args() {
 		// Get the total number of links.
-		$link_count = count( $this->get_links( \PHP_INT_MAX, 1 ) );
+		$link_count = $this->count_links( \PHP_INT_MAX, 1 );
 		// Set the pagination args.
 		$this->set_pagination_args(
 			array(
@@ -900,6 +900,29 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function get_links( int $limit = 10, int $page = 1, array $status = array() ): array {
 		return $this->links->query_links(
+			$limit,
+			$page,
+			array( $this->get_status_from_url() ),
+			$this->get_link_ids_from_url(),
+			array( $this->get_archived_status_from_url() ),
+			$this->get_sort_order_from_url(),
+			$this->get_search_term(),
+			null,
+			is_null( $this->get_excluded_status_from_url() ) ? null : boolval( $this->get_excluded_status_from_url() )
+		);
+	}
+
+	/**
+	 * Count links based on the query being used on this table.
+	 *
+	 * @param integer $limit  The limit of links to return.
+	 * @param integer $page   The page of links to return.
+	 * @param array   $status The status of the links to return.
+	 *
+	 * @return integer
+	 */
+	private function count_links( int $limit = 10, int $page = 1, array $status = array() ): int {
+		return $this->links->count_links(
 			$limit,
 			$page,
 			array( $this->get_status_from_url() ),

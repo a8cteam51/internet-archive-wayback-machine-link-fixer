@@ -145,6 +145,7 @@ class Scan_Posts_Event {
 				'posts_per_page'         => $this->posts_per_call,
 				'cache_results'          => false,
 				'update_post_meta_cache' => false,
+				'post__not_in'           => Settings::get_link_fixer_excluded_posts(),
 				'meta_query'             => array(
 					'relation' => 'OR',
 					array(

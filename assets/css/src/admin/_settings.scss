@@ -129,3 +129,111 @@
         margin: 0;
     }
 }
+
+// Exclusion list component (post exclusions).
+.iawmlf-exclusion-list {
+    padding: 5px;
+    border: 1px solid #cfcfcf;
+    margin: 5px 0;
+
+    &__search {
+        margin-bottom: 10px;
+        background-color: #cfcfcf;
+        padding: 10px;
+
+        input {
+            max-width: 100%;
+            width: -webkit-fill-available;
+        }
+    }
+
+    &__empty {
+        text-align: center;
+        color: #cfcfcf;
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        padding: 6px 8px;
+        border-bottom: 1px solid #f0f0f0;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &__item-title {
+        flex: 1;
+        font-size: 13px;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+
+        small {
+            color: #999;
+        }
+    }
+
+    &__remove {
+        margin-left: 10px;
+        flex-shrink: 0;
+    }
+}
+
+// Post search dropdown (AJAX autocomplete).
+.iawmlf-post-search {
+    position: relative;
+
+    &__dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border: 1px solid #c3c4c7;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        max-height: 150px;
+        overflow-y: auto;
+        z-index: 100;
+    }
+
+    &__item {
+        padding: 6px 8px;
+        cursor: pointer;
+        border-bottom: 1px solid #f0f0f0;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        &:hover,
+        &--active {
+            background-color: #f0f0f1;
+        }
+
+        mark {
+            background-color: #fcf4a3;
+            padding: 0;
+        }
+    }
+
+    &__item-title {
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    &__item-meta {
+        font-size: 11px;
+        color: #999;
+    }
+
+    &__loading,
+    &__no-results {
+        padding: 8px;
+        text-align: center;
+        color: #999;
+        font-size: 13px;
+    }
+}

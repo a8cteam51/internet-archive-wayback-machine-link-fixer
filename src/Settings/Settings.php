@@ -31,6 +31,7 @@ class Settings {
 	public const MIGRATIONS_KEY                 = self::SETTINGS_PREFIX . 'migration_log';
 	public const DROP_TABLES_ON_UNINSTALL_KEY   = self::SETTINGS_PREFIX . 'drop_tables_uninstall';
 	public const LINK_EXCLUSIONS                = self::SETTINGS_PREFIX . 'link_exclusions';
+	public const LINK_FIXER_EXCLUDED_POSTS      = self::SETTINGS_PREFIX . 'link_fixer_excluded_posts';
 	public const SCAN_EXISTING_POSTS            = self::SETTINGS_PREFIX . 'scan_existing_posts';
 	public const ARCHIVE_ORG_SECRET_KEY         = self::SETTINGS_PREFIX . 'archive_api_secret';
 	public const ARCHIVE_ORG_ACCESS_KEY         = self::SETTINGS_PREFIX . 'archive_api_access';
@@ -159,6 +160,18 @@ class Settings {
 	public static function get_link_exclusions(): array {
 		$links = array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
 		return apply_filters( 'iawmlf_link_exclusions', $links );
+	}
+
+	/**
+	 * Get the array of excluded post IDs for the link fixer.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @return int[]
+	 */
+	public static function get_link_fixer_excluded_posts(): array {
+		$post_ids = array_map( 'absint', (array) get_option( self::LINK_FIXER_EXCLUDED_POSTS, array() ) );
+		return (array) apply_filters( 'iawmlf_link_fixer_excluded_posts', array_filter( $post_ids ) );
 	}
 
 	/**
@@ -585,6 +598,7 @@ class Settings {
 		delete_option( self::MIGRATIONS_KEY );
 		delete_option( self::DROP_TABLES_ON_UNINSTALL_KEY );
 		delete_option( self::LINK_EXCLUSIONS );
+		delete_option( self::LINK_FIXER_EXCLUDED_POSTS );
 		delete_option( self::SCAN_EXISTING_POSTS );
 		delete_option( self::ARCHIVE_ORG_SECRET_KEY );
 		delete_option( self::ARCHIVE_ORG_ACCESS_KEY );

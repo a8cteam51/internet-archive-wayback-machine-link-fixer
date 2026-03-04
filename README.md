@@ -100,6 +100,12 @@ Specify links to exclude from being checked. This is useful for links known to b
 * `https://example.com/*` - Excludes all links starting with `https://example.com/`
 * `https://x.com*` - Excludes all links containing `x/twitter` in the domain name
 
+#### Post Exclusions
+
+![Post Exclusions](./_docs/settings--fixer-post-exclusions.png)
+
+Search for specific posts to exclude from link checking. Outbound links within excluded posts will not be scanned, checked, or replaced on the frontend. Excluded posts are also skipped during batch scanning of existing content. In the post list table, excluded posts display an "Excluded post" label in the Links column. Posts can also be excluded programmatically using the `iawmlf_link_fixer_excluded_posts` filter.
+
 #### Check Frequency
 
 ![Check Frequency](./_docs/settings--check-frequency.png)
@@ -625,6 +631,18 @@ add_filter( 'iawmlf_link_exclusions', function( array $exclusions ): array {
 });
 ```
 
+#### `iawmlf_link_fixer_excluded_posts`
+
+This filter allows you to programmatically add post IDs to the link fixer exclusion list. Excluded posts will not have their links scanned or archived.
+
+```php
+add_filter( 'iawmlf_link_fixer_excluded_posts', function( array $post_ids ): array {
+   $post_ids[] = 123;
+   $post_ids[] = 456;
+   return $post_ids;
+});
+```
+
 #### `iawmlf_is_production_environment`
 
 This filter allows you to override the production environment detection. By default, the plugin uses WordPress's `wp_get_environment_type()` function to determine if the site is running in a production environment. You can use this filter to customize this behavior for your specific setup.
@@ -1049,6 +1067,47 @@ This filter allows you to change the required capability for accessing the repor
 add_filter( 'iawmlf_reporting_page_capability', function( string $capability ): string {
 	return 'edit_posts'; // Allow editors to access the reporting page
 });
+```
+
+#### Action Hooks
+
+#### `iawmlf_link_details_after_link_info`
+
+This action allows developers to extend the link details admin page by adding additional HTML after the link information section.
+
+```php
+add_action( 'iawmlf_link_details_after_link_info', function( Link $link ): void {
+   printf( '<p>Custom info: %s</p>', esc_html( $link->get_href() ) );
+});
+```
+
+> The `$link` parameter is an instance of `Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link`.
+
+#### `iawmlf_before_saving_link_details`
+
+This filter runs before the link is persisted to the database when the link details form is submitted. It allows developers to modify the link object or perform custom form handling before the changes are saved.
+
+```php
+add_filter( 'iawmlf_before_saving_link_details', function( Link $link ): Link {
+   // Perform custom modifications before the link is saved.
+   return $link;
+});
+```
+
+> This filter runs **before** the link is persisted. Any changes made to the `$link` object here will be included in the save.
+
+#### `iawmlf_link_details_updated_redirect_param`
+
+This filter controls the "updated" flag used in the redirect after saving link details. Returning a falsy value will suppress the default success notice on the link details page.
+
+```php
+add_filter( 'iawmlf_link_details_updated_redirect_param', function( string $updated, Link $link ): string {
+   // Suppress the success notice for a specific link.
+   if ( str_contains( $link->get_href(), 'example.com' ) ) {
+      return '';
+   }
+   return $updated;
+}, 10, 2 );
 ```
 
 ### Internet Archive / Wayback Link Fixer Instances.

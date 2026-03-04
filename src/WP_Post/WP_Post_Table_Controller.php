@@ -15,6 +15,7 @@ namespace Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Report_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 
 defined( 'ABSPATH' ) || exit;
@@ -130,6 +131,16 @@ class WP_Post_Table_Controller {
 	 */
 	public function render_link_column( string $column_name, int $post_id ): void {
 		if ( self::LINK_COLUMN_KEY !== $column_name ) {
+			return;
+		}
+
+		// If the post is excluded, show a message with a link to settings.
+		if ( in_array( $post_id, Settings::get_link_fixer_excluded_posts(), true ) ) {
+			printf(
+				'<a href="%1$s"><em>%2$s</em></a>',
+				esc_url( Settings_Page::get_page_url() ),
+				esc_html__( 'Excluded post', 'internet-archive-wayback-machine-link-fixer' )
+			);
 			return;
 		}
 

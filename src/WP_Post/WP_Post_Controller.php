@@ -168,6 +168,11 @@ class WP_Post_Controller {
 	 * @return void
 	 */
 	public function process_links_in_content( int $post_id ): void {
+		// Bail if the post is in the excluded posts list.
+		if ( in_array( $post_id, Settings::get_link_fixer_excluded_posts(), true ) ) {
+			return;
+		}
+
 		// Create an instance of the processor.
 		$post_processor = new Post_Processor( $post_id );
 		$links          = $post_processor->process();
@@ -214,6 +219,11 @@ class WP_Post_Controller {
 
 		// Get the post id.
 		$post_id = get_the_ID();
+
+		// Bail if the post is in the excluded posts list.
+		if ( is_numeric( $post_id ) && in_array( (int) $post_id, Settings::get_link_fixer_excluded_posts(), true ) ) {
+			return;
+		}
 
 		// Get the links.
 		$links = is_numeric( $post_id ) && get_post_status( $post_id )
@@ -277,6 +287,11 @@ class WP_Post_Controller {
 
 		// If the ID is not set, or is in the array, return.
 		if ( ! is_numeric( $post_id ) || in_array( $post_id, $posts, true ) ) {
+			return $block_content;
+		}
+
+		// Bail if the post is in the excluded posts list.
+		if ( in_array( (int) $post_id, Settings::get_link_fixer_excluded_posts(), true ) ) {
 			return $block_content;
 		}
 

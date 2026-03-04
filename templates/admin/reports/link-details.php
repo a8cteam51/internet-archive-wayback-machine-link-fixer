@@ -82,6 +82,30 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 						</div>
 					</div>
 
+					<?php do_action( 'iawmlf_link_details_after_link_info', $iawmlf_link ); ?>
+
+					<div id="iawmlf_link_exclusion" class="postbox ">
+						<div class="postbox-header">
+							<h2 class="handle ui-sortable-handle"><?php esc_html_e( 'Link Exclusion', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
+						</div>
+						<div class="inside">
+							<?php if ( $iawmlf_link->is_excluded() ) : ?>
+								<p><?php esc_html_e( 'This link is currently excluded. It will not be checked for broken status, fixed automatically, or have snapshots created by the Internet Archive.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
+							<?php else : ?>
+								<p><?php esc_html_e( 'Excluding this link will stop it from being checked for broken status, fixed automatically, or having snapshots created by the Internet Archive.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
+							<?php endif; ?>
+
+							<form method="post" id="iawmlf_link_details_form">
+								<?php wp_nonce_field( 'iawmlf_link_details', 'iawmlf_link_details_nonce' ); ?>
+								<input type="hidden" name="iawmlf_link_id" value="<?php echo absint( $iawmlf_link->get_id() ); ?>" />
+
+								<label>
+									<input type="checkbox" name="iawmlf_exclude_link" value="1" id="iawmlf_toggle_exclusion" <?php checked( $iawmlf_link->is_excluded() ); ?> />
+									<?php esc_html_e( 'Exclude this link', 'internet-archive-wayback-machine-link-fixer' ); ?>
+								</label>
+							</form>
+						</div>
+					</div>
 
 					<div id="iawmlf_link_checks" class="postbox ">
 						<div class="postbox-header">
@@ -229,6 +253,11 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 							<?php endif; ?>
 						</div>
 					</div>
+					<p class="iawmlf-submit-wrapper">
+						<button type="submit" form="iawmlf_link_details_form" class="button button-primary">
+							<?php esc_html_e( 'Save Changes', 'internet-archive-wayback-machine-link-fixer' ); ?>
+						</button>
+					</p>
 				</div>
 			</div>
 		</div>

@@ -513,6 +513,43 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox If a post is in the excluded posts list, process_links_in_content should bail silently without setting link meta.
+	 *
+	 * @return void
+	 */
+	public function test_excluded_post_not_processed_by_process_links_in_content(): void {
+		$post_id = self::factory()->post->create();
+
+		// Add some content to the post.
+		$content = 'This is a post with a link to <a href="https://from.post/excluded">example</a>';
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+			)
+		);
+
+		// Clear any meta that was set by the save_post hook.
+		\delete_post_meta( $post_id, Settings::LINK_META_KEY );
+
+		// Add the post to the exclusion list.
+		\update_option( Settings::LINK_FIXER_EXCLUDED_POSTS, array( $post_id ) );
+
+		// Process the post.
+		$handler = new WP_Post_Controller();
+		$handler->process_links_in_content( $post_id );
+
+		// The post should NOT have link meta set.
+		$this->assertFalse(
+			\metadata_exists( 'post', $post_id, Settings::LINK_META_KEY ),
+			'The excluded post should not have link meta set.'
+		);
+
+		// Clean up.
+		\delete_option( Settings::LINK_FIXER_EXCLUDED_POSTS );
+	}
+
+	/**
 	 * @testdox When an option is selected to fix links, it should be rendered out the HTML.
 	 *
 	 * @since 1.3.1
@@ -543,6 +580,42 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$this->assertStringContainsString( 'data-iawmlf-post-links', $rendered );
 
 		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox If a post is in the excluded posts list, the link data attribute should not be rendered in the block output.
+	 *
+	 * @return void
+	 */
+	public function test_excluded_post_does_not_render_link_data(): void {
+		// Set the option to render the HTML link output.
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		$post_id = self::factory()->post->create();
+
+		$content = 'This is a post with a link to <a href="https://from.post/excluded_render">example</a>';
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+				'post_type'    => 'post',
+			)
+		);
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		// Add the post to the exclusion list.
+		\update_option( Settings::LINK_FIXER_EXCLUDED_POSTS, array( $post_id ) );
+
+		// Render the block.
+		$rendered = do_blocks( $GLOBALS['post']->post_content );
+
+		// Check does NOT contain the data-iawmlf-post-links attribute.
+		$this->assertStringNotContainsString( 'data-iawmlf-post-links', $rendered );
+
+		// Clean up.
+		unset( $GLOBALS['post'] );
+		\delete_option( Settings::LINK_FIXER_EXCLUDED_POSTS );
 	}
 
 	/**
