@@ -1103,7 +1103,7 @@ This filter controls the "updated" flag used in the redirect after saving link d
 ```php
 add_filter( 'iawmlf_link_details_updated_redirect_param', function( string $updated, Link $link ): string {
    // Suppress the success notice for a specific link.
-   if ( str_contains( $link->get_href(), 'example.com' ) ) {
+   if ( strpos( $link->get_href(), 'example.com' ) !== false ) {
       return '';
    }
    return $updated;

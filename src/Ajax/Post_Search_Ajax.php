@@ -204,7 +204,7 @@ class Post_Search_Ajax {
 		// Check the search term meets minimum length.
 		$search = sanitize_text_field( wp_unslash( $_POST['search'] ) );
 		if ( strlen( $search ) < self::MIN_CHARS ) {
-			throw new Exception( 'Search term must be at least ' . self::MIN_CHARS . ' characters.' );
+			throw new Exception( 'Search term must be at least ' . self::MIN_CHARS . ' characters.' ); // phpcs:ignore
 		}
 	}
 

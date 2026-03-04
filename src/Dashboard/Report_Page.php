@@ -422,8 +422,7 @@ class Report_Page {
 				$user = wp_get_current_user();
 				$link->set_message(
 					sprintf(
-						/* translators: 1: The user login, 2: The date. */
-						__( 'User Requested To Exclude (%1$s on %2$s)', 'internet-archive-wayback-machine-link-fixer' ),
+						'User Requested To Exclude (%1$s on %2$s)',
 						$user->user_login,
 						wp_date( get_option( 'date_format' ) )
 					)
@@ -433,7 +432,7 @@ class Report_Page {
 			$link->set_excluded( false );
 
 			// Clear message only if it was set by a user exclusion request.
-			if ( str_starts_with( $link->get_message(), 'User Requested To Exclude' ) ) {
+			if ( 0 === strpos( $link->get_message(), 'User Requested To Exclude' ) ) {
 				$link->set_message( '' );
 			}
 		}
@@ -446,7 +445,6 @@ class Report_Page {
 
 		// Allow 3rd parties to hook in and modify the redirect param after saving, for showing custom notices.
 		$has_updated = (bool) apply_filters( 'iawmlf_link_details_updated_redirect_param', '1', $link );
-
 
 		// Redirect back to the link details page with a success notice.
 		$redirect_url = add_query_arg(

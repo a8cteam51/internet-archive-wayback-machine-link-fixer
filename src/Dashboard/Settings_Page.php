@@ -144,7 +144,7 @@ class Settings_Page {
 		wp_register_script(
 			self::PAGE_SLUG,
 			IAWMLF_URL . 'assets/js/build/admin_settings.js',
-			array( 'jquery' ),
+			array( 'jquery', 'wp-escape-html' ),
 			IAWMLF_VERSION,
 			true
 		);

@@ -6,6 +6,8 @@
 (function () {
 	"use strict";
 
+	const escapeHTML = wp.escapeHtml.escapeHTML;
+
 	/**
 	 * Reusable exclusion list manager.
 	 *
@@ -84,7 +86,7 @@
 			let html = template;
 			replacements['{newIndex}'] = getNextIndex();
 			Object.keys(replacements).forEach(function (key) {
-				html = html.replace(new RegExp(key.replace(/[{}]/g, '\\$&'), 'g'), replacements[key]);
+				html = html.replace(new RegExp(key.replace(/[{}]/g, '\\$&'), 'g'), escapeHTML(replacements[key]));
 			});
 			container.insertAdjacentHTML('beforeend', html);
 			checkEmpty();
@@ -209,8 +211,8 @@
 			let html = '';
 			results.forEach(function (result, i) {
 				html += '<div class="iawmlf-post-search__item" data-index="' + i + '">';
-				html += '<div class="iawmlf-post-search__item-title">' + highlight(result.title, search) + '</div>';
-				html += '<div class="iawmlf-post-search__item-meta">' + result.post_type + ' &middot; ID: ' + result.id + ' &middot; /' + highlight(result.slug, search) + '</div>';
+				html += '<div class="iawmlf-post-search__item-title">' + highlight(escapeHTML(result.title), search) + '</div>';
+				html += '<div class="iawmlf-post-search__item-meta">' + escapeHTML(result.post_type) + ' &middot; ID: ' + escapeHTML(result.id) + ' &middot; /' + highlight(escapeHTML(result.slug), search) + '</div>';
 				html += '</div>';
 			});
 

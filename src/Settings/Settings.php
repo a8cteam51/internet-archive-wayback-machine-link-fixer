@@ -171,7 +171,8 @@ class Settings {
 	 */
 	public static function get_link_fixer_excluded_posts(): array {
 		$post_ids = array_map( 'absint', (array) get_option( self::LINK_FIXER_EXCLUDED_POSTS, array() ) );
-		return (array) apply_filters( 'iawmlf_link_fixer_excluded_posts', array_filter( $post_ids ) );
+		$post_ids = (array) apply_filters( 'iawmlf_link_fixer_excluded_posts', array_filter( $post_ids ) );
+		return array_filter( array_map( 'absint', $post_ids ) );
 	}
 
 	/**
