@@ -43,6 +43,28 @@
 				selectTab('bulk_actions');
 			});
 		}
+
+		// Handle the link exclusion toggle confirmation.
+		const TOGGLE_EXCLUSION = document.getElementById('iawmlf_toggle_exclusion');
+		const EXCLUSION_FORM = document.getElementById('iawmlf_link_details_form');
+
+		if (TOGGLE_EXCLUSION && EXCLUSION_FORM && typeof iawmlf_link_table !== 'undefined') {
+			const initialState = TOGGLE_EXCLUSION.checked;
+
+			TOGGLE_EXCLUSION.addEventListener('change', function () {
+				if (this.checked === initialState) {
+					return;
+				}
+
+				const message = this.checked
+					? iawmlf_link_table.confirmExclude
+					: iawmlf_link_table.confirmInclude;
+
+				if (!confirm(message)) {
+					this.checked = !this.checked;
+				}
+			});
+		}
 	});
 })();
 

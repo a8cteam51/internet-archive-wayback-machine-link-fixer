@@ -99,6 +99,9 @@ class Report_Page {
 
 		$this->hook = $hook;
 
+		// Handle the link details form submission.
+		add_action( "load-$hook", array( $this, 'handle_link_details_form' ) );
+
 		// Add the screen options.
 		add_action( "load-$hook", array( $this, 'register_screen_options' ) );
 
@@ -132,14 +135,27 @@ class Report_Page {
 			IAWMLF_VERSION
 		);
 
-		// Enqueue the admin scripts.
-		wp_enqueue_script(
+		// Register the admin scripts.
+		wp_register_script(
 			self::SLUG,
 			IAWMLF_URL . 'assets/js/build/link-table.js',
 			array(),
 			IAWMLF_VERSION,
 			true
 		);
+
+		// Localize the script with exclusion confirm messages.
+		wp_localize_script(
+			self::SLUG,
+			'iawmlf_link_table',
+			array(
+				'confirmExclude' => __( 'Are you sure you want to exclude this link? It will no longer be shown in the list, it will no longer be checked, and will not be fixed if broken.', 'internet-archive-wayback-machine-link-fixer' ),
+				'confirmInclude' => __( 'Are you sure you want to include this link? It will be checked and fixed if broken.', 'internet-archive-wayback-machine-link-fixer' ),
+			)
+		);
+
+		// Enqueue the admin scripts.
+		wp_enqueue_script( self::SLUG );
 	}
 
 	/**
@@ -348,6 +364,14 @@ class Report_Page {
 			);
 			return;
 		}
+		// Show success notice if we just updated the link.
+		if ( ! empty( $_GET['iawmlf_updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Redirect param, no nonce possible.
+			printf(
+				'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+				esc_html__( 'Link updated successfully.', 'internet-archive-wayback-machine-link-fixer' )
+			);
+		}
+
 		// Render the template.
 		iawmlf_render_template(
 			'admin/reports/link-details.php',
@@ -357,5 +381,82 @@ class Report_Page {
 				'iawmlf_back_url' => wp_get_referer() ?: self::get_page_url(), // phpcs:ignore Universal.Operators.DisallowShortTernary.Found, returns false, so cant use ??
 			)
 		);
+	}
+
+	/**
+	 * Handle the link details form submission.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @return void
+	 */
+	public function handle_link_details_form(): void {
+		// Bail if this is not a link details form submission.
+		if ( ! isset( $_POST['iawmlf_link_details_nonce'] ) ) {
+			return;
+		}
+
+		// Verify the nonce.
+		check_admin_referer( 'iawmlf_link_details', 'iawmlf_link_details_nonce' );
+
+		// Get and validate the link ID.
+		$link_id = isset( $_POST['iawmlf_link_id'] ) ? absint( wp_unslash( $_POST['iawmlf_link_id'] ) ) : 0;
+		if ( 0 === $link_id ) {
+			return;
+		}
+
+		// Get the link from the repository.
+		$link = $this->link_repository->find_by_id( $link_id );
+		if ( ! $link ) {
+			return;
+		}
+
+		// Determine the exclusion state from the checkbox.
+		$exclude = isset( $_POST['iawmlf_exclude_link'] );
+
+		if ( $exclude ) {
+			$link->set_excluded( true );
+
+			// Set message if not already set.
+			if ( '' === $link->get_message() ) {
+				$user = wp_get_current_user();
+				$link->set_message(
+					sprintf(
+						'User Requested To Exclude (%1$s on %2$s)',
+						$user->user_login,
+						wp_date( get_option( 'date_format' ) )
+					)
+				);
+			}
+		} else {
+			$link->set_excluded( false );
+
+			// Clear message only if it was set by a user exclusion request.
+			if ( 0 === strpos( $link->get_message(), 'User Requested To Exclude' ) ) {
+				$link->set_message( '' );
+			}
+		}
+
+		// Allow 3rd parties to hook in and modify the link before saving.
+		$link = apply_filters( 'iawmlf_before_saving_link_details', $link );
+
+		// Save the link.
+		$this->link_repository->upsert( $link );
+
+		// Allow 3rd parties to hook in and modify the redirect param after saving, for showing custom notices.
+		$has_updated = (bool) apply_filters( 'iawmlf_link_details_updated_redirect_param', '1', $link );
+
+		// Redirect back to the link details page, with a success notice if updated.
+		$redirect_args = array(
+			'page'           => self::SLUG,
+			'iawmlf_link_id' => $link_id,
+		);
+		if ( $has_updated ) {
+			$redirect_args['iawmlf_updated'] = '1';
+		}
+		$redirect_url = add_query_arg( $redirect_args, admin_url( 'admin.php' ) );
+
+		wp_safe_redirect( $redirect_url );
+		exit;
 	}
 }

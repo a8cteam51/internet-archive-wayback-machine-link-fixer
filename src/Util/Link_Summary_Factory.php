@@ -177,8 +177,22 @@ class Link_Summary_Factory {
 	 */
 	public function get_current_message(): string {
 		$message = $this->link->get_message();
-		// If the message doesnt start with error:, return the original message.
+		// If the message doesnt start with error:, return the original message (translated at display time).
 		if ( 0 !== strpos( $message, 'error:' ) ) {
+			if ( 0 === strpos( $message, 'User Requested To Exclude' ) ) {
+				return preg_replace_callback(
+					'/^User Requested To Exclude \((.+) on (.+)\)$/',
+					static function ( array $matches ): string {
+						return sprintf(
+							/* translators: 1: The user login, 2: The date. */
+							__( 'User Requested To Exclude (%1$s on %2$s)', 'internet-archive-wayback-machine-link-fixer' ),
+							$matches[1],
+							$matches[2]
+						);
+					},
+					$message
+				);
+			}
 			return $message;
 		}
 
