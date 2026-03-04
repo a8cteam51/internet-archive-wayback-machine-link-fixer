@@ -365,7 +365,7 @@ class Report_Page {
 			return;
 		}
 		// Show success notice if we just updated the link.
-		if ( isset( $_GET['iawmlf_updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Redirect param, no nonce possible.
+		if ( ! empty( $_GET['iawmlf_updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Redirect param, no nonce possible.
 			printf(
 				'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
 				esc_html__( 'Link updated successfully.', 'internet-archive-wayback-machine-link-fixer' )
