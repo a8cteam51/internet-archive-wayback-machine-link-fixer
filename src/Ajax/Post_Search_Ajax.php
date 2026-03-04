@@ -107,22 +107,23 @@ class Post_Search_Ajax {
 			}
 		}
 
-		// Search by title and slug using WP_Query with a posts_where filter.
+		// Search by title and slug using WP_Query with a scoped posts_where filter.
 		$where_filter = $this->get_title_slug_where_filter( $search );
-		add_filter( 'posts_where', $where_filter );
+		add_filter( 'posts_where', $where_filter, 10, 2 );
 
 		$search_query = new \WP_Query(
 			array(
-				'post_type'        => $post_types,
-				'post_status'      => 'publish',
-				'posts_per_page'   => -1,
-				'orderby'          => 'title',
-				'order'            => 'ASC',
-				'suppress_filters' => false,
+				'post_type'                => $post_types,
+				'post_status'              => 'publish',
+				'posts_per_page'           => -1,
+				'orderby'                  => 'title',
+				'order'                    => 'ASC',
+				'suppress_filters'         => false,
+				'iawmlf_title_slug_search' => true,
 			)
 		);
 
-		remove_filter( 'posts_where', $where_filter );
+		remove_filter( 'posts_where', $where_filter, 10 );
 
 		foreach ( $search_query->posts as $post ) {
 			if ( ! in_array( $post->ID, $found_ids, true ) ) {
@@ -142,7 +143,11 @@ class Post_Search_Ajax {
 	 * @return callable
 	 */
 	private function get_title_slug_where_filter( string $search ): callable {
-		return static function ( string $where ) use ( $search ): string {
+		return static function ( string $where, \WP_Query $query ) use ( $search ): string {
+			if ( ! $query->get( 'iawmlf_title_slug_search' ) ) {
+				return $where;
+			}
+
 			global $wpdb;
 			$like   = '%' . $wpdb->esc_like( $search ) . '%';
 			$where .= $wpdb->prepare(
