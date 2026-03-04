@@ -446,15 +446,15 @@ class Report_Page {
 		// Allow 3rd parties to hook in and modify the redirect param after saving, for showing custom notices.
 		$has_updated = (bool) apply_filters( 'iawmlf_link_details_updated_redirect_param', '1', $link );
 
-		// Redirect back to the link details page with a success notice.
-		$redirect_url = add_query_arg(
-			array(
-				'page'           => self::SLUG,
-				'iawmlf_link_id' => $link_id,
-				'iawmlf_updated' => $has_updated ? '1' : '',
-			),
-			admin_url( 'admin.php' )
+		// Redirect back to the link details page, with a success notice if updated.
+		$redirect_args = array(
+			'page'           => self::SLUG,
+			'iawmlf_link_id' => $link_id,
 		);
+		if ( $has_updated ) {
+			$redirect_args['iawmlf_updated'] = '1';
+		}
+		$redirect_url = add_query_arg( $redirect_args, admin_url( 'admin.php' ) );
 
 		wp_safe_redirect( $redirect_url );
 		exit;
