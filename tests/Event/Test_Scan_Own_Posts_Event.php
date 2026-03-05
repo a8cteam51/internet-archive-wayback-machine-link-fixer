@@ -38,6 +38,7 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 		\remove_all_filters( 'iawmlf_own_content_allow_post' );
 		\remove_all_filters( 'iawmlf_routinely_update_wayback_machine' );
 		\remove_all_filters( 'iawmlf_routinely_update_wayback_machine_interval' );
+		\remove_all_filters( 'iawmlf_auto_archiver_excluded_posts' );
 
 		// Clear the clients.
 		$this->clear_clients();
