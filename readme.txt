@@ -3,7 +3,7 @@ Contributors: waybackmachineplugin, wpspecialprojects, cagrimmett, glynnquelch
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.3.6-RC1
+Stable tag: 1.3.6-RC2
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -117,6 +117,7 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 == Changelog ==
 
 = 1.3.6 =
+* Allows posts to be selected to be excluded from link fixing and/or auto archiving.
 * Improves cleanup of passed attempts to create and verify snapshots
 * Adds an Archive.org donation notice.
 * Improves translatable strings for betting internationalisation.
