@@ -67,6 +67,7 @@ class Settings {
 	public const ALLOWED_OWN_CONTENT_POST_TYPES            = self::SETTINGS_PREFIX . 'allowed_own_content_post_types';
 	public const ROUTINELY_UPDATE_WAYBACK_MACHINE          = self::SETTINGS_PREFIX . 'routinely_update_wayback_machine';
 	public const ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL = self::SETTINGS_PREFIX . 'routinely_update_wayback_machine_interval';
+	public const AUTO_ARCHIVER_EXCLUDED_POSTS              = self::SETTINGS_PREFIX . 'auto_archiver_excluded_posts';
 
 	/**
 	 * Gets the link table name.
@@ -172,6 +173,19 @@ class Settings {
 	public static function get_link_fixer_excluded_posts(): array {
 		$post_ids = array_map( 'absint', (array) get_option( self::LINK_FIXER_EXCLUDED_POSTS, array() ) );
 		$post_ids = (array) apply_filters( 'iawmlf_link_fixer_excluded_posts', array_filter( $post_ids ) );
+		return array_filter( array_map( 'absint', $post_ids ) );
+	}
+
+	/**
+	 * Get the array of excluded post IDs for the auto archiver.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return int[]
+	 */
+	public static function get_auto_archiver_excluded_posts(): array {
+		$post_ids = array_map( 'absint', (array) get_option( self::AUTO_ARCHIVER_EXCLUDED_POSTS, array() ) );
+		$post_ids = (array) apply_filters( 'iawmlf_auto_archiver_excluded_posts', array_filter( $post_ids ) );
 		return array_filter( array_map( 'absint', $post_ids ) );
 	}
 
@@ -610,6 +624,7 @@ class Settings {
 		delete_option( self::ALLOWED_OWN_CONTENT_POST_TYPES );
 		delete_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE );
 		delete_option( self::ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL );
+		delete_option( self::AUTO_ARCHIVER_EXCLUDED_POSTS );
 		delete_option( self::POST_ACTIVATION_ONBOARDING_KEY );
 		delete_option( self::MINIMUM_CHECKS_BEFORE_BROKEN );
 		delete_option( self::LINK_CHECK_DURATION_IN_DAYS );

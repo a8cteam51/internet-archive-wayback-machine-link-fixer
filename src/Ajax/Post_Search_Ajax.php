@@ -64,10 +64,20 @@ class Post_Search_Ajax {
 			$this->send_error( $e->getMessage(), 403 );
 		}
 
-		$search = sanitize_text_field( wp_unslash( $_POST['search'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, Checked above.
+		$search  = sanitize_text_field( wp_unslash( $_POST['search'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, Checked above.
+		$context = isset( $_POST['context'] ) ? sanitize_text_field( wp_unslash( $_POST['context'] ) ) : 'link_fixer'; // phpcs:ignore WordPress.Security.NonceVerification.Missing, Checked above.
+
+		// Get the post types and excluded posts based on the context.
+		if ( 'auto_archiver' === $context ) {
+			$post_types   = Settings::own_link_allowed_post_types();
+			$excluded_ids = Settings::get_auto_archiver_excluded_posts();
+		} else {
+			$post_types   = Settings::get_allowed_post_types();
+			$excluded_ids = Settings::get_link_fixer_excluded_posts();
+		}
 
 		// Get the results.
-		$results = $this->search_posts( $search );
+		$results = $this->search_posts( $search, $post_types, $excluded_ids );
 
 		$this->send_success( $results );
 	}
@@ -77,14 +87,15 @@ class Post_Search_Ajax {
 	 *
 	 * Uses WP_Query for proper caching and WordPress compatibility.
 	 *
-	 * @param string $search The search term.
+	 * @param string   $search       The search term.
+	 * @param string[] $post_types   The post types to search within.
+	 * @param int[]    $excluded_ids Post IDs to exclude from results.
 	 *
 	 * @return array
 	 */
-	private function search_posts( string $search ): array {
-		$post_types = Settings::get_allowed_post_types();
-		$found_ids  = array();
-		$results    = array();
+	private function search_posts( string $search, array $post_types, array $excluded_ids = array() ): array {
+		$found_ids = array();
+		$results   = array();
 
 		// If numeric, try exact ID match first.
 		if ( is_numeric( $search ) ) {
@@ -96,6 +107,7 @@ class Post_Search_Ajax {
 						'post_type'      => $post_types,
 						'post_status'    => 'publish',
 						'posts_per_page' => 1,
+						'post__not_in'   => $excluded_ids,
 					)
 				);
 
@@ -120,6 +132,7 @@ class Post_Search_Ajax {
 				'order'                    => 'ASC',
 				'suppress_filters'         => false,
 				'iawmlf_title_slug_search' => true,
+				'post__not_in'             => $excluded_ids,
 			)
 		);
 

@@ -153,12 +153,13 @@ class Settings_Page {
 			self::PAGE_SLUG,
 			'IawmlfSettings',
 			array(
-				'newExcludedTemplate'     => $this->render_excluded_url( '{newUrl}', '{newIndex}' ),
-				'newExcludedPostTemplate' => $this->render_excluded_post_template(),
-				'environment'             => Environmental::is_production() ? 'production' : 'development',
-				'ajaxUrl'                 => admin_url( 'admin-ajax.php' ),
-				'dismissDonationCtaNonce' => wp_create_nonce( 'iawmlf_dismiss_donation_cta' ),
-				'postSearchNonce'         => wp_create_nonce( 'iawmlf_post_search' ),
+				'newExcludedTemplate'             => $this->render_excluded_url( '{newUrl}', '{newIndex}' ),
+				'newExcludedPostTemplate'         => $this->render_excluded_post_template(),
+				'newExcludedArchiverPostTemplate' => $this->render_excluded_archiver_post_template(),
+				'environment'                     => Environmental::is_production() ? 'production' : 'development',
+				'ajaxUrl'                         => admin_url( 'admin-ajax.php' ),
+				'dismissDonationCtaNonce'         => wp_create_nonce( 'iawmlf_dismiss_donation_cta' ),
+				'postSearchNonce'                 => wp_create_nonce( 'iawmlf_post_search' ),
 			)
 		);
 
@@ -492,6 +493,25 @@ class Settings_Page {
 				),
 			)
 		);
+
+		register_setting(
+			self::PAGE_SLUG,
+			Settings::AUTO_ARCHIVER_EXCLUDED_POSTS,
+			array(
+				'type'              => 'array',
+				'sanitize_callback' => fn( $value ): array => array_map( 'absint', (array) $value ),
+				'default'           => array(),
+				'show_in_rest'      => array(
+					'name'   => Settings::AUTO_ARCHIVER_EXCLUDED_POSTS,
+					'schema' => array(
+						'type'  => 'array',
+						'items' => array(
+							'type' => 'integer',
+						),
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -704,6 +724,15 @@ class Settings_Page {
 			Settings::ALLOWED_OWN_CONTENT_POST_TYPES,
 			__( 'Allowed Post Types', 'internet-archive-wayback-machine-link-fixer' ),
 			array( $this, 'render_archiver_post_types_field' ),
+			self::PAGE_SLUG,
+			self::GROUP_AUTO_ARCHIVER,
+			array( 'class' => Settings::add_own_links() ? 'iawmlf_toggle_setting__auto_archiver' : 'iawmlf_toggle_setting__auto_archiver hidden' )
+		);
+
+		add_settings_field(
+			Settings::AUTO_ARCHIVER_EXCLUDED_POSTS,
+			__( 'Post Exclusions', 'internet-archive-wayback-machine-link-fixer' ),
+			array( $this, 'render_auto_archiver_post_exclusions_field' ),
 			self::PAGE_SLUG,
 			self::GROUP_AUTO_ARCHIVER,
 			array( 'class' => Settings::add_own_links() ? 'iawmlf_toggle_setting__auto_archiver' : 'iawmlf_toggle_setting__auto_archiver hidden' )
@@ -1074,6 +1103,129 @@ class Settings_Page {
 				<button type="button" class="button button-secondary iawmlf-exclusion-list__remove" data-group="link_fixer">%s</button>
 			</div>',
 			esc_attr( Settings::LINK_FIXER_EXCLUDED_POSTS ),
+			esc_html__( 'Remove', 'internet-archive-wayback-machine-link-fixer' )
+		);
+	}
+
+	/**
+	 * Render the auto archiver post exclusions field.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return void
+	 */
+	public function render_auto_archiver_post_exclusions_field(): void {
+		$post_ids = Settings::get_auto_archiver_excluded_posts();
+		?>
+		<p>
+			<?php esc_html_e( 'Search for posts to exclude from auto archiving. Excluded posts will not be submitted to the Wayback Machine when created or updated.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		</p>
+		<div id="iawmlf_excluded_archiver_posts" class="iawmlf-exclusion-list">
+			<div class="iawmlf-exclusion-list__search">
+				<div class="iawmlf-post-search">
+					<input
+						type="text"
+						class="iawmlf-post-search__input"
+						placeholder="<?php esc_attr_e( 'Search by post title, slug, or ID...', 'internet-archive-wayback-machine-link-fixer' ); ?>"
+						autocomplete="off"
+						data-group="auto_archiver"
+					/>
+					<div class="iawmlf-post-search__dropdown" style="display:none;"></div>
+				</div>
+			</div>
+
+			<div class="iawmlf-exclusion-list__empty" style="display: <?php echo empty( $post_ids ) ? 'block' : 'none'; ?>;">
+				<p>
+					<?php esc_html_e( 'No post exclusions found.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+				</p>
+			</div>
+
+			<?php
+			foreach ( $post_ids as $index => $post_id ) {
+				$post            = get_post( $post_id );
+				$post_type_obj   = $post ? get_post_type_object( $post->post_type ) : null;
+				$post_type_label = $post_type_obj ? $post_type_obj->labels->singular_name : __( 'Post', 'internet-archive-wayback-machine-link-fixer' );
+				echo wp_kses(
+					$this->render_excluded_archiver_post(
+						$post_id,
+						$post ? $post->post_title : __( 'Unknown Post', 'internet-archive-wayback-machine-link-fixer' ),
+						$post_type_label,
+						(string) $index
+					),
+					array(
+						'div'    => array(
+							'class'        => array(),
+							'data-post-id' => array(),
+							'data-index'   => array(),
+						),
+						'input'  => array(
+							'type'  => array(),
+							'name'  => array(),
+							'value' => array(),
+						),
+						'span'   => array(
+							'class' => array(),
+						),
+						'small'  => array(),
+						'button' => array(
+							'type'       => array(),
+							'class'      => array(),
+							'data-group' => array(),
+						),
+					)
+				);
+			}
+			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders a row for an excluded auto archiver post.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param integer $post_id    The post ID.
+	 * @param string  $post_title The post title.
+	 * @param string  $post_type  The post type label.
+	 * @param string  $index      The index of the row.
+	 *
+	 * @return string
+	 */
+	private function render_excluded_archiver_post( int $post_id, string $post_title, string $post_type, string $index ): string {
+		return sprintf(
+			'<div class="iawmlf-exclusion-list__item" data-post-id="%d" data-index="%s">
+				<input type="hidden" name="%s[]" value="%d" />
+				<span class="iawmlf-exclusion-list__item-title"><small>(%d|%s)</small> %s</span>
+				<button type="button" class="button button-secondary iawmlf-exclusion-list__remove" data-group="auto_archiver">%s</button>
+			</div>',
+			absint( $post_id ),
+			esc_attr( $index ),
+			esc_attr( Settings::AUTO_ARCHIVER_EXCLUDED_POSTS ),
+			absint( $post_id ),
+			absint( $post_id ),
+			esc_html( $post_type ),
+			esc_html( $post_title ),
+			esc_html__( 'Remove', 'internet-archive-wayback-machine-link-fixer' )
+		);
+	}
+
+	/**
+	 * Renders the template for a new excluded auto archiver post row.
+	 * Uses placeholders that JS will replace when adding items.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return string
+	 */
+	private function render_excluded_archiver_post_template(): string {
+		return sprintf(
+			'<div class="iawmlf-exclusion-list__item" data-post-id="{postId}" data-index="{newIndex}">
+				<input type="hidden" name="%s[]" value="{postId}" />
+				<span class="iawmlf-exclusion-list__item-title"><small>({postId}|{postType})</small> {postTitle}</span>
+				<button type="button" class="button button-secondary iawmlf-exclusion-list__remove" data-group="auto_archiver">%s</button>
+			</div>',
+			esc_attr( Settings::AUTO_ARCHIVER_EXCLUDED_POSTS ),
 			esc_html__( 'Remove', 'internet-archive-wayback-machine-link-fixer' )
 		);
 	}

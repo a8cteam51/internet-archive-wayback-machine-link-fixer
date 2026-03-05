@@ -145,6 +145,12 @@ Enable this option to routinely update your posts in the Wayback Machine. This e
 
 Select which post types should be automatically archived when they are created or updated. Only the selected types will trigger the Auto Archiver on save.
 
+#### Post Exclusions
+
+![Auto Archive Post Exclusions](./_docs/settings--auto-archive-post-exclusions.png)
+
+Search for specific posts to exclude from auto archiving. Excluded posts will not be submitted to the Wayback Machine when created or updated. Posts can also be excluded programmatically using the `iawmlf_auto_archiver_excluded_posts` filter.
+
 
 ## Dashboard Widget
 
@@ -643,6 +649,18 @@ add_filter( 'iawmlf_link_fixer_excluded_posts', function( array $post_ids ): arr
 });
 ```
 
+#### `iawmlf_auto_archiver_excluded_posts`
+
+This filter allows you to programmatically add post IDs to the auto archiver exclusion list. Excluded posts will not be submitted to the Wayback Machine when created or updated.
+
+```php
+add_filter( 'iawmlf_auto_archiver_excluded_posts', function( array $post_ids ): array {
+   $post_ids[] = 123;
+   $post_ids[] = 456;
+   return $post_ids;
+});
+```
+
 #### `iawmlf_is_production_environment`
 
 This filter allows you to override the production environment detection. By default, the plugin uses WordPress's `wp_get_environment_type()` function to determine if the site is running in a production environment. You can use this filter to customize this behavior for your specific setup.
@@ -945,15 +963,15 @@ add_filter( 'iawmlf_exclude_link_from_post', function( bool $exclude, Link $link
 
 #### `iawmlf_own_content_allow_post`
 
-This filter allows a final decision to be made on if a post should be added to the Wayback Machine. The default is to allow all posts.
+This filter allows a final decision to be made on if a post should be added to the Wayback Machine. The default value reflects the auto archiver exclusion list — posts in the exclusion list default to `false`, all others default to `true`.
 
 ```php
-add_filter( 'iawmlf_own_content_allow_post', function( bool $allow, int $post_id ): bool {
-	if ( get_post_meta( $post_id, 'do_not_archive', true ) ) {
+add_filter( 'iawmlf_own_content_allow_post', function( bool $allow, \WP_Post $post ): bool {
+	if ( get_post_meta( $post->ID, 'do_not_archive', true ) ) {
 		return false;
 	}
 	return $allow;
-});
+}, 10, 2 );
 ```
 
 #### `iawmlf_link_checker_url_params`

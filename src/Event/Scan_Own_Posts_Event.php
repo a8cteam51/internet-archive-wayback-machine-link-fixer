@@ -107,6 +107,7 @@ class Scan_Own_Posts_Event {
 			: $allowed_delay * DAY_IN_SECONDS;
 
 		$allowed_post_types = Settings::own_link_allowed_post_types();
+		$excluded_posts     = Settings::get_auto_archiver_excluded_posts();
 		$posts_per_call     = absint( apply_filters( 'iawmlf_scan_own_posts_per_call', 10 ) );
 
 		$args = array(
@@ -129,6 +130,11 @@ class Scan_Own_Posts_Event {
 				),
 			),
 		);
+
+		// Exclude any posts that have been marked as excluded.
+		if ( ! empty( $excluded_posts ) ) {
+			$args['post__not_in'] = $excluded_posts;
+		}
 
 		// Get all posts that are in the defined post types and have not been checked since
 		$posts = new WP_Query( $args );

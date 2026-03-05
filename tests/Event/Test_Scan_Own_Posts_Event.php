@@ -175,4 +175,40 @@ class Test_Scan_Own_Posts_Event extends \WP_UnitTestCase {
 	}
 
 
+	/**
+	 * @testdox Posts excluded via the auto archiver excluded posts setting should not be scanned.
+	 *
+	 * @return void
+	 */
+	public function test_excluded_posts_are_not_scanned(): void {
+		// Allow scanning own posts.
+		\add_filter( 'iawmlf_own_content_allow_post', '__return_true' );
+		\add_filter( 'iawmlf_routinely_update_wayback_machine', '__return_true' );
+
+		// Create 2 posts.
+		$post_id_1 = $this->factory->post->create( array( 'post_type' => 'post' ) );
+		$post_id_2 = $this->factory->post->create( array( 'post_type' => 'post' ) );
+
+		// Exclude post 1 via the filter.
+		\add_filter(
+			'iawmlf_auto_archiver_excluded_posts',
+			function () use ( $post_id_1 ) {
+				return array( $post_id_1 );
+			}
+		);
+
+		// Run the event.
+		$event = new Scan_Own_Posts_Event();
+		$event();
+
+		// Get all pending action scheduler actions.
+		$actions = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions WHERE status='pending'" );
+
+		// Should be 1 added action (only post 2).
+		$this->assertCount( 1, $actions );
+
+		// Check that the action is for post 2.
+		$this->assertSame( $post_id_2, json_decode( $actions[0]->args )->post_id );
+	}
+
 }

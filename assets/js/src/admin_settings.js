@@ -86,7 +86,7 @@
 			let html = template;
 			replacements['{newIndex}'] = getNextIndex();
 			Object.keys(replacements).forEach(function (key) {
-				html = html.replace(new RegExp(key.replace(/[{}]/g, '\\$&'), 'g'), escapeHTML(replacements[key]));
+				html = html.replace(new RegExp(key.replace(/[{}]/g, '\\$&'), 'g'), escapeHTML(String(replacements[key])));
 			});
 			container.insertAdjacentHTML('beforeend', html);
 			checkEmpty();
@@ -125,6 +125,7 @@
 	 * @param {string}       config.ajaxUrl  - The WordPress AJAX URL.
 	 * @param {string}       config.nonce    - The nonce for the AJAX request.
 	 * @param {string}       config.action   - The AJAX action name.
+	 * @param {string}       [config.context]   - Optional context identifier sent with AJAX request (e.g. 'link_fixer', 'auto_archiver').
 	 * @param {Function}     config.onSelect    - Callback when a result is selected. Receives the result object.
 	 * @param {Function}     [config.isExcluded] - Optional callback to filter out results. Receives result, returns true to exclude.
 	 *
@@ -136,6 +137,7 @@
 		const ajaxUrl  = config.ajaxUrl;
 		const nonce    = config.nonce;
 		const action   = config.action;
+		const context  = config.context || '';
 		const onSelect   = config.onSelect;
 		const isExcluded = config.isExcluded || function () { return false; };
 		const debounceMs = 300;
@@ -212,7 +214,7 @@
 			results.forEach(function (result, i) {
 				html += '<div class="iawmlf-post-search__item" data-index="' + i + '">';
 				html += '<div class="iawmlf-post-search__item-title">' + highlight(escapeHTML(result.title), search) + '</div>';
-				html += '<div class="iawmlf-post-search__item-meta">' + escapeHTML(result.post_type) + ' &middot; ID: ' + escapeHTML(result.id) + ' &middot; /' + highlight(escapeHTML(result.slug), search) + '</div>';
+				html += '<div class="iawmlf-post-search__item-meta">' + escapeHTML(result.post_type) + ' &middot; ID: ' + escapeHTML(String(result.id)) + ' &middot; /' + highlight(escapeHTML(result.slug), search) + '</div>';
 				html += '</div>';
 			});
 
@@ -253,6 +255,9 @@
 			formData.append('action', action);
 			formData.append('nonce', nonce);
 			formData.append('search', search);
+			if (context) {
+				formData.append('context', context);
+			}
 
 			fetch(ajaxUrl, {
 				method: 'POST',
@@ -430,13 +435,51 @@
 				ajaxUrl:  IawmlfSettings.ajaxUrl,
 				nonce:    IawmlfSettings.postSearchNonce,
 				action:   'iawmlf_post_search',
+				context:  'link_fixer',
 				isExcluded: function (result) {
 					return postExclusionList.hasItem('post-id', result.id.toString());
 				},
 				onSelect: function (result) {
 					if (!postExclusionList.hasItem('post-id', result.id.toString())) {
 						postExclusionList.addItem({
-							'{postId}':    result.id,
+							'{postId}':    String(result.id),
+							'{postTitle}': result.title,
+							'{postType}': result.post_type,
+						});
+					}
+				},
+			});
+		}
+
+		// --- Auto Archiver Post Exclusions (using ExclusionList) ---
+		const archiverExclusionContainer = document.getElementById('iawmlf_excluded_archiver_posts');
+		const archiverExclusionList = ExclusionList({
+			container:     archiverExclusionContainer,
+			emptyMessage:  archiverExclusionContainer ? archiverExclusionContainer.querySelector('.iawmlf-exclusion-list__empty') : null,
+			template:      IawmlfSettings.newExcludedArchiverPostTemplate,
+			removeClass:   'iawmlf-exclusion-list__remove',
+			itemClass:     'iawmlf-exclusion-list__item',
+			indexSelector: '[data-index]',
+		});
+
+		// AJAX post search for adding auto archiver post exclusions.
+		const ARCHIVER_SEARCH_INPUT = archiverExclusionContainer ? archiverExclusionContainer.querySelector('.iawmlf-post-search__input') : null;
+		const ARCHIVER_SEARCH_DROPDOWN = archiverExclusionContainer ? archiverExclusionContainer.querySelector('.iawmlf-post-search__dropdown') : null;
+		if (ARCHIVER_SEARCH_INPUT && ARCHIVER_SEARCH_DROPDOWN && archiverExclusionList) {
+			PostSearchDropdown({
+				input:    ARCHIVER_SEARCH_INPUT,
+				dropdown: ARCHIVER_SEARCH_DROPDOWN,
+				ajaxUrl:  IawmlfSettings.ajaxUrl,
+				nonce:    IawmlfSettings.postSearchNonce,
+				action:   'iawmlf_post_search',
+				context:  'auto_archiver',
+				isExcluded: function (result) {
+					return archiverExclusionList.hasItem('post-id', result.id.toString());
+				},
+				onSelect: function (result) {
+					if (!archiverExclusionList.hasItem('post-id', result.id.toString())) {
+						archiverExclusionList.addItem({
+							'{postId}':    String(result.id),
 							'{postTitle}': result.title,
 							'{postType}': result.post_type,
 						});
