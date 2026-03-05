@@ -153,7 +153,8 @@ class WP_Post_Controller {
 			throw new Exception( 'Invalid post id' );
 		}
 
-		$can_add = apply_filters( 'iawmlf_own_content_allow_post', true, $post );
+		$is_excluded = in_array( $post_id, Settings::get_auto_archiver_excluded_posts(), true );
+		$can_add     = apply_filters( 'iawmlf_own_content_allow_post', ! $is_excluded, $post );
 
 		if ( $can_add ) {
 			Process_Local_Post_Event::add_to_queue_with_delay( $post_id );

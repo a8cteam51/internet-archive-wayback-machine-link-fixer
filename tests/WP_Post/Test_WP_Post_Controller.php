@@ -672,4 +672,79 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 
 		$this->assertNotContains( 'iawm-link-fixer-front-link-checker', $enqueued_scripts );
 	}
+
+	/**
+	 * @testdox A post in the auto archiver excluded posts list should not be added to the wayback machine.
+	 *
+	 * @return void
+	 */
+	public function test_excluded_auto_archiver_post_not_added_to_wayback_machine(): void {
+		// Allow posts to be added.
+		add_filter( 'iawmlf_add_own_content_to_wayback_machine', '__return_false' );
+		add_filter(			'iawmlf_own_content_post_types',			fn () => array( 'post' )			);
+
+		// Create 2 posts.
+		$post_allowed  = self::factory()->post->create_and_get( array( 'post_status' => 'publish' ) );
+		$post_excluded = self::factory()->post->create_and_get( array( 'post_status' => 'publish' ) );
+
+		// Add the second post to the auto archiver exclusion list.
+		\update_option( Settings::AUTO_ARCHIVER_EXCLUDED_POSTS, array( $post_excluded->ID ) );
+
+		$handler = new WP_Post_Controller();
+		$handler->add_own_post_to_wayback_machine( $post_allowed->ID );
+		$handler->add_own_post_to_wayback_machine( $post_excluded->ID );
+
+		// Get all pending action scheduler actions.
+		global $wpdb;
+		$actions = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}actionscheduler_actions WHERE status='pending'" );
+
+		// Should be 1 action (only the allowed post).
+		$this->assertCount( 1, $actions );
+		$this->assertSame( $post_allowed->ID, json_decode( $actions[0]->args )->post_id );
+
+		// Clean up.
+		\delete_option( Settings::AUTO_ARCHIVER_EXCLUDED_POSTS );
+	}
+
+	/**
+	 * @testdox When a post is saved via on_save_post_process_own_post and is in the auto archiver exclusion list, it should not be queued.
+	 *
+	 * @return void
+	 */
+	public function test_on_save_excluded_auto_archiver_post_not_queued(): void {
+		// Enable own content submissions.
+		add_filter( 'iawmlf_add_own_content_to_wayback_machine', '__return_true' );
+		add_filter(
+			'iawmlf_own_content_post_types',
+			fn () => array( 'post' )
+		);
+
+		// Create 2 published posts — save_post fires and both should be queued.
+		$post_allowed  = self::factory()->post->create_and_get( array( 'post_status' => 'publish' ) );
+		$post_excluded = self::factory()->post->create_and_get( array( 'post_status' => 'publish' ) );
+
+		// Assert both posts were queued on creation.
+		global $wpdb;
+		$actions = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}actionscheduler_actions" );
+		$this->assertCount( 2, $actions, 'Both posts should be queued on initial save.' );
+
+		// Now add the second post to the exclusion list.
+		\update_option( Settings::AUTO_ARCHIVER_EXCLUDED_POSTS, array( $post_excluded->ID ) );
+
+		// Re-save both posts — save_post hook fires on_save_post_process_own_post naturally.
+		wp_update_post( array( 'ID' => $post_allowed->ID, 'post_title' => 'Updated allowed' ) );
+		wp_update_post( array( 'ID' => $post_excluded->ID, 'post_title' => 'Updated excluded' ) );
+
+		// The allowed post's original action was cancelled by ensure_single_event and a new one added.
+		// The excluded post's original action is still pending (untouched).
+		// So we expect: 2 pending (excluded original + allowed new), 1 cancelled (allowed original).
+		$pending = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}actionscheduler_actions WHERE status='pending'" );
+		$this->assertCount( 2, $pending, 'Should have 2 pending actions after re-save.' );
+
+		$cancelled = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}actionscheduler_actions WHERE status='canceled'" );
+		$this->assertCount( 1, $cancelled, 'The allowed post original action should be cancelled by ensure_single_event.' );
+
+		// Clean up.
+		\delete_option( Settings::AUTO_ARCHIVER_EXCLUDED_POSTS );
+	}
 }
