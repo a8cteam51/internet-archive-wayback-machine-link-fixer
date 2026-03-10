@@ -540,7 +540,7 @@ class Settings_Page {
 				printf(
 					/* translators: 1: Opening sentence, 2: URL to the Internet Archive S3 keys page, 3: Closing sentence. */
 					'<p class="description">%1$s <a href="%2$s" target="_blank">%3$s</a></p>',
-					esc_html__( 'To increase your daily link processing limit, you can enter your free Archive.org API credentials. Visit', 'internet-archive-wayback-machine-link-fixer' ),
+					esc_html__( 'To increase your daily snapshot limit from 4,000 to 30,000, you can enter your free Archive.org API credentials. Visit', 'internet-archive-wayback-machine-link-fixer' ),
 					esc_url( 'https://archive.org/account/s3.php' ),
 					esc_html__( 'archive.org/account/s3.php to generate your Access Key and Secret Key.', 'internet-archive-wayback-machine-link-fixer' )
 				);
