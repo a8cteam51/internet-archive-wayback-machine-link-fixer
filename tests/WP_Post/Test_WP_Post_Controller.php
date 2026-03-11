@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Processor;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Exclusion;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller;
 
@@ -616,6 +617,133 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Clean up.
 		unset( $GLOBALS['post'] );
 		\delete_option( Settings::LINK_FIXER_EXCLUDED_POSTS );
+	}
+
+	/**
+	 * @testdox When a link matches a global exclusion pattern, it should not appear in the render_block data attribute output.
+	 *
+	 * @return void
+	 */
+	public function test_excluded_link_not_included_in_render_block_data(): void {
+		// Set the option to render the HTML link output.
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		// Add a global exclusion pattern that matches one of the links.
+		update_option( Settings::LINK_EXCLUSIONS, array( '*excluded-domain.com*' ) );
+
+		// Reset the Link_Exclusion static cache so it picks up the new option.
+		$reflection = new \ReflectionClass( Link_Exclusion::class );
+		$property   = $reflection->getProperty( 'exclusions' );
+		$property->setAccessible( true );
+		$property->setValue( null, null );
+
+		$post_id = self::factory()->post->create();
+
+		// Add content with two links — one that will be excluded, one that won't.
+		$content = 'Link one <a href="https://excluded-domain.com/page">excluded</a> and link two <a href="https://allowed-domain.com/page">allowed</a>';
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+				'post_type'    => 'post',
+			)
+		);
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		// Render the block.
+		$rendered = do_blocks( $GLOBALS['post']->post_content );
+
+		// The data attribute should be present (we still have one non-excluded link).
+		$this->assertStringContainsString( 'data-iawmlf-post-links', $rendered );
+
+		// Extract the JSON from the data attribute.
+		preg_match( "/data-iawmlf-post-links='([^']*)'/", $rendered, $matches );
+		$this->assertNotEmpty( $matches, 'Should find the data attribute in rendered output.' );
+
+		$links_data = json_decode( html_entity_decode( $matches[1] ), true );
+		$this->assertIsArray( $links_data );
+
+		// Collect all hrefs from the links data.
+		$hrefs = array_column( $links_data, 'href' );
+
+		// The excluded link should NOT be in the data.
+		$this->assertNotContains( 'https://excluded-domain.com/page', $hrefs, 'Excluded link should not appear in render_block data.' );
+
+		// The allowed link SHOULD be in the data.
+		$this->assertContains( 'https://allowed-domain.com/page', $hrefs, 'Non-excluded link should appear in render_block data.' );
+
+		// Clean up.
+		unset( $GLOBALS['post'] );
+		\delete_option( Settings::LINK_EXCLUSIONS );
+
+		// Reset the Link_Exclusion static cache.
+		$property->setValue( null, null );
+	}
+
+	/**
+	 * @testdox When a link matches a global exclusion pattern and another does not, only the non-excluded link should appear in the render_block data attribute output.
+	 *
+	 * @return void
+	 */
+	public function test_excluded_link_filtered_from_render_block_data_with_mixed_links(): void {
+		// Set the option to render the HTML link output.
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		// Add a global exclusion pattern that matches one of the links.
+		update_option( Settings::LINK_EXCLUSIONS, array( '*excluded-domain.com*' ) );
+
+		// Reset the Link_Exclusion static cache so it picks up the new option.
+		$reflection = new \ReflectionClass( Link_Exclusion::class );
+		$property   = $reflection->getProperty( 'exclusions' );
+		$property->setAccessible( true );
+		$property->setValue( null, null );
+
+		$post_id = self::factory()->post->create();
+
+		// Add content with two links — one excluded, one allowed.
+		$content = 'Link one <a href="https://excluded-domain.com/page1">excluded</a> and link two <a href="https://kept-domain.com/page">kept</a>';
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+				'post_type'    => 'post',
+			)
+		);
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		// Render the block.
+		$rendered = do_blocks( $GLOBALS['post']->post_content );
+
+		// The data attribute should be present (we still have one non-excluded link).
+		$this->assertStringContainsString( 'data-iawmlf-post-links', $rendered );
+
+		// Extract the JSON from the data attribute.
+		preg_match( "/data-iawmlf-post-links='([^']*)'/", $rendered, $matches );
+		$this->assertNotEmpty( $matches, 'Should find the data attribute in rendered output.' );
+
+		$links_data = json_decode( html_entity_decode( $matches[1] ), true );
+		$this->assertIsArray( $links_data );
+
+		// Should only have 1 link (the non-excluded one).
+		$this->assertCount( 1, $links_data, 'Only the non-excluded link should be in the data.' );
+
+		// Collect all hrefs from the links data.
+		$hrefs = array_column( $links_data, 'href' );
+
+		// The excluded link should NOT be in the data.
+		$this->assertNotContains( 'https://excluded-domain.com/page1', $hrefs, 'Excluded link should not appear in render_block data.' );
+
+		// The allowed link SHOULD be in the data.
+		$this->assertContains( 'https://kept-domain.com/page', $hrefs, 'Non-excluded link should appear in render_block data.' );
+
+		// Clean up.
+		unset( $GLOBALS['post'] );
+		\delete_option( Settings::LINK_EXCLUSIONS );
+
+		// Reset the Link_Exclusion static cache.
+		$property->setValue( null, null );
 	}
 
 	/**
