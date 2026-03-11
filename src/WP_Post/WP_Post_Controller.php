@@ -306,7 +306,7 @@ class WP_Post_Controller {
 		}
 
 		// Compile the data.
-		$links = $this->link_repository->get_links_for_post( $post_id );
+		$links = $this->link_repository->get_links_for_post( $post_id, true );
 
 		if ( empty( $links ) ) {
 			return $block_content;
