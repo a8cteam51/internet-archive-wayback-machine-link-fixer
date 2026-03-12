@@ -592,15 +592,12 @@ class Link_Repository {
 			$where  = true;
 		}
 
-		// Only add order by and limit for select queries.
-		if ( 'count' !== $mode ) {
-			// Add the order by.
-			$query .= $this->compile_order_by( $order_by );
+		// Add the order by.
+		$query .= $this->compile_order_by( $order_by );
 
-			// Add the limit and offset.
-			$offset = ( $page - 1 ) * $limit;
-			$query .= $this->wpdb->prepare( ' LIMIT %d OFFSET %d', $limit, $offset ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
-		}
+		// Add the limit and offset.
+		$offset = ( $page - 1 ) * $limit;
+		$query .= $this->wpdb->prepare( ' LIMIT %d OFFSET %d', $limit, $offset ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
 
 		return $query;
 	}
