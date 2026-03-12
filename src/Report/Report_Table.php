@@ -1040,8 +1040,12 @@ class Report_Table extends \WP_List_Table {
 	 */
 	public function prepare_items() {
 
+		echo '<script>console.log("prepare_items: start pagination args - mem: ' . round( memory_get_usage() / 1024 / 1024, 2 ) . 'MB");</script>';
+
 		// Set the pagination args.
 		$this->define_pagination_args();
+
+		echo '<script>console.log("prepare_items: end pagination args - mem: ' . round( memory_get_usage() / 1024 / 1024, 2 ) . 'MB");</script>';
 
 		// Set the headers
 		$columns               = $this->get_columns();
@@ -1050,6 +1054,8 @@ class Report_Table extends \WP_List_Table {
 		$primary               = self::COLUMN_LINK_URL;
 		$this->_column_headers = array( $columns, $hidden, $sortable, $primary );
 
+		echo '<script>console.log("prepare_items: start get_links - mem: ' . round( memory_get_usage() / 1024 / 1024, 2 ) . 'MB");</script>';
+
 		// Get the reports.
 		$this->items = $this->get_links(
 			$this->get_links_per_page(),
@@ -1057,6 +1063,8 @@ class Report_Table extends \WP_List_Table {
 			array( $this->get_status_from_url() ),
 			$this->get_search_term()
 		);
+
+		echo '<script>console.log("prepare_items: end get_links (' . count( $this->items ) . ' items) - mem: ' . round( memory_get_usage() / 1024 / 1024, 2 ) . 'MB / peak: ' . round( memory_get_peak_usage() / 1024 / 1024, 2 ) . 'MB");</script>';
 	}
 
 	/**

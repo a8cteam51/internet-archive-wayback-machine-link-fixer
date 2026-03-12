@@ -406,8 +406,9 @@ class Link_Repository {
 		?array $snapshot_process = null,
 		?bool $has_checks = null
 	): array {
-		$rows = $this->perform_query( $limit, $page, $status, $link_ids, $archive_status, $order_by, $search_term, $date, $excluded, $snapshot_process, $has_checks );
-		return array_map( array( $this, 'map_link' ), $rows );
+		$query = $this->build_query( 'select', $limit, $page, $status, $link_ids, $archive_status, $order_by, $search_term, $date, $excluded, $snapshot_process, $has_checks );
+		$rows  = $this->wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
+		return array_map( array( $this, 'map_link' ), $rows ?? array() );
 	}
 
 	/**
@@ -440,12 +441,14 @@ class Link_Repository {
 		?array $snapshot_process = null,
 		?bool $has_checks = null
 	): int {
-		return count( $this->perform_query( $limit, $page, $status, $link_ids, $archive_status, $order_by, $search_term, $date, $excluded, $snapshot_process, $has_checks ) );
+		$query = $this->build_query( 'count', $limit, $page, $status, $link_ids, $archive_status, $order_by, $search_term, $date, $excluded, $snapshot_process, $has_checks );
+		return (int) $this->wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
 	}
 
 	/**
-	 * Performs a link query.
+	 * Builds a SQL query for links.
 	 *
+	 * @param string        $mode             The query mode: 'select' for SELECT *, 'count' for SELECT COUNT(*).
 	 * @param integer       $limit            The limit of links to return.
 	 * @param integer       $page             The page of links to return.
 	 * @param array         $status           The status of the links to return.
@@ -458,9 +461,10 @@ class Link_Repository {
 	 * @param string[]|NULL $snapshot_process The snapshot status of the links to return.
 	 * @param boolean|NULL  $has_checks       Whether to return links with or without checks.
 	 *
-	 * @return stdClass[]
+	 * @return string
 	 */
-	private function perform_query(
+	private function build_query(
+		string $mode = 'select',
 		int $limit = 10,
 		int $page = 1,
 		array $status = array(),
@@ -472,8 +476,8 @@ class Link_Repository {
 		?bool $excluded = null,
 		?array $snapshot_process = null,
 		?bool $has_checks = null
-	): array {
-				// Remove any invalid statuses.
+	): string {
+		// Remove any invalid statuses.
 		$status = array_filter(
 			$status,
 			function ( $status ): bool {
@@ -507,7 +511,9 @@ class Link_Repository {
 		$date = $date ? gmdate( 'Y-m', strtotime( esc_attr( $date ) ) ) : null;
 
 		// Prepare the query.
-		$query = "SELECT * FROM {$this->table_name}";
+		$query = 'count' === $mode
+			? "SELECT COUNT(*) FROM {$this->table_name}"
+			: "SELECT * FROM {$this->table_name}";
 
 		// Where statement has been used.
 		$where = false;
@@ -586,23 +592,19 @@ class Link_Repository {
 			$where  = true;
 		}
 
-		// Add the order by.
-		$query .= $this->compile_order_by( $order_by );
+		// Only add order by and limit for select queries.
+		if ( 'count' !== $mode ) {
+			// Add the order by.
+			$query .= $this->compile_order_by( $order_by );
 
-		// Add the limit and offset.
-		$offset = ( $page - 1 ) * $limit;
-		$query .= $this->wpdb->prepare( ' LIMIT %d OFFSET %d', $limit, $offset ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
-
-		// Get the rows.
-		$rows = $this->wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
-
-		// If no rows, return an empty collection.
-		if ( empty( $rows ) ) {
-			return array();
+			// Add the limit and offset.
+			$offset = ( $page - 1 ) * $limit;
+			$query .= $this->wpdb->prepare( ' LIMIT %d OFFSET %d', $limit, $offset ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
 		}
 
-		return $rows;
+		return $query;
 	}
+
 
 	/**
 	 * Gets the date range from a defined date.
