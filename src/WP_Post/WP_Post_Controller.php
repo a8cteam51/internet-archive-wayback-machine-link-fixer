@@ -17,7 +17,7 @@ use Throwable;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Exclusion;
-use Internet_Archive\Wayback_Machine_Link_Fixer\Ajax\Link_Check_Ajax;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Rest\Link_Check_Rest;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Processor\Post_Processor;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Process_Local_Post_Event;
@@ -256,12 +256,10 @@ class WP_Post_Controller {
 			'iawmlfArchivedLinks',
 			array(
 				'links'           => wp_json_encode( $links ),
-				'linkCheckAjax'   => Link_Check_Ajax::ACTION,
-				'linkCheckNonce'  => wp_create_nonce( Link_Check_Ajax::ACTION ),
+				'linkCheckNonce'  => wp_create_nonce( 'wp_rest' ),
 				'linkDelayInDays' => Settings::get_link_check_duration(),
 				'fixerOption'     => Settings::get_fixer_option(),
-				'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
-
+				'restUrl'         => rest_url( Link_Check_Rest::NAMESPACE . Link_Check_Rest::ROUTE ),
 			)
 		);
 

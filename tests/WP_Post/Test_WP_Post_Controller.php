@@ -245,9 +245,9 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'linkCheckNonce', $data );
 		$this->assertArrayHasKey( 'linkDelayInDays', $data );
-		$this->assertArrayHasKey( 'linkCheckAjax', $data );
+		$this->assertArrayHasKey( 'restUrl', $data );
 		$this->assertArrayHasKey( 'links', $data );
-		$this->assertArrayHasKey( 'ajaxUrl', $data );
+		$this->assertArrayHasKey( 'fixerOption', $data );
 
 		// Check we have 2 links
 		$this->assertCount( 2, json_decode( $data['links'], true ) );
@@ -301,9 +301,8 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'linkCheckNonce', $data );
 		$this->assertArrayHasKey( 'linkDelayInDays', $data );
-		$this->assertArrayHasKey( 'linkCheckAjax', $data );
+		$this->assertArrayHasKey( 'restUrl', $data );
 		$this->assertArrayHasKey( 'links', $data );
-		$this->assertArrayHasKey( 'ajaxUrl', $data );
 		$this->assertArrayHasKey( 'fixerOption', $data );
 
 		// Check we have 0 links
