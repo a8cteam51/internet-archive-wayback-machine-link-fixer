@@ -119,12 +119,12 @@ const getRenderedLinks = () => {
 		});
 	}
 
-	// Look for all divs with '__iawmlf-post-loop-links' class
-	const loopLinks = document.querySelectorAll('.__iawmlf-post-loop-links');
+	// Look for all script tags with '__iawmlf-post-loop-links' class
+	const loopLinks = document.querySelectorAll('script.__iawmlf-post-loop-links');
 
-	// Get the links from data-iawmlf-post-links attribute
+	// Get the links from the script tag content
 	loopLinks.forEach((loopLink) => {
-		const links = JSON.parse(loopLink.getAttribute('data-iawmlf-post-links'));
+		const links = JSON.parse(loopLink.textContent);
 		addLinks(links);
 	});
 
