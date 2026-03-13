@@ -18,9 +18,8 @@ const linkDelay = iawmlfArchivedLinks.linkDelayInDays;
  * The settings for the link check
  */
 const linkCheckSettings = {
-	'action': iawmlfArchivedLinks.linkCheckAjax,
 	'nonce': iawmlfArchivedLinks.linkCheckNonce,
-	'url': iawmlfArchivedLinks.ajaxUrl,
+	'url': iawmlfArchivedLinks.restUrl,
 	'fixerOption': iawmlfArchivedLinks.fixerOption
 };
 
@@ -316,8 +315,8 @@ const checkLink = (link) => {
 		verifyLink(link).then((result) => {
 
 			// If the link can not be found, use the archived link data.
-			if (result.success === true && result.data && result.data.link) {
-				addDataAttributes(result.data.link);
+			if (result && result.link) {
+				addDataAttributes(result.link);
 				return;
 			}
 
@@ -342,14 +341,13 @@ const checkLink = (link) => {
 const verifyLink = async (link) => {
 	const settings = linkCheckSettings;
 
-	const formData = new FormData();
-	formData.append('action', settings.action);
-	formData.append('nonce', settings.nonce);
-	formData.append('link', link);
-
 	const response = await fetch(settings.url, {
 		method: 'POST',
-		body: formData
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': settings.nonce
+		},
+		body: JSON.stringify({ link: link })
 	})
 		.then(response => response.json())
 		.then(data => {
