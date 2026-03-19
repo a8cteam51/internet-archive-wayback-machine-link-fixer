@@ -106,7 +106,16 @@ class WP_Post_Table_Controller {
 	 */
 	public function add_column( array $columns ): array {
 		// Get the post type.
-		$post_type = get_current_screen()->post_type;
+		$screen = get_current_screen();
+		if ( $screen ) {
+			$post_type = $screen->post_type;
+		} else {
+			// Fall back to the request's post_type or the post being edited.
+			$post_type = isset( $_REQUEST['post_type'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				? \sanitize_key( $_REQUEST['post_type'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				: 'post';
+		}
+
 		// Get the post types from settings.
 		$allowed_post_types = Settings::get_allowed_post_types();
 
