@@ -245,9 +245,9 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'linkCheckNonce', $data );
 		$this->assertArrayHasKey( 'linkDelayInDays', $data );
-		$this->assertArrayHasKey( 'linkCheckAjax', $data );
+		$this->assertArrayHasKey( 'restUrl', $data );
 		$this->assertArrayHasKey( 'links', $data );
-		$this->assertArrayHasKey( 'ajaxUrl', $data );
+		$this->assertArrayHasKey( 'fixerOption', $data );
 
 		// Check we have 2 links
 		$this->assertCount( 2, json_decode( $data['links'], true ) );
@@ -301,9 +301,8 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'linkCheckNonce', $data );
 		$this->assertArrayHasKey( 'linkDelayInDays', $data );
-		$this->assertArrayHasKey( 'linkCheckAjax', $data );
+		$this->assertArrayHasKey( 'restUrl', $data );
 		$this->assertArrayHasKey( 'links', $data );
-		$this->assertArrayHasKey( 'ajaxUrl', $data );
 		$this->assertArrayHasKey( 'fixerOption', $data );
 
 		// Check we have 0 links
@@ -577,8 +576,8 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// Check contains the data-iawmlf-post-links attribute.
-		$this->assertStringContainsString( 'data-iawmlf-post-links', $rendered );
+		// Check contains the link data script tag.
+		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
 
 		unset( $GLOBALS['post'] );
 	}
@@ -611,8 +610,8 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// Check does NOT contain the data-iawmlf-post-links attribute.
-		$this->assertStringNotContainsString( 'data-iawmlf-post-links', $rendered );
+		// Check does NOT contain the link data script tag.
+		$this->assertStringNotContainsString( '__iawmlf-post-loop-links', $rendered );
 
 		// Clean up.
 		unset( $GLOBALS['post'] );
@@ -654,14 +653,14 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// The data attribute should be present (we still have one non-excluded link).
-		$this->assertStringContainsString( 'data-iawmlf-post-links', $rendered );
+		// The script tag should be present (we still have one non-excluded link).
+		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
 
-		// Extract the JSON from the data attribute.
-		preg_match( "/data-iawmlf-post-links='([^']*)'/", $rendered, $matches );
-		$this->assertNotEmpty( $matches, 'Should find the data attribute in rendered output.' );
+		// Extract the JSON from the script tag.
+		preg_match( "/<script[^>]*class='__iawmlf-post-loop-links'[^>]*>(.*?)<\/script>/s", $rendered, $matches );
+		$this->assertNotEmpty( $matches, 'Should find the script tag in rendered output.' );
 
-		$links_data = json_decode( html_entity_decode( $matches[1] ), true );
+		$links_data = json_decode( $matches[1], true );
 		$this->assertIsArray( $links_data );
 
 		// Collect all hrefs from the links data.
@@ -716,14 +715,14 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// The data attribute should be present (we still have one non-excluded link).
-		$this->assertStringContainsString( 'data-iawmlf-post-links', $rendered );
+		// The script tag should be present (we still have one non-excluded link).
+		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
 
-		// Extract the JSON from the data attribute.
-		preg_match( "/data-iawmlf-post-links='([^']*)'/", $rendered, $matches );
-		$this->assertNotEmpty( $matches, 'Should find the data attribute in rendered output.' );
+		// Extract the JSON from the script tag.
+		preg_match( "/<script[^>]*class='__iawmlf-post-loop-links'[^>]*>(.*?)<\/script>/s", $rendered, $matches );
+		$this->assertNotEmpty( $matches, 'Should find the script tag in rendered output.' );
 
-		$links_data = json_decode( html_entity_decode( $matches[1] ), true );
+		$links_data = json_decode( $matches[1], true );
 		$this->assertIsArray( $links_data );
 
 		// Should only have 1 link (the non-excluded one).
@@ -773,8 +772,8 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// Check does not contain the data-iawmlf-post-links attribute.
-		$this->assertStringNotContainsString( 'data-iawmlf-post-links', $rendered );
+		// Check does not contain the link data script tag.
+		$this->assertStringNotContainsString( '__iawmlf-post-loop-links', $rendered );
 
 		unset( $GLOBALS['post'] );
 	}

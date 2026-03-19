@@ -10,7 +10,6 @@ declare( strict_types = 1 );
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Ajax;
 
-use Internet_Archive\Wayback_Machine_Link_Fixer\Ajax\Link_Check_Ajax;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Ajax\Post_Search_Ajax;
 
 defined( 'ABSPATH' ) || exit;
@@ -26,7 +25,6 @@ class Ajax_Controller {
 	 * @return void
 	 */
 	public function initialize(): void {
-		Link_Check_Ajax::register_ajax_call();
 		Post_Search_Ajax::register_ajax_call();
 	}
 }
