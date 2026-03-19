@@ -2,9 +2,9 @@ name: PHP Syntax Errors
 
 on:
   push:
-    branches: [ trunk, develop, 1-4-0__development ]
+    branches: [ trunk, develop ]
   pull_request:
-    branches: [ trunk, develop, 1-4-0__development ]
+    branches: [ trunk, develop ]
 
 jobs:
   build:
