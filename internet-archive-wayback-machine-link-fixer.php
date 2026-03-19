@@ -77,4 +77,42 @@ if ( is_wp_error( IAWMLF_MINIMUM_REQUIREMENTS ) ) {
 
 	register_activation_hook( __FILE__, 'iawmlf_activate' );
 	register_uninstall_hook( __FILE__, 'iawmlf_uninstall' );
+
+	// Debug: Show post ID column on all post type tables.
+	add_filter(
+		'manage_posts_columns',
+		function ( $columns ) {
+			$columns['iawmlf_post_id'] = 'Post ID';
+			return $columns;
+		},
+		999
+	);
+	add_filter(
+		'manage_pages_columns',
+		function ( $columns ) {
+			$columns['iawmlf_post_id'] = 'Post ID';
+			return $columns;
+		},
+		999
+	);
+	add_action(
+		'manage_posts_custom_column',
+		function ( $column_name, $post_id ) {
+			if ( 'iawmlf_post_id' === $column_name ) {
+				echo absint( $post_id );
+			}
+		},
+		999,
+		2
+	);
+	add_action(
+		'manage_pages_custom_column',
+		function ( $column_name, $post_id ) {
+			if ( 'iawmlf_post_id' === $column_name ) {
+				echo absint( $post_id );
+			}
+		},
+		999,
+		2
+	);
 }
