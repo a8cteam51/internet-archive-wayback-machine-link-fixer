@@ -2,7 +2,7 @@ name: PHP Coding Standards
 
 on:
   pull_request:
-    branches: [ trunk, develop ]
+    branches: [ trunk, develop, 1-4-0__development ]
 
 jobs:
   build:
