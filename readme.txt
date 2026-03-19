@@ -116,6 +116,13 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 
 == Changelog ==
 
+= 1.4.0 =
+* Changes to how we store link information in posts, now uses a <script> tag.
+* Move the frontend link checker from Ajax driven ot REST
+* Improvements to link table queries for better memory usage.
+* Various small UI fixes.
+
+
 = 1.3.6 =
 * Allows posts to be selected to be excluded from link fixing and/or auto archiving.
 * Improves cleanup of passed attempts to create and verify snapshots
