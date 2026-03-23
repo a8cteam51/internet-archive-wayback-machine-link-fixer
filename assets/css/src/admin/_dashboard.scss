@@ -481,3 +481,24 @@
         margin: 0;
     }
 }
+
+.iawmlf_dashboard-navigation {
+    padding: 12px;
+    background: #f0f0f1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+
+    a {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+
+        .dashicons {
+            @media (max-width: 782px) {
+                margin-top: 8px !important;
+            }
+        }
+    }
+}
