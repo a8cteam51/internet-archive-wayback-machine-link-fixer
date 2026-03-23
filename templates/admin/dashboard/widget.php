@@ -161,13 +161,15 @@ defined( 'ABSPATH' ) || exit;
 		</a>
 		<a href="<?php echo esc_url( $iawmlf_link_table ); ?>" class="button">
 			<span class="dashicons dashicons-list-view" style="margin-top: 3px;"></span>
-			<span class="link-text"><?php
-			printf(
-				/* translators: %d: number of links */
-				esc_html__( 'View Links (%d)', 'internet-archive-wayback-machine-link-fixer' ),
-				absint( $iawmlf_total_link_count )
-			);
-			?></span>
+			<span class="link-text">
+				<?php
+				printf(
+					/* translators: %d: number of links */
+					esc_html__( 'View Links (%d)', 'internet-archive-wayback-machine-link-fixer' ),
+					absint( $iawmlf_total_link_count )
+				);
+				?>
+			</span>
 		</a>
 	</div>
 </div>
