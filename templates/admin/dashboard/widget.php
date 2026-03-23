@@ -152,22 +152,24 @@ defined( 'ABSPATH' ) || exit;
 		<?php if ( ! Dashboard_Page::is_current_page() ) : ?>
 		<a href="<?php echo esc_url( Dashboard_Page::get_page_url() ); ?>" class="button">
 			<span class="dashicons dashicons-dashboard" style="margin-top: 3px;"></span>
-			<?php esc_html_e( 'Dashboard', 'internet-archive-wayback-machine-link-fixer' ); ?>
+			<span class="link-text"><?php esc_html_e( 'Dashboard', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
 		</a>
 		<?php endif; ?>
 		<a href="<?php echo esc_url( $iawmlf_link_to_settings ); ?>" class="button">
 			<span class="dashicons dashicons-admin-settings" style="margin-top: 3px;"></span>
-			<?php esc_html_e( 'Advanced Settings', 'internet-archive-wayback-machine-link-fixer' ); ?>
+			<span class="link-text"><?php esc_html_e( 'Advanced Settings', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
 		</a>
 		<a href="<?php echo esc_url( $iawmlf_link_table ); ?>" class="button">
 			<span class="dashicons dashicons-list-view" style="margin-top: 3px;"></span>
-			<?php
-			printf(
-				/* translators: %d: number of links */
-				esc_html__( 'View Links (%d)', 'internet-archive-wayback-machine-link-fixer' ),
-				absint( $iawmlf_total_link_count )
-			);
-			?>
+			<span class="link-text">
+				<?php
+				printf(
+					/* translators: %d: number of links */
+					esc_html__( 'View Links (%d)', 'internet-archive-wayback-machine-link-fixer' ),
+					absint( $iawmlf_total_link_count )
+				);
+				?>
+			</span>
 		</a>
 	</div>
 </div>
