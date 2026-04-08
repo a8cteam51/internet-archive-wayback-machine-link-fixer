@@ -469,6 +469,114 @@ class Test_Settings extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox Malformed icon entries added via the filter should be removed.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @return void
+	 */
+	public function test_malformed_icon_entries_are_removed(): void {
+		add_filter(
+			'iawmlf_link_icons',
+			function ( array $icons ) {
+				// Missing css_rule — removed.
+				$icons[] = array(
+					'id'   => 'no_css',
+					'name' => 'No CSS',
+				);
+				// Empty css_rule — removed.
+				$icons[] = array(
+					'id'       => 'empty_css',
+					'name'     => 'Empty CSS',
+					'css_rule' => '',
+				);
+				// Not an array — removed.
+				$icons[] = 'not_an_array';
+				// Missing id — falls back to sanitized name.
+				$icons[] = array(
+					'name'     => 'No ID Icon',
+					'css_rule' => 'a:after { content: "ok"; }',
+				);
+				// Missing name — falls back to id.
+				$icons[] = array(
+					'id'       => 'no_name',
+					'css_rule' => 'a:after { content: "ok"; }',
+				);
+				// Valid entry.
+				$icons[] = array(
+					'id'       => 'valid_icon',
+					'name'     => 'Valid Icon',
+					'css_rule' => 'a:after { content: "ok"; }',
+				);
+				return $icons;
+			}
+		);
+
+		$icons = Settings::get_available_link_icons();
+		$ids   = array_column( $icons, 'id' );
+		$names = array_column( $icons, 'name' );
+
+		// Removed entries.
+		$this->assertNotContains( 'no_css', $ids );
+		$this->assertNotContains( 'empty_css', $ids );
+
+		// Fallbacks.
+		$this->assertContains( 'no-id-icon', $ids ); // sanitize_title of "No ID Icon".
+		$this->assertContains( 'no_name', $ids );
+		$this->assertContains( 'no_name', $names ); // Name fell back to id.
+
+		// Valid.
+		$this->assertContains( 'valid_icon', $ids );
+
+		// None is always present.
+		$this->assertContains( Settings::LINK_ICON_NONE, $ids );
+
+		// Clean up.
+		remove_all_filters( 'iawmlf_link_icons' );
+	}
+
+	/**
+	 * @testdox Duplicate icon IDs should be deduplicated, keeping the last entry.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @return void
+	 */
+	public function test_duplicate_icon_ids_are_deduplicated(): void {
+		add_filter(
+			'iawmlf_link_icons',
+			function ( array $icons ) {
+				$icons[] = array(
+					'id'       => 'dupe_icon',
+					'name'     => 'First',
+					'css_rule' => 'a:after { content: "1"; }',
+				);
+				$icons[] = array(
+					'id'       => 'dupe_icon',
+					'name'     => 'Second',
+					'css_rule' => 'a:after { content: "2"; }',
+				);
+				return $icons;
+			}
+		);
+
+		$icons      = Settings::get_available_link_icons();
+		$ids        = array_column( $icons, 'id' );
+		$dupe_count = count( array_keys( $ids, 'dupe_icon', true ) );
+
+		$this->assertEquals( 1, $dupe_count );
+
+		// The last entry wins.
+		$dupe_icon = array_values( array_filter( $icons, function ( $icon ) {
+			return 'dupe_icon' === $icon['id'];
+		} ) );
+		$this->assertEquals( 'Second', $dupe_icon[0]['name'] );
+
+		// Clean up.
+		remove_all_filters( 'iawmlf_link_icons' );
+	}
+
+	/**
 	 * @testdox The available link icons should always include the none option and the IA logo before and after variants.
 	 *
 	 * @since 1.4.0

@@ -11,7 +11,6 @@
 
 [![Unit Tests](https://github.com/a8cteam51/wayback-link-fixer/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/a8cteam51/wayback-link-fixer/actions/workflows/unit-tests.yml)
 
-iawmlf_link_icons
 ## Description
 
 **Internet Archive Wayback Machine Link Fixer** is a WordPress plugin designed to combat **link rot**—the gradual decay of web links as pages are moved, changed, or taken down. It automatically scans your post content—on save and across existing posts—to detect outbound links. For each one, it checks the Internet Archive’s Wayback Machine for an archived version and creates a snapshot if one isn’t available.

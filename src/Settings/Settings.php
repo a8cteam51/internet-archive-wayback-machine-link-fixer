@@ -606,18 +606,11 @@ class Settings {
 	/**
 	 * Gets the available link icon options.
 	 *
-	 * Each icon is an associative array with the following keys:
-	 * - id:       (string) Unique identifier for the icon (e.g. 'ia_logo_after').
+	 * Icons are provided via the `iawmlf_link_icons` filter as full entries.
+	 * Each entry must include:
+	 * - id:       (string) Unique identifier.
 	 * - name:     (string) Display name shown in settings.
-	 * - css_rule: (string) CSS rule applied to fixed links (empty string for none).
-	 *
-	 * The base icons are provided via the `iawmlf_link_icons` filter and each
-	 * non-"none" icon is expanded into before and after variants automatically.
-	 *
-	 * Base icon structure for the filter:
-	 * - id:        (string) Base identifier (e.g. 'ia_logo').
-	 * - name:      (string) Display name.
-	 * - icon_css:  (string) Shared CSS properties for the pseudo-element.
+	 * - css_rule: (string) Complete CSS rule including selector and braces (empty string for none).
 	 *
 	 * @since 1.4.0
 	 *
@@ -627,11 +620,6 @@ class Settings {
 		$icon_url = esc_url( IAWMLF_URL . 'assets/images/archive-icon.svg' );
 
 		$icons = array(
-			array(
-				'id'       => self::LINK_ICON_NONE,
-				'name'     => __( 'None', 'internet-archive-wayback-machine-link-fixer' ),
-				'css_rule' => '',
-			),
 			array(
 				'id'       => 'ia_logo_before',
 				'name'     => __( 'Internet Archive Logo (Before Link)', 'internet-archive-wayback-machine-link-fixer' ),
@@ -657,7 +645,50 @@ class Settings {
 		 *
 		 * @return array<int, array{id: string, name: string, css_rule: string}>
 		 */
-		return (array) apply_filters( 'iawmlf_link_icons', $icons );
+		$filtered = (array) apply_filters( 'iawmlf_link_icons', $icons );
+
+		// Validate and normalize each icon entry.
+		$validated = array();
+		foreach ( $filtered as $icon ) {
+			if ( ! is_array( $icon ) ) {
+				continue;
+			}
+
+			// Must have a css_rule that is a non-empty string.
+			if ( ! isset( $icon['css_rule'] ) || ! is_string( $icon['css_rule'] ) || '' === $icon['css_rule'] ) {
+				continue;
+			}
+
+			$id   = isset( $icon['id'] ) && is_string( $icon['id'] ) ? sanitize_title( $icon['id'] ) : '';
+			$name = isset( $icon['name'] ) && is_string( $icon['name'] ) ? sanitize_text_field( $icon['name'] ) : '';
+
+			// Fall back id to name or name to id.
+			if ( '' === $id && '' !== $name ) {
+				$id = sanitize_title( $name );
+			} elseif ( '' === $name && '' !== $id ) {
+				$name = $id;
+			}
+
+			// If we still have no id, skip.
+			if ( '' === $id ) {
+				continue;
+			}
+
+			$validated[ $id ] = array(
+				'id'       => $id,
+				'name'     => $name,
+				'css_rule' => $icon['css_rule'],
+			);
+		}
+
+		// Always append "None" so it cannot be removed by the filter.
+		$validated[ self::LINK_ICON_NONE ] = array(
+			'id'       => self::LINK_ICON_NONE,
+			'name'     => __( 'None', 'internet-archive-wayback-machine-link-fixer' ),
+			'css_rule' => '',
+		);
+
+		return array_values( $validated );
 	}
 
 	/**
