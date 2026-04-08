@@ -607,6 +607,47 @@
 			});
 		}
 
+		// --- Link Icon Preview ---
+		const LINK_ICON_SELECT  = document.getElementById('iawmlf_link_icon');
+		const LINK_ICON_PREVIEW = document.getElementById('iawmlf_link_icon_preview');
+		const FIXER_OPTION      = document.getElementById('iawmlf_fixer_option');
+
+		if (LINK_ICON_SELECT && LINK_ICON_PREVIEW && IawmlfSettings.linkIconStyles) {
+			const previewStyle = document.getElementById('iawmlf-link-icon-preview-style');
+
+			/**
+			 * Update the link icon preview.
+			 */
+			function updateLinkIconPreview() {
+				const selectedId = LINK_ICON_SELECT.value;
+				const css = IawmlfSettings.linkIconStyles[selectedId] || '';
+				previewStyle.textContent = css;
+			}
+
+			LINK_ICON_SELECT.addEventListener('change', updateLinkIconPreview);
+		}
+
+		// --- Fixer Option toggles Link Icon visibility ---
+		if (FIXER_OPTION) {
+			/**
+			 * Toggle the link icon field visibility based on the fixer option.
+			 */
+			function toggleFixerReplaceFields() {
+				var isReplace = FIXER_OPTION.value === 'replace_link';
+				var elements = document.querySelectorAll('.iawmlf_toggle_setting__fixer_replace');
+				elements.forEach(function (element) {
+					if (isReplace) {
+						element.classList.remove('hidden');
+					} else {
+						element.classList.add('hidden');
+					}
+				});
+			}
+
+			FIXER_OPTION.addEventListener('change', toggleFixerReplaceFields);
+			toggleFixerReplaceFields();
+		}
+
 		// Runs the checks on load
 		if (PROCESS_LINK) {
 			toggleElements(PROCESS_LINK.checked, 'link_fixer');

@@ -69,6 +69,10 @@ class Settings {
 	public const ROUTINELY_UPDATE_WAYBACK_MACHINE_INTERVAL = self::SETTINGS_PREFIX . 'routinely_update_wayback_machine_interval';
 	public const AUTO_ARCHIVER_EXCLUDED_POSTS              = self::SETTINGS_PREFIX . 'auto_archiver_excluded_posts';
 
+	// Link icon.
+	public const LINK_ICON      = self::SETTINGS_PREFIX . 'link_icon';
+	public const LINK_ICON_NONE = 'none';
+
 	/**
 	 * Gets the link table name.
 	 *
@@ -600,6 +604,123 @@ class Settings {
 	}
 
 	/**
+	 * Gets the available link icon options.
+	 *
+	 * Each icon is an associative array with the following keys:
+	 * - id:       (string) Unique identifier for the icon (e.g. 'ia_logo_after').
+	 * - name:     (string) Display name shown in settings.
+	 * - css_rule: (string) CSS rule applied to fixed links (empty string for none).
+	 *
+	 * The base icons are provided via the `iawmlf_link_icons` filter and each
+	 * non-"none" icon is expanded into before and after variants automatically.
+	 *
+	 * Base icon structure for the filter:
+	 * - id:        (string) Base identifier (e.g. 'ia_logo').
+	 * - name:      (string) Display name.
+	 * - icon_css:  (string) Shared CSS properties for the pseudo-element.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return array<int, array{id: string, name: string, css_rule: string}>
+	 */
+	public static function get_available_link_icons(): array {
+		$icon_css = 'content: ""; display: inline-block; position: relative; bottom: -.2rem; width: 1rem; height: 1rem; background-image: url("' . esc_url( IAWMLF_URL . 'assets/images/archive-icon.svg' ) . '"); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; opacity: 0.65;';
+
+		$base_icons = array(
+			array(
+				'id'       => 'ia_logo',
+				'name'     => __( 'Internet Archive Logo', 'internet-archive-wayback-machine-link-fixer' ),
+				'icon_css' => $icon_css,
+			),
+		);
+
+		/**
+		 * Filters the base link icons before before/after variants are generated.
+		 *
+		 * Allows third-party plugins to add custom icons to the link icon selector.
+		 * Each icon should be an associative array with 'id', 'name', and 'icon_css' keys.
+		 * The 'icon_css' should contain only the CSS properties for the pseudo-element,
+		 * not the selector or braces.
+		 *
+		 * @since 1.5.0
+		 *
+		 * @param array<int, array{id: string, name: string, icon_css: string}> $base_icons The base icons.
+		 *
+		 * @return array<int, array{id: string, name: string, icon_css: string}>
+		 */
+		$base_icons = (array) apply_filters( 'iawmlf_link_icons', $base_icons );
+
+		// Build the options array starting with "None".
+		$icons = array(
+			array(
+				'id'       => self::LINK_ICON_NONE,
+				'name'     => __( 'None', 'internet-archive-wayback-machine-link-fixer' ),
+				'css_rule' => '',
+			),
+		);
+
+		// Expand each base icon into before and after variants.
+		foreach ( $base_icons as $base ) {
+			$icons[] = array(
+				'id'       => $base['id'] . '_before',
+				/* translators: %s: The icon name. */
+				'name'     => sprintf( __( '%s (Before Link)', 'internet-archive-wayback-machine-link-fixer' ), $base['name'] ),
+				'css_rule' => 'a[href*="web.archive.org/web"]:before, a[href*="web-wp.archive.org/web"]:before { ' . $base['icon_css'] . ' margin-right: .25rem; }',
+			);
+			$icons[] = array(
+				'id'       => $base['id'] . '_after',
+				/* translators: %s: The icon name. */
+				'name'     => sprintf( __( '%s (After Link)', 'internet-archive-wayback-machine-link-fixer' ), $base['name'] ),
+				'css_rule' => 'a[href*="web.archive.org/web"]:after, a[href*="web-wp.archive.org/web"]:after { ' . $base['icon_css'] . ' margin-left: .25rem; }',
+			);
+		}
+
+		return $icons;
+	}
+
+	/**
+	 * Gets the selected link icon ID.
+	 *
+	 * Returns the ID of the currently selected link icon.
+	 * Defaults to 'none' if not set or if the stored value is not a valid icon ID.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return string
+	 */
+	public static function get_link_icon(): string {
+		$icon_id   = sanitize_text_field( (string) get_option( self::LINK_ICON, self::LINK_ICON_NONE ) );
+		$valid_ids = array_column( self::get_available_link_icons(), 'id' );
+
+		// If the stored value is not a valid icon ID, revert to none.
+		if ( ! in_array( $icon_id, $valid_ids, true ) ) {
+			return self::LINK_ICON_NONE;
+		}
+
+		return $icon_id;
+	}
+
+	/**
+	 * Gets the CSS rule for the currently selected link icon.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return string The CSS rule, or empty string if no icon selected.
+	 */
+	public static function get_link_icon_css(): string {
+		$icon_id = self::get_link_icon();
+		$icons   = self::get_available_link_icons();
+
+		foreach ( $icons as $icon ) {
+			if ( $icon['id'] === $icon_id ) {
+				return $icon['css_rule'];
+			}
+		}
+
+		return '';
+	}
+
+	/**
 	 * Clear all the options.
 	 *
 	 * @since 1.3.0
@@ -632,5 +753,6 @@ class Settings {
 		delete_option( self::SETUP_WIZARD_COMPLETED_KEY );
 		delete_option( self::ONBOARDING_DATE_KEY );
 		delete_option( self::CAST_ARCHIVED_TO_HTTPS );
+		delete_option( self::LINK_ICON );
 	}
 }

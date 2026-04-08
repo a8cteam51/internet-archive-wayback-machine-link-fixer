@@ -265,6 +265,14 @@ class WP_Post_Controller {
 
 		// Enqueue the script.
 		wp_enqueue_script( 'iawm-link-fixer-front-link-checker' );
+
+		// Enqueue the link icon CSS if set.
+		$link_icon_css = Settings::get_link_icon_css();
+		if ( '' !== $link_icon_css ) {
+			wp_register_style( 'iawmlf-link-icons', false, array(), IAWMLF_VERSION );
+			wp_enqueue_style( 'iawmlf-link-icons' );
+			wp_add_inline_style( 'iawmlf-link-icons', $link_icon_css );
+		}
 	}
 
 	/**
