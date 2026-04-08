@@ -183,7 +183,7 @@ class Settings {
 	/**
 	 * Get the array of excluded post IDs for the auto archiver.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return int[]
 	 */
@@ -619,63 +619,45 @@ class Settings {
 	 * - name:      (string) Display name.
 	 * - icon_css:  (string) Shared CSS properties for the pseudo-element.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return array<int, array{id: string, name: string, css_rule: string}>
 	 */
 	public static function get_available_link_icons(): array {
-		$icon_css = 'content: ""; display: inline-block; position: relative; bottom: -.2rem; width: 1rem; height: 1rem; background-image: url("' . esc_url( IAWMLF_URL . 'assets/images/archive-icon.svg' ) . '"); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; opacity: 0.65;';
+		$icon_url = esc_url( IAWMLF_URL . 'assets/images/archive-icon.svg' );
 
-		$base_icons = array(
-			array(
-				'id'       => 'ia_logo',
-				'name'     => __( 'Internet Archive Logo', 'internet-archive-wayback-machine-link-fixer' ),
-				'icon_css' => $icon_css,
-			),
-		);
-
-		/**
-		 * Filters the base link icons before before/after variants are generated.
-		 *
-		 * Allows third-party plugins to add custom icons to the link icon selector.
-		 * Each icon should be an associative array with 'id', 'name', and 'icon_css' keys.
-		 * The 'icon_css' should contain only the CSS properties for the pseudo-element,
-		 * not the selector or braces.
-		 *
-		 * @since 1.5.0
-		 *
-		 * @param array<int, array{id: string, name: string, icon_css: string}> $base_icons The base icons.
-		 *
-		 * @return array<int, array{id: string, name: string, icon_css: string}>
-		 */
-		$base_icons = (array) apply_filters( 'iawmlf_link_icons', $base_icons );
-
-		// Build the options array starting with "None".
 		$icons = array(
 			array(
 				'id'       => self::LINK_ICON_NONE,
 				'name'     => __( 'None', 'internet-archive-wayback-machine-link-fixer' ),
 				'css_rule' => '',
 			),
+			array(
+				'id'       => 'ia_logo_before',
+				'name'     => __( 'Internet Archive Logo (Before Link)', 'internet-archive-wayback-machine-link-fixer' ),
+				'css_rule' => 'a[href*="web.archive.org/web"]:before, a[href*="web-wp.archive.org/web"]:before { content: ""; display: inline-block; position: relative; bottom: -.2rem; margin-right: .25rem; width: 1rem; height: 1rem; background-image: url("' . $icon_url . '"); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; opacity: 0.65; }',
+			),
+			array(
+				'id'       => 'ia_logo_after',
+				'name'     => __( 'Internet Archive Logo (After Link)', 'internet-archive-wayback-machine-link-fixer' ),
+				'css_rule' => 'a[href*="web.archive.org/web"]:after, a[href*="web-wp.archive.org/web"]:after { content: ""; display: inline-block; position: relative; bottom: -.2rem; margin-left: .25rem; width: 1rem; height: 1rem; background-image: url("' . $icon_url . '"); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; opacity: 0.65; }',
+			),
 		);
 
-		// Expand each base icon into before and after variants.
-		foreach ( $base_icons as $base ) {
-			$icons[] = array(
-				'id'       => $base['id'] . '_before',
-				/* translators: %s: The icon name. */
-				'name'     => sprintf( __( '%s (Before Link)', 'internet-archive-wayback-machine-link-fixer' ), $base['name'] ),
-				'css_rule' => 'a[href*="web.archive.org/web"]:before, a[href*="web-wp.archive.org/web"]:before { ' . $base['icon_css'] . ' margin-right: .25rem; }',
-			);
-			$icons[] = array(
-				'id'       => $base['id'] . '_after',
-				/* translators: %s: The icon name. */
-				'name'     => sprintf( __( '%s (After Link)', 'internet-archive-wayback-machine-link-fixer' ), $base['name'] ),
-				'css_rule' => 'a[href*="web.archive.org/web"]:after, a[href*="web-wp.archive.org/web"]:after { ' . $base['icon_css'] . ' margin-left: .25rem; }',
-			);
-		}
-
-		return $icons;
+		/**
+		 * Filters the available link icons.
+		 *
+		 * Allows third-party plugins to add custom icons to the link icon selector.
+		 * Each icon should be an associative array with 'id', 'name', and 'css_rule' keys.
+		 * The 'css_rule' should be a complete CSS rule including selector and braces.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param array<int, array{id: string, name: string, css_rule: string}> $icons The available icons.
+		 *
+		 * @return array<int, array{id: string, name: string, css_rule: string}>
+		 */
+		return (array) apply_filters( 'iawmlf_link_icons', $icons );
 	}
 
 	/**
@@ -684,7 +666,7 @@ class Settings {
 	 * Returns the ID of the currently selected link icon.
 	 * Defaults to 'none' if not set or if the stored value is not a valid icon ID.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return string
 	 */
@@ -703,7 +685,7 @@ class Settings {
 	/**
 	 * Gets the CSS rule for the currently selected link icon.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return string The CSS rule, or empty string if no icon selected.
 	 */

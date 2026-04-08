@@ -1137,7 +1137,7 @@ class Settings_Page {
 	/**
 	 * Render the auto archiver post exclusions field.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return void
 	 */
@@ -1210,7 +1210,7 @@ class Settings_Page {
 	/**
 	 * Renders a row for an excluded auto archiver post.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @param integer $post_id    The post ID.
 	 * @param string  $post_title The post title.
@@ -1241,7 +1241,7 @@ class Settings_Page {
 	 * Renders the template for a new excluded auto archiver post row.
 	 * Uses placeholders that JS will replace when adding items.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return string
 	 */
@@ -1443,7 +1443,7 @@ class Settings_Page {
 	/**
 	 * Renders the link icon selection field.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return void
 	 */

@@ -383,7 +383,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	/**
 	 * @testdox It should return no icon when the link icon option is not set.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return void
 	 */
@@ -394,7 +394,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	/**
 	 * @testdox It should return no icon when the link icon option is set to an invalid value.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return void
 	 */
@@ -406,7 +406,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	/**
 	 * @testdox It should return the selected link icon when set to a valid value.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return void
 	 */
@@ -418,7 +418,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	/**
 	 * @testdox It should return an empty CSS string when the link icon is set to none.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return void
 	 */
@@ -429,7 +429,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	/**
 	 * @testdox It should return a CSS rule when the link icon is set to a valid icon.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return void
 	 */
@@ -443,7 +443,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	/**
 	 * @testdox It should be possible to add custom icons via the iawmlf_link_icons filter.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return void
 	 */
@@ -452,21 +452,16 @@ class Test_Settings extends \WP_UnitTestCase {
 			'iawmlf_link_icons',
 			function ( array $icons ) {
 				$icons[] = array(
-					'id'       => 'custom',
+					'id'       => 'custom_icon',
 					'name'     => 'Custom Icon',
-					'icon_css' => 'content: "\2713";',
+					'css_rule' => 'a[href*="web.archive.org/web"]:after { content: "\2713"; }',
 				);
 				return $icons;
 			}
 		);
 
-		// Should have before and after variants.
-		update_option( Settings::LINK_ICON, 'custom_before' );
-		$this->assertEquals( 'custom_before', Settings::get_link_icon() );
-		$this->assertStringContainsString( ':before', Settings::get_link_icon_css() );
-
-		update_option( Settings::LINK_ICON, 'custom_after' );
-		$this->assertEquals( 'custom_after', Settings::get_link_icon() );
+		update_option( Settings::LINK_ICON, 'custom_icon' );
+		$this->assertEquals( 'custom_icon', Settings::get_link_icon() );
 		$this->assertStringContainsString( ':after', Settings::get_link_icon_css() );
 
 		// Clean up.
@@ -476,7 +471,7 @@ class Test_Settings extends \WP_UnitTestCase {
 	/**
 	 * @testdox The available link icons should always include the none option and the IA logo before and after variants.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return void
 	 */

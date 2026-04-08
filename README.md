@@ -947,14 +947,14 @@ These filters allow advanced customization of URLs, timeouts, and client impleme
 
 #### `iawmlf_link_icons`
 
-This filter allows you to add custom icons to the link icon selector in settings. The Link Icon setting is only available when the Fixer Option is set to **Replace Link**. Each icon should be an array with `id`, `name`, and `icon_css` keys. The `icon_css` value should contain only the CSS properties for the pseudo-element (not the selector or braces). Before and after link variants are generated automatically for each icon.
+This filter allows you to add custom icons to the link icon selector in settings. The Link Icon setting is only available when the Fixer Option is set to **Replace Link**. Each icon should be an array with `id`, `name`, and `css_rule` keys. The `css_rule` should be a complete CSS rule including selector and braces.
 
 ```php
 add_filter( 'iawmlf_link_icons', function( array $icons ): array {
    $icons[] = array(
       'id'       => 'custom_checkmark',
       'name'     => 'Checkmark',
-      'icon_css' => 'content: "\2713"; font-size: 0.8em; opacity: 0.7;',
+      'css_rule' => 'a[href*="web.archive.org/web"]:after, a[href*="web-wp.archive.org/web"]:after { content: "\2713"; font-size: 0.8em; opacity: 0.7; }',
    );
    return $icons;
 } );
