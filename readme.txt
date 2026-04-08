@@ -121,6 +121,7 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 * Move the frontend link checker from Ajax-driven to REST.
 * Improvements to link table queries for better memory usage.
 * Various small UI fixes.
+* Added optional link icon displayed next to fixed links on the frontend, with before/after positioning and third-party extensibility via the `iawmlf_link_icons` filter.
 
 
 = 1.3.6 =
