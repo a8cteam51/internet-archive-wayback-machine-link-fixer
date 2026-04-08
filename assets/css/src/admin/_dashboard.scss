@@ -119,18 +119,11 @@
         flex-wrap: wrap;
         gap: 10px;
         justify-content: flex-end;
-
         a {
             display: flex;
             align-items: center;
             white-space: nowrap;
             text-decoration: none;
-
-            .dashicons {
-                @media (max-width: 782px) {
-                    margin-top: 8px !important;
-                }
-            }
         }
     }
 }
@@ -285,12 +278,10 @@
         flex-wrap: wrap;
         gap: 10px;
         justify-content: flex-end;
-
         a {
             display: flex;
             align-items: center;
             white-space: nowrap;
-
             .dashicons {
                 @media (max-width: 782px) {
                     margin-top: 8px !important;
