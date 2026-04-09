@@ -147,8 +147,8 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 									<?php endif; ?>
 
 									<?php foreach ( array_reverse( $iawmlf_link->get_checks() ) as $iawmlf_index => $iawmlf_check ) : ?>
-										<?php // Hide the first n posts to the value of $iawmlf_hide_check_count. ?>
-										<?php if ( $iawmlf_index < $iawmlf_hide_check_count ) : ?>
+										<?php // Hide the oldest checks (beyond the newest 10). ?>
+										<?php if ( $iawmlf_index >= ( $iawmlf_check_count - $iawmlf_hide_check_count ) ) : ?>
 											<tr class="iawmlf_hidden_check" style="display: none;">
 										<?php else : ?>
 											<tr>
