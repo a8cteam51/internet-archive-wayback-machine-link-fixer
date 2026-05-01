@@ -160,6 +160,7 @@ class Settings_Page {
 				'ajaxUrl'                         => admin_url( 'admin-ajax.php' ),
 				'dismissDonationCtaNonce'         => wp_create_nonce( 'iawmlf_dismiss_donation_cta' ),
 				'postSearchNonce'                 => wp_create_nonce( 'iawmlf_post_search' ),
+				'linkIconStyles'                  => array_column( Settings::get_available_link_icons(), 'css_rule', 'id' ),
 			)
 		);
 
@@ -512,6 +513,22 @@ class Settings_Page {
 				),
 			)
 		);
+
+		register_setting(
+			self::PAGE_SLUG,
+			Settings::LINK_ICON,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => Settings::LINK_ICON_NONE,
+				'show_in_rest'      => array(
+					'name'   => Settings::LINK_ICON,
+					'schema' => array(
+						'type' => 'string',
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -623,6 +640,16 @@ class Settings_Page {
 			self::PAGE_SLUG,
 			self::GROUP_LINK_FIXER,
 			array( 'class' => Settings::is_link_processing_enabled() ? 'iawmlf_toggle_setting__fixer' : 'iawmlf_toggle_setting__fixer hidden' )
+		);
+
+		$link_icon_visible = Settings::is_link_processing_enabled() && Settings::FIXER_OPTION_REPLACE_LINK === Settings::get_fixer_option();
+		add_settings_field(
+			Settings::LINK_ICON,
+			__( 'Link Icon', 'internet-archive-wayback-machine-link-fixer' ),
+			array( $this, 'render_link_icon_field' ),
+			self::PAGE_SLUG,
+			self::GROUP_LINK_FIXER,
+			array( 'class' => 'iawmlf_toggle_setting__fixer iawmlf_toggle_setting__fixer_replace' . ( $link_icon_visible ? '' : ' hidden' ) )
 		);
 
 		add_settings_field(
@@ -1110,7 +1137,7 @@ class Settings_Page {
 	/**
 	 * Render the auto archiver post exclusions field.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return void
 	 */
@@ -1183,7 +1210,7 @@ class Settings_Page {
 	/**
 	 * Renders a row for an excluded auto archiver post.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @param integer $post_id    The post ID.
 	 * @param string  $post_title The post title.
@@ -1214,7 +1241,7 @@ class Settings_Page {
 	 * Renders the template for a new excluded auto archiver post row.
 	 * Uses placeholders that JS will replace when adding items.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.0
 	 *
 	 * @return string
 	 */
@@ -1409,6 +1436,40 @@ class Settings_Page {
 		</select>
 		<p class="description">
 			<?php esc_html_e( 'Choose how to handle broken links.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Renders the link icon selection field.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @return void
+	 */
+	public function render_link_icon_field(): void {
+		$icons    = Settings::get_available_link_icons();
+		$selected = Settings::get_link_icon();
+		?>
+		<select
+			id="<?php echo esc_attr( Settings::LINK_ICON ); ?>"
+			name="<?php echo esc_attr( Settings::LINK_ICON ); ?>"
+			data-group="link_fixer"
+		>
+			<?php foreach ( $icons as $icon ) : ?>
+				<option value="<?php echo esc_attr( $icon['id'] ); ?>" <?php selected( $selected, $icon['id'] ); ?>>
+					<?php echo esc_html( $icon['name'] ); ?>
+				</option>
+			<?php endforeach; ?>
+		</select>
+		<style id="iawmlf-link-icon-preview-style"><?php echo Settings::get_link_icon_css(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSS rule from Settings, not user input. ?></style>
+		<span id="iawmlf_link_icon_preview" class="iawmlf-link-icon-preview">
+			<a href="https://web.archive.org/web/noop" onclick="return false;">
+				<?php esc_html_e( 'Example Link', 'internet-archive-wayback-machine-link-fixer' ); ?>
+			</a>
+		</span>
+		<p class="description">
+			<?php esc_html_e( 'Choose an icon to display next to fixed links.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</p>
 		<?php
 	}
