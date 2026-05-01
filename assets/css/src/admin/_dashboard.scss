@@ -120,10 +120,15 @@
         gap: 10px;
         justify-content: flex-end;
         a {
-            display: flex;
+            display: flex !important;
             align-items: center;
             white-space: nowrap;
             text-decoration: none;
+            justify-content: center;
+            .dashicons {
+                line-height: initial !important;
+                margin-right: 4px;
+            }
         }
     }
 }
@@ -154,7 +159,6 @@
         gap: 20px;
     }
     margin-top: 15px;
-    ;
 }
 
 .iawmlf_dashboard-page-main {
@@ -279,13 +283,13 @@
         gap: 10px;
         justify-content: flex-end;
         a {
-            display: flex;
+            display: flex !important;
             align-items: center;
             white-space: nowrap;
+            justify-content: center;
             .dashicons {
-                @media (max-width: 782px) {
-                    margin-top: 8px !important;
-                }
+                line-height: initial !important;
+                margin-right: 4px;
             }
         }
     }
