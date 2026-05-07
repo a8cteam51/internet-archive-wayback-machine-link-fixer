@@ -576,8 +576,9 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// Check contains the link data script tag.
+		// Check contains the link data span.
 		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
+		$this->assertStringNotContainsString( "<script type='application/json' class='__iawmlf-post-loop-links'>", $rendered );
 
 		unset( $GLOBALS['post'] );
 	}
@@ -610,7 +611,7 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// Check does NOT contain the link data script tag.
+		// Check does NOT contain the link data span.
 		$this->assertStringNotContainsString( '__iawmlf-post-loop-links', $rendered );
 
 		// Clean up.
@@ -653,14 +654,14 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// The script tag should be present (we still have one non-excluded link).
+		// The data span should be present (we still have one non-excluded link).
 		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
 
-		// Extract the JSON from the script tag.
-		preg_match( "/<script[^>]*class='__iawmlf-post-loop-links'[^>]*>(.*?)<\/script>/s", $rendered, $matches );
-		$this->assertNotEmpty( $matches, 'Should find the script tag in rendered output.' );
+		// Extract the JSON from the data attribute.
+		preg_match( '/<span[^>]*class="__iawmlf-post-loop-links"[^>]*data-iawmlf-links="([^"]*)"[^>]*><\/span>/s', $rendered, $matches );
+		$this->assertNotEmpty( $matches, 'Should find the data span in rendered output.' );
 
-		$links_data = json_decode( $matches[1], true );
+		$links_data = json_decode( html_entity_decode( $matches[1], ENT_QUOTES ), true );
 		$this->assertIsArray( $links_data );
 
 		// Collect all hrefs from the links data.
@@ -715,14 +716,14 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// The script tag should be present (we still have one non-excluded link).
+		// The data span should be present (we still have one non-excluded link).
 		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
 
-		// Extract the JSON from the script tag.
-		preg_match( "/<script[^>]*class='__iawmlf-post-loop-links'[^>]*>(.*?)<\/script>/s", $rendered, $matches );
-		$this->assertNotEmpty( $matches, 'Should find the script tag in rendered output.' );
+		// Extract the JSON from the data attribute.
+		preg_match( '/<span[^>]*class="__iawmlf-post-loop-links"[^>]*data-iawmlf-links="([^"]*)"[^>]*><\/span>/s', $rendered, $matches );
+		$this->assertNotEmpty( $matches, 'Should find the data span in rendered output.' );
 
-		$links_data = json_decode( $matches[1], true );
+		$links_data = json_decode( html_entity_decode( $matches[1], ENT_QUOTES ), true );
 		$this->assertIsArray( $links_data );
 
 		// Should only have 1 link (the non-excluded one).
@@ -772,7 +773,7 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// Check does not contain the link data script tag.
+		// Check does not contain the link data span.
 		$this->assertStringNotContainsString( '__iawmlf-post-loop-links', $rendered );
 
 		unset( $GLOBALS['post'] );

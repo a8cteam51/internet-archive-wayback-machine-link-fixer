@@ -319,7 +319,7 @@ class WP_Post_Controller {
 		}
 
 		$json      = wp_json_encode( $links, JSON_HEX_TAG );
-		$html_data = "<script type='application/json' class='__iawmlf-post-loop-links'>{$json}</script>";
+		$html_data = '<span class="__iawmlf-post-loop-links" data-iawmlf-links="' . esc_attr( $json ) . '"></span>';
 
 		return $html_data . $block_content;
 	}
