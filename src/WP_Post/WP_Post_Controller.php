@@ -318,10 +318,11 @@ class WP_Post_Controller {
 			return $block_content;
 		}
 
-		$json      = wp_json_encode( $links, JSON_HEX_TAG );
-		$html_data = "<script type='application/json' class='__iawmlf-post-loop-links'>{$json}</script>";
+		// Encode with all JSON_HEX_* flags.
+		$json      = wp_json_encode( $links, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+		$html_data = '<span hidden class="__iawmlf-post-loop-links" data-iawmlf-links="' . esc_attr( $json ) . '"></span>';
 
-		return $html_data . $block_content;
+		return $block_content . $html_data;
 	}
 
 	/**
