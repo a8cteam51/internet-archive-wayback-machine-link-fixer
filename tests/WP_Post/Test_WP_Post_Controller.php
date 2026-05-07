@@ -653,14 +653,11 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// The script tag should be present (we still have one non-excluded link).
+		// The link data span should be present (we still have one non-excluded link).
 		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
 
-		// Extract the JSON from the script tag.
-		preg_match( "/<script[^>]*class='__iawmlf-post-loop-links'[^>]*>(.*?)<\/script>/s", $rendered, $matches );
-		$this->assertNotEmpty( $matches, 'Should find the script tag in rendered output.' );
-
-		$links_data = json_decode( $matches[1], true );
+		$links_data = $this->extract_link_data_from_rendered( $rendered );
+		$this->assertNotNull( $links_data, 'Should find the link data span in rendered output.' );
 		$this->assertIsArray( $links_data );
 
 		// Collect all hrefs from the links data.
@@ -715,14 +712,11 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Render the block.
 		$rendered = do_blocks( $GLOBALS['post']->post_content );
 
-		// The script tag should be present (we still have one non-excluded link).
+		// The link data span should be present (we still have one non-excluded link).
 		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
 
-		// Extract the JSON from the script tag.
-		preg_match( "/<script[^>]*class='__iawmlf-post-loop-links'[^>]*>(.*?)<\/script>/s", $rendered, $matches );
-		$this->assertNotEmpty( $matches, 'Should find the script tag in rendered output.' );
-
-		$links_data = json_decode( $matches[1], true );
+		$links_data = $this->extract_link_data_from_rendered( $rendered );
+		$this->assertNotNull( $links_data, 'Should find the link data span in rendered output.' );
 		$this->assertIsArray( $links_data );
 
 		// Should only have 1 link (the non-excluded one).
@@ -873,5 +867,273 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 
 		// Clean up.
 		\delete_option( Settings::AUTO_ARCHIVER_EXCLUDED_POSTS );
+	}
+
+	/**
+	 * Extract the link data array from rendered HTML by parsing the span's
+	 * data-iawmlf-links attribute via DOMDocument (mirrors browser behaviour).
+	 *
+	 * @param string $rendered The rendered HTML.
+	 *
+	 * @return array<int, array<string, mixed>>|null
+	 */
+	private function extract_link_data_from_rendered( string $rendered ): ?array {
+		$dom  = new \DOMDocument();
+		$prev = libxml_use_internal_errors( true );
+		$dom->loadHTML( '<?xml encoding="UTF-8"><body>' . $rendered . '</body>', LIBXML_NOERROR | LIBXML_NOWARNING );
+		libxml_clear_errors();
+		libxml_use_internal_errors( $prev );
+
+		$xpath = new \DOMXPath( $dom );
+		$nodes = $xpath->query( "//span[contains(concat(' ', normalize-space(@class), ' '), ' __iawmlf-post-loop-links ')]" );
+
+		if ( ! $nodes || 0 === $nodes->length ) {
+			return null;
+		}
+
+		$node = $nodes->item( 0 );
+		$json = $node->getAttribute( 'data-iawmlf-links' );
+		$data = json_decode( $json, true );
+
+		return is_array( $data ) ? $data : null;
+	}
+
+	/**
+	 * Build a published post with the given anchor markup and return the rendered block output.
+	 *
+	 * @param string $content The post content.
+	 *
+	 * @return string The rendered HTML.
+	 */
+	private function render_post_with_content( string $content ): string {
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		$post_id = self::factory()->post->create();
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+				'post_type'    => 'post',
+			)
+		);
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		return do_blocks( $GLOBALS['post']->post_content );
+	}
+
+	/**
+	 * @testdox The render_block output should use a span with the data-iawmlf-links attribute, not a script tag.
+	 *
+	 * @return void
+	 */
+	public function test_render_block_output_is_span_with_data_attribute(): void {
+		$rendered = $this->render_post_with_content( 'Hi <a href="https://example.com/page">a</a>' );
+
+		$this->assertStringContainsString( '<span', $rendered );
+		$this->assertStringContainsString( 'class="__iawmlf-post-loop-links"', $rendered );
+		$this->assertStringContainsString( 'data-iawmlf-links="', $rendered );
+		$this->assertStringNotContainsString( '<script', $rendered );
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox The link data span should include the hidden attribute so it is not exposed to the accessibility tree.
+	 *
+	 * @return void
+	 */
+	public function test_render_block_output_includes_hidden_attribute(): void {
+		$rendered = $this->render_post_with_content( 'Hi <a href="https://example.com/page">a</a>' );
+
+		$this->assertMatchesRegularExpression(
+			'/<span[^>]*\bhidden\b[^>]*class="__iawmlf-post-loop-links"|<span[^>]*class="__iawmlf-post-loop-links"[^>]*\bhidden\b/',
+			$rendered,
+			'The link data span should include the hidden attribute.'
+		);
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox The link data span should be appended after the block content so it does not hijack :first-child CSS rules.
+	 *
+	 * @return void
+	 */
+	public function test_render_block_output_is_appended_after_block_content(): void {
+		$rendered = $this->render_post_with_content( 'Hi <a href="https://example.com/page">a</a>' );
+
+		$content_position = strpos( $rendered, 'href="https://example.com/page"' );
+		$span_position    = strpos( $rendered, '__iawmlf-post-loop-links' );
+
+		$this->assertNotFalse( $content_position, 'Block content with the link should be in the rendered output.' );
+		$this->assertNotFalse( $span_position, 'The link data span should be in the rendered output.' );
+		$this->assertGreaterThan( $content_position, $span_position, 'The data span should appear after the block content.' );
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox The link data should be parseable from the DOM via getAttribute, mirroring browser behaviour.
+	 *
+	 * @return void
+	 */
+	public function test_link_data_can_be_decoded_from_dom_document(): void {
+		$rendered = $this->render_post_with_content( 'Hi <a href="https://example.com/page">a</a>' );
+
+		$data = $this->extract_link_data_from_rendered( $rendered );
+
+		$this->assertNotNull( $data );
+		$this->assertIsArray( $data );
+		$this->assertContains( 'https://example.com/page', array_column( $data, 'href' ) );
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox The link data span should survive a single pass of wp_kses_post with the data attribute intact.
+	 *
+	 * @return void
+	 */
+	public function test_link_data_survives_single_wp_kses_post_pass(): void {
+		$rendered = $this->render_post_with_content( 'Hi <a href="https://example.com/page">a</a>' );
+
+		$baseline = $this->extract_link_data_from_rendered( $rendered );
+		$this->assertNotNull( $baseline );
+
+		$kses     = wp_kses_post( $rendered );
+		$kses_data = $this->extract_link_data_from_rendered( $kses );
+
+		$this->assertNotNull( $kses_data, 'Span + data should survive a single wp_kses_post pass.' );
+		$this->assertSame( array_column( $baseline, 'href' ), array_column( $kses_data, 'href' ) );
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox The link data span should survive multiple consecutive wp_kses_post passes (some themes wrap content more than once).
+	 *
+	 * @return void
+	 */
+	public function test_link_data_survives_multiple_wp_kses_post_passes(): void {
+		$rendered = $this->render_post_with_content( 'Hi <a href="https://example.com/page">a</a>' );
+
+		$baseline = $this->extract_link_data_from_rendered( $rendered );
+		$this->assertNotNull( $baseline );
+
+		$current = $rendered;
+		for ( $i = 0; $i < 5; $i++ ) {
+			$current = wp_kses_post( $current );
+		}
+
+		$kses_data = $this->extract_link_data_from_rendered( $current );
+
+		$this->assertNotNull( $kses_data, 'Span + data should survive 5 wp_kses_post passes.' );
+		$this->assertSame( array_column( $baseline, 'href' ), array_column( $kses_data, 'href' ) );
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox The link data span should survive the full the_content filter chain followed by wp_kses_post (the case that broke in production).
+	 *
+	 * @return void
+	 */
+	public function test_link_data_survives_the_content_filter_chain(): void {
+		$rendered = $this->render_post_with_content( 'Hi <a href="https://example.com/page">a</a>' );
+
+		$baseline = $this->extract_link_data_from_rendered( $rendered );
+		$this->assertNotNull( $baseline );
+
+		$filtered = apply_filters( 'the_content', $rendered );
+		$kses     = wp_kses_post( $filtered );
+
+		$kses_data = $this->extract_link_data_from_rendered( $kses );
+
+		$this->assertNotNull( $kses_data, 'Span + data should survive the_content filter chain + wp_kses_post.' );
+		$this->assertSame( array_column( $baseline, 'href' ), array_column( $kses_data, 'href' ) );
+
+		// Critically: the JSON should not have leaked as visible text in the rendered output.
+		$dom  = new \DOMDocument();
+		$prev = libxml_use_internal_errors( true );
+		$dom->loadHTML( '<?xml encoding="UTF-8"><body>' . $kses . '</body>', LIBXML_NOERROR | LIBXML_NOWARNING );
+		libxml_clear_errors();
+		libxml_use_internal_errors( $prev );
+
+		$body_text = $dom->textContent;
+		$this->assertStringNotContainsString( 'href":', $body_text, 'JSON keys should not appear as visible text in the rendered output.' );
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox The link data span should survive nested wp_kses_post wrapping (the category-template scenario).
+	 *
+	 * @return void
+	 */
+	public function test_link_data_survives_nested_wp_kses_post(): void {
+		$rendered = $this->render_post_with_content( 'Hi <a href="https://example.com/page">a</a>' );
+
+		// Simulate a theme that wraps the rendered output in additional kses.
+		$nested = wp_kses_post( '<div class="entry-content">' . wp_kses_post( $rendered ) . '</div>' );
+
+		$kses_data = $this->extract_link_data_from_rendered( $nested );
+
+		$this->assertNotNull( $kses_data, 'Span + data should survive nested wp_kses_post wrapping.' );
+		$this->assertNotEmpty( array_column( $kses_data, 'href' ) );
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * Data provider: URLs containing characters that historically broke escaping or kses round-trips.
+	 *
+	 * @return array<string, array{0: string}>
+	 */
+	public function provide_special_chars_in_urls(): array {
+		return array(
+			'plain'                  => array( 'https://example.com/plain' ),
+			'query_with_ampersand'   => array( 'https://example.com/page?a=1&amp;b=2' ),
+			'percent_encoded_quote'  => array( 'https://example.com/page?title=%22hello%22' ),
+			'percent_encoded_apos'   => array( 'https://example.com/page?title=%27hello%27' ),
+			'unicode_path'           => array( 'https://example.com/%E6%97%A5%E6%9C%AC%E8%AA%9E' ),
+			'emoji_query'            => array( 'https://example.com/page?title=%F0%9F%9A%80' ),
+			'long_url'               => array( 'https://example.com/' . str_repeat( 'abc', 100 ) ),
+		);
+	}
+
+	/**
+	 * @testdox The link data span should round-trip URLs containing characters that stress JSON encoding and kses.
+	 *
+	 * @dataProvider provide_special_chars_in_urls
+	 *
+	 * @param string $href_in_html The href to embed in post content.
+	 *
+	 * @return void
+	 */
+	public function test_link_data_survives_kses_with_special_chars_in_url( string $href_in_html ): void {
+		$content  = sprintf( 'Edge case <a href="%s">link</a>', esc_url( $href_in_html ) );
+		$rendered = $this->render_post_with_content( $content );
+
+		$baseline = $this->extract_link_data_from_rendered( $rendered );
+		$this->assertNotNull( $baseline, 'Should be able to extract link data from initial render.' );
+		$this->assertNotEmpty( array_column( $baseline, 'href' ) );
+
+		// Run through three kses passes — the kses+attribute path should be lossless regardless of payload.
+		$current = $rendered;
+		for ( $i = 0; $i < 3; $i++ ) {
+			$current = wp_kses_post( $current );
+		}
+
+		$kses_data = $this->extract_link_data_from_rendered( $current );
+
+		$this->assertNotNull( $kses_data, 'Span + data should survive 3 wp_kses_post passes for this payload.' );
+		$this->assertSame(
+			array_column( $baseline, 'href' ),
+			array_column( $kses_data, 'href' ),
+			'The href set should be byte-identical before and after multiple kses passes.'
+		);
+
+		unset( $GLOBALS['post'] );
 	}
 }
