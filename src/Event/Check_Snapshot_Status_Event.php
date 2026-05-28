@@ -246,8 +246,8 @@ class Check_Snapshot_Status_Event {
 		if ( 'success' === $status['status'] ) {
 			$this->mark_as_pending( $link_id );
 
-			// If the link is excluded, but now is success, set the link as not excluded.
-			if ( $link->is_excluded() && 'success' === $status['status'] ) {
+			// If a system-set exclusion, lift it and clear the stale message.
+			if ( $link->is_excluded() && ! $link->is_manual_exclusion() ) {
 				$link = $link->set_excluded( false );
 
 				// If the link has an error message, clear it.

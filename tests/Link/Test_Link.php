@@ -400,6 +400,33 @@ class Test_Link extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox is_manual_exclusion() is true only when the link is excluded AND the message starts with the user-exclusion sentinel.
+	 *
+	 * @return void
+	 */
+	public function test_is_manual_exclusion(): void {
+		// Not excluded, no message — baseline.
+		$link = new Link( 'https://example.com' );
+		$this->assertFalse( $link->is_manual_exclusion() );
+
+		// Not excluded, user sentinel present — still false (exclusion was cleared).
+		$link->set_message( 'User Requested To Exclude (admin on 28 May 2026)' );
+		$this->assertFalse( $link->is_manual_exclusion() );
+
+		// Excluded, user sentinel present — true.
+		$link->set_excluded();
+		$this->assertTrue( $link->is_manual_exclusion() );
+
+		// Excluded, system message — false.
+		$link->set_message( 'error:no-access' );
+		$this->assertFalse( $link->is_manual_exclusion() );
+
+		// Excluded, empty message — false.
+		$link->set_message( '' );
+		$this->assertFalse( $link->is_manual_exclusion() );
+	}
+
+	/**
 	 * @testdox When we get a snapshot url from the model, it should be reparsed as web-wp.archive.org to web.archive.org
 	 *
 	 * @since 1.3.2

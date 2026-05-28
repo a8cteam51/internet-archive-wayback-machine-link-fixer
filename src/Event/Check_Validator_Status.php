@@ -184,10 +184,17 @@ class Check_Validator_Status {
 			);
 		}
 
-		// If status is success, set the link as not broken.
+		// If status is success, lift any system-set exclusion and clear its stale message.
 		if ( 'success' === $status['status'] ) {
-			$link = $link->set_excluded( false );
-			$this->link_repository->upsert( $link );
+			if ( $link->is_excluded() && ! $link->is_manual_exclusion() ) {
+				$link = $link->set_excluded( false );
+
+				if ( '' !== $link->get_message() ) {
+					$link = $link->set_message( '' );
+				}
+
+				$this->link_repository->upsert( $link );
+			}
 
 			return;
 		}

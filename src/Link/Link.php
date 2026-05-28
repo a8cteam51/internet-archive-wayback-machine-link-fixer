@@ -215,6 +215,17 @@ class Link implements \JsonSerializable {
 	}
 
 	/**
+	 * Checks if the link was manually excluded by a user.
+	 *
+	 * @return boolean
+	 */
+	public function is_manual_exclusion(): bool {
+		// Matches the message written by Report_Page::handle_link_details_form() on manual exclude.
+		return $this->is_excluded
+			&& 0 === strpos( $this->message, 'User Requested To Exclude' );
+	}
+
+	/**
 	 * Gets the message for the link.
 	 *
 	 * @return string
