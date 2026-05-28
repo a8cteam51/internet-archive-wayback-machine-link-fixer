@@ -111,10 +111,7 @@ class Link_Latest_Snapshot_Action {
 		// Update the links archived URL.
 		$link->set_archived_href( $archive_url );
 
-		// Lift a system-set exclusion (e.g. error:no-access) now that we have
-		// an archive, and clear the stale error message so the UI doesn't
-		// show "not excluded" alongside an exclusion-flavoured message.
-		// Manual exclusions are left in place.
+		// If a system-set exclusion, lift it and clear the stale message.
 		if ( $link->is_excluded() && ! $link->is_manual_exclusion() ) {
 			$link = $link->set_excluded( false );
 

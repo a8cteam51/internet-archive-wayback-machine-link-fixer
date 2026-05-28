@@ -184,9 +184,7 @@ class Check_Validator_Status {
 			);
 		}
 
-		// If status is success and the exclusion is system-set (no-access),
-		// lift it and clear the stale error message. Manual exclusions are
-		// sacred — left untouched.
+		// If status is success, lift any system-set exclusion and clear its stale message.
 		if ( 'success' === $status['status'] ) {
 			if ( $link->is_excluded() && ! $link->is_manual_exclusion() ) {
 				$link = $link->set_excluded( false );
