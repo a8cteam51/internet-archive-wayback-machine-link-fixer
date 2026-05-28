@@ -1054,8 +1054,7 @@ class Report_Table extends \WP_List_Table {
 		$this->items = $this->get_links(
 			$this->get_links_per_page(),
 			$this->get_pagenum(),
-			array( $this->get_status_from_url() ),
-			$this->get_search_term()
+			array( $this->get_status_from_url() )
 		);
 	}
 
@@ -1222,7 +1221,7 @@ class Report_Table extends \WP_List_Table {
 			: __( 'No HTTP Code', 'internet-archive-wayback-machine-link-fixer' );
 
 		return sprintf(
-			// translators: %1$s: last check date (e.g. "5 Jan 2025"), %2$s: HTTP status code (e.g. "404 status").
+			// translators: %1$s: last check date (e.g. "5 Jan 2025"), %2$s: HTTP status code (e.g. "404 status")
 			__( '%1$s with %2$s', 'internet-archive-wayback-machine-link-fixer' ),
 			$last_check['date']
 				? DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) )

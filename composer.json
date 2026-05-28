@@ -82,7 +82,7 @@
         ],
         "makepot": "wp i18n make-pot . --include=src,templates,assets --exclude=vendor,node_modules,pack,tests,lib,migrations,coverage,coverate-reports ",
         "updatepo": "wp i18n update-po ./languages/internet-archive-wayback-machine-link-fixer.pot",
-        "makejson": "wp i18n make-json ./languages --pretty-print --no-purge",
+        "makejson": "wp i18n make-json ./languages --pretty-print",
         "makemo": "wp i18n make-mo ./languages",
         "packages-install": "@composer install --ignore-platform-reqs --no-interaction",
         "packages-install--no-dev": "@packages-install --no-dev",
