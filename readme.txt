@@ -3,7 +3,7 @@ Contributors: waybackmachineplugin, wpspecialprojects, cagrimmett, glynnquelch
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.4.1-RC1
+Stable tag: 1.4.2
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -115,6 +115,9 @@ This service checks if web pages are accessible and retrieves final URLs after r
 The Internet Archive is a non-profit organization dedicated to preserving digital content for public access. URLs sent to these services become part of the public archive and may be accessible through the Wayback Machine interface. No personal information beyond the URLs themselves is transmitted to these services.
 
 == Changelog ==
+
+= 1.4.2 =
+* Fix: Manually excluded links sometimes revert to unexcluded and can still be run through the link checker process. Now fully respects manual exclusions.
 
 = 1.4.1 =
 * Fix: link data span now survives themes that wrap post content in `wp_kses_post` (previously the JSON could leak as visible text on category and archive templates).
