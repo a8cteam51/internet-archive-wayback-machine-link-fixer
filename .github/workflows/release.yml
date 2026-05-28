@@ -46,6 +46,7 @@ jobs:
             ".git/*" \
             ".github/*" \
             ".gitignore" \
+            ".distignore" \
             "index.php" \
             "node_modules/*" \
             "models/*" \
@@ -60,7 +61,16 @@ jobs:
             ".vscode/*" \
             "assets/css/src/*" \
             "assets/js/src/*" \
-            "_docs/*"
+            "_docs/*" \
+            "README.md" \
+            "AGENTS.md" \
+            "CLAUDE.md" \
+            "SECURITY.md" \
+            ".agents/*" \
+            "e2e/*" \
+            ".wp-env.json" \
+            "playwright-report/*" \
+            "test-results/*"
 
       - name:  Release
         uses: softprops/action-gh-release@v1
