@@ -426,6 +426,30 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox When exclude_excluded is true, get_links_for_post drops per-link excluded entries (the flag set by the admin "Exclude this link" toggle).
+	 *
+	 * @return void
+	 */
+	public function test_get_links_for_post_filters_per_link_excluded(): void {
+		$included = $this->link_repository->upsert( new Link( 'https://included.example' ) );
+
+		$excluded = new Link( 'https://excluded.example' );
+		$excluded->set_excluded();
+		$excluded = $this->link_repository->upsert( $excluded );
+
+		update_post_meta( 2, Settings::LINK_META_KEY, array( $included->get_id(), $excluded->get_id() ) );
+
+		// Without the filter, both come back.
+		$unfiltered = $this->link_repository->get_links_for_post( 2, false );
+		$this->assertCount( 2, $unfiltered->get_links() );
+
+		// With the filter, the per-link excluded entry is suppressed.
+		$filtered = $this->link_repository->get_links_for_post( 2, true );
+		$this->assertCount( 1, $filtered->get_links() );
+		$this->assertSame( $included->get_id(), $filtered->get_links()[0]->get_id() );
+	}
+
+	/**
 	 * @testdox It should be possible to query based on link ids.
 	 *
 	 * @return void

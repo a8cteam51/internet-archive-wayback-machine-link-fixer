@@ -38,7 +38,7 @@
         "roots/wordpress": "6.9.*",
         "wp-phpunit/wp-phpunit": "6.9.*",
         "yoast/phpunit-polyfills": "*",
-        "vlucas/phpdotenv": "<=5.5.0",
+        "vlucas/phpdotenv": "*",
         "wp-coding-standards/wpcs": "^3",
         "phpcompatibility/phpcompatibility-wp": "*",
         "phpstan/phpstan": "*",

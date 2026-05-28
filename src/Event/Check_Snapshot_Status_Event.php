@@ -246,8 +246,10 @@ class Check_Snapshot_Status_Event {
 		if ( 'success' === $status['status'] ) {
 			$this->mark_as_pending( $link_id );
 
-			// If the link is excluded, but now is success, set the link as not excluded.
-			if ( $link->is_excluded() && 'success' === $status['status'] ) {
+			// If the link is system-excluded (e.g. error:no-access) and the
+			// snapshot succeeded, lift the auto-exclusion and clear any stale
+			// error message. Manual exclusions are left untouched.
+			if ( $link->is_excluded() && ! $link->is_manual_exclusion() ) {
 				$link = $link->set_excluded( false );
 
 				// If the link has an error message, clear it.

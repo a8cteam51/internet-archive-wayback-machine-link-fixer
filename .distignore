@@ -24,3 +24,9 @@ AGENTS.md
 CLAUDE.md
 .agents
 
+# E2E test harness (development-only, do not deploy)
+e2e
+.wp-env.json
+playwright-report
+test-results
+

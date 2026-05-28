@@ -1,0 +1,60 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    branches: [ trunk, develop ]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Composer dependencies
+        run: composer install --no-dev --no-progress --prefer-dist
+
+      - name: Install npm dependencies
+        run: npm ci --force
+
+      - name: Build plugin assets
+        run: npm run build
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Start wp-env
+        run: npx wp-env start
+
+      - name: Run E2E tests
+        env:
+          WP_USERNAME: admin
+          WP_PASSWORD: password
+        run: npm run test:e2e
+
+      - name: Stop wp-env
+        if: always()
+        run: npx wp-env stop
+
+      - name: Upload test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7

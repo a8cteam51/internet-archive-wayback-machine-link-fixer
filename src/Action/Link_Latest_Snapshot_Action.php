@@ -111,9 +111,16 @@ class Link_Latest_Snapshot_Action {
 		// Update the links archived URL.
 		$link->set_archived_href( $archive_url );
 
-		// If the link is excluded, set the link as valid.
-		if ( $link->is_excluded() ) {
+		// Lift a system-set exclusion (e.g. error:no-access) now that we have
+		// an archive, and clear the stale error message so the UI doesn't
+		// show "not excluded" alongside an exclusion-flavoured message.
+		// Manual exclusions are left in place.
+		if ( $link->is_excluded() && ! $link->is_manual_exclusion() ) {
 			$link = $link->set_excluded( false );
+
+			if ( '' !== $link->get_message() ) {
+				$link = $link->set_message( '' );
+			}
 		}
 
 		// Update the link in the database.

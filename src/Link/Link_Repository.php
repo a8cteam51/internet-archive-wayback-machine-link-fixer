@@ -364,8 +364,15 @@ class Link_Repository {
 		$links = array_filter( $links );
 
 		foreach ( $links as $link ) {
-			if ( $exclude_excluded && Link_Exclusion::get_instance()->is_excluded( $link, $post_id ) ) {
-				continue;
+			if ( $exclude_excluded ) {
+				// Per-link DB flag (admin "Exclude this link" toggle, or auto-set by system on no-access).
+				if ( $link->is_excluded() ) {
+					continue;
+				}
+				// Global URL pattern / per-post exclusions from Settings.
+				if ( Link_Exclusion::get_instance()->is_excluded( $link, $post_id ) ) {
+					continue;
+				}
 			}
 
 			$collection->add( $link );

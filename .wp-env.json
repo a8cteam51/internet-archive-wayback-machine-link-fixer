@@ -1,0 +1,21 @@
+{
+	"core": null,
+	"phpVersion": "8.3",
+	"plugins": [ "." ],
+	"port": 57893,
+	"testsPort": 57894,
+	"config": {
+		"WP_DEBUG": true,
+		"WP_DEBUG_LOG": true,
+		"SCRIPT_DEBUG": true
+	},
+	"env": {
+		"tests": {
+			"config": {
+				"WP_DEBUG": true,
+				"WP_DEBUG_LOG": true,
+				"SCRIPT_DEBUG": true
+			}
+		}
+	}
+}

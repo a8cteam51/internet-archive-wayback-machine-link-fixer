@@ -19,9 +19,13 @@
     },
     "devDependencies": {
         "@csstools/postcss-sass": "^5.0.1",
+        "@playwright/test": "^1.50.0",
         "@wordpress/browserslist-config": "^5.9.1",
+        "@wordpress/e2e-test-utils-playwright": "^1.43.0",
+        "@wordpress/env": "^10.0.0",
         "@wordpress/postcss-plugins-preset": "^4.10.2",
         "@wordpress/scripts": "^25.3.4",
+        "dotenv": "^16.4.0",
         "npm-run-all": "^4.1.5",
         "postcss-cli": "^10.1.0",
         "rtlcss": "^4.0.0",
@@ -62,6 +66,12 @@
         "start": "npm-run-all --parallel start:**",
         "start:styles": "wp-scripts start assets/css/src/*.scss --output-path=assets/css/build",
         "start:blocks": "wp-scripts start --webpack-src-dir=blocks/src --output-path=blocks/build",
-        "start:assets:scripts": "wp-scripts start assets/js/src/*.js --output-path=assets/js/build"
+        "start:assets:scripts": "wp-scripts start assets/js/src/*.js --output-path=assets/js/build",
+        "test:e2e": "playwright test --config=e2e/playwright.config.js",
+        "test:e2e:local": "wp-env start && playwright test --config=e2e/playwright.config.js",
+        "test:e2e:ui": "playwright test --config=e2e/playwright.config.js --ui",
+        "test:e2e:headed": "playwright test --config=e2e/playwright.config.js --headed",
+        "test:e2e:debug": "playwright test --config=e2e/playwright.config.js --debug",
+        "wp-env": "wp-env"
     }
 }
