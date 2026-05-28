@@ -9,7 +9,10 @@
 **License:** GPL-3.0-or-later  
 **License URI:** https://www.gnu.org/licenses/gpl-3.0.html
 
-[![Unit Tests](https://github.com/a8cteam51/wayback-link-fixer/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/a8cteam51/wayback-link-fixer/actions/workflows/unit-tests.yml)
+[![PHP Coding Standards](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/actions/workflows/php-coding-standards.yml/badge.svg)](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/actions/workflows/php-coding-standards.yml)
+[![PHP Syntax Errors](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/actions/workflows/php-syntax-errors.yml/badge.svg)](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/actions/workflows/php-syntax-errors.yml)
+[![WP PHPUnit Tests](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/actions/workflows/unit-tests.yml)
+[![E2E Tests](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer/actions/workflows/e2e-tests.yml)
 
 ## Description
 
