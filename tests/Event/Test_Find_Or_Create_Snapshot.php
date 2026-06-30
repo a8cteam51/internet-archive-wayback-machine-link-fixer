@@ -36,6 +36,169 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Tear down.
+	 */
+	public function tear_down(): void {
+		remove_all_filters( 'pre_http_request' );
+		delete_transient( 'iawmlf_archive_api_online' );
+		parent::tear_down();
+	}
+
+	/**
+	 * Mocks every archive.org HTTP call the event makes, with the livewebcheck
+	 * (link checker) endpoint returning the supplied HTTP status code.
+	 *
+	 * - save/status/system  (is_online)            -> 200
+	 * - wayback/available   (get_latest_snapshot)  -> 200 + a valid snapshot
+	 * - livewebcheck        (check_single)         -> $link_check_code
+	 *
+	 * @param int $link_check_code The HTTP code the livewebcheck endpoint returns.
+	 *
+	 * @return void
+	 */
+	private function mock_archive_http( int $link_check_code ): void {
+		$snapshot_body = json_encode(
+			array(
+				'url'                => 'http://example.com',
+				'archived_snapshots' => array(
+					'closest' => array(
+						'available' => true,
+						'status'    => 200,
+						'url'       => 'http://web.archive.org/web/20240101000000/http://example.com',
+						'timestamp' => '20240101000000',
+					),
+				),
+			)
+		);
+
+		add_filter(
+			'pre_http_request',
+			function ( $pre, $args, $url ) use ( $link_check_code, $snapshot_body ) {
+				// The system status endpoint (is_online).
+				if ( false !== strpos( $url, 'save/status/system' ) ) {
+					return array(
+						'response' => array( 'code' => 200 ),
+						'body'     => json_encode( array( 'status' => 'ok' ) ),
+					);
+				}
+
+				// The find-snapshot endpoint (get_latest_snapshot).
+				if ( false !== strpos( $url, 'wayback/available' ) ) {
+					return array(
+						'response' => array( 'code' => 200 ),
+						'body'     => $snapshot_body,
+					);
+				}
+
+				// The link checker endpoint (check_single) - the one under test.
+				if ( false !== strpos( $url, 'livewebcheck' ) ) {
+					return array(
+						'response' => array( 'code' => $link_check_code ),
+						'body'     => json_encode( array( 'status' => 200 ) ),
+					);
+				}
+
+				// Anything else, a benign 200.
+				return array(
+					'response' => array( 'code' => 200 ),
+					'body'     => '{}',
+				);
+			},
+			10,
+			3
+		);
+	}
+
+	/**
+	 * @testdox BASELINE: when the link checker returns a 200, the link is checked and marked done.
+	 *
+	 * @return void
+	 */
+	public function test_200_from_link_checker_processes_link(): void {
+		$this->mock_archive_http( 200 );
+		delete_transient( 'iawmlf_archive_api_online' );
+
+		$repo = new Link_Repository();
+		$link = $repo->upsert( new Link( 'https://example.com' ) );
+
+		$event = new Find_Or_Create_Snapshot_Event();
+		$event->setup();
+		$event( $link->get_id() );
+
+		$link = $repo->find_by_id( $link->get_id() );
+
+		// A successful check means the link is processed/done.
+		$this->assertEquals( Link::PROCESS_DONE, $link->get_archive_process() );
+	}
+
+	/**
+	 * @testdox When a link-check HTTP request comes back as a non-200, the event must do nothing - the link is left untouched.
+	 *
+	 * @dataProvider non_success_status_code_provider
+	 *
+	 * @param int $code The HTTP status code the livewebcheck endpoint returns.
+	 *
+	 * @return void
+	 */
+	public function test_non_2xx_from_link_checker_does_nothing( int $code ): void {
+		$this->mock_archive_http( $code );
+		delete_transient( 'iawmlf_archive_api_online' );
+
+		$repo = new Link_Repository();
+		$link = $repo->upsert( new Link( 'https://example.com' ) );
+		$id   = $link->get_id();
+
+		// Capture the state before the event runs.
+		$process_before = $link->get_archive_process();
+
+		$event = new Find_Or_Create_Snapshot_Event();
+		$event->setup();
+
+		try {
+			$event( $id );
+		} catch ( \Throwable $e ) {
+			// "Do nothing" means it must not bubble an error to the scheduler either.
+			$this->fail( "A {$code} link-check response must be handled silently, but the event threw: " . $e->getMessage() );
+		}
+
+		$link = $repo->find_by_id( $id );
+
+		// The links process state must be unchanged.
+		$this->assertSame(
+			$process_before,
+			$link->get_archive_process(),
+			"A {$code} link-check response must not change the link's process state."
+		);
+
+		// The link must not have been marked done.
+		$this->assertNotEquals(
+			Link::PROCESS_DONE,
+			$link->get_archive_process(),
+			"A {$code} link-check response must not mark the link as done."
+		);
+
+		// The link must not have had an archived url applied.
+		$this->assertEmpty(
+			$link->get_archived_href(),
+			"A {$code} link-check response must not set an archived url on the link."
+		);
+	}
+
+	/**
+	 * Non-2xx (offline) HTTP status codes seen during the DDoS outage.
+	 *
+	 * @return array<string, array{0:int}>
+	 */
+	public static function non_success_status_code_provider(): array {
+		return array(
+			'503 service unavailable' => array( 503 ),
+			'404 not found'           => array( 404 ),
+			'403 forbidden'           => array( 403 ),
+			'500 generic non-2xx'     => array( 500 ),
+		);
+	}
+
+	/**
 	 * @testdox When a link is added to the queue and its url is already an archive.org url (HTTPS), it should not be added to the queue and a message added to the link object.
 	 *
 	 * @return void

@@ -14,6 +14,7 @@ namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 use Exception;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -132,8 +133,15 @@ class Find_Or_Create_Snapshot_Event {
 
 		$link->set_archived_href( $snapshot['url'] );
 
-		// Get the current link status.
-		$status = $this->wayback_machine->check_single( $link->get_href() );
+		// Get the current link status. If the link checker endpoint is
+		// unavailable (a non-200 response), treat it exactly like the service
+		// being offline: leave the link untouched and try again later.
+		try {
+			$status = $this->wayback_machine->check_single( $link->get_href() );
+		} catch ( Service_Offline_Exception $e ) {
+			self::add_to_queue_with_delay( $link_id, 1 * \HOUR_IN_SECONDS );
+			return;
+		}
 
 		// Add to the link.
 		$link->add_check( $status );

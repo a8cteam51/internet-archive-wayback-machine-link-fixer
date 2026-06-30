@@ -2,6 +2,9 @@
 	"core": null,
 	"phpVersion": "8.3",
 	"plugins": [ "." ],
+	"mappings": {
+		"wp-content/mu-plugins/iawmlf-e2e-non200.php": "./e2e/mu-plugins/iawmlf-e2e-non200.php"
+	},
 	"port": 57893,
 	"testsPort": 57894,
 	"config": {

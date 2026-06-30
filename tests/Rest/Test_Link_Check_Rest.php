@@ -18,6 +18,7 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Rest\Link_Check_Rest;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
 
 /**
  * Test_Link_Check_Rest
@@ -254,5 +255,54 @@ class Test_Link_Check_Rest extends \WP_UnitTestCase {
 		$response = $this->dispatch_request( array( 'link' => 'https://error-link.com' ) );
 
 		$this->assertEquals( 500, $response->get_status() );
+	}
+
+	/**
+	 * Non-200 (offline) HTTP status codes the link checker can report.
+	 *
+	 * @return array<string, array{0:int}>
+	 */
+	public static function non_200_code_provider(): array {
+		return array(
+			'503 service unavailable' => array( 503 ),
+			'502 bad gateway'         => array( 502 ),
+			'404 not found'           => array( 404 ),
+			'403 forbidden'           => array( 403 ),
+		);
+	}
+
+	/**
+	 * @testdox When the link checker endpoint returns a non-200, the route just returns the error and must NOT mark the link broken.
+	 *
+	 * @dataProvider non_200_code_provider
+	 *
+	 * @param int $code The HTTP status code the link checker endpoint returned.
+	 *
+	 * @return void
+	 */
+	public function test_non_200_returns_error_and_does_not_mark_broken( int $code ): void {
+		// Create a link with no checks (will trigger a check).
+		$url  = 'https://ia-non200.com';
+		$link = new Link( $url );
+		$link->set_archived_href( 'https://web.archive.org/web/20240101/' . $url );
+		$this->link_repository->upsert( $link );
+
+		// The link checker endpoint returned a non-200, so the client treats it
+		// as offline and throws.
+		$mock_client = $this->createMock( Link_Checker_Client::class );
+		$mock_client->method( 'check_single' )
+			->willThrowException( Service_Offline_Exception::create( 'Response:' . $code ) );
+
+		add_filter( 'iawmlf_link_checker_client', fn() => $mock_client );
+
+		$response = $this->dispatch_request( array( 'link' => $url ) );
+
+		// It just returns the error.
+		$this->assertEquals( 500, $response->get_status() );
+
+		// The link must be left untouched - not broken, no check recorded.
+		$stored = $this->link_repository->find_by_url( $url );
+		$this->assertFalse( $stored->is_broken(), "A {$code} must not mark the link broken." );
+		$this->assertNull( $stored->get_last_check(), "A {$code} must not record a check against the link." );
 	}
 }
