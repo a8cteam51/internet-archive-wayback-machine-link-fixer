@@ -133,12 +133,10 @@ class Find_Or_Create_Snapshot_Event {
 
 		$link->set_archived_href( $snapshot['url'] );
 
-		// Get the current link status. If the link checker endpoint is
-		// unavailable (a non-200 response), treat it exactly like the service
-		// being offline: leave the link untouched and try again later.
 		try {
 			$status = $this->wayback_machine->check_single( $link->get_href() );
 		} catch ( Service_Offline_Exception $e ) {
+			// Non-200 from the link checker: treat as offline, reschedule.
 			self::add_to_queue_with_delay( $link_id, 1 * \HOUR_IN_SECONDS );
 			return;
 		}
