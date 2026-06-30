@@ -3,19 +3,8 @@ const { execSync } = require( 'child_process' );
 const path = require( 'path' );
 
 /**
- * Regression: whatever HTTP status the Internet Archive link checker endpoint
- * returns, a working link must NOT be marked as broken on the front end.
- *
- * For each status code the mapped e2e mu-plugin forces the live web check to
- * return, we seed a NOT-broken, never-checked link (so the front-end performs
- * a live check), load the post and assert the link is left alone — no
- * `iawmlf-broken-link` class and no href rewrite.
- *
- *   - 200            -> the checker reports a valid link.
- *   - 403/404/500/.. -> the endpoint is unavailable; the REST route returns
- *                       500 and the front-end must do nothing.
- *
- * Seed/cleanup are WP-CLI commands from e2e/mu-plugins/iawmlf-e2e-non200.php.
+ * Regression: whatever status the link checker returns, a working link must not
+ * be marked broken on the front end. Forces each status via the e2e mu-plugin.
  */
 
 const PLUGIN_DIR = 'wp-content/plugins/internet-archive-wayback-machine-link-fixer';
@@ -60,8 +49,7 @@ test.describe( 'link checker status codes', () => {
 			const checkedLink = page.locator( 'a', { hasText: 'checked link' } );
 			await expect( checkedLink ).toBeVisible();
 
-			// A 200 is a real verdict (HTTP 200); any non-200 makes the route
-			// return a 500 error rather than a verdict.
+			// 200 is a real verdict; any non-200 makes the route return a 500.
 			const response = await checkResponse;
 			expect( response.status() ).toBe( 200 === code ? 200 : 500 );
 

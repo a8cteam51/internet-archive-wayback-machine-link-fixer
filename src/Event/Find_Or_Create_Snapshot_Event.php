@@ -133,6 +133,7 @@ class Find_Or_Create_Snapshot_Event {
 
 		$link->set_archived_href( $snapshot['url'] );
 
+		// Get the current link status.
 		try {
 			$status = $this->wayback_machine->check_single( $link->get_href() );
 		} catch ( Service_Offline_Exception $e ) {

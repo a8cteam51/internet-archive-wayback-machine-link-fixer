@@ -34,8 +34,7 @@ add_filter(
 
 		return array(
 			'headers'  => array(),
-			// A 200 needs a valid body so the checker reports the link's status;
-			// any non-200 makes the checker treat the service as offline.
+			// 200 needs a valid body; any non-200 makes the checker treat it as offline.
 			'body'     => 200 === $code ? wp_json_encode( array( 'status' => 200 ) ) : '',
 			'response' => array(
 				'code'    => $code,
@@ -79,16 +78,14 @@ WP_CLI::add_command(
 
 		$code = isset( $args[0] ) ? (int) $args[0] : 502;
 
-		// Front-end script only enqueues (and would rewrite broken links) in
-		// "replace_link" mode — use it so a wrongly-broken link is visible.
+		// "replace_link" mode so the front-end enqueues and would rewrite broken links.
 		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
 		update_option( Settings::LINK_EXCLUSIONS, array() );
 
 		iawmlf_e2e_non200_cleanup();
 		update_option( IAWMLF_E2E_OPTION, $code );
 
-		// A link that is NOT broken and has never been checked, so the
-		// front-end performs a live check.
+		// Not broken and never checked, so the front-end performs a live check.
 		$wpdb->insert(
 			Settings::get_link_table_name(),
 			array(

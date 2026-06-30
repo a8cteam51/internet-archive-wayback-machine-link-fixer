@@ -45,16 +45,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * Mocks every archive.org HTTP call the event makes, with the livewebcheck
-	 * (link checker) endpoint returning the supplied HTTP status code.
-	 *
-	 * - save/status/system  (is_online)            -> 200
-	 * - wayback/available   (get_latest_snapshot)  -> 200 + a valid snapshot
-	 * - livewebcheck        (check_single)         -> $link_check_code
-	 *
-	 * @param int $link_check_code The HTTP code the livewebcheck endpoint returns.
-	 *
-	 * @return void
+	 * Mocks the event's archive.org calls; livewebcheck returns $link_check_code.
 	 */
 	private function mock_archive_http( int $link_check_code ): void {
 		$snapshot_body = json_encode(

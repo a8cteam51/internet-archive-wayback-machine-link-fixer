@@ -287,8 +287,7 @@ class Test_Link_Check_Rest extends \WP_UnitTestCase {
 		$link->set_archived_href( 'https://web.archive.org/web/20240101/' . $url );
 		$this->link_repository->upsert( $link );
 
-		// The link checker endpoint returned a non-200, so the client treats it
-		// as offline and throws.
+		// Non-200 from the endpoint: the client treats it as offline and throws.
 		$mock_client = $this->createMock( Link_Checker_Client::class );
 		$mock_client->method( 'check_single' )
 			->willThrowException( Service_Offline_Exception::create( 'Response:' . $code ) );
