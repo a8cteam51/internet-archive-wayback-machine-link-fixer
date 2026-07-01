@@ -15,28 +15,32 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Handles the exclusion of links.
+ * Handles the exclusion of links against the built-in and user exclusion lists.
  */
 class Link_Exclusion {
 
 	/**
-	 * Holds the global exclusions.
+	 * The built-in exclusion patterns.
 	 *
 	 * @var string[]
 	 */
-	private static $exclusions = null;
-
+	private $bundled;
 
 	/**
-	 * Create an instance of the class.
+	 * The user settings exclusion patterns.
+	 *
+	 * @var string[]
+	 */
+	private $settings;
+
+	/**
+	 * Create an instance of the class, loading both exclusion lists.
 	 *
 	 * @return void
 	 */
 	public function __construct() {
-		// If we have not loaded the exclusions, load them.
-		if ( null === self::$exclusions ) {
-			self::$exclusions = get_option( Settings::LINK_EXCLUSIONS, array() );
-		}
+		$this->bundled  = Settings::get_bundled_link_exclusions();
+		$this->settings = Settings::get_link_exclusions();
 	}
 
 	/**
@@ -49,7 +53,7 @@ class Link_Exclusion {
 	}
 
 	/**
-	 * Checks if a give link is excluded.
+	 * Checks if a given link is excluded by either the built-in or the settings list.
 	 *
 	 * @param Link         $link    The link to check.
 	 * @param integer|null $post_id The post ID to check.
@@ -57,13 +61,49 @@ class Link_Exclusion {
 	 * @return boolean
 	 */
 	public function is_excluded( Link $link, ?int $post_id = null ): bool {
+		$excluded = $this->is_globally_excluded( $link ) || $this->is_settings_excluded( $link );
+
 		return null !== $post_id
-			? apply_filters( 'iawmlf_exclude_link_from_post', $this->is_global_excluded( $link ), $link, $post_id )
-			: $this->is_global_excluded( $link );
+			? apply_filters( 'iawmlf_exclude_link_from_post', $excluded, $link, $post_id )
+			: $excluded;
 	}
 
 	/**
-	 * Filters an array of links to check for exclusions.
+	 * Checks if a link is in the built-in exclusion list.
+	 *
+	 * @param Link $link The link to check.
+	 *
+	 * @return boolean
+	 */
+	public function is_globally_excluded( Link $link ): bool {
+		foreach ( $this->bundled as $pattern ) {
+			if ( fnmatch( $pattern, $link->get_href() ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if a link is in the user settings exclusion list.
+	 *
+	 * @param Link $link The link to check.
+	 *
+	 * @return boolean
+	 */
+	public function is_settings_excluded( Link $link ): bool {
+		foreach ( $this->settings as $pattern ) {
+			if ( fnmatch( $pattern, $link->get_href() ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Filters an array of links to remove excluded ones.
 	 *
 	 * @param Link[]       $links   The links to check.
 	 * @param integer|null $post_id The post ID to check.
@@ -74,25 +114,8 @@ class Link_Exclusion {
 		return array_filter(
 			$links,
 			function ( Link $link ) use ( $post_id ): bool {
-				return ! $this->is_global_excluded( $link, $post_id );
+				return ! $this->is_excluded( $link, $post_id );
 			}
 		);
-	}
-
-	/**
-	 * Checks if a link is excluded from the global exclusions.
-	 *
-	 * @param Link $link The link to check.
-	 *
-	 * @return boolean
-	 */
-	private function is_global_excluded( Link $link ): bool {
-		foreach ( self::$exclusions as $ex ) {
-			if ( fnmatch( $ex, $link->get_href() ) ) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 }

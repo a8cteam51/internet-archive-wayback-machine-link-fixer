@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
-use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Exclusion;
 
 // Check if we have any previous links to show.
 $iawmlf_check_count      = count( $iawmlf_link->get_checks() );
@@ -20,6 +20,7 @@ $iawmlf_hide_check_count = $iawmlf_check_count > 10 ? absint( $iawmlf_check_coun
 
 // Generate the title.
 $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https://' ), '', $iawmlf_link->get_href() ), 55 );
+
 ?>
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php echo esc_html( $iawmlf_link_title ); ?></h1>
@@ -91,6 +92,10 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 						<div class="inside">
 							<?php if ( $iawmlf_link->is_excluded() ) : ?>
 								<p><?php esc_html_e( 'This link is currently excluded. It will not be checked for broken status, fixed automatically, or have snapshots created by the Internet Archive.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
+							<?php elseif ( Link_Exclusion::get_instance()->is_settings_excluded( $iawmlf_link ) ) : ?>
+								<p><?php esc_html_e( 'This link is excluded by your exclusion settings list, so it will not be checked, fixed, or archived. Remove it from that list to re-enable it — the option below cannot override it.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
+							<?php elseif ( Link_Exclusion::get_instance()->is_globally_excluded( $iawmlf_link ) ) : ?>
+								<p><?php esc_html_e( 'This link is excluded by the built-in exclusion list, so it will not be checked, fixed, or archived. The option below cannot override it.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 							<?php else : ?>
 								<p><?php esc_html_e( 'Excluding this link will stop it from being checked for broken status, fixed automatically, or having snapshots created by the Internet Archive.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 							<?php endif; ?>
@@ -98,10 +103,15 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 							<form method="post" id="iawmlf_link_details_form">
 								<?php wp_nonce_field( 'iawmlf_link_details', 'iawmlf_link_details_nonce' ); ?>
 								<input type="hidden" name="iawmlf_link_id" value="<?php echo absint( $iawmlf_link->get_id() ); ?>" />
-
 								<label>
-									<input type="checkbox" name="iawmlf_exclude_link" value="1" id="iawmlf_toggle_exclusion" <?php checked( $iawmlf_link->is_excluded() ); ?> />
-									<?php esc_html_e( 'Exclude this link', 'internet-archive-wayback-machine-link-fixer' ); ?>
+									<?php if ( Link_Exclusion::get_instance()->is_excluded( $iawmlf_link ) ) : ?>
+										<input type="hidden" name="iawmlf_exclude_link" value="<?php echo esc_attr( $iawmlf_link->is_excluded() ); ?>" />
+										<input type="checkbox" disabled name="iawmlf_exclude_link_disp" value="1" id="iawmlf_toggle_exclusion" <?php checked( $iawmlf_link->is_excluded() ); ?> disabled />
+										<?php esc_html_e( 'This link is excluded by a settings or built-in exclusion rule and cannot be toggled here.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+									<?php else : ?>
+										<input type="checkbox" name="iawmlf_exclude_link" value="1" id="iawmlf_toggle_exclusion" <?php checked( $iawmlf_link->is_excluded() ); ?> />
+										<?php esc_html_e( 'Exclude this link', 'internet-archive-wayback-machine-link-fixer' ); ?>
+									<?php endif; ?>
 								</label>
 							</form>
 						</div>

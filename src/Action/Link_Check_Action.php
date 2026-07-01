@@ -14,6 +14,7 @@ namespace Internet_Archive\Wayback_Machine_Link_Fixer\Action;
 
 use Throwable;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Exclusion;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 
 defined( 'ABSPATH' ) || exit;
@@ -83,6 +84,15 @@ class Link_Check_Action {
 
 		// If a link is set as excluded, it cant be checked.
 		if ( $link->is_excluded() ) {
+			return array(
+				'link'    => $link,
+				'checked' => false,
+				'valid'   => true,
+			);
+		}
+
+		// If the link matches our exclusion list (built-in or settings), skip checking it.
+		if ( Link_Exclusion::get_instance()->is_excluded( $link ) ) {
 			return array(
 				'link'    => $link,
 				'checked' => false,

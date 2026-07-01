@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Processor;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
-use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Exclusion;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller;
 
@@ -630,12 +629,6 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Add a global exclusion pattern that matches one of the links.
 		update_option( Settings::LINK_EXCLUSIONS, array( '*excluded-domain.com*' ) );
 
-		// Reset the Link_Exclusion static cache so it picks up the new option.
-		$reflection = new \ReflectionClass( Link_Exclusion::class );
-		$property   = $reflection->getProperty( 'exclusions' );
-		$property->setAccessible( true );
-		$property->setValue( null, null );
-
 		$post_id = self::factory()->post->create();
 
 		// Add content with two links — one that will be excluded, one that won't.
@@ -672,9 +665,6 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Clean up.
 		unset( $GLOBALS['post'] );
 		\delete_option( Settings::LINK_EXCLUSIONS );
-
-		// Reset the Link_Exclusion static cache.
-		$property->setValue( null, null );
 	}
 
 	/**
@@ -688,12 +678,6 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 
 		// Add a global exclusion pattern that matches one of the links.
 		update_option( Settings::LINK_EXCLUSIONS, array( '*excluded-domain.com*' ) );
-
-		// Reset the Link_Exclusion static cache so it picks up the new option.
-		$reflection = new \ReflectionClass( Link_Exclusion::class );
-		$property   = $reflection->getProperty( 'exclusions' );
-		$property->setAccessible( true );
-		$property->setValue( null, null );
 
 		$post_id = self::factory()->post->create();
 
@@ -734,9 +718,6 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Clean up.
 		unset( $GLOBALS['post'] );
 		\delete_option( Settings::LINK_EXCLUSIONS );
-
-		// Reset the Link_Exclusion static cache.
-		$property->setValue( null, null );
 	}
 
 	/**

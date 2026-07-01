@@ -74,6 +74,17 @@ class Settings {
 	public const LINK_ICON_NONE = 'none';
 
 	/**
+	 * Built-in list of exclusion patterns bundled with the plugin, merged with the user's settings
+	 * list when matching. Extendable via the undocumented `iawmlf_bundled_link_exclusions` filter.
+	 *
+	 * @var string[]
+	 */
+	public const BUNDLED_LINK_EXCLUSIONS = array(
+		'*.linkedin.com*', // LinkedIn sub-domains (www.linkedin.com etc.) — blocks the Internet Archive link checker.
+		'*//linkedin.com*', // LinkedIn apex (https://linkedin.com/...).
+	);
+
+	/**
 	 * Gets the link table name.
 	 *
 	 * @since 1.2.0
@@ -165,6 +176,20 @@ class Settings {
 	public static function get_link_exclusions(): array {
 		$links = array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
 		return apply_filters( 'iawmlf_link_exclusions', $links );
+	}
+
+	/**
+	 * Get the built-in exclusion list bundled with the plugin.
+	 *
+	 * Merged with the user's settings list when matching. Extendable via the undocumented
+	 * `iawmlf_bundled_link_exclusions` filter.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return string[]
+	 */
+	public static function get_bundled_link_exclusions(): array {
+		return (array) apply_filters( 'iawmlf_bundled_link_exclusions', self::BUNDLED_LINK_EXCLUSIONS );
 	}
 
 	/**
