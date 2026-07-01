@@ -4,7 +4,8 @@
 	"plugins": [ "." ],
 	"mappings": {
 		"wp-content/mu-plugins/iawmlf-e2e-non200.php": "./e2e/mu-plugins/iawmlf-e2e-non200.php",
-		"wp-content/mu-plugins/iawmlf-e2e-exclusion.php": "./e2e/mu-plugins/iawmlf-e2e-exclusion.php"
+		"wp-content/mu-plugins/iawmlf-e2e-exclusion.php": "./e2e/mu-plugins/iawmlf-e2e-exclusion.php",
+		"wp-content/mu-plugins/iawmlf-e2e-fixer-mode.php": "./e2e/mu-plugins/iawmlf-e2e-fixer-mode.php"
 	},
 	"port": 57893,
 	"testsPort": 57894,

@@ -1430,8 +1430,11 @@ class Settings_Page {
 			<option value="<?php echo esc_attr( Settings::FIXER_OPTION_REPLACE_LINK ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_REPLACE_LINK ); ?>>
 				<?php esc_html_e( 'Redirect broken links to snapshots on the Wayback Machine', 'internet-archive-wayback-machine-link-fixer' ); ?>
 			</option>
+			<option value="<?php echo esc_attr( Settings::FIXER_OPTION_CHECK_ONLY ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_CHECK_ONLY ); ?>>
+				<?php esc_html_e( 'Check broken links but do not redirect them', 'internet-archive-wayback-machine-link-fixer' ); ?>
+			</option>
 			<option value="<?php echo esc_attr( Settings::FIXER_OPTION_DO_NOTHING ); ?>" <?php selected( Settings::get_fixer_option(), Settings::FIXER_OPTION_DO_NOTHING ); ?>>
-				<?php esc_html_e( 'Do not redirect broken links', 'internet-archive-wayback-machine-link-fixer' ); ?>
+				<?php esc_html_e( 'Do not auto check links', 'internet-archive-wayback-machine-link-fixer' ); ?>
 			</option>
 		</select>
 		<p class="description">

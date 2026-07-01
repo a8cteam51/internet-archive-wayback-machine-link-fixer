@@ -776,6 +776,85 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox When the check only option is selected, the HTML link output should still be rendered so links can be checked.
+	 *
+	 * @return void
+	 */
+	public function test_check_only_option_renders_html_link_output(): void {
+		// Set the option to check only.
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_CHECK_ONLY );
+
+		$post_id = \WP_UnitTestCase_Base::factory()->post->create();
+
+		$content = 'This is a post with a link to <a href="https://from.post/content">example</a><br>And another link to <a href="https://from.post/content_twice">example</a>';
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+				'post_type'    => 'post',
+			)
+		);
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		// Render the block.
+		$rendered = do_blocks( $GLOBALS['post']->post_content );
+
+		// Check it still contains the link data script tag.
+		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox When the check only option is selected, the front end script should be enqueued with the fixer option passed as check only.
+	 *
+	 * @return void
+	 */
+	public function test_check_only_option_enqueues_script(): void {
+		// Clear the wp-scripts global.
+		wp_scripts()->registered = array();
+
+		// Set the option to check only.
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_CHECK_ONLY );
+
+		$post_id         = \WP_UnitTestCase_Base::factory()->post->create();
+		$GLOBALS['post'] = get_post( $post_id );
+
+		$content = 'This is a post with a link to <a href="https://from.post/content">example</a>';
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+				'post_type'    => 'post',
+			)
+		);
+
+		$handler = new WP_Post_Controller();
+		$handler->on_save_post_process_post_links( $post_id, get_post( $post_id ), true );
+
+		// Enqueue the script.
+		$handler->enqueue_frontend_script();
+		do_action( 'wp_enqueue_scripts' );
+
+		// The script should be enqueued so links can be checked.
+		$this->assertTrue( wp_script_is( 'iawm-link-fixer-front-link-checker' ) );
+
+		// The localized fixer option should be check only.
+		$localized_data = wp_scripts()->get_data( 'iawm-link-fixer-front-link-checker', 'data' );
+
+		unset( $GLOBALS['post'] );
+
+		$matches = array();
+		preg_match( '/\{.*\}/', $localized_data, $matches );
+		$data = json_decode( $matches[0], true );
+
+		$this->assertIsArray( $data );
+		$this->assertArrayHasKey( 'fixerOption', $data );
+		$this->assertEquals( Settings::FIXER_OPTION_CHECK_ONLY, $data['fixerOption'] );
+	}
+
+	/**
 	 * @testdox A post in the auto archiver excluded posts list should not be added to the wayback machine.
 	 *
 	 * @return void

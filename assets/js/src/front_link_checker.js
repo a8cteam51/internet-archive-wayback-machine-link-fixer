@@ -271,8 +271,9 @@ const addDataAttributes = (link) => {
 				currentLink.setAttribute('data-iawmlf-archived-last-checked', link.last_checked.date);
 			}
 
-			// If the link is broken, add a class and change the href
-			if (link.broken && linkCheckSettings.fixerOption !== 'do_nothing') {
+			// If the link is broken, add a class and change the href.
+			// Only 'replace_link' swaps the href; 'check_only' records the check but leaves the link untouched.
+			if (link.broken && linkCheckSettings.fixerOption === 'replace_link') {
 				currentLink.classList.add('iawmlf-broken-link');
 				currentLink.href = '' !== link.archived_href ? link.archived_href : href;
 			}

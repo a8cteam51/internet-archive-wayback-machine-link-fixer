@@ -126,8 +126,9 @@ Specify the number of consecutive failed checks before a link is marked as broke
 ![Fixer Option](./_docs/settings--fixer-option.png)
 
 You can choose what outcome you want to happen when a link is found to be broken. The options are:
- * **Do Nothing** - This will not change the link at all, but useful for monitoring content.
- * **Replace Link (No Notification)** - This will replace the broken link with the archived version, if one exists. If no archived version exists, the link will not be changed. No notice will be given to the user that the link has been replaced.
+ * **Redirect broken links to snapshots on the Wayback Machine** - This will replace the broken link with the archived version, if one exists. If no archived version exists, the link will not be changed. No notice will be given to the user that the link has been replaced.
+ * **Check broken links but do not redirect them** - Links are still checked and their status recorded internally (so the link report stays up to date), but the link shown to visitors is never changed. Useful for monitoring content without altering the frontend.
+ * **Do not auto check links** - Links are not automatically checked from the frontend and are never changed.
 
 #### Link Icon
 

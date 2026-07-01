@@ -363,6 +363,10 @@ class Test_Settings extends \WP_UnitTestCase {
 		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
 		$this->assertTrue( Settings::should_render_html_link_output() );
 
+		// Set the option to check only (checker still runs, so output is rendered).
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_CHECK_ONLY );
+		$this->assertTrue( Settings::should_render_html_link_output() );
+
 		// Set the option to do nothing.
 		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_DO_NOTHING );
 		$this->assertFalse( Settings::should_render_html_link_output() );

@@ -57,6 +57,7 @@ class Settings {
 	// Fixer Options
 	public const FIXER_OPTION_DO_NOTHING   = 'do_nothing';
 	public const FIXER_OPTION_REPLACE_LINK = 'replace_link';
+	public const FIXER_OPTION_CHECK_ONLY   = 'check_only';
 
 	// Onboarding options.
 	public const ONBOARDING_COMPLETED_OPTION = self::SETTINGS_PREFIX . 'onboarding_completed';
@@ -488,12 +489,16 @@ class Settings {
 	/**
 	 * Checks if the HTML link output should be rendered in the frontend.
 	 *
+	 * True for both "replace link" and "check only" - the frontend checker is
+	 * needed in both cases to verify links and record the result. The check-only
+	 * mode simply skips the href swap (handled JS-side via the fixer option).
+	 *
 	 * @since 1.3.1
 	 *
 	 * @return boolean
 	 */
 	public static function should_render_html_link_output(): bool {
-		$allowed = in_array( self::get_fixer_option(), array( self::FIXER_OPTION_REPLACE_LINK ), true );
+		$allowed = in_array( self::get_fixer_option(), array( self::FIXER_OPTION_REPLACE_LINK, self::FIXER_OPTION_CHECK_ONLY ), true );
 
 		/**
 		 * Filter to allow or disallow the HTML link output in the frontend.
