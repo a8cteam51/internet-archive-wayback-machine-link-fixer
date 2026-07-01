@@ -56,6 +56,17 @@ class Test_Action_Scheduler_Garbage_Collection extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Tear down
+	 */
+	public function tear_down(): void {
+		// Remove client mocks so they can't leak into later tests under random ordering.
+		remove_all_filters( 'iawmlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_link_checker_client' );
+
+		parent::tear_down();
+	}
+
+	/**
 	 * Set the snapshot client to return a mocked response.
 	 *
 	 * @param array $response The response to return.

@@ -32,6 +32,11 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		// Clear the actionscheduler_actions table.
 		$this->wpdb->query( "TRUNCATE TABLE {$this->wpdb->prefix}actionscheduler_actions" );
 
+		// Clear any snapshot / link-checker client mocks leaked from other tests (random order):
+		// this class mocks at the HTTP layer, so a stale injected client would leave links 'pending'.
+		remove_all_filters( 'iawmlf_snapshot_client' );
+		remove_all_filters( 'iawmlf_link_checker_client' );
+
 		parent::set_up();
 	}
 
