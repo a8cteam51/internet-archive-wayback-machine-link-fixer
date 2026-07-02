@@ -3,7 +3,7 @@ Contributors: waybackmachineplugin, wpspecialprojects, cagrimmett, glynnquelch
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.4.2
+Stable tag: 1.4.3.-RC1
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -45,6 +45,9 @@ Yes, you can enable the Auto Archiver and this will create new snapshots every t
 
 = What happens to broken links? =
 When we find a broken link, we update the src on the fly; this means the base content is not edited and remains as created.
+
+= Why is a working link being reported as broken? =
+Some websites block automated bots, so the checker can receive a "403 Forbidden" and flag the link as broken even though it works fine in a browser. If this happens you can exclude that single link from its report page, or add a URL rule (with a * wildcard) to the Link Exclusions setting to cover a whole domain.
 
 = How long does this take? =
 This all depends on how many links there are within your content. This is all handled in the background but can take many weeks if a site has thousands of links. It is best used as a tool you setup and leave running in the background.
@@ -115,6 +118,10 @@ This service checks if web pages are accessible and retrieves final URLs after r
 The Internet Archive is a non-profit organization dedicated to preserving digital content for public access. URLs sent to these services become part of the public archive and may be accessible through the Wayback Machine interface. No personal information beyond the URLs themselves is transmitted to these services.
 
 == Changelog ==
+
+= 1.4.3 =
+* Adds a global set of excluded urls that will never be archived or checked due to the sites blocking the internet archive.
+* Reintroduces a Scan but do nothing outcome for broken links.
 
 = 1.4.2 =
 * Fix: Manually excluded links sometimes revert to unexcluded and can still be run through the link checker process. Now fully respects manual exclusions.

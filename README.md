@@ -5,7 +5,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.9  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.4.2
+**Stable tag:** 1.4.3-RC1
 **License:** GPL-3.0-or-later  
 **License URI:** https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -102,6 +102,14 @@ Specify links to exclude from being checked. This is useful for links known to b
 * `https://example.com/*` - Excludes all links starting with `https://example.com/`
 * `https://x.com*` - Excludes all links containing `x/twitter` in the domain name
 
+#### Built-in Exclusion List
+
+Some domains are known to block automated link checkers, which would cause their links to be wrongly reported as broken. The plugin ships with a small built-in ("global") exclusion list covering these known offenders (currently LinkedIn), applied automatically on top of your own [Link Exclusions](#link-exclusions) list.
+
+Links matched by the built-in list are never checked, fixed, or archived, and this cannot be overridden from an individual link's report. The list is maintained by the plugin and is not editable from the admin UI; if one of these domains is important to you, exclude it another way or reach out so it can be reviewed.
+
+See [Handling False Positives](#handling-false-positives) for guidance on when to use a rule versus excluding a single link.
+
 #### Post Exclusions
 
 ![Post Exclusions](./_docs/settings--fixer-post-exclusions.png)
@@ -126,15 +134,17 @@ Specify the number of consecutive failed checks before a link is marked as broke
 ![Fixer Option](./_docs/settings--fixer-option.png)
 
 You can choose what outcome you want to happen when a link is found to be broken. The options are:
- * **Redirect broken links to snapshots on the Wayback Machine** - This will replace the broken link with the archived version, if one exists. If no archived version exists, the link will not be changed. No notice will be given to the user that the link has been replaced.
- * **Check broken links but do not redirect them** - Links are still checked and their status recorded internally (so the link report stays up to date), but the link shown to visitors is never changed. Useful for monitoring content without altering the frontend.
+ * **Redirect broken links to snapshots on the Wayback Machine** - Replaces the broken link with the archived version, if one exists. If no archived version exists, the link is left unchanged. No notice is given to the visitor that the link was swapped.
+ * **Check broken links but do not redirect them** - Links are still checked and their status recorded in the [Link Table](#link-fixer) (so your reports stay up to date), but the link shown to visitors is never changed. Useful for monitoring link health without altering the frontend.
  * **Do not auto check links** - Links are not automatically checked from the frontend and are never changed.
+
+> A link can be wrongly reported as broken when the destination blocks automated checkers. See [Handling False Positives](#handling-false-positives) for how to deal with these.
 
 #### Link Icon
 
 ![Link Icon](./_docs/settings--link-icon.png)
 
-When the Fixer Option is set to **Replace Link**, you can optionally display a small icon next to fixed links on the frontend. This lets visitors know the link points to an archived version.
+When the Fixer Option is set to **Redirect broken links to snapshots on the Wayback Machine**, you can optionally display a small icon next to fixed links on the frontend. This lets visitors know the link points to an archived version.
 
 The available options are:
  * **None** - No icon is displayed (default).
@@ -247,7 +257,7 @@ This will trigger a check of the link to see if it is still active.
 
 This will verify if a link allows checking. If it does not, the link will be excluded from being checked.
 
-> Please note some urls do not allow bots to check the status of the link, this will often result in links being reported as a 403 even if still active and result in false positives.
+> Please note some urls do not allow bots to check the status of the link, this will often result in links being reported as a 403 even if still active and result in false positives. See [Handling False Positives](#handling-false-positives).
 
 ## Link Report
 
@@ -277,6 +287,12 @@ This lists all checks, with the date/time plus the resulting http status code. I
 
 This list all posts which the link appears.
 
+### Link Exclusion
+
+Each link report has a **Link Exclusion** panel with an **"Exclude this link"** toggle. Excluding a link stops it from being checked for broken status, fixed automatically, or having snapshots created — useful for a single URL that is a [false positive](#handling-false-positives).
+
+If the link is already matched by your [Link Exclusions](#link-exclusions) settings list or the [built-in exclusion list](#built-in-exclusion-list), the toggle is shown but disabled: those list-based rules take precedence and must be changed in their respective place instead.
+
 ## Post/Page List Table
 
 The number of links and how many are broken is shown on the post list table. 
@@ -304,6 +320,17 @@ The link count is clickable, this will access a filtered link list for that post
 
 ![Link Details](./_docs/link-details.png)
 > The link details page.
+
+## Handling False Positives
+
+Some websites block automated bots from reading their pages. When that happens the link checker can receive a `403 Forbidden` (or similar) response and mark the link as **broken even though it works fine in a browser** — a false positive.
+
+There are two ways to deal with this, depending on how widespread the problem is:
+
+1. **Exclude an individual link** — open the link's report and use the [Exclude this link](#link-exclusion) toggle. Best for a one-off URL.
+2. **Exclude by rule** — if a whole domain blocks checkers (e.g. a social network), add a wildcard pattern to your [Link Exclusions](#link-exclusions) list, such as `*example.com*`. This covers every current and future link to that domain at once. Some common offenders are already handled by the [built-in exclusion list](#built-in-exclusion-list).
+
+> **Tip:** raising the [Failure Threshold](#failure-threshold) helps avoid *temporary* outages being treated as broken, but it will not help with sites that consistently block bots — for those, exclude the link or add a rule.
 
 ## Developer Documentation
 
@@ -717,7 +744,7 @@ add_filter( 'iawmlf_link_checker_timeout', function( int $timeout ): int {
 
 #### `iawmlf_should_render_html_link_output`
 
-This filter allows you to control whether the HTML link output should be rendered in the frontend for post loops. By default, this is only enabled when the fixer option is set to "Replace Link".
+This filter allows you to control whether the HTML link output should be rendered in the frontend for post loops. By default, this is enabled when the fixer option is set to **Redirect broken links to snapshots on the Wayback Machine** or **Check broken links but do not redirect them** (both need the frontend checker to run), and disabled for **Do not auto check links**.
 
 ```php
 add_filter( 'iawmlf_should_render_html_link_output', function( bool $allowed, string $option ): bool {
@@ -950,7 +977,7 @@ These filters allow advanced customization of URLs, timeouts, and client impleme
 
 #### `iawmlf_link_icons`
 
-This filter allows you to add custom icons to the link icon selector in settings. The Link Icon setting is only available when the Fixer Option is set to **Replace Link**. Each icon should be an array with `id`, `name`, and `css_rule` keys. The `css_rule` should be a complete CSS rule including selector and braces.
+This filter allows you to add custom icons to the link icon selector in settings. The Link Icon setting is only available when the Fixer Option is set to **Redirect broken links to snapshots on the Wayback Machine**. Each icon should be an array with `id`, `name`, and `css_rule` keys. The `css_rule` should be a complete CSS rule including selector and braces.
 
 ```php
 add_filter( 'iawmlf_link_icons', function( array $icons ): array {
