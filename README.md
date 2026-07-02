@@ -104,7 +104,7 @@ Specify links to exclude from being checked. This is useful for links known to b
 
 #### Built-in Exclusion List
 
-Some domains are known to block automated link checkers, which would cause their links to be wrongly reported as broken. The plugin ships with a small built-in ("global") exclusion list covering these known offenders (currently LinkedIn), applied automatically on top of your own [Link Exclusions](#link-exclusions) list.
+Some domains are known to block automated link checkers, which would cause their links to be wrongly reported as broken. The plugin ships with a small built-in ("global") exclusion list covering these known offenders (currently includes LinkedIn), applied automatically on top of your own [Link Exclusions](#link-exclusions) list.
 
 Links matched by the built-in list are never checked, fixed, or archived, and this cannot be overridden from an individual link's report. The list is maintained by the plugin and is not editable from the admin UI; if one of these domains is important to you, exclude it another way or reach out so it can be reviewed.
 

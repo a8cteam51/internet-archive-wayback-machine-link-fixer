@@ -403,4 +403,7 @@ $RECYCLE.BIN/
 pack
 wayback-link-fixer.zip
 
+# Local Claude Code config
+.claude/settings.json
+
 # End of https://www.toptal.com/developers/gitignore/api/node,yarn,linux,macos,windows,sublimetext,phpstorm+all,visualstudiocode
