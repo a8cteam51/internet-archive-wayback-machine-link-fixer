@@ -2,7 +2,7 @@
 Contributors: waybackmachineplugin, wpspecialprojects, cagrimmett, glynnquelch
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
-Tested up to: 6.9
+Tested up to: 7.0
 Stable tag: 1.4.3
 Requires PHP: 7.4
 License: GPL-3.0-or-later
