@@ -1,30 +1,84 @@
 name: Deploy to WordPress.org
 
+# Manual only. Nothing here runs on push, tag or release.
+#
+# You name the tag to ship, and choose whether the files are rebuilt from that
+# tag or taken from the zip already attached to its GitHub release.
+
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Tag to deploy, e.g. 1.4.3 (must already exist and match the Stable tag in readme.txt)'
+        required: true
+        type: string
+      source:
+        description: 'build = rebuild from the tag | release-asset = use the zip attached to the GitHub release'
+        required: true
+        default: build
+        type: choice
+        options:
+          - build
+          - release-asset
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout tag
         uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ inputs.version }}
+
+      # wp.org serves whatever the Stable tag in trunk points at, so a mismatch
+      # here is how an RC reaches every user. Fail before anything touches SVN.
+      - name: Verify Stable tag matches the version being deployed
+        run: |
+          STABLE_TAG=$(sed -n 's/^Stable tag:[[:space:]]*//p' readme.txt | head -n1 | tr -d '[:space:]')
+          echo "readme.txt Stable tag: $STABLE_TAG"
+          echo "Deploying version:     ${{ inputs.version }}"
+          if [ "$STABLE_TAG" != "${{ inputs.version }}" ]; then
+            echo "::error::Stable tag '$STABLE_TAG' does not match '${{ inputs.version }}'. Refusing to deploy."
+            exit 1
+          fi
+
+      - name: Set up PHP
+        if: inputs.source == 'build'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          tools: composer
 
       # Install DEV Deps, build i18n files
       - name: Run i18n Build
+        if: inputs.source == 'build'
         run: |
           composer install --ignore-platform-reqs --no-interaction
           composer internationalize
 
       # Install PROD Deps
       - name: Install Composer Dependencies
+        if: inputs.source == 'build'
         run: composer install --no-dev
 
       # Install Node Modules and Build Assets
       - name: Install Node Modules and Build Assets
+        if: inputs.source == 'build'
         run: |
           npm install
           npm run build
+
+      # Unpack the already-published zip instead of rebuilding.
+      - name: Download release asset
+        if: inputs.source == 'release-asset'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p svn-build
+          gh release download "${{ inputs.version }}" --pattern '*.zip' --dir .
+          unzip -q ./*.zip -d svn-build
+          echo "Unpacked release asset:"
+          ls -A svn-build
 
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
@@ -34,3 +88,9 @@ jobs:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SLUG: internet-archive-wayback-machine-link-fixer
+          # Set explicitly. Left unset, deploy.sh derives it from GITHUB_REF and
+          # a dispatch from a branch would produce a tag like
+          # "tags/refs/heads/my-branch".
+          VERSION: ${{ inputs.version }}
+          # Only set for release-asset; empty makes deploy.sh use .distignore.
+          BUILD_DIR: ${{ inputs.source == 'release-asset' && 'svn-build' || '' }}

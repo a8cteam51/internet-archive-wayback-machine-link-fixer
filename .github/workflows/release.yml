@@ -47,7 +47,6 @@ jobs:
             ".github/*" \
             ".gitignore" \
             ".distignore" \
-            "index.php" \
             "node_modules/*" \
             "models/*" \
             "package.json" \
