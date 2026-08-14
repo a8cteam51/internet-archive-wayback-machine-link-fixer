@@ -19,6 +19,9 @@ tests
 assets/css/src
 assets/js/src
 _docs
+.distignore
+README.md
+SECURITY.md
 # Agent context (development-only, do not deploy)
 AGENTS.md
 CLAUDE.md

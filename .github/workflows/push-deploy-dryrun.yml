@@ -1,26 +1,18 @@
-name: Deploy to WordPress.org Dry Run
+name: Push Deploy from a Released Version (Dry Run)
 
-# Identical to push-deploy.yml but with dry-run enabled, so the SVN payload is
-# assembled and printed without ever running `svn commit`.
+# Same steps as push-deploy.yml with dry-run enabled. deploy.sh does everything
+# except `svn commit`, so you get the real `svn status` diff against live wp.org
+# trunk - additions, deletions and the tag copy - before anything is written.
 #
-# The resulting zip is attached to the GitHub release so you can inspect exactly
-# what would have shipped.
+# Nothing is published from this workflow. It does not touch the GitHub release.
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Tag to deploy, e.g. 1.4.3 (must already exist and match the Stable tag in readme.txt)'
+        description: 'Tag to deploy, e.g. 1.4.3 (must have a release asset and match the Stable tag in readme.txt)'
         required: true
         type: string
-      source:
-        description: 'build = rebuild from the tag | release-asset = use the zip attached to the GitHub release'
-        required: true
-        default: build
-        type: choice
-        options:
-          - build
-          - release-asset
 
 jobs:
   deploy:
@@ -31,61 +23,44 @@ jobs:
         with:
           ref: refs/tags/${{ inputs.version }}
 
-      # Kept in the dry run too, so the guard itself gets exercised before a
-      # real deploy relies on it.
-      - name: Verify Stable tag matches the version being deployed
+      # Kept identical to push-deploy.yml so the dry run exercises the same
+      # guards the real deploy relies on.
+      - name: Download and verify release asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          ASSET: internet-archive-wayback-machine-link-fixer.zip
         run: |
-          STABLE_TAG=$(sed -n 's/^Stable tag:[[:space:]]*//p' readme.txt | head -n1 | tr -d '[:space:]')
-          echo "readme.txt Stable tag: $STABLE_TAG"
-          echo "Deploying version:     ${{ inputs.version }}"
-          if [ "$STABLE_TAG" != "${{ inputs.version }}" ]; then
-            echo "::error::Stable tag '$STABLE_TAG' does not match '${{ inputs.version }}'. Refusing to deploy."
+          # RCs, betas and anything else suffixed must never reach SVN.
+          if ! printf '%s' "$VERSION" | grep -qE '^[0-9]+\.[0-9]+(\.[0-9]+)?$'; then
+            echo "::error::'$VERSION' is not a stable release version. Refusing to deploy."
             exit 1
           fi
 
-      - name: Set up PHP
-        if: inputs.source == 'build'
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.3
-          tools: composer
+          gh release download "$VERSION" --pattern "$ASSET" --output plugin.zip --clobber
+          unzip -q plugin.zip -d svn-build
 
-      # Install DEV Deps, build i18n files
-      - name: Run i18n Build
-        if: inputs.source == 'build'
-        run: |
-          composer install --ignore-platform-reqs --no-interaction
-          composer internationalize
+          if [ ! -f "svn-build/internet-archive-wayback-machine-link-fixer.php" ]; then
+            echo "::error::No plugin bootstrap at the root of $ASSET. Refusing to deploy."
+            ls -A svn-build
+            exit 1
+          fi
 
-      # Install PROD Deps
-      - name: Install Composer Dependencies
-        if: inputs.source == 'build'
-        run: composer install --no-dev
+          ZIP_STABLE=$(sed -n 's/^Stable tag:[[:space:]]*//p' svn-build/readme.txt | head -n1 | tr -d '[:space:]')
+          echo "Stable tag in asset: $ZIP_STABLE"
+          echo "Deploying version:   $VERSION"
+          if [ "$ZIP_STABLE" != "$VERSION" ]; then
+            echo "::error::Stable tag '$ZIP_STABLE' does not match '$VERSION'. Refusing to deploy."
+            exit 1
+          fi
 
-      # Install Node Modules and Build Assets
-      - name: Install Node Modules and Build Assets
-        if: inputs.source == 'build'
-        run: |
-          npm install
-          npm run build
-
-      # Unpack the already-published zip instead of rebuilding.
-      - name: Download release asset
-        if: inputs.source == 'release-asset'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          mkdir -p svn-build
-          gh release download "${{ inputs.version }}" --pattern '*.zip' --dir .
-          unzip -q ./*.zip -d svn-build
-          echo "Unpacked release asset:"
+          echo "Verified payload:"
           ls -A svn-build
 
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
         with:
           dry-run: true
-          generate-zip: true
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
@@ -94,13 +69,6 @@ jobs:
           # a dispatch from a branch would produce a tag like
           # "tags/refs/heads/my-branch".
           VERSION: ${{ inputs.version }}
-          # Only set for release-asset; empty makes deploy.sh use .distignore.
-          BUILD_DIR: ${{ inputs.source == 'release-asset' && 'svn-build' || '' }}
-
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ inputs.version }}
-          files: internet-archive-wayback-machine-link-fixer.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Ships the verified zip as-is. Without this deploy.sh would filter
+          # the checkout through .distignore instead.
+          BUILD_DIR: svn-build
