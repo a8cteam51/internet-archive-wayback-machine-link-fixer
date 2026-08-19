@@ -152,6 +152,27 @@ class Test_Link_Check_Rest extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A stored-broken link that is not due a re-check should report its stored state, not a recomputed one. (T067)
+	 *
+	 * @return void
+	 */
+	public function test_recently_checked_broken_link_reports_stored_state(): void {
+		// A link marked broken with a single recent failed check — fewer checks
+		// than the failed-count threshold, so a recompute would call it valid.
+		$link = new Link( 'https://recently-checked-broken.com' );
+		$link->add_check( 404, gmdate( 'Y-m-d H:i:s' ) );
+		$link->set_broken();
+		$this->link_repository->upsert( $link );
+
+		$response = $this->dispatch_request( array( 'link' => 'https://recently-checked-broken.com' ) );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertFalse( $data['updated'] );
+		$this->assertFalse( $data['valid'], 'The stored broken flag must be reported, not recomputed from too-few checks.' );
+	}
+
+	/**
 	 * @testdox A stored link containing percent-encoded characters must be found — sanitize_text_field strips %XX sequences and caused a false 404. (S022)
 	 *
 	 * @return void

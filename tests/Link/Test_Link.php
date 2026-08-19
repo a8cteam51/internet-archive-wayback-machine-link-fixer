@@ -169,14 +169,31 @@ class Test_Link extends \WP_UnitTestCase {
 		$link = new Link( 'https://example.com' );
 
 		// By default the link should be valid.
-		$this->assertTrue( $link->is_valid() );
+		$this->assertTrue( $link->assess_validity() );
 
 		// By having 3 checks with 500, the link should be invalid.
 		$link->add_check( 500, '20230101000000' );
 		$link->add_check( 500, '20240101000000' );
 		$link->add_check( 500, '20250101000000' );
 
+		$this->assertFalse( $link->assess_validity() );
+	}
+
+	/**
+	 * @testdox is_valid() should be a pure read of the stored broken flag, with no side effects. (T067)
+	 *
+	 * @return void
+	 */
+	public function test_is_valid_reads_stored_broken_flag(): void {
+		$link = new Link( 'https://example.com' );
+
+		$this->assertTrue( $link->is_valid() );
+
+		$link->set_broken();
 		$this->assertFalse( $link->is_valid() );
+
+		$link->set_valid();
+		$this->assertTrue( $link->is_valid() );
 	}
 
 	/**
@@ -192,13 +209,13 @@ class Test_Link extends \WP_UnitTestCase {
 		$link = new Link( 'https://example.com' );
 
 		// By default the link should be valid.
-		$this->assertTrue( $link->is_valid() );
+		$this->assertTrue( $link->assess_validity() );
 
 		// By having 2 checks with 500, the link should be invalid.
 		$link->add_check( 500, '20230101000000' );
 		$link->add_check( 500, '20240101000000' );
 
-		$this->assertFalse( $link->is_valid() );
+		$this->assertFalse( $link->assess_validity() );
 
 		// Clear the filter.
 		remove_all_filters( 'iawmlf_failed_count' );
@@ -237,11 +254,11 @@ class Test_Link extends \WP_UnitTestCase {
 		$link->add_check( 500, '20250101000000' );
 		$link->add_check( 502, '20230101000000' );
 		$link->add_check( 502, '20240101000000' );
-		$this->assertTrue( $link->is_valid() );
+		$this->assertTrue( $link->assess_validity() );
 
 		// Now has 3 in last 3, so should be invalid.
 		$link->add_check( 502, '20260101000000' );
-		$this->assertFalse( $link->is_valid() );
+		$this->assertFalse( $link->assess_validity() );
 
 		// Clear the filter.
 		remove_all_filters( 'iawmlf_is_valid_check' );
@@ -371,17 +388,17 @@ class Test_Link extends \WP_UnitTestCase {
 		$link = new Link( 'https://example.com' );
 
 		// By default the link should be valid.
-		$this->assertTrue( $link->is_valid() );
+		$this->assertTrue( $link->assess_validity() );
 
 		// By having 1 check with 500, the link should be valid.
 		$link->add_check( 500, '20230101000000' );
-		$this->assertTrue( $link->is_valid() );
+		$this->assertTrue( $link->assess_validity() );
 
 		// By having 3 checks with 500, the link should be invalid.
 		$link->add_check( 500, '20240101000000' );
 		$link->add_check( 500, '20250101000000' );
 
-		$this->assertFalse( $link->is_valid() );
+		$this->assertFalse( $link->assess_validity() );
 	}
 
 	/**

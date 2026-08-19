@@ -347,11 +347,20 @@ class Link implements \JsonSerializable {
 	}
 
 	/**
-	 * Checks if a link is valid.
+	 * Checks if a link is valid, based on its stored broken flag.
 	 *
 	 * @return boolean
 	 */
 	public function is_valid(): bool {
+		return ! $this->is_broken;
+	}
+
+	/**
+	 * Assess the links validity from its recent checks, setting the broken flag.
+	 *
+	 * @return boolean
+	 */
+	public function assess_validity(): bool {
 		$failed_count = Settings::get_failed_count();
 
 		// Get the last checks based on the failed count.

@@ -181,7 +181,7 @@ class Link_Check_Rest {
 		$link->add_check( $status, gmdate( 'Y-m-d H:i:s' ) );
 
 		// Validate the link.
-		$valid = $link->is_valid();
+		$valid = $link->assess_validity();
 
 		// Based on the link status, either set the link as broken or not.
 		if ( ! $valid ) {
