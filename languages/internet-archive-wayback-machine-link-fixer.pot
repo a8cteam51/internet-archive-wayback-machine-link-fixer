@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-19T12:46:03+00:00\n"
+"POT-Creation-Date: 2026-08-19T12:52:26+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: internet-archive-wayback-machine-link-fixer\n"
@@ -85,6 +85,203 @@ msgstr ""
 
 #: functions.php:337
 msgid "The Wayback Machine is currently offline. Please try again later."
+msgstr ""
+
+#: functions.php:551
+msgctxt "Archive.org snapshot error description"
+msgid "Bad Gateway for URL (HTTP status=502)."
+msgstr ""
+
+#: functions.php:552
+msgctxt "Archive.org snapshot error description"
+msgid "The server could not understand the request due to invalid syntax. (HTTP status=400)"
+msgstr ""
+
+#: functions.php:553
+msgctxt "Archive.org snapshot error description"
+msgid "The target server has exceeded the bandwidth specified by the server administrator. (HTTP status=509)."
+msgstr ""
+
+#: functions.php:554
+msgctxt "Archive.org snapshot error description"
+msgid "The target site is blocking us (HTTP status=999)."
+msgstr ""
+
+#: functions.php:555
+msgctxt "Archive.org snapshot error description"
+msgid "Anonymous clients which are listed in https://www.spamhaus.org/xbl/ or https://www.spamhaus.org/sbl/ lists (spams & exploits) are blocked. Tor exit nodes are excluded from this filter."
+msgstr ""
+
+#: functions.php:556
+msgctxt "Archive.org snapshot error description"
+msgid "We use a URL block list based on Mozilla web tracker lists to avoid unwanted captures."
+msgstr ""
+
+#: functions.php:557
+msgctxt "Archive.org snapshot error description"
+msgid "SPN2 back-end headless browser timeout."
+msgstr ""
+
+#: functions.php:558
+msgctxt "Archive.org snapshot error description"
+msgid "SPN2 back-end cannot find the created capture location. (system error)."
+msgstr ""
+
+#: functions.php:559
+msgctxt "Archive.org snapshot error description"
+msgid "Cannot fetch the target URL due to system overload."
+msgstr ""
+
+#: functions.php:560
+msgctxt "Archive.org snapshot error description"
+msgid "Cannot start capture task."
+msgstr ""
+
+#: functions.php:561
+msgctxt "Archive.org snapshot error description"
+msgid "Cannot capture web resources over 2GB."
+msgstr ""
+
+#: functions.php:562
+msgctxt "Archive.org snapshot error description"
+msgid "Tried to capture an FTP resource but access was denied."
+msgstr ""
+
+#: functions.php:563
+msgctxt "Archive.org snapshot error description"
+msgid "The target server didn't respond in time. (HTTP status=504)."
+msgstr ""
+
+#: functions.php:564
+msgctxt "Archive.org snapshot error description"
+msgid "The target server does not support the HTTP protocol version used in the request for URL (HTTP status=505)."
+msgstr ""
+
+#: functions.php:565
+msgctxt "Archive.org snapshot error description"
+msgid "SPN internal server error."
+msgstr ""
+
+#: functions.php:566
+msgctxt "Archive.org snapshot error description"
+msgid "Target URL syntax is not valid."
+msgstr ""
+
+#: functions.php:567
+msgctxt "Archive.org snapshot error description"
+msgid "The target server response was invalid. (e.g. invalid headers, invalid content encoding, etc)."
+msgstr ""
+
+#: functions.php:568
+msgctxt "Archive.org snapshot error description"
+msgid "Couldn't resolve the target host."
+msgstr ""
+
+#: functions.php:569
+msgctxt "Archive.org snapshot error description"
+msgid "Capture failed due to system error."
+msgstr ""
+
+#: functions.php:570
+msgctxt "Archive.org snapshot error description"
+msgid "The request method is known by the server but has been disabled and cannot be used (HTTP status=405)."
+msgstr ""
+
+#: functions.php:571
+msgctxt "Archive.org snapshot error description"
+msgid "The request method is not supported by the server and cannot be handled for URL (HTTP status=501)."
+msgstr ""
+
+#: functions.php:572
+msgctxt "Archive.org snapshot error description"
+msgid "SPN2 back-end headless browser cannot run."
+msgstr ""
+
+#: functions.php:573
+msgctxt "Archive.org snapshot error description"
+msgid "The client needs to authenticate to gain network access to the URL (HTTP status=511)."
+msgstr ""
+
+#: functions.php:574
+msgctxt "Archive.org snapshot error description"
+msgid "Target URL could not be accessed (status=403)."
+msgstr ""
+
+#: functions.php:575
+msgctxt "Archive.org snapshot error description"
+msgid "Target URL not found (status=404)."
+msgstr ""
+
+#: functions.php:576
+msgctxt "Archive.org snapshot error description"
+msgid "SPN2 back-end proxy error."
+msgstr ""
+
+#: functions.php:577
+msgctxt "Archive.org snapshot error description"
+msgid "HTTP connection broken. (A possible cause of this error is \"IncompleteRead\")."
+msgstr ""
+
+#: functions.php:578
+msgctxt "Archive.org snapshot error description"
+msgid "HTTP connection read timeout."
+msgstr ""
+
+#: functions.php:579
+msgctxt "Archive.org snapshot error description"
+msgid "Capture duration exceeded 45s time limit and was terminated."
+msgstr ""
+
+#: functions.php:580
+msgctxt "Archive.org snapshot error description"
+msgid "Service unavailable for URL (HTTP status=503)."
+msgstr ""
+
+#: functions.php:581
+msgctxt "Archive.org snapshot error description"
+msgid "This URL has been captured 10 times today. We cannot make any more captures."
+msgstr ""
+
+#: functions.php:582
+msgctxt "Archive.org snapshot error description"
+msgid "Too many redirects. SPN2 tries to follow 3 redirects automatically."
+msgstr ""
+
+#: functions.php:583
+msgctxt "Archive.org snapshot error description"
+msgid "The target host has received too many requests from SPN and it is blocking it. (HTTP status=429). Note that captures to the same host will be delayed for 10-20s after receiving this response to remedy the situation."
+msgstr ""
+
+#: functions.php:584
+msgctxt "Archive.org snapshot error description"
+msgid "User has reached the limit of concurrent active capture sessions."
+msgstr ""
+
+#: functions.php:585
+msgctxt "Archive.org snapshot error description"
+msgid "The server requires authentication (HTTP status=401)."
+msgstr ""
+
+#: functions.php:586
+msgctxt "Archive.org snapshot error description"
+msgid "An authenticated user can archive up to 5GB per day."
+msgstr ""
+
+#: functions.php:587
+msgctxt "Archive.org snapshot error description"
+msgid "An anonymous user can archive up to 2GB per day."
+msgstr ""
+
+#: functions.php:588
+msgctxt "Archive.org snapshot error description"
+msgid "SPN2 can archive up to 100GB per day from a host."
+msgstr ""
+
+#. translators: %s: the raw archive.org status code.
+#: functions.php:593
+#, php-format
+msgctxt "Archive.org snapshot error description"
+msgid "Unknown: %s"
 msgstr ""
 
 #: src/Action/Link_Latest_Snapshot_Action.php:65

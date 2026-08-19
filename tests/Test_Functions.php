@@ -99,7 +99,7 @@ class Test_Functions extends \WP_UnitTestCase {
 			'error:max-daily-bandwidth'         => array( 'error:max-daily-bandwidth', 'An authenticated user can archive up to 5GB per day.' ),
 			'error:max-daily-bandwidth-from-ip' => array( 'error:max-daily-bandwidth-from-ip', 'An anonymous user can archive up to 2GB per day.' ),
 			'error:max-daily-bandwidth-host'    => array( 'error:max-daily-bandwidth-host', 'SPN2 can archive up to 100GB per day from a host.' ),
-			'error:other'                       => array( 'error:other', 'Uknown: error:other' ),
+			'error:other'                       => array( 'error:other', 'Unknown: error:other' ),
 			'info:not-valid'                    => array( 'info:not-valid', 'info:not-valid' ),
 		);
 }
