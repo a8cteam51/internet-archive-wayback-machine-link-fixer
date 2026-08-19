@@ -664,6 +664,24 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox Upserting a link whose row no longer exists should throw an Exception, not a TypeError.
+	 *
+	 * @return void
+	 */
+	public function test_upsert_of_deleted_link_throws_exception(): void {
+		$link = new Link( 'https://test_upsert_of_deleted_link.com' );
+		$link = $this->link_repository->upsert( $link );
+
+		// Delete the row out from under the link, as a concurrent worker could.
+		$this->link_repository->delete_link( $link );
+
+		$this->expectException( \Exception::class );
+		$this->expectExceptionMessage( 'Failed to update link, link no longer exists.' );
+
+		$this->link_repository->upsert( $link );
+	}
+
+	/**
 	 * @testdox Attempting to get links for a post that has none defined in meta should result in an empty collection.
 	 *
 	 * @return void

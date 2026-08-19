@@ -128,7 +128,14 @@ class Link_Repository {
 	public function upsert( Link $link ): Link {
 		// If the link has an id, update it.
 		if ( null !== $link->get_id() ) {
-			$link = $this->update( $link );
+			$updated = $this->update( $link );
+
+			// The row can vanish between the UPDATE and the re-fetch (concurrent delete).
+			if ( null === $updated ) {
+				throw new Exception( esc_html( 'Failed to update link, link no longer exists.' ) );
+			}
+
+			$link = $updated;
 		} else {
 			$link = $this->insert( $link );
 		}
@@ -201,11 +208,11 @@ class Link_Repository {
 	 *
 	 * @param Link $link The link to update.
 	 *
-	 * @return Link
+	 * @return Link|null Null if the row no longer exists after the update.
 	 *
 	 * @throws Exception If the link cannot be updated.
 	 */
-	private function update( Link $link ): Link {
+	private function update( Link $link ): ?Link {
 		// Extract the values.
 		$id              = $link->get_id();
 		$href            = $link->get_href();
@@ -253,7 +260,7 @@ class Link_Repository {
 
 		// If we dont have a valid row id, throw an exception.
 		if ( false === $result ) {
-			throw new Exception( 'Failed to update link.' );
+			throw new Exception( esc_html( 'Failed to update link.' ) );
 		}
 
 		return $this->find_by_id( $id );
