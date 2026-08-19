@@ -152,6 +152,22 @@ class Test_Link_Check_Rest extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A stored link containing percent-encoded characters must be found — sanitize_text_field strips %XX sequences and caused a false 404. (S022)
+	 *
+	 * @return void
+	 */
+	public function test_link_with_percent_encoding_is_found(): void {
+		$link = new Link( 'https://example.com/my%20page' );
+		$link->set_archived_href( 'https://web.archive.org/web/20240101/https://example.com/my%20page' );
+		$link->add_check( 200, gmdate( 'Y-m-d H:i:s' ) );
+		$this->link_repository->upsert( $link );
+
+		$response = $this->dispatch_request( array( 'link' => 'https://example.com/my%20page' ) );
+
+		$this->assertEquals( 200, $response->get_status() );
+	}
+
+	/**
 	 * @testdox A link that needs re-checking should call the link checker client and return updated data.
 	 *
 	 * @return void

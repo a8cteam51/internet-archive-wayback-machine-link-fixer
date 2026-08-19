@@ -68,7 +68,7 @@ class Link_Check_Rest {
 					'link' => array(
 						'required'          => true,
 						'type'              => 'string',
-						'sanitize_callback' => 'sanitize_text_field',
+						'sanitize_callback' => 'esc_url_raw',
 					),
 				),
 			)
