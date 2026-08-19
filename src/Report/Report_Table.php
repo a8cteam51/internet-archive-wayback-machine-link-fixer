@@ -902,13 +902,12 @@ class Report_Table extends \WP_List_Table {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param integer $limit  The limit of links to return.
-	 * @param integer $page   The page of links to return.
-	 * @param array   $status The status of the links to return.
+	 * @param integer $limit The limit of links to return.
+	 * @param integer $page  The page of links to return.
 	 *
 	 * @return array<Link>
 	 */
-	private function get_links( int $limit = 10, int $page = 1, array $status = array() ): array {
+	private function get_links( int $limit = 10, int $page = 1 ): array {
 		return $this->links->query_links(
 			$limit,
 			$page,
@@ -925,13 +924,12 @@ class Report_Table extends \WP_List_Table {
 	/**
 	 * Count links based on the query being used on this table.
 	 *
-	 * @param integer $limit  The limit of links to return.
-	 * @param integer $page   The page of links to return.
-	 * @param array   $status The status of the links to return.
+	 * @param integer $limit The limit of links to return.
+	 * @param integer $page  The page of links to return.
 	 *
 	 * @return integer
 	 */
-	private function count_links( int $limit = 10, int $page = 1, array $status = array() ): int {
+	private function count_links( int $limit = 10, int $page = 1 ): int {
 		return $this->links->count_links(
 			$limit,
 			$page,
@@ -1063,8 +1061,7 @@ class Report_Table extends \WP_List_Table {
 		// Get the reports.
 		$this->items = $this->get_links(
 			$this->get_links_per_page(),
-			$this->get_pagenum(),
-			array( $this->get_status_from_url() )
+			$this->get_pagenum()
 		);
 	}
 

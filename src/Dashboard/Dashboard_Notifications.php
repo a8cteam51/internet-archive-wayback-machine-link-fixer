@@ -113,7 +113,7 @@ class Dashboard_Notifications {
 		if ( false !== $cached ) {
 			return (int) $cached;
 		}
-		$count = ( new Link_Repository() )->count_links( PHP_INT_MAX, 1, array(), array(), array(), 'any' );
+		$count = ( new Link_Repository() )->count_links( PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_ID_DESC );
 		set_transient( 'iawmlf_link_count', $count, 15 * MINUTE_IN_SECONDS );
 		return $count;
 	}
