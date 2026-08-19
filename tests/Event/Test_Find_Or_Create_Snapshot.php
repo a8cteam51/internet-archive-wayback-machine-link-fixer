@@ -271,6 +271,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		$client = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
 		$client->method( 'get_latest_snapshot' )
 			->willReturn( array( 'url' => 'https://web.archive.org/web/iawmlf_glynn/https://example.com' ) );
+		$client->method( 'is_online' )->willReturn( true );
 
 		// Set the mock client
 		add_filter(
@@ -279,6 +280,11 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 				return $client;
 			}
 		);
+
+		// Stub the link checker online so the guard passes without live HTTP.
+		$link_checker = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client::class );
+		$link_checker->method( 'is_online' )->willReturn( true );
+		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
 
 		// Create a link.
 		$link = new Link( 'https://example.com' );
@@ -321,6 +327,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		$client = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client::class );
 		$client->method( 'get_latest_snapshot' )
 			->willReturn( null );
+		$client->method( 'is_online' )->willReturn( true );
 
 		// Set the mock client
 		add_filter(
@@ -329,6 +336,11 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 				return $client;
 			}
 		);
+
+		// Stub the link checker online so the guard passes without live HTTP.
+		$link_checker = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client::class );
+		$link_checker->method( 'is_online' )->willReturn( true );
+		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
 
 		// Create a link.
 		$link = new Link( 'https://example.com' );

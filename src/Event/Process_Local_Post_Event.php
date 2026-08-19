@@ -93,7 +93,7 @@ class Process_Local_Post_Event {
 
 		$this->setup();
 		// If Wayback Link Fixer is offline, add the event to the queue delayed.
-		if ( ! $this->wayback_machine->is_online()['snapshot'] ) {
+		if ( ! $this->wayback_machine->is_online() ) {
 			self::add_to_queue_with_delay( $post_id );
 			throw new Exception( esc_html( 'Service is offline, trying again in 1 hour.' ) );
 		}

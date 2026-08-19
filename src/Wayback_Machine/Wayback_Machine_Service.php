@@ -160,15 +160,10 @@ class Wayback_Machine_Service {
 	 *
 	 * @since 1.3.0
 	 *
-	 * @return array{snapshot:boolean, link_checker:boolean}
+	 * @return boolean True only if both services are online.
 	 */
-	public function is_online(): array {
-
-		// Only return true if both services are online.
-		return array(
-			'snapshot'     => $this->snapshot_client->is_online(),
-			'link_checker' => $this->link_checker_client->is_online(),
-		);
+	public function is_online(): bool {
+		return $this->snapshot_client->is_online() && $this->link_checker_client->is_online();
 	}
 
 	/**

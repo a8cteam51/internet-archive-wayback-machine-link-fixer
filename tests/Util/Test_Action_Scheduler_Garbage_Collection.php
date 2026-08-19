@@ -76,8 +76,15 @@ class Test_Action_Scheduler_Garbage_Collection extends \WP_UnitTestCase {
 	private function set_snapshot_client_response( array $response ): void {
 		$service = $this->createMock( Snapshot_Client::class );
 		$service->method( 'get_snapshot_status' )->willReturn( $response );
+		$service->method( 'is_online' )->willReturn( true );
 
 		add_filter( 'iawmlf_snapshot_client', fn() => $service );
+
+		// Stub the link checker online too, so is_online() never hits the live API.
+		$link_checker = $this->createMock( Link_Checker_Client::class );
+		$link_checker->method( 'is_online' )->willReturn( true );
+
+		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
 	}
 
 	/**
@@ -292,8 +299,15 @@ class Test_Action_Scheduler_Garbage_Collection extends \WP_UnitTestCase {
 		$service = $this->createMock( Link_Checker_Client::class );
 		$service->method( 'get_final_url' )
 			->willThrowException( new Service_Offline_Exception( 'Service is offline' ) );
+		$service->method( 'is_online' )->willReturn( true );
 
 		add_filter( 'iawmlf_link_checker_client', fn() => $service );
+
+		// Stub the snapshot client online too, so is_online() never hits the live API.
+		$snapshot = $this->createMock( Snapshot_Client::class );
+		$snapshot->method( 'is_online' )->willReturn( true );
+
+		add_filter( 'iawmlf_snapshot_client', fn() => $snapshot );
 	}
 
 	/**

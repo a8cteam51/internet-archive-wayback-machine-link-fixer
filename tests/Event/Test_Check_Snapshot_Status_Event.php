@@ -16,6 +16,7 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Snapshot_Status_Event;
 
 /**
@@ -69,8 +70,15 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 	private function set_snapshot_client_response( array $response ): void {
 		$service = $this->createMock( Snapshot_Client::class );
 		$service->method( 'get_snapshot_status' )->willReturn( $response );
+		$service->method( 'is_online' )->willReturn( true );
 
 		add_filter( 'iawmlf_snapshot_client', fn() => $service );
+
+		// Stub the link checker online too, so is_online() never hits the live API.
+		$link_checker = $this->createMock( Link_Checker_Client::class );
+		$link_checker->method( 'is_online' )->willReturn( true );
+
+		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
 	}
 
 	/**

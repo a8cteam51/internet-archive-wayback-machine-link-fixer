@@ -122,7 +122,13 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Setup the mock service
 		$service = $this->createMock( Link_Checker_Client::class );
 		$service->method( 'get_final_url' )->willReturn( $final_url );
+		$service->method( 'is_online' )->willReturn( true );
 		add_filter( 'iawmlf_link_checker_client', fn() => $service );
+
+		// Stub the snapshot client online so the guard passes without live HTTP.
+		$snapshot_client = $this->createMock( Snapshot_Client::class );
+		$snapshot_client->method( 'is_online' )->willReturn( true );
+		add_filter( 'iawmlf_snapshot_client', fn() => $snapshot_client );
 
 		$event = new Create_New_Snapshot_Event();
 		$event->setup();
@@ -158,7 +164,13 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		$service = $this->createMock( Link_Checker_Client::class );
 		$service->method( 'get_final_url' )
 			->willThrowException( new Service_Offline_Exception( 'Service is offline' ) );
+		$service->method( 'is_online' )->willReturn( true );
 		add_filter( 'iawmlf_link_checker_client', fn() => $service );
+
+		// Stub the snapshot client online so the guard passes without live HTTP.
+		$snapshot_client = $this->createMock( Snapshot_Client::class );
+		$snapshot_client->method( 'is_online' )->willReturn( true );
+		add_filter( 'iawmlf_snapshot_client', fn() => $snapshot_client );
 
 		$event = new Create_New_Snapshot_Event();
 		$event->setup();
@@ -206,12 +218,14 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Setup the link checker mock to return the same URL (no redirect)
 		$link_checker = $this->createMock( Link_Checker_Client::class );
 		$link_checker->method( 'get_final_url' )->willReturn( $url );
+		$link_checker->method( 'is_online' )->willReturn( true );
 		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
 
 		// Setup the snapshot client mock to throw a service offline exception
 		$snapshot_client = $this->createMock( Snapshot_Client::class );
 		$snapshot_client->method( 'create_snapshot' )
 			->willThrowException( new Service_Offline_Exception( 'Service is offline' ) );
+		$snapshot_client->method( 'is_online' )->willReturn( true );
 		add_filter( 'iawmlf_snapshot_client', fn() => $snapshot_client );
 
 		$event = new Create_New_Snapshot_Event();
@@ -259,12 +273,14 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Setup the link checker mock to return the same URL (no redirect)
 		$link_checker = $this->createMock( Link_Checker_Client::class );
 		$link_checker->method( 'get_final_url' )->willReturn( $url );
+		$link_checker->method( 'is_online' )->willReturn( true );
 		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
 
 		// Setup the snapshot client mock to throw an exceeded limit exception
 		$snapshot_client = $this->createMock( Snapshot_Client::class );
 		$snapshot_client->method( 'create_snapshot' )
 			->willThrowException( new Exceeded_Snapshot_Limit_Exception() );
+		$snapshot_client->method( 'is_online' )->willReturn( true );
 		add_filter( 'iawmlf_snapshot_client', fn() => $snapshot_client );
 
 		$event = new Create_New_Snapshot_Event();
@@ -313,12 +329,14 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 		// Setup the link checker mock to return the same URL (no redirect)
 		$link_checker = $this->createMock( Link_Checker_Client::class );
 		$link_checker->method( 'get_final_url' )->willReturn( $url );
+		$link_checker->method( 'is_online' )->willReturn( true );
 		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
 
 		// Setup the snapshot client mock to throw an invalid response exception
 		$snapshot_client = $this->createMock( Snapshot_Client::class );
 		$snapshot_client->method( 'create_snapshot' )
 			->willThrowException( new Invalid_Response_Exception( 'Invalid response' ) );
+		$snapshot_client->method( 'is_online' )->willReturn( true );
 		add_filter( 'iawmlf_snapshot_client', fn() => $snapshot_client );
 
 		$event = new Create_New_Snapshot_Event();

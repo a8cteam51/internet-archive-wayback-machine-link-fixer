@@ -173,6 +173,7 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 				$calls++;
 				return 'some-id';
 			});
+		$client->method( 'is_online' )->willReturn( true );
 
 		// Set the mock client
 		add_filter(
@@ -181,6 +182,11 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 				return $client;
 			}
 		);
+
+		// Stub the link checker online so the guard passes without live HTTP.
+		$link_checker = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client::class );
+		$link_checker->method( 'is_online' )->willReturn( true );
+		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
 
 		// Iterate through the links and save them.
 		foreach ( $all as $link ) {
