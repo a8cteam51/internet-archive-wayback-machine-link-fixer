@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-19T12:52:26+00:00\n"
+"POT-Creation-Date: 2026-08-19T13:06:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: internet-archive-wayback-machine-link-fixer\n"
@@ -27,7 +27,7 @@ msgstr ""
 
 #. Author of the plugin
 #: internet-archive-wayback-machine-link-fixer.php:19
-#: src/Dashboard/Settings_Page.php:210
+#: src/Dashboard/Settings_Page.php:212
 msgid "Internet Archive"
 msgstr ""
 
@@ -333,7 +333,7 @@ msgid "Wayback Link Fixer"
 msgstr ""
 
 #: src/Dashboard/Dashboard_Page.php:146
-#: src/Dashboard/Settings_Page.php:574
+#: src/Dashboard/Settings_Page.php:576
 msgid "Link Fixer"
 msgstr ""
 
@@ -404,266 +404,266 @@ msgstr ""
 msgid "Advanced Settings"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:194
+#: src/Dashboard/Settings_Page.php:196
 msgid "Rerun The Setup Wizard"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:201
+#: src/Dashboard/Settings_Page.php:203
 msgid "Wayback Link Fixer - Advanced Settings"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:211
+#: src/Dashboard/Settings_Page.php:213
 msgid "This plugin is powered by the Internet Archive. If you find the plugin useful, please chip in! Your support will help us build the web we deserve."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:213
+#: src/Dashboard/Settings_Page.php:215
 msgid "Donate"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:214
+#: src/Dashboard/Settings_Page.php:216
 msgid "Dismiss"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:223
+#: src/Dashboard/Settings_Page.php:225
 #: templates/admin/reports/link-details.php:268
 msgid "Save Changes"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:544
+#: src/Dashboard/Settings_Page.php:546
 msgid "Plugin Settings"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:555
+#: src/Dashboard/Settings_Page.php:557
 msgid "Archive.org API"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:560
+#: src/Dashboard/Settings_Page.php:562
 msgid "To increase your daily snapshot limit from 4,000 to 30,000, you can enter your free Archive.org API credentials. Visit"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:562
+#: src/Dashboard/Settings_Page.php:564
 msgid "archive.org/account/s3.php to generate your Access Key and Secret Key."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:576
-#: src/Dashboard/Settings_Page.php:832
+#: src/Dashboard/Settings_Page.php:578
+#: src/Dashboard/Settings_Page.php:834
 msgid "Enable the Link Fixer to scan links in your selected post types. It will find or create archived versions on the Internet Archive to ensure links remain accessible if they break."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:587
+#: src/Dashboard/Settings_Page.php:589
 #: templates/admin/dashboard/widget.php:104
 msgid "Auto Archiver"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:590
+#: src/Dashboard/Settings_Page.php:592
 msgid "Keep your content securely archived with the Auto Archiver. Each time you update a post, a fresh copy is saved to the Wayback Machine. Ensure your work remains accessible and preserved over time."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:592
+#: src/Dashboard/Settings_Page.php:594
 msgid "Non-production environment detected - auto archiving is disabled to prevent staging and development sites from being archived."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:604
+#: src/Dashboard/Settings_Page.php:606
 msgid "Enable Link Fixer"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:612
+#: src/Dashboard/Settings_Page.php:614
 msgid "Post Types"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:621
+#: src/Dashboard/Settings_Page.php:623
 msgid "Wipe Data on Uninstall"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:629
+#: src/Dashboard/Settings_Page.php:631
 msgid "Existing Posts"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:638
+#: src/Dashboard/Settings_Page.php:640
 msgid "Fixer Option"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:648
+#: src/Dashboard/Settings_Page.php:650
 msgid "Link Icon"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:657
+#: src/Dashboard/Settings_Page.php:659
 msgid "Link Exclusions"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:666
-#: src/Dashboard/Settings_Page.php:761
+#: src/Dashboard/Settings_Page.php:668
+#: src/Dashboard/Settings_Page.php:763
 msgid "Post Exclusions"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:675
+#: src/Dashboard/Settings_Page.php:677
 msgid "Check Frequency"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:684
+#: src/Dashboard/Settings_Page.php:686
 msgid "Failure Threshold"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:693
+#: src/Dashboard/Settings_Page.php:695
 msgid "Cast Archived Links to HTTPS"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:704
-#: src/Dashboard/Settings_Page.php:1411
+#: src/Dashboard/Settings_Page.php:706
+#: src/Dashboard/Settings_Page.php:1413
 msgid "Archive.org Access Key"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:715
-#: src/Dashboard/Settings_Page.php:1387
+#: src/Dashboard/Settings_Page.php:717
+#: src/Dashboard/Settings_Page.php:1389
 msgid "Archive.org Secret Key"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:726
+#: src/Dashboard/Settings_Page.php:728
 msgid "Auto Archive Posts"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:734
+#: src/Dashboard/Settings_Page.php:736
 msgid "Routinely Archive"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:743
+#: src/Dashboard/Settings_Page.php:745
 msgid "Routine Interval"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:752
+#: src/Dashboard/Settings_Page.php:754
 msgid "Allowed Post Types"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:783
+#: src/Dashboard/Settings_Page.php:785
 msgid "The Archive.org API keys are invalid. Please check your settings."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:784
+#: src/Dashboard/Settings_Page.php:786
 msgid "API credentials will be verified when you save the settings."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:864
+#: src/Dashboard/Settings_Page.php:866
 msgid "Please choose which post types will have their content checked and links added to the Wayback Machine."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:894
+#: src/Dashboard/Settings_Page.php:896
 msgid "Please choose which post types will be automatically archived to the Wayback Machine when they are published."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:913
+#: src/Dashboard/Settings_Page.php:915
 msgid "If checked, this will remove all local data when the plugin is uninstalled. Leave unchecked if you plan to reinstall this plugin."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:936
+#: src/Dashboard/Settings_Page.php:938
 msgid "When enabled, all posts of the allowed types will be scanned, and their links will be archived in the Wayback Machine."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:939
+#: src/Dashboard/Settings_Page.php:941
 msgid "This runs in the background and may take hours or days, depending on post and link count."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:957
+#: src/Dashboard/Settings_Page.php:959
 msgid "Enter a list of URLs (or parts of URLs) to exclude from link processing. You can use an asterisk (<code>*</code>) as a wildcard. For example, <code>https://example.com/some-path/*</code> would exclude anything after '/some-path/', and <code>*twitter.com*</code> would exclude any URL containing 'twitter.com'."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:972
+#: src/Dashboard/Settings_Page.php:974
 msgid "Add a new exclusion (https://x.com*)"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:975
+#: src/Dashboard/Settings_Page.php:977
 msgid "Add"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:980
+#: src/Dashboard/Settings_Page.php:982
 msgid "No exclusions found."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1025
+#: src/Dashboard/Settings_Page.php:1027
 msgid "Search for posts to exclude from link processing. Excluded posts will not have their links scanned or archived."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1033
-#: src/Dashboard/Settings_Page.php:1156
+#: src/Dashboard/Settings_Page.php:1035
+#: src/Dashboard/Settings_Page.php:1158
 msgid "Search by post title, slug, or ID..."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1043
-#: src/Dashboard/Settings_Page.php:1166
+#: src/Dashboard/Settings_Page.php:1045
+#: src/Dashboard/Settings_Page.php:1168
 msgid "No post exclusions found."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1051
-#: src/Dashboard/Settings_Page.php:1174
+#: src/Dashboard/Settings_Page.php:1053
+#: src/Dashboard/Settings_Page.php:1176
 #: templates/admin/reports/link-details.php:195
 msgid "Post"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1055
-#: src/Dashboard/Settings_Page.php:1178
+#: src/Dashboard/Settings_Page.php:1057
+#: src/Dashboard/Settings_Page.php:1180
 msgid "Unknown Post"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1113
-#: src/Dashboard/Settings_Page.php:1133
-#: src/Dashboard/Settings_Page.php:1236
-#: src/Dashboard/Settings_Page.php:1256
-#: src/Dashboard/Settings_Page.php:1364
+#: src/Dashboard/Settings_Page.php:1115
+#: src/Dashboard/Settings_Page.php:1135
+#: src/Dashboard/Settings_Page.php:1238
+#: src/Dashboard/Settings_Page.php:1258
+#: src/Dashboard/Settings_Page.php:1366
 msgid "Remove"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1148
+#: src/Dashboard/Settings_Page.php:1150
 msgid "Search for posts to exclude from auto archiving. Excluded posts will not be submitted to the Wayback Machine when created or updated."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1279
+#: src/Dashboard/Settings_Page.php:1281
 msgid "How often to recheck each link for validity. Avoid checking too often, as temporary outages or maintenance can cause false “broken” results. The default is 7 days."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1303
+#: src/Dashboard/Settings_Page.php:1305
 msgid "Number of consecutive failed checks before a link is marked as broken. Occasional single failures are normal, so use a value high enough to confirm genuine link loss. The default is 5."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1326
+#: src/Dashboard/Settings_Page.php:1328
 msgid "Force HTTPS"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1329
+#: src/Dashboard/Settings_Page.php:1331
 msgid "Enabling this will convert all archived urls from http to https."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1431
+#: src/Dashboard/Settings_Page.php:1433
 msgid "Redirect broken links to snapshots on the Wayback Machine"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1434
+#: src/Dashboard/Settings_Page.php:1436
 msgid "Check broken links but do not redirect them"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1437
+#: src/Dashboard/Settings_Page.php:1439
 msgid "Do not auto check links"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1441
+#: src/Dashboard/Settings_Page.php:1443
 msgid "Choose how to handle broken links."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1471
+#: src/Dashboard/Settings_Page.php:1473
 msgid "Example Link"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1475
+#: src/Dashboard/Settings_Page.php:1477
 msgid "Choose an icon to display next to fixed links."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1497
+#: src/Dashboard/Settings_Page.php:1499
 msgid "When active, your own content will be automatically archived on the Wayback Machine each time you publish or update it."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1520
+#: src/Dashboard/Settings_Page.php:1522
 msgid "Regularly archive your posts on the Wayback Machine"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1545
+#: src/Dashboard/Settings_Page.php:1547
 msgid "Interval in days for regular archiving."
 msgstr ""
 
@@ -1645,4 +1645,14 @@ msgstr ""
 
 #: templates/admin/wizard/step-3.php:31
 msgid "Select content types to preserve:"
+msgstr ""
+
+#: assets/js/build/admin_settings.js:1
+#: assets/js/src/admin_settings.js:205
+msgid "No posts found."
+msgstr ""
+
+#: assets/js/build/admin_settings.js:1
+#: assets/js/src/admin_settings.js:194
+msgid "Searching…"
 msgstr ""

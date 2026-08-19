@@ -144,10 +144,12 @@ class Settings_Page {
 		wp_register_script(
 			self::PAGE_SLUG,
 			IAWMLF_URL . 'assets/js/build/admin_settings.js',
-			array( 'jquery', 'wp-escape-html' ),
+			array( 'jquery', 'wp-escape-html', 'wp-i18n' ),
 			IAWMLF_VERSION,
 			true
 		);
+
+		wp_set_script_translations( self::PAGE_SLUG, 'internet-archive-wayback-machine-link-fixer', IAWMLF_PATH . 'languages' );
 
 		wp_localize_script(
 			self::PAGE_SLUG,

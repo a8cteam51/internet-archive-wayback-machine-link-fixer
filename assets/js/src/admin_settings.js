@@ -7,6 +7,7 @@
 	"use strict";
 
 	const escapeHTML = wp.escapeHtml.escapeHTML;
+	const { __ } = wp.i18n;
 
 	/**
 	 * Reusable exclusion list manager.
@@ -188,7 +189,10 @@
 		 * Render a loading state in the dropdown.
 		 */
 		function showLoading() {
-			dropdown.innerHTML = '<div class="iawmlf-post-search__loading">Searching\u2026</div>';
+			dropdown.innerHTML =
+				'<div class="iawmlf-post-search__loading">' +
+				escapeHTML(__('Searching\u2026', 'internet-archive-wayback-machine-link-fixer')) +
+				'</div>';
 			show();
 		}
 
@@ -196,7 +200,10 @@
 		 * Render a no-results state in the dropdown.
 		 */
 		function showNoResults() {
-			dropdown.innerHTML = '<div class="iawmlf-post-search__no-results">No posts found.</div>';
+			dropdown.innerHTML =
+				'<div class="iawmlf-post-search__no-results">' +
+				escapeHTML(__('No posts found.', 'internet-archive-wayback-machine-link-fixer')) +
+				'</div>';
 			show();
 		}
 
