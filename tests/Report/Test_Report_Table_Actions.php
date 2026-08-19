@@ -124,8 +124,9 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		$this->assertStringContainsString( '1 link could not be found.', $notices[0]['message'] );
 		$this->assertStringNotContainsString( '1 links could', $notices[0]['message'] );
 
-		// Each segment sits in its own paragraph.
-		$this->assertGreaterThanOrEqual( 2, substr_count( $notices[0]['message'], '<p>' ) );
+		// Segments are separated with <br /> — render_notices() already wraps the whole message in <p>, so no nested paragraphs.
+		$this->assertStringNotContainsString( '<p>', $notices[0]['message'] );
+		$this->assertStringContainsString( '<br />', $notices[0]['message'] );
 	}
 
 	/**
