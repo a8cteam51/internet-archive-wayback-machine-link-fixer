@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-19T11:00:23+00:00\n"
+"POT-Creation-Date: 2026-08-19T12:39:49+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: internet-archive-wayback-machine-link-fixer\n"
@@ -577,29 +577,35 @@ msgstr ""
 msgid "Link %s added to the queue and a new snapshot will be created and added as the archived URL in the coming minutes."
 msgstr ""
 
-#. translators: %s is the icon for error, %d is the number of links that could not be found.
+#. translators: %1$s is the icon for error, %2$d is the number of links that could not be found.
 #: src/Report/Report_Table.php:591
 #, php-format
-msgid "%1$s - %2$d links could not be found."
-msgstr ""
+msgid "%1$s - %2$d link could not be found."
+msgid_plural "%1$s - %2$d links could not be found."
+msgstr[0] ""
+msgstr[1] ""
 
-#. translators: %s is the icon for error, %d is the number of links that are archived.
+#. translators: %1$s is the icon for error, %2$d is the number of links that are archived.
 #: src/Report/Report_Table.php:601
 #, php-format
-msgid "%1$s - %2$d links that are already snapshots and will be skipped"
-msgstr ""
+msgid "%1$s - %2$d link that is already a snapshot and will be skipped"
+msgid_plural "%1$s - %2$d links that are already snapshots and will be skipped"
+msgstr[0] ""
+msgstr[1] ""
 
-#. translators: %s is the icon for error, , %d is the number of links that are own links.
+#. translators: %1$s is the icon for error, %2$d is the number of links that are own links.
 #: src/Report/Report_Table.php:621
 #, php-format
-msgid "%1$s - %2$d links are from this site and will not be processed. Please enable the Auto Archiver to archive your own content."
-msgstr ""
+msgid "%1$s - %2$d link is from this site and will not be processed. Please enable the Auto Archiver to archive your own content."
+msgid_plural "%1$s - %2$d links are from this site and will not be processed. Please enable the Auto Archiver to archive your own content."
+msgstr[0] ""
+msgstr[1] ""
 
-#: src/Report/Report_Table.php:637
+#: src/Report/Report_Table.php:647
 msgid "✅ - The following links were added to the queue for a new snapshot to be created:"
 msgstr ""
 
-#: src/Report/Report_Table.php:650
+#: src/Report/Report_Table.php:658
 msgid "Snapshots are being queued for processing and will appear soon. Thanks for your patience!"
 msgstr ""
 

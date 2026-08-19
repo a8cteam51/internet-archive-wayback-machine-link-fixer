@@ -586,22 +586,22 @@ class Report_Table extends \WP_List_Table {
 
 		// If we have any where the link could not be found, add a notice.
 		if ( ! empty( $link_not_found ) ) {
-			$notice .= sprintf(
-				// translators: %s is the icon for error, %d is the number of links that could not be found.
-				__( '%1$s - %2$d links could not be found.', 'internet-archive-wayback-machine-link-fixer' ),
+			$notice .= '<p>' . sprintf(
+				// translators: %1$s is the icon for error, %2$d is the number of links that could not be found.
+				_n( '%1$s - %2$d link could not be found.', '%1$s - %2$d links could not be found.', count( $link_not_found ), 'internet-archive-wayback-machine-link-fixer' ),
 				$error_icon,
 				count( $link_not_found )
-			);
+			) . '</p>';
 		}
 
 		// If we have any where the link is an archived link, add a notice.
 		if ( ! empty( $archived_links ) ) {
-			$notice .= sprintf(
-				// translators: %s is the icon for error, %d is the number of links that are archived.
-				__( '%1$s - %2$d links that are already snapshots and will be skipped', 'internet-archive-wayback-machine-link-fixer' ),
+			$notice .= '<p>' . sprintf(
+				// translators: %1$s is the icon for error, %2$d is the number of links that are archived.
+				_n( '%1$s - %2$d link that is already a snapshot and will be skipped', '%1$s - %2$d links that are already snapshots and will be skipped', count( $archived_links ), 'internet-archive-wayback-machine-link-fixer' ),
 				$error_icon,
 				count( $archived_links )
-			);
+			) . '</p>';
 
 			// List the urls.
 			$notice .= '<ul>';
@@ -616,12 +616,12 @@ class Report_Table extends \WP_List_Table {
 
 		// If we have any where the link is an own link, add a notice.
 		if ( ! empty( $own_links ) ) {
-			$notice .= sprintf(
-				// translators: %s is the icon for error, , %d is the number of links that are own links.
-				__( '%1$s - %2$d links are from this site and will not be processed. Please enable the Auto Archiver to archive your own content.', 'internet-archive-wayback-machine-link-fixer' ),
+			$notice .= '<p>' . sprintf(
+				// translators: %1$s is the icon for error, %2$d is the number of links that are own links.
+				_n( '%1$s - %2$d link is from this site and will not be processed. Please enable the Auto Archiver to archive your own content.', '%1$s - %2$d links are from this site and will not be processed. Please enable the Auto Archiver to archive your own content.', count( $own_links ), 'internet-archive-wayback-machine-link-fixer' ),
 				$error_icon,
 				count( $own_links )
-			);
+			) . '</p>';
 
 			// List the urls.
 			$notice .= '<ul>';
@@ -634,9 +634,17 @@ class Report_Table extends \WP_List_Table {
 			$notice .= '</ul>';
 		}
 
-		$success_notice = __( '✅ - The following links were added to the queue for a new snapshot to be created:', 'internet-archive-wayback-machine-link-fixer' );
-		// If we have any where the link was added to the queue, add a notice.
+		// Add the notices.
+		if ( '' !== $notice ) {
+			$this->notices[] = array(
+				'message' => $notice,
+				'type'    => 'error',
+			);
+		}
+
+		// Only add the success notice if links were actually queued.
 		if ( ! empty( $added_links ) ) {
+			$success_notice = __( '✅ - The following links were added to the queue for a new snapshot to be created:', 'internet-archive-wayback-machine-link-fixer' );
 
 			// List the urls.
 			$success_notice .= '<ul>';
@@ -648,20 +656,12 @@ class Report_Table extends \WP_List_Table {
 			}
 			$success_notice .= '</ul>';
 			$success_notice .= '<p>' . __( 'Snapshots are being queued for processing and will appear soon. Thanks for your patience!', 'internet-archive-wayback-machine-link-fixer' ) . '</p>';
-		}
 
-		// Add the notices.
-		if ( '' !== $notice ) {
 			$this->notices[] = array(
-				'message' => $notice,
-				'type'    => 'error',
+				'message' => $success_notice,
+				'type'    => 'success',
 			);
 		}
-		// Add the success notice.
-		$this->notices[] = array(
-			'message' => $success_notice,
-			'type'    => 'success',
-		);
 	}
 
 
