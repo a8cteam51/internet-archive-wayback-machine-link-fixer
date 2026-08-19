@@ -189,7 +189,7 @@ class Link implements \JsonSerializable {
 	 * @return self
 	 */
 	public function set_message( string $message ): self {
-		$this->message = $message;
+		$this->message = sanitize_text_field( $message );
 		return $this;
 	}
 

@@ -110,7 +110,7 @@ class Find_Or_Create_Snapshot_Event {
 
 		// If the link is an archive.org link, add message and throw error.
 		if ( iawmlf_is_archive_link( $link->get_href() ) ) {
-			$link->set_message( esc_html( 'Already an Internet Archive Snapshot.' ) );
+			$link->set_message( 'Already an Internet Archive Snapshot.' );
 			$this->link_repository->upsert( $link );
 			throw new Exception( esc_html( 'Already an Internet Archive Snapshot.' ) );
 		}

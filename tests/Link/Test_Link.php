@@ -400,17 +400,20 @@ class Test_Link extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox set_message() must store the message raw — escaping belongs at output, not in the model. (S008)
+	 * @testdox set_message() must sanitize, not escape — special characters stay raw, tags and surplus whitespace are stripped. (S008)
 	 *
 	 * @return void
 	 */
-	public function test_set_message_does_not_escape(): void {
-		$message = 'Redirected to "checkout" & <cart> page';
-
+	public function test_set_message_sanitizes_without_escaping(): void {
 		$link = new Link( 'https://example.com' );
-		$link->set_message( $message );
 
-		$this->assertSame( $message, $link->get_message() );
+		// Special characters survive raw — no HTML entities.
+		$link->set_message( 'Redirected to "checkout" & cart page' );
+		$this->assertSame( 'Redirected to "checkout" & cart page', $link->get_message() );
+
+		// Tags and surplus whitespace are stripped.
+		$link->set_message( "  Broken <strong>link</strong>\tfound  " );
+		$this->assertSame( 'Broken link found', $link->get_message() );
 	}
 
 	/**

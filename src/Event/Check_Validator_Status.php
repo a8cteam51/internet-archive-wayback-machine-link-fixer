@@ -164,7 +164,7 @@ class Check_Validator_Status {
 		// If status is error, throw exception with error code.
 		if ( 'error' === $status['status'] ) {
 			// Update the link with the error message.
-			$link = $link->set_message( esc_html( $status['message'] ) );
+			$link = $link->set_message( $status['message'] );
 
 			// If the status has a 'status_ext' key, set the link as excluded.
 			if ( isset( $status['status_ext'] ) && 'error:no-access' === $status['status_ext'] ) {

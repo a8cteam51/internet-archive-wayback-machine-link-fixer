@@ -80,7 +80,7 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_message_round_trips_unescaped(): void {
-		$message = 'Redirected to "checkout" & <cart> page';
+		$message = 'Redirected to "checkout" & cart page';
 
 		$link = new Link( 'https://test_message_round_trips_unescaped.com' );
 		$link->set_message( $message );
