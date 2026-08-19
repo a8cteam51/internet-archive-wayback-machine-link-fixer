@@ -655,7 +655,7 @@ class Report_Table extends \WP_List_Table {
 				);
 			}
 			$success_notice .= '</ul>';
-			$success_notice .= '<p>' . __( 'Snapshots are being queued for processing and will appear soon. Thanks for your patience!', 'internet-archive-wayback-machine-link-fixer' ) . '</p>';
+			$success_notice .= '<br />' . __( 'Snapshots are being queued for processing and will appear soon. Thanks for your patience!', 'internet-archive-wayback-machine-link-fixer' );
 
 			$this->notices[] = array(
 				'message' => $success_notice,
