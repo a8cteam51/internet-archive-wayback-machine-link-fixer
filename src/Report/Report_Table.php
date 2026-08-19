@@ -1114,7 +1114,7 @@ class Report_Table extends \WP_List_Table {
 				if ( $item->has_archived_href() ) {
 					return sprintf(
 						'<a href="%s" target="_blank">%s</a>',
-						$item->get_archived_href(),
+						esc_url( $item->get_archived_href() ),
 						$this->get_dashicon( 'dashicons-yes-alt', __( 'Has a valid archive snapshot', 'internet-archive-wayback-machine-link-fixer' ) )
 					);
 				}
