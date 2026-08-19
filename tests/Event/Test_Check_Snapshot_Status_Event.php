@@ -110,6 +110,37 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox An error status without a status_ext key (optional per the Snapshot_Client contract) must still requeue and mark the link pending, storing an empty message.
+	 *
+	 * @return void
+	 */
+	public function test_error_status_without_status_ext_still_requeues(): void {
+		$this->set_snapshot_client_response(
+			array(
+				'status'  => 'error',
+				'message' => 'Error message',
+			)
+		);
+
+		$link = $this->link_repository->upsert( new Link( 'https://example.com' ) );
+
+		$event = new Check_Snapshot_Status_Event();
+		$event->setup();
+
+		// Only the event's own Exception is acceptable — a TypeError must fail the test.
+		try {
+			$event( $link->get_id(), 'fake-id', 0 );
+		} catch ( \Exception $th ) {
+			$this->assertStringContainsString( 'Error getting status', $th->getMessage() );
+		}
+
+		$updated_link = $this->link_repository->find_by_id( $link->get_id() );
+
+		$this->assertSame( '', $updated_link->get_message() );
+		$this->assertEquals( Link::PROCESS_PENDING, $updated_link->get_archive_process() );
+	}
+
+	/**
 	 * @testdox If the link has a the no access status, the link should be set as excluded. This should also mark the link as done.
 	 *
 	 * @return void
