@@ -326,15 +326,15 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 
 		$return = array(
 			'job_id'  => $job_id,
-			'status'  => esc_attr( $response_body['status'] ),
+			'status'  => (string) $response_body['status'],
 			'message' => 'error' === $response_body['status'] && array_key_exists( 'message', $response_body )
-				? esc_attr( $response_body['message'] )
+				? (string) $response_body['message']
 				: '',
 		);
 
 		// If we have a status_ext key, add it to the return.
 		if ( array_key_exists( 'status_ext', $response_body ) ) {
-			$return['status_ext'] = esc_attr( $response_body['status_ext'] );
+			$return['status_ext'] = (string) $response_body['status_ext'];
 		}
 
 		return $return;
