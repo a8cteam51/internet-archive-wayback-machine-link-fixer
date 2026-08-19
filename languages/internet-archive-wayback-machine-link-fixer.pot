@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-19T12:39:49+00:00\n"
+"POT-Creation-Date: 2026-08-19T12:46:03+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: internet-archive-wayback-machine-link-fixer\n"
@@ -494,6 +494,10 @@ msgstr ""
 msgid "Next step is not set"
 msgstr ""
 
+#: src/Dashboard/Setup_Wizard.php:416
+msgid "Internet Archive Logo"
+msgstr ""
+
 #: src/Dashboard/Setup_Wizard.php:419
 msgid "Internet Archive Wayback Machine Link Fixer Setup"
 msgstr ""
@@ -520,7 +524,7 @@ msgstr ""
 #: src/Report/Report_Table.php:505
 #: src/Report/Report_Table.php:687
 #, php-format
-msgid "Link not found with id:%d"
+msgid "Link not found with id: %d"
 msgstr ""
 
 #. translators: %s is the link url.
@@ -776,24 +780,30 @@ msgstr ""
 msgid "N/a"
 msgstr ""
 
-#: src/Report/Report_Table.php:1231
-#: src/Report/Report_Table.php:1241
+#. translators: %s: HTTP status code (e.g. 404).
+#: src/Report/Report_Table.php:1235
+#, php-format
+msgid "%s status"
+msgstr ""
+
+#: src/Report/Report_Table.php:1239
+#: src/Report/Report_Table.php:1249
 #: templates/admin/dashboard/link-list.php:63
 msgid "No HTTP Code"
 msgstr ""
 
 #. translators: %1$s: last check date (e.g. "5 Jan 2025"), %2$s: HTTP status code (e.g. "404 status")
-#: src/Report/Report_Table.php:1235
+#: src/Report/Report_Table.php:1243
 #: templates/admin/dashboard/link-list.php:68
 #, php-format
 msgid "%1$s with %2$s"
 msgstr ""
 
-#: src/Report/Report_Table.php:1238
+#: src/Report/Report_Table.php:1246
 msgid "Missing date"
 msgstr ""
 
-#: src/Report/Report_Table.php:1253
+#: src/Report/Report_Table.php:1261
 msgid "No links have been created yet."
 msgstr ""
 

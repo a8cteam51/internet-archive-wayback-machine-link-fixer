@@ -350,7 +350,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %d is the link id.
-						__( 'Link not found with id:%d', 'internet-archive-wayback-machine-link-fixer' ),
+						__( 'Link not found with id: %d', 'internet-archive-wayback-machine-link-fixer' ),
 						absint( $link_id )
 					),
 					'type'    => 'error',
@@ -419,7 +419,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %d is the link id.
-						__( 'Link not found with id:%d', 'internet-archive-wayback-machine-link-fixer' ),
+						__( 'Link not found with id: %d', 'internet-archive-wayback-machine-link-fixer' ),
 						absint( $link_id )
 					),
 					'type'    => 'error',
@@ -502,7 +502,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %d is the link id.
-						__( 'Link not found with id:%d', 'internet-archive-wayback-machine-link-fixer' ),
+						__( 'Link not found with id: %d', 'internet-archive-wayback-machine-link-fixer' ),
 						absint( $link_id )
 					),
 					'type'    => 'error',
@@ -684,7 +684,7 @@ class Report_Table extends \WP_List_Table {
 				$this->notices[] = array(
 					'message' => sprintf(
 						// translators: %d is the link id.
-						__( 'Link not found with id:%d', 'internet-archive-wayback-machine-link-fixer' ),
+						__( 'Link not found with id: %d', 'internet-archive-wayback-machine-link-fixer' ),
 						absint( $link_id )
 					),
 					'type'    => 'error',
@@ -1227,7 +1227,15 @@ class Report_Table extends \WP_List_Table {
 		}
 
 		$last_status_display = $last_check_status
-			? "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/{$last_check_status}\" target=\"_blank\">{$last_check_status}  status</a>"
+			? sprintf(
+				'<a href="%1$s" target="_blank">%2$s</a>',
+				esc_url( "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/{$last_check_status}" ),
+				sprintf(
+					// translators: %s: HTTP status code (e.g. 404).
+					__( '%s status', 'internet-archive-wayback-machine-link-fixer' ),
+					$last_check_status
+				)
+			)
 			: __( 'No HTTP Code', 'internet-archive-wayback-machine-link-fixer' );
 
 		return sprintf(

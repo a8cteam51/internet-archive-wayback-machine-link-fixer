@@ -413,7 +413,7 @@ class Setup_Wizard {
 			printf(
 				'<img src="%1$s" alt="%2$s" class="iawmlf-wizard__title__logo" /> ',
 				esc_url( IAWMLF_URL . 'assets/images/icon.svg' ),
-				'Internet Archive Logo'
+				esc_attr__( 'Internet Archive Logo', 'internet-archive-wayback-machine-link-fixer' )
 			);
 			echo '<h1 class="iawmlf-wizard__title">';
 				esc_html_e( 'Internet Archive Wayback Machine Link Fixer Setup', 'internet-archive-wayback-machine-link-fixer' );

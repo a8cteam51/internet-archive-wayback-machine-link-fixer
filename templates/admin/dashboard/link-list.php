@@ -56,7 +56,7 @@ defined( 'ABSPATH' ) || exit;
 									$iawmlf_http_status_display = $iawmlf_clean_http_code
 										? sprintf(
 											'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s %3$s</a>',
-											esc_url( sprintf( 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/%d', (int) $iawmlf_clean_http_code ) ),
+											esc_url( sprintf( 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/%d', (int) $iawmlf_clean_http_code ) ),
 											esc_html( (string) $iawmlf_clean_http_code ),
 											esc_html__( 'status', 'internet-archive-wayback-machine-link-fixer' )
 										)

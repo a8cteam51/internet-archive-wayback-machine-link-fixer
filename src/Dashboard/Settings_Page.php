@@ -969,7 +969,7 @@ class Settings_Page {
 				<input
 					type="text"
 					id="iawmlf_excluded_links_new"
-					placeholder="<?php esc_html_e( 'Add a new exclusion (https://x.com*)', 'internet-archive-wayback-machine-link-fixer' ); ?>"
+					placeholder="<?php esc_attr_e( 'Add a new exclusion (https://x.com*)', 'internet-archive-wayback-machine-link-fixer' ); ?>"
 					data-group="link_fixer"
 				/>
 				<button id="iawmlf_excluded_links_new_action" data-group="link_fixer" type="button" class="button button-secondary add-exclusion"><?php esc_html_e( 'Add', 'internet-archive-wayback-machine-link-fixer' ); ?></button>
