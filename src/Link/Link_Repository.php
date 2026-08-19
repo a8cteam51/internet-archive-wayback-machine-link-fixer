@@ -757,7 +757,7 @@ class Link_Repository {
 	 *
 	 * @param Link $link The link to remove.
 	 *
-	 * @return boolean True on success, false on failure.
+	 * @return boolean True if a row was deleted; false if the link has no id, no row matched, or the delete failed.
 	 */
 	public function delete_link( Link $link ): bool {
 		// If the link has no id, return false.

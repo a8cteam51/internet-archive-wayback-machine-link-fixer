@@ -84,7 +84,7 @@ class Test_Link_Check_Rest extends \WP_UnitTestCase {
 	private function dispatch_request( array $params = array(), ?callable $config = null ): \WP_REST_Response {
 		$request = new \WP_REST_Request(
 			'POST',
-			'/' . Link_Check_Rest::NAMESPACE . Link_Check_Rest::ROUTE
+			'/' . Link_Check_Rest::API_NAMESPACE . Link_Check_Rest::ROUTE
 		);
 
 		if ( ! empty( $params ) ) {
@@ -106,7 +106,7 @@ class Test_Link_Check_Rest extends \WP_UnitTestCase {
 	public function test_route_is_registered(): void {
 		$routes = $this->server->get_routes();
 		$this->assertArrayHasKey(
-			'/' . Link_Check_Rest::NAMESPACE . Link_Check_Rest::ROUTE,
+			'/' . Link_Check_Rest::API_NAMESPACE . Link_Check_Rest::ROUTE,
 			$routes
 		);
 	}

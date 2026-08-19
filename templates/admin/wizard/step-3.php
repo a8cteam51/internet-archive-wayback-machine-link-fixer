@@ -6,7 +6,6 @@
  * @since 1.3.0
  *
  * @param array  $step_data The step data.
- * @param Settings $settings The settings object.
  * @param array $post_types The post types.
  * @param string $header The header template.
  * @param string $footer The footer template.

@@ -432,7 +432,6 @@ class Setup_Wizard {
 
 		$view_data = array(
 			'step_data'  => $step_data,
-			'settings'   => new Settings(),
 			'post_types' => $this->get_public_post_types(),
 			'header'     => $this->get_page_header( $step_data ),
 			'footer'     => $this->get_page_footer( $step_data ),

@@ -29,13 +29,16 @@ class Dashboard_Statistics {
 	 *
 	 * @return array{
 	 *     total_links: int<0, max>,
-	 *     broken_links: int<0, max>,
+	 *     all_broken_links: int<0, max>,
+	 *     broken_and_redirected_links: int<0, max>,
+	 *     broken_not_redirected_links: int<0, max>,
 	 *     links_with_archive: int<0, max>,
 	 *     links_without_archive: int<0, max>,
 	 *     not_checked: int<0, max>,
 	 *     process_done: int<0, max>,
 	 *     process_new: int<0, max>,
 	 *     process_pending: int<0, max>,
+	 *     last_checks: array,
 	 * }
 	 */
 	public static function get_link_statistics(): array {
@@ -44,13 +47,12 @@ class Dashboard_Statistics {
 
 		// If we dont have an array or invalid data, compile fresh.
 		if ( false === $from_cache || ! is_array( $from_cache ) ) {
-			$stats = self::compile_link_statistics();
+			$stats = self::normalize_link_statistics( self::compile_link_statistics() );
 		} else {
 			// Validate and normalize cached data.
 			$stats = self::normalize_link_statistics( $from_cache );
 			if ( null === $stats ) {
-				$stats = self::compile_link_statistics();
-				$stats = self::normalize_link_statistics( $stats );
+				$stats = self::normalize_link_statistics( self::compile_link_statistics() );
 			} else {
 				return $stats;
 			}
@@ -93,7 +95,6 @@ class Dashboard_Statistics {
 		// Only return the required keys.
 		$stats = array(
 			'total_links'                 => \absint( $stats['total_links'] ),
-			'broken_links'                => \absint( $stats['all_broken_links'] ),
 			'all_broken_links'            => \absint( $stats['all_broken_links'] ),
 			'links_with_archive'          => \absint( $stats['links_with_archive'] ),
 			'links_without_archive'       => \absint( $stats['links_without_archive'] ),
@@ -114,13 +115,16 @@ class Dashboard_Statistics {
 	 *
 	 * @return array{
 	 *     total_links: int<0, max>,
-	 *     broken_links: int<0, max>,
+	 *     all_broken_links: int<0, max>,
+	 *     broken_and_redirected_links: int<0, max>,
+	 *     broken_not_redirected_links: int<0, max>,
 	 *     links_with_archive: int<0, max>,
 	 *     links_without_archive: int<0, max>,
 	 *     not_checked: int<0, max>,
 	 *     process_done: int<0, max>,
 	 *     process_new: int<0, max>,
 	 *     process_pending: int<0, max>,
+	 *     last_checks: array,
 	 * }
 	 */
 	private static function compile_link_statistics(): array {

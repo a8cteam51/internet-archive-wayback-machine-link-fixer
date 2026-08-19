@@ -3,7 +3,7 @@
 /**
  * REST API endpoint for checking link status.
  *
- * @since   2.0.0
+ * @since   1.4.0
  */
 
 declare( strict_types = 1 );
@@ -30,7 +30,7 @@ class Link_Check_Rest {
 	/**
 	 * The REST API namespace.
 	 */
-	public const NAMESPACE = 'iawmlf/v1';
+	public const API_NAMESPACE = 'iawmlf/v1';
 
 	/**
 	 * The REST API route.
@@ -58,7 +58,7 @@ class Link_Check_Rest {
 	 */
 	public function register_routes(): void {
 		register_rest_route(
-			self::NAMESPACE,
+			self::API_NAMESPACE,
 			self::ROUTE,
 			array(
 				'methods'             => 'POST',

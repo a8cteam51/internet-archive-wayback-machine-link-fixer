@@ -12,6 +12,9 @@ declare(strict_types=1);
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine;
 
 use Throwable;
+use Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
 
 defined( 'ABSPATH' ) || exit;
 
