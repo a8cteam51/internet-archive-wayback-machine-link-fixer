@@ -573,6 +573,36 @@ class Test_Settings extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox An icon css_rule must be stripped of markup — a </style> breakout can never reach the style block. (S050)
+	 *
+	 * @return void
+	 */
+	public function test_icon_css_rule_is_stripped_of_markup(): void {
+		add_filter(
+			'iawmlf_link_icons',
+			function ( array $icons ) {
+				$icons[] = array(
+					'id'       => 'evil_icon',
+					'name'     => 'Evil Icon',
+					'css_rule' => 'a:after { content: "x"; }</style><script>alert(1)</script>',
+				);
+				return $icons;
+			}
+		);
+
+		$rules = array_column( Settings::get_available_link_icons(), 'css_rule', 'id' );
+
+		$this->assertStringNotContainsString( '<', $rules['evil_icon'] );
+		$this->assertStringContainsString( 'a:after { content: "x"; }', $rules['evil_icon'] );
+
+		update_option( Settings::LINK_ICON, 'evil_icon' );
+		$this->assertStringNotContainsString( '</style', Settings::get_link_icon_css() );
+
+		// Clean up.
+		remove_all_filters( 'iawmlf_link_icons' );
+	}
+
+	/**
 	 * @testdox Duplicate icon IDs should be deduplicated, keeping the last entry.
 	 *
 	 * @since 1.4.0

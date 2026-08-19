@@ -707,7 +707,7 @@ class Settings {
 			$validated[ $id ] = array(
 				'id'       => $id,
 				'name'     => $name,
-				'css_rule' => $icon['css_rule'],
+				'css_rule' => wp_strip_all_tags( $icon['css_rule'] ),
 			);
 		}
 
