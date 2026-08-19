@@ -33,6 +33,22 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A manual-exclusion message written with MANUAL_EXCLUSION_TEMPLATE must be parsed back by get_current_message() with the login and date intact. (S036)
+	 *
+	 * @return void
+	 */
+	public function test_manual_exclusion_message_round_trips_writer_to_parser(): void {
+		$link = new Link( 'https://example.com' );
+		$link->set_excluded();
+		$link->set_message( sprintf( Link::MANUAL_EXCLUSION_TEMPLATE, 'glynn', '28 May 2026' ) );
+
+		$message = ( new Link_Summary_Factory( $link ) )->get_current_message();
+
+		// In the default locale the parsed message re-renders identically.
+		$this->assertSame( 'User Requested To Exclude (glynn on 28 May 2026)', $message );
+	}
+
+	/**
 	 * @testdox It should return a processing message when the link is still being processed.
 	 *
 	 * @return void

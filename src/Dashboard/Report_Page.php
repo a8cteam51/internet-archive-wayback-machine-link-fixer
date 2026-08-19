@@ -12,6 +12,7 @@ namespace Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Report\Report_Table;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page;
 
@@ -422,7 +423,7 @@ class Report_Page {
 				$user = wp_get_current_user();
 				$link->set_message(
 					sprintf(
-						'User Requested To Exclude (%1$s on %2$s)',
+						Link::MANUAL_EXCLUSION_TEMPLATE,
 						$user->user_login,
 						wp_date( get_option( 'date_format' ) )
 					)
@@ -432,7 +433,7 @@ class Report_Page {
 			$link->set_excluded( false );
 
 			// Clear message only if it was set by a user exclusion request.
-			if ( 0 === strpos( $link->get_message(), 'User Requested To Exclude' ) ) {
+			if ( 1 === preg_match( Link::MANUAL_EXCLUSION_PATTERN, $link->get_message() ) ) {
 				$link->set_message( '' );
 			}
 		}

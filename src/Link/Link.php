@@ -27,6 +27,13 @@ class Link implements \JsonSerializable {
 	public const PROCESS_DONE        = 'done';
 
 	/**
+	 * Manual-exclusion sentinel. Stored in the message column, so these values are
+	 * frozen by existing data — NEVER change or translate them. Translate at display only.
+	 */
+	public const MANUAL_EXCLUSION_TEMPLATE = 'User Requested To Exclude (%1$s on %2$s)';
+	public const MANUAL_EXCLUSION_PATTERN  = '/^User Requested To Exclude \((.+) on (.+)\)$/';
+
+	/**
 	 * The database row id.
 	 *
 	 * @var integer|null
@@ -222,7 +229,7 @@ class Link implements \JsonSerializable {
 	public function is_manual_exclusion(): bool {
 		// Matches the message written by Report_Page::handle_link_details_form() on manual exclude.
 		return $this->is_excluded
-			&& 0 === strpos( $this->message, 'User Requested To Exclude' );
+			&& 1 === preg_match( self::MANUAL_EXCLUSION_PATTERN, $this->message );
 	}
 
 	/**
