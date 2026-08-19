@@ -75,6 +75,23 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A link message must round-trip the database raw — no escaping on save or on map. (S008)
+	 *
+	 * @return void
+	 */
+	public function test_message_round_trips_unescaped(): void {
+		$message = 'Redirected to "checkout" & <cart> page';
+
+		$link = new Link( 'https://test_message_round_trips_unescaped.com' );
+		$link->set_message( $message );
+		$link = $this->link_repository->upsert( $link );
+
+		$found_link = $this->link_repository->find_by_id( $link->get_id() );
+
+		$this->assertSame( $message, $found_link->get_message() );
+	}
+
+	/**
 	 * @testdox It should be possible to find a link by its URL.
 	 *
 	 * @return void

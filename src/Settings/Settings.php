@@ -175,7 +175,7 @@ class Settings {
 	 * @return string[]
 	 */
 	public static function get_link_exclusions(): array {
-		$links = array_map( 'esc_html', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
+		$links = array_map( 'strval', (array) get_option( self::LINK_EXCLUSIONS, array() ) );
 		return apply_filters( 'iawmlf_link_exclusions', $links );
 	}
 
@@ -295,7 +295,7 @@ class Settings {
 	 * @return string
 	 */
 	public static function get_archive_secret_key(): string {
-		return esc_attr( get_option( self::ARCHIVE_ORG_SECRET_KEY, '' ) );
+		return (string) get_option( self::ARCHIVE_ORG_SECRET_KEY, '' );
 	}
 
 	/**
@@ -306,7 +306,7 @@ class Settings {
 	 * @return string
 	 */
 	public static function get_archive_access_key(): string {
-		return esc_attr( get_option( self::ARCHIVE_ORG_ACCESS_KEY, '' ) );
+		return (string) get_option( self::ARCHIVE_ORG_ACCESS_KEY, '' );
 	}
 
 	/**

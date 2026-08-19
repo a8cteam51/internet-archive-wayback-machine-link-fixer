@@ -400,6 +400,20 @@ class Test_Link extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox set_message() must store the message raw — escaping belongs at output, not in the model. (S008)
+	 *
+	 * @return void
+	 */
+	public function test_set_message_does_not_escape(): void {
+		$message = 'Redirected to "checkout" & <cart> page';
+
+		$link = new Link( 'https://example.com' );
+		$link->set_message( $message );
+
+		$this->assertSame( $message, $link->get_message() );
+	}
+
+	/**
 	 * @testdox is_manual_exclusion() is true only when the link is excluded AND the message starts with the user-exclusion sentinel.
 	 *
 	 * @return void

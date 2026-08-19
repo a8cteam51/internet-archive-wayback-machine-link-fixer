@@ -296,7 +296,7 @@ class Link_Repository {
 			->set_id( (int) $row->id )
 			->set_archived_href( $row->archived ?? '' )
 			->set_redirect_href( $row->redirect_url ?? '' )
-			->set_message( esc_attr( $row->message ?? '' ) )
+			->set_message( $row->message ?? '' )
 			->set_excluded( (bool) $row->excluded );
 
 		// Set archive process status

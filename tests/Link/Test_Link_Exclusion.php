@@ -132,6 +132,17 @@ class Test_Link_Exclusion extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A stored pattern containing an ampersand must match a raw href — escaping on read turns & into &#038; and breaks fnmatch. (S008)
+	 *
+	 * @return void
+	 */
+	public function test_pattern_with_ampersand_matches_raw_href(): void {
+		update_option( Settings::LINK_EXCLUSIONS, array( '*example.com/?a=1&b=2*' ) );
+
+		$this->assertTrue( $this->is_excluded( 'https://example.com/?a=1&b=2&c=3' ) );
+	}
+
+	/**
 	 * @testdox A link matching no list is not excluded.
 	 *
 	 * @return void

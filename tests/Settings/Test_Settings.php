@@ -126,6 +126,39 @@ class Test_Settings extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox Stored exclusion patterns must be returned raw, not HTML-escaped, or they can never match a raw href. (S008)
+	 *
+	 * @return void
+	 */
+	public function test_get_link_exclusions_returns_raw_values(): void {
+		$patterns = array(
+			'*example.com/?a=1&b=2*',
+			"*o'brien.example*",
+		);
+		update_option( Settings::LINK_EXCLUSIONS, $patterns );
+
+		$this->assertSame( $patterns, Settings::get_link_exclusions() );
+	}
+
+	/**
+	 * @testdox Archive.org credentials must be returned raw, not HTML-escaped, as they are sent in an Authorization header. (S008)
+	 *
+	 * @return void
+	 */
+	public function test_archive_credentials_are_returned_raw(): void {
+		$secret = 'sec&ret"key';
+		$access = "acc&ess'key";
+		update_option( Settings::ARCHIVE_ORG_SECRET_KEY, $secret );
+		update_option( Settings::ARCHIVE_ORG_ACCESS_KEY, $access );
+
+		$this->assertSame( $secret, Settings::get_archive_secret_key() );
+		$this->assertSame( $access, Settings::get_archive_access_key() );
+
+		delete_option( Settings::ARCHIVE_ORG_SECRET_KEY );
+		delete_option( Settings::ARCHIVE_ORG_ACCESS_KEY );
+	}
+
+	/**
 	 * @testdox It should be possible to add links to the exclusion list via a filter, to ensure some can not be removed.
 	 *
 	 * @return void
