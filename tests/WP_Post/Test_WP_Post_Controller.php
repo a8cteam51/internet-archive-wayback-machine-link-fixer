@@ -253,6 +253,61 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox The archived href is run through esc_url_raw when building the frontend payload — a stored javascript: URL never reaches link.href. (S048)
+	 * @group localized-data
+	 * @return void
+	 */
+	public function test_localized_archived_href_is_escaped(): void {
+		wp_scripts()->registered = array();
+
+		$post_id = \WP_UnitTestCase_Base::factory()->post->create();
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		$content = 'A link to <a href="https://from.post/safe">one</a> and <a href="https://from.post/poisoned">two</a>';
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+				'post_type'    => 'post',
+			)
+		);
+
+		$handler = new WP_Post_Controller();
+		$handler->on_save_post_process_post_links( $post_id, get_post( $post_id ), true );
+
+		// Give one link a valid archive URL and the other a script-scheme URL.
+		$repository = new Link_Repository();
+		$safe       = $repository->find_by_url( 'https://from.post/safe' );
+		$safe->set_archived_href( 'https://web.archive.org/web/1/https://from.post/safe?a=1&b=2' );
+		$repository->upsert( $safe );
+
+		$poisoned = $repository->find_by_url( 'https://from.post/poisoned' );
+		$poisoned->set_archived_href( 'javascript:alert(1)' );
+		$repository->upsert( $poisoned );
+
+		$handler->enqueue_frontend_script();
+		do_action( 'wp_enqueue_scripts' );
+
+		$localized_data = wp_scripts()->get_data( 'iawm-link-fixer-front-link-checker', 'data' );
+
+		unset( $GLOBALS['post'] );
+
+		$matches = array();
+		preg_match( '/\{.*\}/', $localized_data, $matches );
+		$data  = json_decode( $matches[0], true );
+		$links = json_decode( $data['links'], true );
+
+		$hrefs = array_column( $links, 'archived_href', 'href' );
+
+		// The valid URL survives untouched (host rewritten by the getter, & not entity-encoded).
+		$this->assertSame( 'https://web-wp.archive.org/web/1/https://from.post/safe?a=1&b=2', $hrefs['https://from.post/safe'] );
+
+		// The script scheme does not survive.
+		$this->assertStringNotContainsString( 'javascript:', $hrefs['https://from.post/poisoned'] );
+	}
+
+	/**
 	 * @testdox When a post has no links and its not been scanned, do not attempt to add any links to the localized data.
 	 * @group localized-data
 	 * @see https://github.com/a8cteam51/wayback-link-fixer/issues/48

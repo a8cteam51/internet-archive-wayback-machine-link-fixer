@@ -58,6 +58,13 @@ class Link_Collection implements \JsonSerializable {
 	 * @return void
 	 */
 	public function add( Link $link ): void {
+		$archived_href = $link->get_archived_href();
+
+		// Sanitise the URL on the way in; null/empty stays untouched.
+		if ( null !== $archived_href && '' !== $archived_href ) {
+			$link->set_archived_href( (string) \esc_url_raw( $archived_href ) );
+		}
+
 		$this->links[] = $link;
 	}
 
