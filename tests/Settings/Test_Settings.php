@@ -573,11 +573,11 @@ class Test_Settings extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox An icon css_rule must be stripped of markup — a </style> breakout can never reach the style block. (S050)
+	 * @testdox An icon css_rule has any </style> breakout neutralised while markup inside a data: URI survives. (S050)
 	 *
 	 * @return void
 	 */
-	public function test_icon_css_rule_is_stripped_of_markup(): void {
+	public function test_icon_css_rule_neutralises_style_breakout(): void {
 		add_filter(
 			'iawmlf_link_icons',
 			function ( array $icons ) {
@@ -586,17 +586,26 @@ class Test_Settings extends \WP_UnitTestCase {
 					'name'     => 'Evil Icon',
 					'css_rule' => 'a:after { content: "x"; }</style><script>alert(1)</script>',
 				);
+				$icons[] = array(
+					'id'       => 'svg_icon',
+					'name'     => 'SVG Icon',
+					'css_rule' => 'a:after { background-image: url("data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M0 0\'/></svg>"); }',
+				);
 				return $icons;
 			}
 		);
 
 		$rules = array_column( Settings::get_available_link_icons(), 'css_rule', 'id' );
 
-		$this->assertStringNotContainsString( '<', $rules['evil_icon'] );
+		// The style-closing sequence is gone, so nothing can escape the <style> block.
+		$this->assertDoesNotMatchRegularExpression( '#</\s*style#i', $rules['evil_icon'] );
 		$this->assertStringContainsString( 'a:after { content: "x"; }', $rules['evil_icon'] );
 
+		// Markup inside a data: URI survives.
+		$this->assertStringContainsString( '<svg', $rules['svg_icon'] );
+
 		update_option( Settings::LINK_ICON, 'evil_icon' );
-		$this->assertStringNotContainsString( '</style', Settings::get_link_icon_css() );
+		$this->assertDoesNotMatchRegularExpression( '#</\s*style#i', Settings::get_link_icon_css() );
 
 		// Clean up.
 		remove_all_filters( 'iawmlf_link_icons' );

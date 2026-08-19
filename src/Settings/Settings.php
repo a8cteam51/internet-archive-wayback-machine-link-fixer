@@ -707,7 +707,8 @@ class Settings {
 			$validated[ $id ] = array(
 				'id'       => $id,
 				'name'     => $name,
-				'css_rule' => wp_strip_all_tags( $icon['css_rule'] ),
+				// Neutralise only a </style> breakout — markup inside e.g. a data: URI is valid CSS.
+				'css_rule' => (string) preg_replace( '#</\s*style#i', '', $icon['css_rule'] ),
 			);
 		}
 
