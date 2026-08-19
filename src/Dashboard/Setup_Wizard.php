@@ -65,7 +65,7 @@ class Setup_Wizard {
 	 * @return string
 	 */
 	public static function get_wizard_url(): string {
-		return admin_url( 'admin.php?page=' . self::PAGE_SLUG );
+		return add_query_arg( 'page', self::PAGE_SLUG, admin_url( 'admin.php' ) );
 	}
 
 	/**

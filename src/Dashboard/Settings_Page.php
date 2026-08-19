@@ -190,7 +190,7 @@ class Settings_Page {
 		if ( Settings::is_wizard_completed() ) {
 			$wizard_link = \sprintf(
 				'<a href="%s" class="button button-primary">%s</a>',
-				esc_url( Setup_Wizard::get_wizard_url() . '&rerun-wizard=1' ),
+				esc_url( add_query_arg( 'rerun-wizard', '1', Setup_Wizard::get_wizard_url() ) ),
 				esc_html__( 'Rerun The Setup Wizard', 'internet-archive-wayback-machine-link-fixer' )
 			);
 		}
