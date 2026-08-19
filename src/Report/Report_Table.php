@@ -287,6 +287,21 @@ class Report_Table extends \WP_List_Table {
 		}
 		$cache_key = $cache->save();
 
+		$url = $this->get_redirect_action_url( $cache_key );
+
+		// Redirect to the page using JS as page already loaded headers.
+		printf( '<script>window.location = %s;</script>', wp_json_encode( $url ) );
+		exit;
+	}
+
+	/**
+	 * Build the post-action redirect URL, origin-relative (REQUEST_URI already holds any install subdirectory).
+	 *
+	 * @param string $cache_key The saved notification cache key.
+	 *
+	 * @return string
+	 */
+	public function get_redirect_action_url( string $cache_key ): string {
 		// Redirect to the same page with all actions removed.
 		$redirect = remove_query_arg( array( 'action', 'action2', 'iawmlf_link_action', 'iawmlf_links', '_wpnonce', '_wp_http_referer' ) );
 
@@ -301,12 +316,7 @@ class Report_Table extends \WP_List_Table {
 			$redirect = add_query_arg( 'iawmlf_filtered_post_id', absint( $params['iawmlf_filtered_post_id'] ), $redirect );
 		}
 
-		// Add to the redirect the current page.
-		$url = home_url() . $redirect;
-
-		// Redirect to the page using JS as page already loaded headers.
-		printf( '<script>window.location = %s;</script>', wp_json_encode( $url ) );
-		exit;
+		return $redirect;
 	}
 
 	/**

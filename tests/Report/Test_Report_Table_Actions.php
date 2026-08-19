@@ -94,6 +94,27 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 
 
 	/**
+	 * @testdox The post-action redirect URL is origin-relative — no home_url prefix, so a subdirectory install path is never duplicated. (S055)
+	 *
+	 * @return void
+	 */
+	public function test_redirect_action_url_is_origin_relative(): void {
+		$original_request_uri   = $_SERVER['REQUEST_URI'] ?? '';
+		$_SERVER['REQUEST_URI'] = '/blog/wp-admin/admin.php?page=iawmlf-report&action=some_action&_wpnonce=abc';
+
+		$table = $this->get_mocked_table();
+		$url   = $table->get_redirect_action_url( 'cache123' );
+
+		$_SERVER['REQUEST_URI'] = $original_request_uri;
+
+		$this->assertStringStartsWith( '/blog/wp-admin/admin.php', $url );
+		$this->assertStringNotContainsString( home_url(), $url );
+		$this->assertStringContainsString( 'iawmlf_notification=cache123', $url );
+		$this->assertStringNotContainsString( 'some_action', $url );
+		$this->assertStringNotContainsString( '_wpnonce', $url );
+	}
+
+	/**
 	 * @testdox When creating a new snapshot for less than 10 links, just process and start the process of creating a new snapshot.
 	 *
 	 * @return void
