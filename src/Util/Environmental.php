@@ -33,6 +33,6 @@ class Environmental {
 			$is_production = true;
 		}
 
-		return apply_filters( 'iawmlf_is_production_environment', $is_production );
+		return (bool) apply_filters( 'iawmlf_is_production_environment', $is_production );
 	}
 }

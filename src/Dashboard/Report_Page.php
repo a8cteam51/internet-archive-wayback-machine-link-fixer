@@ -445,7 +445,8 @@ class Report_Page {
 		$this->link_repository->upsert( $link );
 
 		// Allow 3rd parties to hook in and modify the redirect param after saving, for showing custom notices.
-		$has_updated = (bool) apply_filters( 'iawmlf_link_details_updated_redirect_param', '1', $link );
+		// filter_var so 'false', 'no' and '0' read as false, not truthy strings.
+		$has_updated = filter_var( apply_filters( 'iawmlf_link_details_updated_redirect_param', '1', $link ), FILTER_VALIDATE_BOOLEAN );
 
 		// Redirect back to the link details page, with a success notice if updated.
 		$redirect_args = array(

@@ -51,7 +51,7 @@ class Check_Snapshot_Status_Event {
 	 * Create instance of the class.
 	 */
 	public function __construct() {
-		$this->attempts = apply_filters( 'iawmlf_check_snapshot_status_attempts', 3 );
+		$this->attempts = absint( apply_filters( 'iawmlf_check_snapshot_status_attempts', 3 ) );
 	}
 
 	/**
