@@ -118,6 +118,38 @@ class Test_Check_Validator_Status extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A link excluded for error:no-access is marked excluded and NOT broken.
+	 *
+	 * @return void
+	 */
+	public function test_no_access_exclusion_does_not_mark_link_broken(): void {
+		$this->set_snapshot_client_response(
+			array(
+				'status'     => 'error',
+				'message'    => 'The server cannot be crawled',
+				'status_ext' => 'error:no-access',
+			)
+		);
+
+		$link = $this->link_repository->upsert( new Link( 'https://example.com' ) );
+
+		$event = new Check_Validator_Status();
+		$event->setup();
+
+		// The event throws after upserting the excluded link.
+		try {
+			$event( $link->get_id(), 'fake-job', 0 );
+		} catch ( \Exception $e ) {
+			$this->assertStringContainsString( 'excluded due to status', $e->getMessage() );
+		}
+
+		$updated = $this->link_repository->find_by_id( $link->get_id() );
+
+		$this->assertTrue( $updated->is_excluded(), 'Link should be excluded for error:no-access.' );
+		$this->assertFalse( $updated->is_broken(), 'Excluding for no-access must not mark the link broken.' );
+	}
+
+	/**
 	 * @testdox A manually excluded link keeps its exclusion and message even when the validator job comes back success.
 	 *
 	 * @return void

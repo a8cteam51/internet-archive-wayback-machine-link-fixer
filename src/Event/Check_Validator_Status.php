@@ -168,7 +168,7 @@ class Check_Validator_Status {
 
 			// If the status has a 'status_ext' key, set the link as excluded.
 			if ( isset( $status['status_ext'] ) && 'error:no-access' === $status['status_ext'] ) {
-				$link = $link->set_excluded()->set_broken( false );
+				$link = $link->set_excluded()->set_valid();
 			}
 
 			$this->link_repository->upsert( $link );

@@ -119,7 +119,7 @@ class Link_Check_Action {
 
 		// If the link is set to be excluded, set as valid.
 		if ( $link->is_excluded() ) {
-			$link->set_valid( true );
+			$link->set_valid();
 			$valid = true;
 		}
 
