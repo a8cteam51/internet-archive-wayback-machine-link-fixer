@@ -157,6 +157,25 @@ public function test_can_identify_archive_links( string $url, bool $expected ): 
 }
 
 	/**
+	 * @testdox A lookalike domain that merely starts with the site URL is not a current-site link. (S067)
+	 *
+	 * @return void
+	 */
+public function test_is_current_site_link_rejects_lookalike_domains(): void {
+	$site = get_site_url();
+
+	// Genuine site links.
+	$this->assertTrue( \iawmlf_is_current_site_link( $site ) );
+	$this->assertTrue( \iawmlf_is_current_site_link( $site . '/' ) );
+	$this->assertTrue( \iawmlf_is_current_site_link( $site . '/some/page' ) );
+	$this->assertTrue( \iawmlf_is_current_site_link( $site . '?p=1' ) );
+
+	// Lookalikes that only share the prefix.
+	$this->assertFalse( \iawmlf_is_current_site_link( $site . '.attacker.net/x' ) );
+	$this->assertFalse( \iawmlf_is_current_site_link( $site . 'merce-site.com/x' ) );
+}
+
+	/**
 	 * @testdox The constants should be defined and match the plugin metadata.
 	 *
 	 * @return void

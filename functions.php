@@ -386,9 +386,14 @@ function iawmlf_is_current_site_link( string $url ): bool {
 	// Noprmalize the site URLs.
 	$site_urls = array_map( 'iawmlf_normalize_url', $site_urls );
 
-	// Check if the URL starts with any of the site URLs.
+	// Check if the URL starts with any of the site URLs, with a boundary so lookalike domains don't match.
 	foreach ( $site_urls as $site_url ) {
-		if ( 0 === strpos( $normalized_url, $site_url ) ) {
+		if ( 0 !== strpos( $normalized_url, $site_url ) ) {
+			continue;
+		}
+
+		$next_char = (string) substr( $normalized_url, strlen( $site_url ), 1 );
+		if ( '' === $next_char || in_array( $next_char, array( '/', '?', '#' ), true ) ) {
 			return true;
 		}
 	}
@@ -398,7 +403,8 @@ function iawmlf_is_current_site_link( string $url ): bool {
 /**
  * Normalize a URL.
  *
- * Will urldecode, remove trailing slashes, and lowercase the URL.
+ * Removes trailing slashes and consistently re-encodes the path, query and fragment
+ * (decode first to avoid double-encoding). Case is preserved.
  *
  * @since 1.3.0
  *
