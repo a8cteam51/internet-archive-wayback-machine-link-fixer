@@ -33,6 +33,13 @@ class Link_Check_Rest {
 	public const API_NAMESPACE = 'iawmlf/v1';
 
 	/**
+	 * The REST API namespace.
+	 *
+	 * @deprecated 1.4.4 Use self::API_NAMESPACE instead.
+	 */
+	public const NAMESPACE = self::API_NAMESPACE;
+
+	/**
 	 * The REST API route.
 	 */
 	public const ROUTE = '/link-check';

@@ -112,6 +112,15 @@ class Test_Link_Check_Rest extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox The deprecated NAMESPACE constant must keep resolving to the same value as API_NAMESPACE.
+	 *
+	 * @return void
+	 */
+	public function test_deprecated_namespace_constant_still_resolves(): void {
+		$this->assertSame( Link_Check_Rest::API_NAMESPACE, Link_Check_Rest::NAMESPACE );
+	}
+
+	/**
 	 * @testdox A request without a link parameter should return a 400 error.
 	 *
 	 * @return void
