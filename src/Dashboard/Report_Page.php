@@ -412,8 +412,9 @@ class Report_Page {
 			return;
 		}
 
-		// Determine the exclusion state from the checkbox.
-		$exclude = isset( $_POST['iawmlf_exclude_link'] );
+		// Determine the exclusion state from the checkbox value - the pattern-excluded
+		// form submits a hidden copy carrying the DB flag, so presence alone means nothing.
+		$exclude = ! empty( $_POST['iawmlf_exclude_link'] );
 
 		if ( $exclude ) {
 			// On the transition into excluded, always write the marker - it is how

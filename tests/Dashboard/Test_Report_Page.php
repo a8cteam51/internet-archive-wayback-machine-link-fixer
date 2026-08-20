@@ -171,6 +171,26 @@ class Test_Report_Page extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox Saving the details form of a pattern-excluded link must not flip its database exclusion flag. (S054)
+	 *
+	 * @return void
+	 */
+	public function test_saving_pattern_excluded_link_does_not_set_db_flag(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+
+		$link = $this->link_repository->upsert( new Link( 'https://pattern-excluded.example.com/s054' ) );
+
+		// The template renders a hidden iawmlf_exclude_link carrying the DB flag - empty when not excluded.
+		$_POST['iawmlf_exclude_link'] = '';
+		$this->submit_link_details_form( $link->get_id() );
+		unset( $_POST['iawmlf_exclude_link'] );
+
+		$saved = $this->link_repository->find_by_id( $link->get_id() );
+
+		$this->assertFalse( $saved->is_excluded(), 'Saving the form must not flip the exclusion flag on.' );
+	}
+
+	/**
 	 * @testdox The default filter value should include the updated flag.
 	 *
 	 * @return void
