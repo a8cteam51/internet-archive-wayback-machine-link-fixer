@@ -515,17 +515,17 @@ function iawmlf_get_admin_post_type_link( string $post_type, string $target = '_
  * @return boolean
  */
 function iawmlf_is_archive_api_online( bool $force = false ): bool {
-	// Try to get from transient.
+	// Try to get from transient. Stored as yes/no as a cached false would look like a missing transient.
 	$online = get_transient( 'iawmlf_archive_api_online' );
-	if ( false !== (bool) $online && false === $force ) {
-		return (bool) $online;
+	if ( false !== $online && false === $force ) {
+		return 'yes' === $online;
 	}
 
 	// Check if the system client is online.
 	$online = iawmlf_get_system_client()->is_online();
 	// Set the transient
 	$duration = apply_filters( 'iawmlf_archive_api_status_duration', \HOUR_IN_SECONDS );
-	set_transient( 'iawmlf_archive_api_online', $online, $duration );
+	set_transient( 'iawmlf_archive_api_online', $online ? 'yes' : 'no', $duration );
 	return (bool) $online;
 }
 

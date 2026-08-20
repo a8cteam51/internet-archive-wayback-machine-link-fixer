@@ -215,4 +215,28 @@ public function test_excluded_status_codes( string $status_code, string $expecte
 public function test_status_codes_that_mark_link_as_excluded( string $status_code, bool $expected ): void {
 	$this->assertEquals( $expected, iawmlf_is_excluded_status_code( $status_code ) );
 }
+
+	/**
+	 * @testdox A cached offline answer must be served from the transient, not trigger another API call. (S038)
+	 *
+	 * @return void
+	 */
+	public function test_archive_api_offline_state_is_cached(): void {
+		delete_transient( 'iawmlf_archive_api_online' );
+
+		$client = $this->createMock( \Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\System_Client::class );
+		$client->expects( $this->once() )
+			->method( 'is_online' )
+			->willReturn( false );
+
+		$filter = fn() => $client;
+		add_filter( 'iawmlf_system_client', $filter );
+
+		$this->assertFalse( iawmlf_is_archive_api_online() );
+		// The second call must be served from the cached 'no' - the client must not be asked again.
+		$this->assertFalse( iawmlf_is_archive_api_online() );
+
+		remove_filter( 'iawmlf_system_client', $filter );
+		delete_transient( 'iawmlf_archive_api_online' );
+	}
 }
