@@ -361,6 +361,31 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox When trying to get the final destination for a link, an empty-string location should fall back to the original URL.
+	 *
+	 * @return void
+	 */
+	public function test_should_return_original_url_if_location_empty_string() {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
+			$this->markTestSkipped( 'Skipping live API tests' );
+		}
+
+		$client = new HTTP_Link_Checker_Client();
+
+		// Mock the response with an empty location value.
+		$this->mock_wp_http_response(
+			array(
+				'response' => array( 'code' => 200 ),
+				'body'     => json_encode( array( 'location' => '' ) ),
+			)
+		);
+
+		$final = $client->get_final_url( 'https://example.com' );
+
+		$this->assertEquals( 'https://example.com', $final );
+	}
+
+	/**
 	 * @testdox When checking a link, if a WP_Error is returned, an exception should be thrown.
 	 *
 	 * @return void

@@ -50,8 +50,8 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 	public function get_final_url( string $url ): string {
 		$response = $this->get_decoded_response( $this->query_url( $url ) );
 
-		// Return the location if its a usable string, otherwise return the original url.
-		return isset( $response['location'] ) && is_string( $response['location'] )
+		// Return the location if its a non-empty string, otherwise return the original url.
+		return isset( $response['location'] ) && is_string( $response['location'] ) && '' !== $response['location']
 		? $response['location']
 		: $url;
 	}
