@@ -557,11 +557,13 @@ class Link_Repository {
 		}
 
 		// If we have a date, add to the query getting the last date from json column.
+		// The CASE guards the empty checks array - it would build the invalid path $[-1], which MySQL rejects.
 		if ( $date ) {
 			$date_range = $this->get_date_range( $date );
 			$query     .= true === $where ? ' AND' : ' WHERE';
-			$query     .= ' STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date"))), \'%Y-%m-%d %H:%i:%s\')'; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
+			$query     .= ' CASE WHEN JSON_LENGTH(`checks`) = 0 THEN 0 ELSE STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date"))), \'%Y-%m-%d %H:%i:%s\')'; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, Compiled in parts, very hard to escape
 			$query     .= $this->wpdb->prepare( ' BETWEEN %s AND %s', $date_range['start'], $date_range['end'] );
+			$query     .= ' END';
 			$where      = true;
 		}
 
@@ -652,9 +654,9 @@ class Link_Repository {
 		$order_by = sanitize_text_field( $order_by );
 		switch ( $order_by ) {
 			case self::ORDER_DATE_ASC:
-				// Here we check we have a date as the last entry of checks, if not use a late for last in results.
+				// Guard on the length first - an empty checks array would build the invalid path $[-1], which MySQL rejects.
 				return ' ORDER BY
-  CASE WHEN JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date")) IS NULL
+  CASE WHEN JSON_LENGTH(`checks`) = 0
        THEN \'9999-12-31\'
        ELSE JSON_EXTRACT(`checks`, CONCAT("$[", JSON_LENGTH(`checks`) - 1, "].date"))
   END ASC';

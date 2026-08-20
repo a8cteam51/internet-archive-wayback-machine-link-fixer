@@ -12,11 +12,12 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest]
         php: [ '8.1', '8.2', '8.3', '8.4']
+        database: [ 'mysql:5.7', 'mariadb:10.6' ]
     runs-on: ${{ matrix.operating-system }}
     services:
-      # Setup MYSQL
+      # Setup MYSQL/MariaDB
       mysql-service:
-        image: 'mysql:5.7'
+        image: ${{ matrix.database }}
         env:
           MYSQL_ROOT_PASSWORD: 'poetry'
           MYSQL_DATABASE: wlf_tests
