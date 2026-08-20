@@ -357,6 +357,9 @@ function iawmlf_is_archive_link( string $url ): bool {
 		'http://web-wp.archive.org/web/',
 	);
 
+	// The compared region is scheme + host, which are case-insensitive.
+	$url = strtolower( $url );
+
 	foreach ( $urls as $archive_url ) {
 		if ( 0 === strpos( $url, $archive_url ) ) {
 			return true;

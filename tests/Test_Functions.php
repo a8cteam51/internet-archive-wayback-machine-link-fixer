@@ -66,6 +66,7 @@ class Test_Functions extends \WP_UnitTestCase {
 			'Archive.org but not web'       => array( 'https://archive.org/details/something', false ),
 			'Contains but not starts with'  => array( 'https://example.com/web.archive.org/web/', false ),
 			'Almost matching URL'           => array( 'https://web.archive.org/details/', false ),
+			'Capitalised host (T155)'       => array( 'https://Web.Archive.org/web/20230101000000/https://example.com', true ),
 			'Empty string'                  => array( '', false ),
 		);
 	}
