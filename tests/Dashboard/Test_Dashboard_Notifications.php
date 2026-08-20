@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Dashboard;
 
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Notifications;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\System_Client;
 
@@ -52,5 +54,29 @@ class Test_Dashboard_Notifications extends \WP_UnitTestCase {
 
 		// The second call must be served from the cached failure - the client must not be asked again.
 		$this->assertNull( Dashboard_Notifications::get_account_details() );
+	}
+
+	/**
+	 * @testdox Saving either archive.org key must clear the cached account details.
+	 *
+	 * @return void
+	 */
+	public function test_saving_keys_clears_cached_account_details(): void {
+		( new Settings_Page() )->initialize();
+
+		// First-time save (add_option path).
+		set_transient( 'iawmlf_account_details', 'NO DATA', HOUR_IN_SECONDS );
+		update_option( Settings::ARCHIVE_ORG_ACCESS_KEY, 'first-access-key' );
+		$this->assertFalse( get_transient( 'iawmlf_account_details' ), 'A first-time access key save must clear the cached account details.' );
+
+		// Re-save (update_option path).
+		set_transient( 'iawmlf_account_details', 'NO DATA', HOUR_IN_SECONDS );
+		update_option( Settings::ARCHIVE_ORG_ACCESS_KEY, 'corrected-access-key' );
+		$this->assertFalse( get_transient( 'iawmlf_account_details' ), 'An access key change must clear the cached account details.' );
+
+		// The secret key clears it too.
+		set_transient( 'iawmlf_account_details', 'NO DATA', HOUR_IN_SECONDS );
+		update_option( Settings::ARCHIVE_ORG_SECRET_KEY, 'first-secret-key' );
+		$this->assertFalse( get_transient( 'iawmlf_account_details' ), 'A secret key save must clear the cached account details.' );
 	}
 }
