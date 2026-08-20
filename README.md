@@ -663,11 +663,11 @@ add_filter( 'iawmlf_routinely_update_wayback_machine', function( bool $routinely
 
 #### `iawmlf_routinely_update_wayback_machine_interval`
 
-This filter overrides the admin setting that controls how long between each routine update. The default is 14 days. The time is given in seconds.
+This filter overrides the admin setting that controls how long between each routine update. The value is given in days, with a minimum of 1 day. The default is 28 days — any value below 1 falls back to the default.
 
 ```php
 add_filter( 'iawmlf_routinely_update_wayback_machine_interval', function( int $interval ): int {
-	return 7 * \DAY_IN_SECONDS; // 7 days
+	return 7; // 7 days
 });
 ```
 
