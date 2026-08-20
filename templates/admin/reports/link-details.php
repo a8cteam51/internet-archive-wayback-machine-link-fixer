@@ -205,11 +205,14 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 													<a href="<?php echo esc_url( get_edit_post_link( $iawmlf_post->ID ) ); ?>">
 														<?php if ( '' === $iawmlf_post->post_title ) : ?>
 															<?php
+															$iawmlf_post_type_object = get_post_type_object( $iawmlf_post->post_type );
 															printf(
 																// Translators: %1$s is the post ID, %2$s is the post type label (e.g., "Post", "Page").
 																esc_html__( 'Untitled %2$s (ID: %1$d)', 'internet-archive-wayback-machine-link-fixer' ),
 																absint( $iawmlf_post->ID ),
-																esc_html( get_post_type_object( $iawmlf_post->post_type )->labels->singular_name )
+																$iawmlf_post_type_object
+																	? esc_html( $iawmlf_post_type_object->labels->singular_name )
+																	: esc_html__( 'Unknown', 'internet-archive-wayback-machine-link-fixer' )
 															);
 															?>
 														<?php else : ?>
