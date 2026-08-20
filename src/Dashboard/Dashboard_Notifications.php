@@ -126,7 +126,8 @@ class Dashboard_Notifications {
 	public static function get_account_details(): ?array {
 		$cached = get_transient( 'iawmlf_account_details' );
 		if ( false !== $cached ) {
-			return 'NO DATA' === $cached ? null : $cached;
+			// Normalised on read, so raw payloads cached before normalisation render safely. 'NO DATA' is the cached failure.
+			return is_array( $cached ) ? self::normalize_account_details( $cached ) : null;
 		}
 		try {
 			$details = \iawmlf_get_system_client()->get_user_stats(
@@ -136,12 +137,7 @@ class Dashboard_Notifications {
 
 			if ( is_array( $details ) ) {
 				set_transient( 'iawmlf_account_details', $details, HOUR_IN_SECONDS );
-				return array(
-					'available'            => isset( $details['available'] ) ? (int) $details['available'] : 0,
-					'daily_captures'       => isset( $details['daily_captures'] ) ? (int) $details['daily_captures'] : 0,
-					'daily_captures_limit' => isset( $details['daily_captures_limit'] ) ? (int) $details['daily_captures_limit'] : 0,
-					'processing'           => isset( $details['processing'] ) ? (int) $details['processing'] : 0,
-				);
+				return self::normalize_account_details( $details );
 			}
 		} catch ( \Exception $e ) {
 			// Cache the failure so its not retried on every call.
@@ -152,5 +148,21 @@ class Dashboard_Notifications {
 		// Cache the failure so its not retried on every call.
 		set_transient( 'iawmlf_account_details', 'NO DATA', HOUR_IN_SECONDS );
 		return null;
+	}
+
+	/**
+	 * Normalize an account details payload to the documented shape.
+	 *
+	 * @param array $details The raw payload.
+	 *
+	 * @return array{available:int, daily_captures:int, daily_captures_limit:int, processing:int}
+	 */
+	private static function normalize_account_details( array $details ): array {
+		return array(
+			'available'            => isset( $details['available'] ) ? (int) $details['available'] : 0,
+			'daily_captures'       => isset( $details['daily_captures'] ) ? (int) $details['daily_captures'] : 0,
+			'daily_captures_limit' => isset( $details['daily_captures_limit'] ) ? (int) $details['daily_captures_limit'] : 0,
+			'processing'           => isset( $details['processing'] ) ? (int) $details['processing'] : 0,
+		);
 	}
 }

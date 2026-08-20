@@ -57,6 +57,26 @@ class Test_Dashboard_Notifications extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox Cached account details must be normalised on read, so partial payloads render safely.
+	 *
+	 * @return void
+	 */
+	public function test_cached_account_details_are_normalised_on_read(): void {
+		// A raw API payload, cached, missing most of the expected keys.
+		set_transient( 'iawmlf_account_details', array( 'available' => '5' ), HOUR_IN_SECONDS );
+
+		$this->assertSame(
+			array(
+				'available'            => 5,
+				'daily_captures'       => 0,
+				'daily_captures_limit' => 0,
+				'processing'           => 0,
+			),
+			Dashboard_Notifications::get_account_details()
+		);
+	}
+
+	/**
 	 * @testdox Saving either archive.org key must clear the cached account details.
 	 *
 	 * @return void
