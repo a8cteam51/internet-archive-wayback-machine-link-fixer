@@ -383,11 +383,11 @@ function iawmlf_is_current_site_link( string $url ): bool {
 		get_site_url( null, '', 'https' ),
 		get_site_url( null, '', 'http' ),
 	);
-	// Normalize the URL.
-	$normalized_url = iawmlf_normalize_url( $url );
+	// Normalize the URL, lowercased - the compared region is scheme + host.
+	$normalized_url = strtolower( iawmlf_normalize_url( $url ) );
 
 	// Noprmalize the site URLs.
-	$site_urls = array_map( 'iawmlf_normalize_url', $site_urls );
+	$site_urls = array_map( fn( string $site_url ): string => strtolower( iawmlf_normalize_url( $site_url ) ), $site_urls );
 
 	// Check if the URL starts with any of the site URLs, with a boundary so lookalike domains don't match.
 	foreach ( $site_urls as $site_url ) {

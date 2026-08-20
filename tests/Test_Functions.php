@@ -177,6 +177,20 @@ public function test_is_current_site_link_rejects_lookalike_domains(): void {
 }
 
 	/**
+	 * @testdox A capitalised host is still recognised as a current-site link.
+	 *
+	 * @return void
+	 */
+public function test_is_current_site_link_is_case_insensitive(): void {
+	$site = get_site_url();
+	$host = wp_parse_url( $site, PHP_URL_HOST );
+
+	$capitalised = str_replace( $host, strtoupper( $host ), $site );
+
+	$this->assertTrue( \iawmlf_is_current_site_link( $capitalised . '/some/page' ) );
+}
+
+	/**
 	 * @testdox The constants should be defined and match the plugin metadata.
 	 *
 	 * @return void
