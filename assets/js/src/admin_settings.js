@@ -292,6 +292,11 @@
 			loadingMore = !!append;
 
 			if (!append) {
+				// A fresh search resets the paging state - stale hasMore/currentPage would let the
+				// scroll event fired by the collapsing dropdown trigger a bogus loadMore of the old search.
+				currentPage = 1;
+				hasMore = false;
+				currentResults = [];
 				showLoading();
 			}
 
