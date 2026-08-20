@@ -147,15 +147,9 @@ class Scan_Posts_Event {
 				'update_post_meta_cache' => false,
 				'post__not_in'           => Settings::get_link_fixer_excluded_posts(),
 				'meta_query'             => array(
-					'relation' => 'OR',
 					array(
 						'key'     => Settings::LINK_META_KEY,
 						'compare' => 'NOT EXISTS',
-					),
-					array(
-						'key'     => Settings::LINK_META_KEY,
-						'value'   => time(),
-						'compare' => '=',
 					),
 				),
 			)

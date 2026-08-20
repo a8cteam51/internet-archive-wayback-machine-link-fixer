@@ -289,15 +289,9 @@ class Dashboard_Statistics {
 		$meta_query = array();
 		if ( ! $all ) {
 			$meta_query = array(
-				'relation' => 'OR',
 				array(
 					'key'     => Settings::LINK_META_KEY,
 					'compare' => 'NOT EXISTS',
-				),
-				array(
-					'key'     => Settings::LINK_META_KEY,
-					'value'   => time(),
-					'compare' => '=',
 				),
 			);
 		}
