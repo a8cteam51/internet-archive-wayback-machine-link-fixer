@@ -521,7 +521,7 @@ class Link implements \JsonSerializable {
 			'href'          => $this->href,
 			'archived_href' => $this->get_archived_href(),
 			'redirect_href' => $this->redirect_href,
-			'checks'        => $this->checks,
+			'checks'        => array_slice( $this->checks, -3 ), // Newest 3 only, the full history is not needed client side.
 			'broken'        => $this->is_broken,
 			'last_checked'  => $this->get_last_check(),
 			'process'       => $this->archive_process,

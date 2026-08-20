@@ -532,4 +532,29 @@ class Test_Link extends \WP_UnitTestCase {
 		// Clear the option.
 		delete_option( Settings::CAST_ARCHIVED_TO_HTTPS );
 	}
+
+	/**
+	 * @testdox The JSON representation should only carry the newest 3 checks, leaving the stored history untouched. (S004)
+	 *
+	 * @return void
+	 */
+	public function test_json_serialize_trims_checks_to_last_three(): void {
+		$link = new Link( 'https://example.com' );
+
+		$link->add_check( 200, '2024-01-01 00:00:00' );
+		$link->add_check( 200, '2024-01-02 00:00:00' );
+		$link->add_check( 200, '2024-01-03 00:00:00' );
+		$link->add_check( 200, '2024-01-04 00:00:00' );
+		$link->add_check( 200, '2024-01-05 00:00:00' );
+
+		$json = $link->jsonSerialize();
+
+		// The stored history is untouched.
+		$this->assertCount( 5, $link->get_checks() );
+
+		// The JSON output holds only the newest 3.
+		$this->assertCount( 3, $json['checks'] );
+		$this->assertSame( '2024-01-03 00:00:00', $json['checks'][0]['date'] );
+		$this->assertSame( '2024-01-05 00:00:00', $json['checks'][2]['date'] );
+	}
 }
