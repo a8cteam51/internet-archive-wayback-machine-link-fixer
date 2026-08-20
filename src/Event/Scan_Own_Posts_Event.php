@@ -100,11 +100,8 @@ class Scan_Own_Posts_Event {
 		// Run setup.
 		$this->setup();
 
-		$allowed_delay = Settings::own_link_routine_update_interval();
-		// Cast delay to seconds.
-		$allowed_delay = 0 === $allowed_delay
-			? 0
-			: $allowed_delay * DAY_IN_SECONDS;
+		// Cast delay to seconds (the setting is in days, min 1).
+		$allowed_delay = Settings::own_link_routine_update_interval() * DAY_IN_SECONDS;
 
 		$allowed_post_types = Settings::own_link_allowed_post_types();
 		$excluded_posts     = Settings::get_auto_archiver_excluded_posts();
