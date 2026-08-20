@@ -445,8 +445,9 @@ class Report_Page {
 		$this->link_repository->upsert( $link );
 
 		// Allow 3rd parties to hook in and modify the redirect param after saving, for showing custom notices.
-		// filter_var so 'false', 'no' and '0' read as false, not truthy strings.
-		$has_updated = filter_var( apply_filters( 'iawmlf_link_details_updated_redirect_param', '1', $link ), FILTER_VALIDATE_BOOLEAN );
+		// Recognised boolean keywords ('false', 'no', '0') read as false; anything else keeps the documented (bool) cast.
+		$raw_updated = apply_filters( 'iawmlf_link_details_updated_redirect_param', '1', $link );
+		$has_updated = filter_var( $raw_updated, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE ) ?? (bool) $raw_updated;
 
 		// Redirect back to the link details page, with a success notice if updated.
 		$redirect_args = array(

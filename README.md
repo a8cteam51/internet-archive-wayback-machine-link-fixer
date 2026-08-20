@@ -1176,7 +1176,7 @@ add_filter( 'iawmlf_before_saving_link_details', function( Link $link ): Link {
 
 #### `iawmlf_link_details_updated_redirect_param`
 
-This filter controls the "updated" flag used in the redirect after saving link details. Returning a falsy value will suppress the default success notice on the link details page.
+This filter controls the "updated" flag used in the redirect after saving link details. Returning a falsy value will suppress the default success notice on the link details page. The recognised boolean keywords (`'false'`, `'no'`, `'off'`, `'0'`) also suppress the notice; any other value is cast to boolean.
 
 ```php
 add_filter( 'iawmlf_link_details_updated_redirect_param', function( string $updated, Link $link ): string {
