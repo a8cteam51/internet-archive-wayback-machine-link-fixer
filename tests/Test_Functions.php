@@ -239,4 +239,18 @@ public function test_status_codes_that_mark_link_as_excluded( string $status_cod
 		remove_filter( 'iawmlf_system_client', $filter );
 		delete_transient( 'iawmlf_archive_api_online' );
 	}
+
+	/**
+	 * @testdox A legacy boolean transient left by the pre-yes/no format must not read as offline.
+	 *
+	 * @return void
+	 */
+	public function test_legacy_boolean_transient_does_not_read_as_offline(): void {
+		// The old format stored a raw boolean under the same key.
+		set_transient( 'iawmlf_archive_api_online', true, HOUR_IN_SECONDS );
+
+		$this->assertTrue( iawmlf_is_archive_api_online(), 'A legacy boolean cache entry must not report the API as offline.' );
+
+		delete_transient( 'iawmlf_archive_api_online' );
+	}
 }
