@@ -83,14 +83,33 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 			'WP-Wayback-Link-Fixer' => IAWMLF_VERSION,
 		);
 
-		// Get the response.
-		$response = wp_safe_remote_get(
-			$query_url,
+		// Memoized for the current request only, so repeat calls for the same url skip the HTTP round trip.
+		static $cache = array();
+
+		$key = wp_json_encode(
 			array(
-				'timeout' => $this->timeout / 1000, // Setting is in ms, WP_Http expects seconds.
+				'url'     => $url,
+				'params'  => $additional_params,
 				'headers' => $headers,
 			)
 		);
+
+		// If key exists in cache, get from cache.
+		if ( isset( $cache[ $key ] ) ) {
+			$response = $cache[ $key ];
+		} else {
+			// Get the response.
+			$response = wp_safe_remote_get(
+				$query_url,
+				array(
+					'timeout' => $this->timeout / 1000, // Setting is in ms, WP_Http expects seconds.
+					'headers' => $headers,
+				)
+			);
+
+			// Set the response in cache.
+			$cache[ $key ] = $response;
+		}
 
 		// If we dont have a valid response, throw exception
 		if ( is_wp_error( $response ) ) {

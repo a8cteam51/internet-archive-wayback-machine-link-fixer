@@ -115,7 +115,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		delete_transient( 'iawmlf_archive_api_online' );
 
 		$repo = new Link_Repository();
-		$link = $repo->upsert( new Link( 'https://example.com' ) );
+		$link = $repo->upsert( new Link( 'https://foc-baseline.example.com' ) );
 
 		$event = new Find_Or_Create_Snapshot_Event();
 		$event->setup();
@@ -141,7 +141,7 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 		delete_transient( 'iawmlf_archive_api_online' );
 
 		$repo = new Link_Repository();
-		$link = $repo->upsert( new Link( 'https://example.com' ) );
+		$link = $repo->upsert( new Link( "https://foc-non2xx-{$code}.example.com" ) );
 		$id   = $link->get_id();
 
 		// Capture the state before the event runs.

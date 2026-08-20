@@ -81,7 +81,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		);
 
 		try{
-			$client->check_single( 'https://example.com' );
+			$client->check_single( 'https://make-request.example.com' );
 		} catch (Service_Offline_Exception $e) {
 			// Show a note to say offline, but dont stop the test.
 			$this->markTestSkipped( 'The service is offline' );
@@ -90,8 +90,8 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		// Check the url starts with https://iabot-api.archive.org/livewebcheck
 		$this->assertStringStartsWith( 'https://iabot-api.archive.org/livewebcheck', $called_url );
 
-		// Check contains url=https://example.com
-		$this->assertStringContainsString( 'url=https://example.com', $called_url );
+		// Check contains url=https://make-request.example.com
+		$this->assertStringContainsString( 'url=https://make-request.example.com', $called_url );
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		);
 
 		try{
-			$client->check_single( 'https://example.com', array( 'foo' => 'bar' ) );
+			$client->check_single( 'https://additional-params.example.com', array( 'foo' => 'bar' ) );
 		} catch (Service_Offline_Exception $e) {
 			// Show a note to say offline, but dont stop the test.
 			$this->markTestSkipped( 'The service is offline' );
@@ -128,8 +128,8 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		// Check the url starts with https://iabot-api.archive.org/livewebcheck
 		$this->assertStringStartsWith( 'https://iabot-api.archive.org/livewebcheck', $called_url );
 
-		// Check contains url=https://example.com
-		$this->assertStringContainsString( 'url=https://example.com', $called_url );
+		// Check contains url=https://additional-params.example.com
+		$this->assertStringContainsString( 'url=https://additional-params.example.com', $called_url );
 
 		// Check contains foo=bar
 		$this->assertStringContainsString( 'foo=bar', $called_url );
@@ -167,7 +167,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 			3
 		);
 
-		$client->check_single( 'https://example.com' );
+		$client->check_single( 'https://change-url-base.example.com' );
 
 		// Check we have our custom URL.
 		$this->assertStringStartsWith( 'https://anotherurl.someplace.fakeit', $called_url );
@@ -207,7 +207,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		);
 
 		try{
-			$client->check_single( 'https://example.com' );
+			$client->check_single( 'https://custom-params.example.com' );
 		} catch (Service_Offline_Exception $e) {
 			// Show a note to say offline, but dont stop the test.
 			$this->markTestSkipped( 'The service is offline ' . $e->getMessage() );
@@ -235,7 +235,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		$this->expectException( Service_Offline_Exception::class );
 		$this->expectExceptionMessage( 'The service is offline. Response:404' );
 
-		$client->check_single( 'https://example.com' );
+		$client->check_single( 'https://service-offline.example.com' );
 	}
 
 	/**
@@ -261,7 +261,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		$this->expectException( Invalid_Response_Exception::class );
 		$this->expectExceptionMessage( 'The response is invalid.' );
 
-		$client->check_single( 'https://example.com' );
+		$client->check_single( 'https://invalid-no-code.example.com' );
 	}
 
 	/**
@@ -282,7 +282,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		$this->expectException( Invalid_Response_Exception::class );
 		$this->expectExceptionMessage( 'The response is invalid.' );
 
-		$client->check_single( 'https://example.com' );
+		$client->check_single( 'https://invalid-no-body.example.com' );
 	}
 
 	/**
@@ -305,7 +305,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 			)
 		);
 
-		$final = $client->get_final_url( 'https://example.com' );
+		$final = $client->get_final_url( 'https://resolve-final.example.com' );
 
 		$this->assertEquals( 'http://redirect.com', $final );
 	}
@@ -330,9 +330,9 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 			)
 		);
 
-		$final = $client->get_final_url( 'https://example.com' );
+		$final = $client->get_final_url( 'https://no-location-key.example.com' );
 
-		$this->assertEquals( 'https://example.com', $final );
+		$this->assertEquals( 'https://no-location-key.example.com', $final );
 	}
 
 	/**
@@ -355,9 +355,9 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 			)
 		);
 
-		$final = $client->get_final_url( 'https://example.com' );
+		$final = $client->get_final_url( 'https://location-not-string.example.com' );
 
-		$this->assertEquals( 'https://example.com', $final );
+		$this->assertEquals( 'https://location-not-string.example.com', $final );
 	}
 
 	/**
@@ -380,9 +380,9 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 			)
 		);
 
-		$final = $client->get_final_url( 'https://example.com' );
+		$final = $client->get_final_url( 'https://location-empty.example.com' );
 
-		$this->assertEquals( 'https://example.com', $final );
+		$this->assertEquals( 'https://location-empty.example.com', $final );
 	}
 
 	/**
@@ -403,7 +403,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		$this->expectException( Service_Offline_Exception::class );
 		$this->expectExceptionMessage( 'The service is offline. SomeError' );
 
-		$client->check_single( 'https://example.com' );
+		$client->check_single( 'https://wp-error.example.com' );
 	}
 
 	/**
@@ -428,7 +428,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		$this->expectException( Invalid_Response_Exception::class );
 		$this->expectExceptionMessage( 'The response is invalid.' );
 
-		$client->check_single( 'https://example.com' );
+		$client->check_single( 'https://body-not-string.example.com' );
 	}
 
 	/**
@@ -451,7 +451,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 			)
 		);
 
-		$code = $client->check_single( 'https://example.com' );
+		$code = $client->check_single( 'https://return-http-code.example.com' );
 
 		$this->assertEquals( 201, $code );
 	}
@@ -479,7 +479,7 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 		$this->expectException( Invalid_Response_Exception::class );
 		$this->expectExceptionMessage( 'The response is invalid' );
 
-		$client->check_single( 'https://example.com' );
+		$client->check_single( 'https://status-not-numeric.example.com' );
 	}
 
 	/**
@@ -502,8 +502,34 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 			3
 		);
 
-		( new HTTP_Link_Checker_Client() )->check_single( 'https://example.com' );
+		( new HTTP_Link_Checker_Client() )->check_single( 'https://timeout-seconds.example.com' );
 
 		$this->assertSame( 5, $captured_timeout );
+	}
+
+	/**
+	 * @testdox Checking a link whose response holds no redirect location should make a single HTTP request, the repeat query being served from the cache. (S012)
+	 *
+	 * @return void
+	 */
+	public function test_check_single_without_redirect_makes_one_request() {
+		$request_count = 0;
+		add_filter(
+			'pre_http_request',
+			function ( $response, $args, $url ) use ( &$request_count ) {
+				++$request_count;
+				return array(
+					'response' => array( 'code' => 200 ),
+					'body'     => json_encode( array( 'status' => 200 ) ),
+				);
+			},
+			10,
+			3
+		);
+
+		$code = ( new HTTP_Link_Checker_Client() )->check_single( 'https://iawmlf-cache-test.com' );
+
+		$this->assertSame( 200, $code );
+		$this->assertSame( 1, $request_count );
 	}
 }
