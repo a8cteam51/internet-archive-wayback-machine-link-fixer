@@ -77,7 +77,7 @@ class Link_Exclusion {
 	 */
 	public function is_globally_excluded( Link $link ): bool {
 		foreach ( $this->bundled as $pattern ) {
-			if ( fnmatch( $pattern, $link->get_href() ) ) {
+			if ( fnmatch( strtolower( $pattern ), strtolower( $link->get_href() ) ) ) {
 				return true;
 			}
 		}
@@ -94,7 +94,7 @@ class Link_Exclusion {
 	 */
 	public function is_settings_excluded( Link $link ): bool {
 		foreach ( $this->settings as $pattern ) {
-			if ( fnmatch( $pattern, $link->get_href() ) ) {
+			if ( fnmatch( strtolower( $pattern ), strtolower( $link->get_href() ) ) ) {
 				return true;
 			}
 		}
