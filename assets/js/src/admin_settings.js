@@ -214,6 +214,15 @@
 		}
 
 		/**
+		 * Build the "Show more" sentinel row.
+		 *
+		 * @return {string} The row HTML.
+		 */
+		function moreRowHtml() {
+			return '<div class="iawmlf-post-search__item iawmlf-post-search__more">' + escapeHTML(__('Show more…', 'internet-archive-wayback-machine-link-fixer')) + '</div>';
+		}
+
+		/**
 		 * Render the search results in the dropdown.
 		 *
 		 * @param {Array}   results - Array of result objects.
@@ -221,22 +230,30 @@
 		 * @param {boolean} append  - Append to the current results rather than replacing them.
 		 */
 		function renderResults(results, search, append) {
+			const startIndex = append ? currentResults.length : 0;
 			currentResults = append ? currentResults.concat(results) : results;
-			activeIndex = -1;
 
 			let html = '';
-			currentResults.forEach(function (result, i) {
-				html += '<div class="iawmlf-post-search__item" data-index="' + i + '">';
+			results.forEach(function (result, i) {
+				html += '<div class="iawmlf-post-search__item" data-index="' + (startIndex + i) + '">';
 				html += '<div class="iawmlf-post-search__item-title">' + highlight(escapeHTML(result.title), search) + '</div>';
 				html += '<div class="iawmlf-post-search__item-meta">' + escapeHTML(result.post_type) + ' &middot; ID: ' + escapeHTML(String(result.id)) + ' &middot; /' + highlight(escapeHTML(result.slug), search) + '</div>';
 				html += '</div>';
 			});
 
-			if (hasMore) {
-				html += '<div class="iawmlf-post-search__item iawmlf-post-search__more">' + escapeHTML(__('Show more…', 'internet-archive-wayback-machine-link-fixer')) + '</div>';
+			if (append) {
+				// Append in place - a full innerHTML rewrite would reset the scroll position and keyboard state.
+				const moreRow = dropdown.querySelector('.iawmlf-post-search__more');
+				if (moreRow) {
+					moreRow.remove();
+				}
+				dropdown.insertAdjacentHTML('beforeend', html + (hasMore ? moreRowHtml() : ''));
+				show();
+				return;
 			}
 
-			dropdown.innerHTML = html;
+			activeIndex = -1;
+			dropdown.innerHTML = html + (hasMore ? moreRowHtml() : '');
 			show();
 		}
 
@@ -272,7 +289,6 @@
 			abortCtrl = new AbortController();
 
 			currentSearch = search;
-			currentPage = page;
 			loadingMore = !!append;
 
 			if (!append) {
@@ -300,6 +316,8 @@
 					const payload = data.success && data.data ? data.data : null;
 					const results = payload && payload.results ? payload.results : [];
 					hasMore = !!(payload && payload.has_more);
+					// Only advance the page on success, so a failed append can be retried rather than skipped.
+					currentPage = page;
 
 					var filtered = results.filter(function (result) {
 						return !isExcluded(result);
