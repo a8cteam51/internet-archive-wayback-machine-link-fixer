@@ -37,9 +37,12 @@ class Event_Controller {
 		add_action( Scan_Own_Posts_Event::HANDLE, new Scan_Own_Posts_Event(), 10, 0 );
 		add_action( Failed_Event_Garbage_Collection_Event::HANDLE, new Failed_Event_Garbage_Collection_Event(), 10, 0 );
 
-		// Ensure the post scan event is added to the action scheduler.
-		add_action( 'init', array( Scan_Posts_Event::class, 'add_to_action_scheduler' ) );
-		add_action( 'init', array( Scan_Own_Posts_Event::class, 'add_to_action_scheduler' ) );
-		add_action( 'init', array( Failed_Event_Garbage_Collection_Event::class, 'add_to_action_scheduler' ) );
+		// Ensure the events are added to the action scheduler. Admin and cron only - front
+		// end traffic should not pay for the schedule self-check, cron re-heals it within minutes.
+		if ( is_admin() || wp_doing_cron() ) {
+			add_action( 'init', array( Scan_Posts_Event::class, 'add_to_action_scheduler' ) );
+			add_action( 'init', array( Scan_Own_Posts_Event::class, 'add_to_action_scheduler' ) );
+			add_action( 'init', array( Failed_Event_Garbage_Collection_Event::class, 'add_to_action_scheduler' ) );
+		}
 	}
 }
