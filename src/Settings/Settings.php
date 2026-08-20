@@ -12,7 +12,6 @@ namespace Internet_Archive\Wayback_Machine_Link_Fixer\Settings;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Abstract_Migration;
-use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Archive_Services_Online_Event;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -342,25 +341,6 @@ class Settings {
 	 */
 	public static function is_archive_api_online(): bool {
 		return iawmlf_is_archive_api_online();
-	}
-
-	/**
-	 * Get the archive api extended status.
-	 *
-	 * @since 1.3.0
-	 *
-	 * @return array|null
-	 */
-	public static function get_archive_api_status(): ?array {
-		$status = get_transient( self::ARCHIVE_ORG_STATUS_KEY );
-
-		// If we dont have a status, trigger a check.
-		if ( false === $status ) {
-			Check_Archive_Services_Online_Event::add_to_queue();
-			return null;
-		}
-
-		return is_array( $status ) ? $status : null;
 	}
 
 	/**
