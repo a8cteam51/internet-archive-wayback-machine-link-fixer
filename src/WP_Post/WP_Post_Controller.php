@@ -259,7 +259,7 @@ class WP_Post_Controller {
 				'linkCheckNonce'  => wp_create_nonce( 'wp_rest' ),
 				'linkDelayInDays' => Settings::get_link_check_duration(),
 				'fixerOption'     => Settings::get_fixer_option(),
-				'restUrl'         => rest_url( Link_Check_Rest::API_NAMESPACE . Link_Check_Rest::ROUTE ),
+				'restUrl'         => rest_url( Link_Check_Rest::NAMESPACE . Link_Check_Rest::ROUTE ),
 			)
 		);
 

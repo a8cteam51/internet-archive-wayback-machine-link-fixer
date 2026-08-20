@@ -30,14 +30,7 @@ class Link_Check_Rest {
 	/**
 	 * The REST API namespace.
 	 */
-	public const API_NAMESPACE = 'iawmlf/v1';
-
-	/**
-	 * The REST API namespace.
-	 *
-	 * @deprecated 1.4.4 Use self::API_NAMESPACE instead.
-	 */
-	public const NAMESPACE = self::API_NAMESPACE;
+	public const NAMESPACE = 'iawmlf/v1';
 
 	/**
 	 * The REST API route.
@@ -65,7 +58,7 @@ class Link_Check_Rest {
 	 */
 	public function register_routes(): void {
 		register_rest_route(
-			self::API_NAMESPACE,
+			self::NAMESPACE,
 			self::ROUTE,
 			array(
 				'methods'             => 'POST',
