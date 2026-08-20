@@ -152,6 +152,10 @@
 		let abortCtrl      = null;
 		let activeIndex    = -1;
 		let currentResults = [];
+		let currentSearch  = '';
+		let currentPage    = 1;
+		let hasMore        = false;
+		let loadingMore    = false;
 
 		/**
 		 * Highlight search term in text using <mark> tags.
@@ -183,6 +187,8 @@
 			dropdown.style.display = 'none';
 			activeIndex = -1;
 			currentResults = [];
+			currentPage = 1;
+			hasMore = false;
 		}
 
 		/**
@@ -210,20 +216,25 @@
 		/**
 		 * Render the search results in the dropdown.
 		 *
-		 * @param {Array}  results - Array of result objects.
-		 * @param {string} search  - The search term for highlighting.
+		 * @param {Array}   results - Array of result objects.
+		 * @param {string}  search  - The search term for highlighting.
+		 * @param {boolean} append  - Append to the current results rather than replacing them.
 		 */
-		function renderResults(results, search) {
-			currentResults = results;
+		function renderResults(results, search, append) {
+			currentResults = append ? currentResults.concat(results) : results;
 			activeIndex = -1;
 
 			let html = '';
-			results.forEach(function (result, i) {
+			currentResults.forEach(function (result, i) {
 				html += '<div class="iawmlf-post-search__item" data-index="' + i + '">';
 				html += '<div class="iawmlf-post-search__item-title">' + highlight(escapeHTML(result.title), search) + '</div>';
 				html += '<div class="iawmlf-post-search__item-meta">' + escapeHTML(result.post_type) + ' &middot; ID: ' + escapeHTML(String(result.id)) + ' &middot; /' + highlight(escapeHTML(result.slug), search) + '</div>';
 				html += '</div>';
 			});
+
+			if (hasMore) {
+				html += '<div class="iawmlf-post-search__item iawmlf-post-search__more">' + escapeHTML(__('Show more…', 'internet-archive-wayback-machine-link-fixer')) + '</div>';
+			}
 
 			dropdown.innerHTML = html;
 			show();
@@ -247,21 +258,32 @@
 		/**
 		 * Perform the AJAX search.
 		 *
-		 * @param {string} search - The search term.
+		 * @param {string}  search - The search term.
+		 * @param {number}  page   - The page of results to fetch.
+		 * @param {boolean} append - Append the results rather than replacing the list.
 		 */
-		function doSearch(search) {
+		function doSearch(search, page, append) {
+			page = page || 1;
+
 			// Abort any in-flight request.
 			if (abortCtrl) {
 				abortCtrl.abort();
 			}
 			abortCtrl = new AbortController();
 
-			showLoading();
+			currentSearch = search;
+			currentPage = page;
+			loadingMore = !!append;
+
+			if (!append) {
+				showLoading();
+			}
 
 			const formData = new FormData();
 			formData.append('action', action);
 			formData.append('nonce', nonce);
 			formData.append('search', search);
+			formData.append('page', page);
 			if (context) {
 				formData.append('context', context);
 			}
@@ -275,24 +297,38 @@
 					return response.json();
 				})
 				.then(function (data) {
-					if (data.success && data.data && data.data.length > 0) {
-						var filtered = data.data.filter(function (result) {
-							return !isExcluded(result);
-						});
-						if (filtered.length > 0) {
-							renderResults(filtered, search);
-						} else {
-							showNoResults();
-						}
-					} else {
+					const payload = data.success && data.data ? data.data : null;
+					const results = payload && payload.results ? payload.results : [];
+					hasMore = !!(payload && payload.has_more);
+
+					var filtered = results.filter(function (result) {
+						return !isExcluded(result);
+					});
+
+					if (filtered.length === 0 && !append) {
+						showNoResults();
+						return;
+					}
+
+					renderResults(filtered, search, append);
+				})
+				.catch(function (err) {
+					if (err.name !== 'AbortError' && !append) {
 						showNoResults();
 					}
 				})
-				.catch(function (err) {
-					if (err.name !== 'AbortError') {
-						showNoResults();
-					}
+				.finally(function () {
+					loadingMore = false;
 				});
+		}
+
+		/**
+		 * Load the next page of results, appending to the list.
+		 */
+		function loadMore() {
+			if (hasMore && !loadingMore) {
+				doSearch(currentSearch, currentPage + 1, true);
+			}
 		}
 
 		// Debounced input listener.
@@ -344,6 +380,11 @@
 
 		// Click on result.
 		dropdown.addEventListener('click', function (e) {
+			if (e.target.closest('.iawmlf-post-search__more')) {
+				loadMore();
+				return;
+			}
+
 			const item = e.target.closest('.iawmlf-post-search__item');
 			if (item) {
 				const idx = parseInt(item.dataset.index, 10);
@@ -352,6 +393,13 @@
 					input.value = '';
 					close();
 				}
+			}
+		});
+
+		// Load the next page when scrolled to the bottom of the list.
+		dropdown.addEventListener('scroll', function () {
+			if (dropdown.scrollTop + dropdown.clientHeight >= dropdown.scrollHeight - 4) {
+				loadMore();
 			}
 		});
 

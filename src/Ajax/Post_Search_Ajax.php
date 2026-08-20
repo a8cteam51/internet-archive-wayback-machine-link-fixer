@@ -39,6 +39,11 @@ class Post_Search_Ajax {
 	private const MIN_CHARS = 2;
 
 	/**
+	 * The number of results returned per page.
+	 */
+	private const PER_PAGE = 100;
+
+	/**
 	 * Register the ajax action.
 	 *
 	 * @return void
@@ -76,8 +81,11 @@ class Post_Search_Ajax {
 			$excluded_ids = Settings::get_link_fixer_excluded_posts();
 		}
 
+		// Get the requested page of results.
+		$page = isset( $_POST['page'] ) ? max( 1, absint( wp_unslash( $_POST['page'] ) ) ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Missing, Checked above.
+
 		// Get the results.
-		$results = $this->search_posts( $search, $post_types, $excluded_ids );
+		$results = $this->search_posts( $search, $post_types, $excluded_ids, $page );
 
 		$this->send_success( $results );
 	}
@@ -90,15 +98,16 @@ class Post_Search_Ajax {
 	 * @param string   $search       The search term.
 	 * @param string[] $post_types   The post types to search within.
 	 * @param int[]    $excluded_ids Post IDs to exclude from results.
+	 * @param integer  $page         The page of results to return.
 	 *
-	 * @return array
+	 * @return array{results: array, has_more: bool}
 	 */
-	private function search_posts( string $search, array $post_types, array $excluded_ids = array() ): array {
+	private function search_posts( string $search, array $post_types, array $excluded_ids = array(), int $page = 1 ): array {
 		$found_ids = array();
 		$results   = array();
 
-		// If numeric, try exact ID match first.
-		if ( is_numeric( $search ) ) {
+		// If numeric, try exact ID match first (first page only).
+		if ( 1 === $page && is_numeric( $search ) ) {
 			$post_id = absint( $search );
 			if ( $post_id > 0 ) {
 				$id_query = new \WP_Query(
@@ -127,7 +136,9 @@ class Post_Search_Ajax {
 			array(
 				'post_type'                => $post_types,
 				'post_status'              => 'publish',
-				'posts_per_page'           => -1,
+				'posts_per_page'           => self::PER_PAGE + 1,
+				'offset'                   => ( $page - 1 ) * self::PER_PAGE,
+				'no_found_rows'            => true,
 				'orderby'                  => 'title',
 				'order'                    => 'ASC',
 				'suppress_filters'         => false,
@@ -138,14 +149,20 @@ class Post_Search_Ajax {
 
 		remove_filter( 'posts_where', $where_filter, 10 );
 
-		foreach ( $search_query->posts as $post ) {
+		// An extra row is fetched purely to detect a further page.
+		$has_more = count( $search_query->posts ) > self::PER_PAGE;
+
+		foreach ( array_slice( $search_query->posts, 0, self::PER_PAGE ) as $post ) {
 			if ( ! in_array( $post->ID, $found_ids, true ) ) {
 				$found_ids[] = $post->ID;
 				$results[]   = $this->format_result_from_post( $post );
 			}
 		}
 
-		return $results;
+		return array(
+			'results'  => $results,
+			'has_more' => $has_more,
+		);
 	}
 
 	/**
