@@ -139,7 +139,7 @@ class Dashboard_Statistics {
 		$process_new        = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_ID_DESC, null, null, null, array( Link::PROCESS_NEW ) );
 		$process_done_      = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_ID_DESC, null, null, null, array( Link::PROCESS_DONE ) );
 		$process_pending    = $links->count_links( \PHP_INT_MAX, 1, array(), array(), array(), Link_Repository::ORDER_ID_DESC, null, null, null, array( Link::PROCESS_PENDING ) );
-		$last_checks        = $links->query_links( 10, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, null, null, true );
+		$last_checks        = $links->query_links( 10, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, null, null, null, null );
 
 		// Extract the details from last checks.
 		$last_checks = array_map(
