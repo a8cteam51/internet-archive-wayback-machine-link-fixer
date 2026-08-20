@@ -387,13 +387,16 @@ class Report_Table extends \WP_List_Table {
 				continue;
 			}
 
+			// Show the raw value if the date does not parse, rather than fatal.
+			$last_check_date = DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] );
+
 			// Add a success notice.
 			$this->notices[] = array(
 				'message' => sprintf(
 					// translators: %1$s is the link url, %2$s is the last check date, %3$s is the last check http code.
 					__( 'Link %1$s checked successfully on %2$s with %3$s status', 'internet-archive-wayback-machine-link-fixer' ),
 					esc_html( iawmlf_trim_string( $link_url, 54 ) ),
-					DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) ),
+					$last_check_date ? $last_check_date->format( get_option( 'date_format' ) ) : esc_html( $last_check['date'] ),
 					esc_html( $last_check['http_code'] )
 				),
 				'type'    => 'success',
@@ -1235,12 +1238,17 @@ class Report_Table extends \WP_List_Table {
 			)
 			: __( 'No HTTP Code', 'internet-archive-wayback-machine-link-fixer' );
 
+		// Show the raw value if the date does not parse, rather than fatal.
+		$last_check_date = $last_check['date']
+			? DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )
+			: false;
+
 		return sprintf(
 			// translators: %1$s: last check date (e.g. "5 Jan 2025"), %2$s: HTTP status code (e.g. "404 status")
 			__( '%1$s with %2$s', 'internet-archive-wayback-machine-link-fixer' ),
-			$last_check['date']
-				? DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $last_check['date'] )->format( get_option( 'date_format' ) )
-				: __( 'Missing date', 'internet-archive-wayback-machine-link-fixer' ),
+			$last_check_date
+				? $last_check_date->format( get_option( 'date_format' ) )
+				: ( $last_check['date'] ? $last_check['date'] : __( 'Missing date', 'internet-archive-wayback-machine-link-fixer' ) ),
 			$last_check
 				? $last_status_display
 				: __( 'No HTTP Code', 'internet-archive-wayback-machine-link-fixer' )

@@ -39,4 +39,20 @@ class Test_Report_Table_Columns extends \WP_UnitTestCase {
 		$this->assertStringContainsString( '"' . esc_url( $link->get_archived_href() ) . '"', $output );
 		$this->assertStringNotContainsString( '"' . $link->get_archived_href() . '"', $output );
 	}
+
+	/**
+	 * @testdox A malformed check date must not fatal the last-check column - the raw value is shown instead. (S058)
+	 *
+	 * @return void
+	 */
+	public function test_last_check_column_survives_malformed_check_date(): void {
+		$link = new Link( 'https://example.com/malformed-date' );
+		$link->add_check( 200, 'not-a-date' );
+
+		$table  = new Report_Table( new Link_Repository() );
+		$output = $table->column_default( $link, Report_Table::COLUMN_LINK_CHECKS_LAST );
+
+		$this->assertIsString( $output );
+		$this->assertStringContainsString( 'not-a-date', $output );
+	}
 }
