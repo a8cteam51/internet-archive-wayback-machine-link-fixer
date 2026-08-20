@@ -518,8 +518,8 @@ function iawmlf_is_archive_api_online( bool $force = false ): bool {
 	// Try to get from transient. Stored as yes/no as a cached false would look like a missing transient.
 	$online = get_transient( 'iawmlf_archive_api_online' );
 	if ( false !== $online && false === $force ) {
-		// Only an explicit 'no' is offline - a legacy boolean true (pre yes/no format) still reads as online.
-		return 'no' !== $online;
+		// A cached 'yes', or a legacy truthy value (the pre yes/no format), reads as online.
+		return in_array( $online, array( 'yes', '1', true ), true );
 	}
 
 	// Check if the system client is online.
