@@ -126,7 +126,7 @@ class Dashboard_Notifications {
 	public static function get_account_details(): ?array {
 		$cached = get_transient( 'iawmlf_account_details' );
 		if ( false !== $cached ) {
-			return $cached;
+			return 'NO DATA' === $cached ? null : $cached;
 		}
 		try {
 			$details = \iawmlf_get_system_client()->get_user_stats(
@@ -144,9 +144,13 @@ class Dashboard_Notifications {
 				);
 			}
 		} catch ( \Exception $e ) {
+			// Cache the failure so its not retried on every call.
+			set_transient( 'iawmlf_account_details', 'NO DATA', HOUR_IN_SECONDS );
 			return null;
 		}
 
+		// Cache the failure so its not retried on every call.
+		set_transient( 'iawmlf_account_details', 'NO DATA', HOUR_IN_SECONDS );
 		return null;
 	}
 }
