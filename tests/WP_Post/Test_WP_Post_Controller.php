@@ -604,6 +604,49 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox The iawmlf_exclude_link_from_post filter should apply when a post is scanned, so an excluded link is never stored in the post meta. (T266)
+	 *
+	 * @return void
+	 */
+	public function test_exclude_link_from_post_filter_applies_on_scan(): void {
+		add_filter(
+			'iawmlf_exclude_link_from_post',
+			function ( bool $exclude, $link ): bool {
+				return 'https://from.post/filter-excluded' === $link->get_href() ? true : $exclude;
+			},
+			10,
+			2
+		);
+
+		$post_id = self::factory()->post->create();
+
+		$content = 'One <a href="https://from.post/filter-excluded">excluded</a> two <a href="https://from.post/filter-allowed">allowed</a>';
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $content,
+			)
+		);
+
+		// Clear any meta set by the save_post hook, then scan directly.
+		\delete_post_meta( $post_id, Settings::LINK_META_KEY );
+		( new WP_Post_Controller() )->process_links_in_content( $post_id );
+
+		$meta = get_post_meta( $post_id, Settings::LINK_META_KEY, true );
+		$this->assertIsArray( $meta );
+
+		$repository = new Link_Repository();
+		$excluded   = $repository->find_by_url( 'https://from.post/filter-excluded' );
+		$allowed    = $repository->find_by_url( 'https://from.post/filter-allowed' );
+
+		$this->assertContains( $allowed->get_id(), $meta, 'The non-excluded link should be stored in the post meta.' );
+		$this->assertNotContains( $excluded->get_id(), $meta, 'The filter-excluded link should not be stored in the post meta.' );
+
+		// Clean up.
+		\remove_all_filters( 'iawmlf_exclude_link_from_post' );
+	}
+
+	/**
 	 * @testdox When an option is selected to fix links, it should be rendered out the HTML.
 	 *
 	 * @since 1.3.1

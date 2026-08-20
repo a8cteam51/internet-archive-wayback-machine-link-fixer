@@ -179,7 +179,7 @@ class WP_Post_Controller {
 		$links          = $post_processor->process();
 
 		// Remove any excluded links.
-		$links = Link_Exclusion::get_instance()->filter_excluded( $links );
+		$links = Link_Exclusion::get_instance()->filter_excluded( $links, $post_id );
 
 		// Update the link meta.
 		$this->update_link_meta( $post_id, $links );
