@@ -1221,4 +1221,57 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 		$deleted_link = $this->link_repository->find_by_id( $link->get_id() );
 		$this->assertNull( $deleted_link );
 	}
+
+	/**
+	 * @testdox Sorting by date ascending must order checked links oldest first and place never-checked links last. (T071)
+	 *
+	 * @return void
+	 */
+	public function test_order_by_date_asc_handles_never_checked_links(): void {
+		// 3 links with checks, inserted out of date order.
+		$mid = new Link( 'https://t071-checked-mid.example.com' );
+		$mid->add_check( 200, '2022-06-01 00:00:00' );
+		$this->link_repository->upsert( $mid );
+
+		$newest = new Link( 'https://t071-checked-newest.example.com' );
+		$newest->add_check( 200, '2023-06-01 00:00:00' );
+		$this->link_repository->upsert( $newest );
+
+		$oldest = new Link( 'https://t071-checked-oldest.example.com' );
+		$oldest->add_check( 200, '2021-06-01 00:00:00' );
+		$this->link_repository->upsert( $oldest );
+
+		// 2 links never checked (empty checks array).
+		$this->link_repository->upsert( new Link( 'https://t071-unchecked-a.example.com' ) );
+		$this->link_repository->upsert( new Link( 'https://t071-unchecked-b.example.com' ) );
+
+		global $wpdb;
+		$wpdb->last_error = '';
+
+		$links = $this->link_repository->query_links( 10, 1, array(), array(), array(), Link_Repository::ORDER_DATE_ASC );
+
+		$this->assertSame( '', $wpdb->last_error, 'The date-ascending sort must not raise a database error.' );
+		$this->assertCount( 5, $links );
+
+		$hrefs = array_map(
+			function ( $link ) {
+				return $link->get_href();
+			},
+			$links
+		);
+
+		// Checked links first, oldest to newest.
+		$this->assertSame( 'https://t071-checked-oldest.example.com', $hrefs[0] );
+		$this->assertSame( 'https://t071-checked-mid.example.com', $hrefs[1] );
+		$this->assertSame( 'https://t071-checked-newest.example.com', $hrefs[2] );
+
+		// Never-checked links sort last; their order between themselves is not defined.
+		$this->assertEqualsCanonicalizing(
+			array(
+				'https://t071-unchecked-a.example.com',
+				'https://t071-unchecked-b.example.com',
+			),
+			array_slice( $hrefs, 3 )
+		);
+	}
 }
