@@ -170,7 +170,7 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$response = wp_safe_remote_post(
 			esc_url( $snapshot_url ),
 			array(
-				'timeout'   => apply_filters( 'iawmlf_create_snapshot_timeout', 1000 ),
+				'timeout'   => apply_filters( 'iawmlf_create_snapshot_timeout', 5000 ) / 1000, // Filter is in ms, WP_Http expects seconds.
 				'body'      => array( 'url' => $url ),
 				'sslverify' => false,
 				'headers'   => $this->get_headers(),

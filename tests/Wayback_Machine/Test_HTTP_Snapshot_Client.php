@@ -531,4 +531,29 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 		$client = new HTTP_Snapshot_Client();
 		$result = $client->get_snapshot_status( '12345' );
 	}
+
+	/**
+	 * @testdox The create snapshot request timeout must be passed to the HTTP client in seconds - the 5000ms default converts to 5s. (T119)
+	 *
+	 * @return void
+	 */
+	public function test_create_snapshot_timeout_is_passed_in_seconds() {
+		$captured_timeout = null;
+		add_filter(
+			'pre_http_request',
+			function ( $response, $args, $url ) use ( &$captured_timeout ) {
+				$captured_timeout = $args['timeout'];
+				return array(
+					'body'     => 'spn.watchJob("some id")',
+					'response' => array( 'code' => 200 ),
+				);
+			},
+			10,
+			3
+		);
+
+		( new HTTP_Snapshot_Client() )->create_snapshot( 'http://example.com' );
+
+		$this->assertSame( 5, $captured_timeout );
+	}
 }

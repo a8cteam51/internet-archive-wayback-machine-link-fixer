@@ -1129,11 +1129,11 @@ add_filter( 'iawmlf_create_snapshot_url', function( string $url ): string {
 
 #### `iawmlf_create_snapshot_timeout`
 
-This is used to set the timeout for creating a new snapshot. The default is 1000 seconds (16.7 minutes).
+This is used to set the timeout for creating a new snapshot. The default is 5000ms (5 seconds).
 
 ```php
 add_filter( 'iawmlf_create_snapshot_timeout', function( int $timeout ): int {
-	return 2000; // 33+ minutes
+	return 10000; // 10 seconds
 });
 ```
 

@@ -481,4 +481,29 @@ class Test_HTTP_Link_Checker_Client extends \WP_UnitTestCase {
 
 		$client->check_single( 'https://example.com' );
 	}
+
+	/**
+	 * @testdox The request timeout must be passed to the HTTP client in seconds - the 5000ms setting converts to 5s. (S001)
+	 *
+	 * @return void
+	 */
+	public function test_timeout_is_passed_to_http_client_in_seconds() {
+		$captured_timeout = null;
+		add_filter(
+			'pre_http_request',
+			function ( $response, $args, $url ) use ( &$captured_timeout ) {
+				$captured_timeout = $args['timeout'];
+				return array(
+					'response' => array( 'code' => 200 ),
+					'body'     => json_encode( array( 'status' => 200 ) ),
+				);
+			},
+			10,
+			3
+		);
+
+		( new HTTP_Link_Checker_Client() )->check_single( 'https://example.com' );
+
+		$this->assertSame( 5, $captured_timeout );
+	}
 }

@@ -87,7 +87,7 @@ class HTTP_Link_Checker_Client implements Link_Checker_Client {
 		$response = wp_safe_remote_get(
 			$query_url,
 			array(
-				'timeout' => $this->timeout,
+				'timeout' => $this->timeout / 1000, // Setting is in ms, WP_Http expects seconds.
 				'headers' => $headers,
 			)
 		);
