@@ -284,8 +284,8 @@ class Setup_Wizard {
 		$index    = array_keys( $steps );
 		$previous = array_search( $current_step, $index, true ) - 1;
 
-		// Update the step.
-		$previous_step = $index[ $previous ];
+		// An unrecognised step falls back to step-1.
+		$previous_step = $index[ $previous ] ?? 'step-1';
 		Settings::update_setup_wizard_step( $previous_step );
 	}
 
