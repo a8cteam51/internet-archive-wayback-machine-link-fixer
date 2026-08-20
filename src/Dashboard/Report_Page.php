@@ -74,7 +74,7 @@ class Report_Page {
 		add_filter(
 			'set-screen-option',
 			function ( $status, $option, $value ) {
-				return ( 'links_per_page' === $option ) ? (int) $value : $status;
+				return ( 'links_per_page' === $option ) ? max( 1, (int) $value ) : $status;
 			},
 			10,
 			3

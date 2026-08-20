@@ -173,7 +173,7 @@ class Report_Table extends \WP_List_Table {
 		$from_meta = get_user_meta( get_current_user_id(), $option['option'], true );
 
 		return is_numeric( $from_meta )
-			? absint( $from_meta )
+			? max( 1, absint( $from_meta ) )
 			: absint( $option['default'] );
 	}
 
