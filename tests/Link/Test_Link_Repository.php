@@ -513,6 +513,39 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox The month date filter must use the site timezone and include the whole last day of the month. (T072)
+	 *
+	 * @return void
+	 */
+	public function test_date_filter_uses_site_timezone(): void {
+		update_option( 'timezone_string', 'Asia/Karachi' ); // UTC+5.
+
+		// 20:00 UTC on 31st Dec is 01:00 on 1st Jan site time - inside January.
+		$early = new Link( 'https://t072-early-boundary.example.com' );
+		$early->add_check( 200, '2021-12-31 20:00:00' );
+		$this->link_repository->upsert( $early );
+
+		// 12:00 UTC on 31st Jan is 17:00 on 31st Jan site time - inside January.
+		$late = new Link( 'https://t072-late-boundary.example.com' );
+		$late->add_check( 200, '2022-01-31 12:00:00' );
+		$this->link_repository->upsert( $late );
+
+		$queried_links = $this->link_repository->query_links( 10, 1, array(), array(), array(), Link_Repository::ORDER_DATE_DESC, null, '2022-01' );
+
+		$hrefs = array_map(
+			function ( Link $link ): string {
+				return $link->get_href();
+			},
+			$queried_links
+		);
+
+		$this->assertContains( 'https://t072-early-boundary.example.com', $hrefs );
+		$this->assertContains( 'https://t072-late-boundary.example.com', $hrefs );
+
+		update_option( 'timezone_string', '' );
+	}
+
+	/**
 	 * @testdox It should be possible to get a list of all posts that a link is used on.
 	 *
 	 * @return void
