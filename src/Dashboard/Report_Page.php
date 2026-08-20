@@ -416,10 +416,9 @@ class Report_Page {
 		$exclude = isset( $_POST['iawmlf_exclude_link'] );
 
 		if ( $exclude ) {
-			$link->set_excluded( true );
-
-			// Set message if not already set.
-			if ( '' === $link->get_message() ) {
+			// On the transition into excluded, always write the marker - it is how
+			// background events tell a manual exclusion from a system one.
+			if ( ! $link->is_excluded() ) {
 				$user = wp_get_current_user();
 				$link->set_message(
 					sprintf(
@@ -429,6 +428,8 @@ class Report_Page {
 					)
 				);
 			}
+
+			$link->set_excluded( true );
 		} else {
 			$link->set_excluded( false );
 

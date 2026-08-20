@@ -148,6 +148,29 @@ class Test_Report_Page extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A manual exclusion must carry the user marker even when the link already had a system message, so background events cannot lift it. (S053)
+	 *
+	 * @return void
+	 */
+	public function test_manual_exclusion_with_existing_message_is_marked_as_manual(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+
+		// A link with a leftover system message, not yet excluded.
+		$link = new Link( 'https://example.com/s053-existing-message' );
+		$link->set_message( 'Redirected. SomeSystemError' );
+		$link = $this->link_repository->upsert( $link );
+
+		$_POST['iawmlf_exclude_link'] = '1';
+		$this->submit_link_details_form( $link->get_id() );
+		unset( $_POST['iawmlf_exclude_link'] );
+
+		$saved = $this->link_repository->find_by_id( $link->get_id() );
+
+		$this->assertTrue( $saved->is_excluded() );
+		$this->assertTrue( $saved->is_manual_exclusion(), 'The exclusion must be recognised as manual despite the pre-existing message.' );
+	}
+
+	/**
 	 * @testdox The default filter value should include the updated flag.
 	 *
 	 * @return void
