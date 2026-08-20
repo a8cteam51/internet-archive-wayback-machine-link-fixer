@@ -289,12 +289,7 @@ class Link implements \JsonSerializable {
 		}
 
 		// If the url starts http(s)://web.archive.org/web/, replace it with http(s)://web-wp.archive.org/web/
-		if ( 0 === strpos( $archived_href, 'https://web.archive.org/web/' ) ) {
-			$archived_href = str_replace( 'https://web.archive.org/web/', 'https://web-wp.archive.org/web/', $archived_href );
-		}
-		if ( 0 === strpos( $archived_href, 'http://web.archive.org/web/' ) ) {
-			$archived_href = str_replace( 'http://web.archive.org/web/', 'http://web-wp.archive.org/web/', $archived_href );
-		}
+		$archived_href = preg_replace( '#^http(s?)://web\.archive\.org/web/#i', 'http$1://web-wp.archive.org/web/', $archived_href );
 
 		// If the setting to cast to https is enabled, cast the start of the url to https.
 		if ( Settings::should_cast_archived_to_https() ) {

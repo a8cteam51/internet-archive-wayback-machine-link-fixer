@@ -507,6 +507,11 @@ class Test_Link extends \WP_UnitTestCase {
 		$link = new Link( 'http://example.com' );
 		$link->set_archived_href( 'http://web.archive.org/web/20240101000000/https://example.com' );
 		$this->assertSame( 'http://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
+
+		// A capitalised host is still reparsed.
+		$link = new Link( 'https://example.com' );
+		$link->set_archived_href( 'https://Web.Archive.org/web/20240101000000/https://example.com' );
+		$this->assertSame( 'https://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
 	}
 
 	/**
