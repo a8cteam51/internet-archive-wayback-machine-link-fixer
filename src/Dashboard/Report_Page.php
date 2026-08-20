@@ -439,7 +439,9 @@ class Report_Page {
 		}
 
 		// Allow 3rd parties to hook in and modify the link before saving.
-		$link = apply_filters( 'iawmlf_before_saving_link_details', $link );
+		// A malformed callback (not returning the link) degrades to the unfiltered link.
+		$filtered = apply_filters( 'iawmlf_before_saving_link_details', $link );
+		$link     = $filtered instanceof Link ? $filtered : $link;
 
 		// Save the link.
 		$this->link_repository->upsert( $link );

@@ -129,6 +129,25 @@ class Test_Report_Page extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A before-saving filter callback that forgets to return the link should not fatal the form save.
+	 *
+	 * @return void
+	 */
+	public function test_before_saving_filter_returning_null_does_not_fatal(): void {
+		$link = $this->link_repository->upsert( new Link( 'https://example.com/details' ) );
+
+		// A broken third-party callback: mutates but returns nothing.
+		add_filter( 'iawmlf_before_saving_link_details', fn() => null );
+
+		$location = $this->submit_link_details_form( $link->get_id() );
+
+		remove_all_filters( 'iawmlf_before_saving_link_details' );
+
+		$this->assertNotNull( $location, 'The save should complete and redirect despite the malformed filter.' );
+		$this->assertStringContainsString( 'iawmlf_updated=1', $location );
+	}
+
+	/**
 	 * @testdox The default filter value should include the updated flag.
 	 *
 	 * @return void
