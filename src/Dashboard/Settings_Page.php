@@ -73,6 +73,14 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function register_fields(): void {
+		global $pagenow;
+
+		// Only needed when rendering the settings screen, or saving it via options.php.
+		$current_page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Read only page check.
+		if ( 'options.php' !== $pagenow && self::PAGE_SLUG !== $current_page ) {
+			return;
+		}
+
 		// Register the settings fields.
 		$this->register_settings_fields();
 		$this->add_settings_fields();
