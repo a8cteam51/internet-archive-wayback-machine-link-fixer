@@ -43,6 +43,13 @@ class Report_Page {
 	private $hook;
 
 	/**
+	 * The list table, created on load-{hook} so bulk-action notices survive into the render.
+	 *
+	 * @var Report_Table|null
+	 */
+	private $table;
+
+	/**
 	 * Creates a new instance of the report page.
 	 */
 	public function __construct() {
@@ -102,6 +109,9 @@ class Report_Page {
 
 		// Handle the link details form submission.
 		add_action( "load-$hook", array( $this, 'handle_link_details_form' ) );
+
+		// Process bulk actions before any output, so a real redirect can be issued.
+		add_action( "load-$hook", array( $this, 'handle_bulk_actions' ) );
 
 		// Add the screen options.
 		add_action( "load-$hook", array( $this, 'register_screen_options' ) );
@@ -269,6 +279,16 @@ class Report_Page {
 	}
 
 	/**
+	 * Process the list table bulk actions on load-{hook}, before any output.
+	 *
+	 * @return void
+	 */
+	public function handle_bulk_actions(): void {
+		$this->table = new Report_Table( new Link_Repository() );
+		$this->table->process_bulk_action();
+	}
+
+	/**
 	 * Render the report list page.
 	 *
 	 * @since 1.2.0
@@ -276,11 +296,8 @@ class Report_Page {
 	 * @return void
 	 */
 	private function render_list_page(): void {
-		// Render the list table.
-		$table = new Report_Table( new Link_Repository() );
-
-		// Run the bulk actions.
-		$table->process_bulk_action();
+		// Render the list table, reusing the load-{hook} instance so its notices render.
+		$table = $this->table ?? new Report_Table( new Link_Repository() );
 
 		// Render any notices.
 		$table->render_notices();

@@ -289,8 +289,8 @@ class Report_Table extends \WP_List_Table {
 
 		$url = $this->get_redirect_action_url( $cache_key );
 
-		// Redirect to the page using JS as page already loaded headers.
-		printf( '<script>window.location = %s;</script>', wp_json_encode( $url ) );
+		// Runs on load-{hook}, before any output, so a real redirect is possible.
+		wp_safe_redirect( $url );
 		exit;
 	}
 

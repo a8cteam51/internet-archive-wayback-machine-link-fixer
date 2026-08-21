@@ -191,6 +191,22 @@ class Test_Report_Page extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox Bulk action processing must be hooked to load-{hook}, before any output. (S056)
+	 *
+	 * @return void
+	 */
+	public function test_bulk_actions_are_processed_on_load_hook(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+
+		$page = new Report_Page();
+		$page->register_page();
+
+		$hook = get_plugin_page_hookname( 'iawmlf-links', \Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page::DASHBOARD_SLUG );
+
+		$this->assertNotFalse( has_action( "load-$hook", array( $page, 'handle_bulk_actions' ) ) );
+	}
+
+	/**
 	 * @testdox The default filter value should include the updated flag.
 	 *
 	 * @return void

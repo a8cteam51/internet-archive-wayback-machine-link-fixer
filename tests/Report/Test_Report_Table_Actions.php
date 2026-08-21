@@ -94,6 +94,40 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 
 
 	/**
+	 * @testdox After a bulk action, a real HTTP redirect is issued rather than a printed script tag. (S056)
+	 *
+	 * @return void
+	 */
+	public function test_redirect_after_action_issues_real_redirect(): void {
+		$_REQUEST['action'] = 'check';
+
+		$table = new Report_Table( $this->link_repository );
+
+		$location = null;
+		add_filter(
+			'wp_redirect',
+			function ( $redirect_location ) use ( &$location ) {
+				$location = $redirect_location;
+				throw new \Exception( 'redirect-captured' );
+			}
+		);
+
+		ob_start();
+		try {
+			$table->redirect_after_action();
+		} catch ( \Exception $e ) {
+			$this->assertSame( 'redirect-captured', $e->getMessage() );
+		}
+		$output = ob_get_clean();
+
+		remove_all_filters( 'wp_redirect' );
+		unset( $_REQUEST['action'] );
+
+		$this->assertNotNull( $location, 'A real redirect must be issued.' );
+		$this->assertSame( '', $output, 'Nothing must be printed - no script-tag redirect.' );
+	}
+
+	/**
 	 * @testdox Batch snapshot notices are separated, use singular/plural counts, and no success notice shows when nothing was queued. (S090)
 	 *
 	 * @return void
