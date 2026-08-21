@@ -20,6 +20,7 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Exclusion;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Rest\Link_Check_Rest;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Processor\Post_Processor;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Processor\Content_Scanner;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Process_Local_Post_Event;
 
 defined( 'ABSPATH' ) || exit;
@@ -284,6 +285,11 @@ class WP_Post_Controller {
 	 * @return string
 	 */
 	public function render_block( string $block_content, array $block ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		// A scan renders blocks to find links - the payload span has no place in that.
+		if ( Content_Scanner::is_rendering() ) {
+			return $block_content;
+		}
+
 		if ( ! Settings::should_render_html_link_output() ) {
 			return $block_content;
 		}

@@ -671,6 +671,17 @@ add_filter( 'iawmlf_routinely_update_wayback_machine_interval', function( int $i
 });
 ```
 
+#### `iawmlf_scan_content`
+
+This filter controls the content a post is scanned for links. By default the post content has its blocks and shortcodes rendered, so links they output are found. The rest of the `the_content` chain is deliberately not applied, as it would pull in links belonging to other plugins (embeds, related posts, ad injectors).
+
+```php
+add_filter( 'iawmlf_scan_content', function( string $rendered, string $raw, int $post_id ): string {
+	// Scan the fully filtered content instead.
+	return apply_filters( 'the_content', $raw );
+}, 10, 3 );
+```
+
 #### `iawmlf_link_exclusions`
 
 This filter enhances the link exclusions defined in admin settings by adding additional exclusions to the link checker.

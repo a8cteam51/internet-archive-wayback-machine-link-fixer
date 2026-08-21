@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Processor;
 
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Processor\Content_Scanner;
+use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Controller;
 
 /**
  * Test_Content_Scanner
@@ -164,6 +166,133 @@ class Test_Content_Scanner extends \WP_UnitTestCase {
 			'not http'        => array( 'ftp://not-from.post/file' ),
 			'relative'        => array( '/relative/path' ),
 		);
+	}
+
+	/**
+	 * @testdox Links output by a shortcode should be scanned, whether the shortcode returns or echoes them. (S126)
+	 *
+	 * @return void
+	 */
+	public function test_shortcode_links_are_scanned(): void {
+		add_shortcode( 'iawmlf_returns_link', fn() => '<a href="https://not-from.post/returned">returned</a>' );
+		add_shortcode(
+			'iawmlf_echoes_link',
+			function () {
+				echo '<a href="https://not-from.post/echoed">echoed</a>';
+				return '';
+			}
+		);
+
+		$post_id = self::factory()->post->create(
+			array( 'post_content' => 'Before [iawmlf_returns_link] middle [iawmlf_echoes_link] after.' )
+		);
+
+		$links = Content_Scanner::for_post( $post_id )->scan()->get_links();
+
+		remove_shortcode( 'iawmlf_returns_link' );
+		remove_shortcode( 'iawmlf_echoes_link' );
+
+		$this->assertContains( 'https://not-from.post/returned', $links );
+		$this->assertContains( 'https://not-from.post/echoed', $links );
+	}
+
+	/**
+	 * @testdox Links rendered by a dynamic block should be scanned. (S126)
+	 *
+	 * @return void
+	 */
+	public function test_dynamic_block_links_are_scanned(): void {
+		register_block_type(
+			'iawmlf-test/dynamic',
+			array(
+				'render_callback' => fn() => '<a href="https://not-from.post/from-block">block</a>',
+			)
+		);
+
+		$post_id = self::factory()->post->create(
+			array( 'post_content' => '<!-- wp:iawmlf-test/dynamic /-->' )
+		);
+
+		$links = Content_Scanner::for_post( $post_id )->scan()->get_links();
+
+		unregister_block_type( 'iawmlf-test/dynamic' );
+
+		$this->assertContains( 'https://not-from.post/from-block', $links );
+	}
+
+	/**
+	 * @testdox Raw links in the content must still be scanned once blocks and shortcodes are rendered. (S126)
+	 *
+	 * @return void
+	 */
+	public function test_raw_links_still_scanned_after_rendering(): void {
+		$post_id = self::factory()->post->create(
+			array( 'post_content' => '<!-- wp:paragraph --><p>A <a href="https://not-from.post/raw">raw link</a>.</p><!-- /wp:paragraph -->' )
+		);
+
+		$links = Content_Scanner::for_post( $post_id )->scan()->get_links();
+
+		$this->assertSame( array( 'https://not-from.post/raw' ), array_values( $links ) );
+	}
+
+	/**
+	 * @testdox The link payload span must not be injected while a scan renders blocks. (S126)
+	 *
+	 * @return void
+	 */
+	public function test_own_render_block_output_is_suppressed_during_a_scan(): void {
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		$post_id = self::factory()->post->create(
+			array( 'post_content' => '<!-- wp:paragraph --><p>A <a href="https://not-from.post/payload">link</a>.</p><!-- /wp:paragraph -->' )
+		);
+
+		// Store links against the post, so the payload span would have something to render.
+		( new WP_Post_Controller() )->process_links_in_content( $post_id );
+
+		$rendered_during_scan = null;
+		add_filter(
+			'iawmlf_scan_content',
+			function ( string $content ) use ( &$rendered_during_scan ): string {
+				$rendered_during_scan = $content;
+				return $content;
+			}
+		);
+
+		Content_Scanner::for_post( $post_id )->scan()->get_links();
+
+		remove_all_filters( 'iawmlf_scan_content' );
+
+		$this->assertIsString( $rendered_during_scan );
+		$this->assertStringNotContainsString( '__iawmlf-post-loop-links', $rendered_during_scan );
+
+		// Outside a scan the span is still added.
+		$this->assertFalse( Content_Scanner::is_rendering() );
+		$GLOBALS['post'] = get_post( $post_id );
+		$this->assertStringContainsString( '__iawmlf-post-loop-links', do_blocks( get_post_field( 'post_content', $post_id ) ) );
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox The iawmlf_scan_content filter should be able to widen what is scanned. (S126)
+	 *
+	 * @return void
+	 */
+	public function test_scan_content_filter_can_widen_the_scan(): void {
+		$post_id = self::factory()->post->create(
+			array( 'post_content' => 'No links here.' )
+		);
+
+		add_filter(
+			'iawmlf_scan_content',
+			fn( string $content ): string => $content . '<a href="https://not-from.post/added-by-filter">added</a>'
+		);
+
+		$links = Content_Scanner::for_post( $post_id )->scan()->get_links();
+
+		remove_all_filters( 'iawmlf_scan_content' );
+
+		$this->assertContains( 'https://not-from.post/added-by-filter', $links );
 	}
 
 	/**
