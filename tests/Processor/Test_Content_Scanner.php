@@ -71,6 +71,102 @@ class Test_Content_Scanner extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox International URLs should be scanned in their encoded form, not silently dropped. (S126)
+	 *
+	 * @dataProvider data_provider_international_urls
+	 *
+	 * @param string $href     The href as written in the content.
+	 * @param string $expected The link expected in the scan results.
+	 *
+	 * @return void
+	 */
+	public function test_international_urls_are_scanned( string $href, string $expected ): void {
+		$scanner = new Content_Scanner( sprintf( 'A link to <a href="%s">example</a>', $href ) );
+		$links   = array_values( $scanner->scan()->get_links() );
+
+		$this->assertCount( 1, $links, "The link {$href} should have been scanned." );
+		$this->assertSame( $expected, $links[0] );
+	}
+
+	/**
+	 * Data provider for test_international_urls_are_scanned.
+	 *
+	 * @return array<string, array{0: string, 1: string}>
+	 */
+	public static function data_provider_international_urls(): array {
+		return array(
+			'accented path'          => array( 'https://not-from.post/café', 'https://not-from.post/caf%C3%A9' ),
+			'accented query'         => array( 'https://not-from.post/page?q=café', 'https://not-from.post/page?q=caf%C3%A9' ),
+			'cyrillic path'          => array( 'https://not-from.post/привет', 'https://not-from.post/%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82' ),
+			'idn host'               => array( 'https://例え.jp/path', 'https://xn--r8jz45g.jp/path' ),
+			'idn host accented path' => array( 'https://例え.jp/café', 'https://xn--r8jz45g.jp/caf%C3%A9' ),
+			'space in path'          => array( 'https://not-from.post/a b', 'https://not-from.post/a%20b' ),
+		);
+	}
+
+	/**
+	 * @testdox Plain ASCII URLs must be left exactly as written - the encoding fallback must not touch them. (S126)
+	 *
+	 * @dataProvider data_provider_ascii_urls_untouched
+	 *
+	 * @param string $href The href as written in the content.
+	 *
+	 * @return void
+	 */
+	public function test_ascii_urls_are_untouched( string $href ): void {
+		$scanner = new Content_Scanner( sprintf( 'A link to <a href="%s">example</a>', $href ) );
+		$links   = array_values( $scanner->scan()->get_links() );
+
+		$this->assertCount( 1, $links );
+		$this->assertSame( $href, $links[0], 'A valid ASCII URL must not be rewritten.' );
+	}
+
+	/**
+	 * Data provider for test_ascii_urls_are_untouched.
+	 *
+	 * @return array<string, array{0: string}>
+	 */
+	public static function data_provider_ascii_urls_untouched(): array {
+		return array(
+			'plain'             => array( 'https://not-from.post/content' ),
+			'trailing slash'    => array( 'https://not-from.post/content/' ),
+			'query string'      => array( 'https://not-from.post/page?a=1&b=2' ),
+			'already encoded'   => array( 'https://not-from.post/caf%C3%A9' ),
+			'fragment'          => array( 'https://not-from.post/page#section' ),
+			'port'              => array( 'https://not-from.post:8080/content' ),
+		);
+	}
+
+	/**
+	 * @testdox A malformed URL must still be rejected, even after the encoding fallback. (S126)
+	 *
+	 * @dataProvider data_provider_still_invalid_urls
+	 *
+	 * @param string $href The href as written in the content.
+	 *
+	 * @return void
+	 */
+	public function test_malformed_urls_are_still_rejected( string $href ): void {
+		$scanner = new Content_Scanner( sprintf( 'A link to <a href="%s">example</a>', $href ) );
+
+		$this->assertCount( 0, $scanner->scan()->get_links(), "The malformed URL {$href} should not have been scanned." );
+	}
+
+	/**
+	 * Data provider for test_malformed_urls_are_still_rejected.
+	 *
+	 * @return array<string, array{0: string}>
+	 */
+	public static function data_provider_still_invalid_urls(): array {
+		return array(
+			'underscore host' => array( 'https://from_invalid/content_broken' ),
+			'no host'         => array( 'https:///just-a-path' ),
+			'not http'        => array( 'ftp://not-from.post/file' ),
+			'relative'        => array( '/relative/path' ),
+		);
+	}
+
+	/**
 	 * @testdox Any duplicate links should be excluded from the list.
 	 *
 	 * @return void

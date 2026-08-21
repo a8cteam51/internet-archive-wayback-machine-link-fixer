@@ -421,6 +421,18 @@ function iawmlf_normalize_url( string $url ): string {
 	// URL Encode the url parameters.
 	$url_parts = wp_parse_url( $url );
 
+	// Punycode an international host. WordPress bundles the encoder, so intl is not required.
+	if ( isset( $url_parts['host'] )
+		&& 1 === preg_match( '/[^\x20-\x7e]/', $url_parts['host'] )
+		&& class_exists( '\WpOrg\Requests\IdnaEncoder' )
+	) {
+		try {
+			$url_parts['host'] = \WpOrg\Requests\IdnaEncoder::encode( $url_parts['host'] );
+		} catch ( \Throwable $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+			// Leave the host as written; the URL just fails validation downstream.
+		}
+	}
+
 	// If we have a path, encode it.
 	if ( isset( $url_parts['path'] ) ) {
 		// Decode first to avoid double-encoding, then re-encode

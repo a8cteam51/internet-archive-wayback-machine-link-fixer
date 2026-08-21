@@ -80,6 +80,13 @@ class Content_Scanner {
 			// If this is a valid url, add it to the collection.
 			if ( filter_var( $href, FILTER_VALIDATE_URL ) ) {
 				$this->links[] = $href;
+				continue;
+			}
+
+			// International URLs (non-ASCII host, path or query) fail the raw check, so retry encoded.
+			$encoded = iawmlf_normalize_url( $href );
+			if ( filter_var( $encoded, FILTER_VALIDATE_URL ) ) {
+				$this->links[] = $encoded;
 			}
 		}
 
