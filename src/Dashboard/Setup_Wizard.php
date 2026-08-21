@@ -120,6 +120,11 @@ class Setup_Wizard {
 			return;
 		}
 
+		// Never abort an in-flight form submission - the redirect catches the next page view.
+		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) ) ) {
+			return;
+		}
+
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
