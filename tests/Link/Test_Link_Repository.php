@@ -92,6 +92,49 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox The display-time https cast must never be written to the database. (T068)
+	 *
+	 * @return void
+	 */
+	public function test_https_cast_is_not_persisted(): void {
+		update_option( Settings::CAST_ARCHIVED_TO_HTTPS, true );
+
+		$link = new Link( 'https://t068-https-cast.example.com' );
+		$link->set_archived_href( 'http://web.archive.org/web/20240101000000/https://t068-https-cast.example.com' );
+		$link = $this->link_repository->upsert( $link );
+
+		// Save again - the update path must not bake the cast in either.
+		$link->add_check( 200 );
+		$this->link_repository->upsert( $link );
+
+		$wpdb   = $GLOBALS['wpdb'];
+		$stored = $wpdb->get_var(
+			$wpdb->prepare( 'SELECT archived FROM ' . Settings::get_link_table_name() . ' WHERE id = %d', $link->get_id() )
+		);
+
+		$this->assertSame(
+			'http://web-wp.archive.org/web/20240101000000/https://t068-https-cast.example.com',
+			$stored,
+			'The stored value keeps the web-wp host rewrite but must stay http - the cast is display only.'
+		);
+
+		// Display still honours the setting.
+		$this->assertSame(
+			'https://web-wp.archive.org/web/20240101000000/https://t068-https-cast.example.com',
+			$this->link_repository->find_by_id( $link->get_id() )->get_archived_href()
+		);
+
+		// With the setting off, the same stored row displays as http again.
+		update_option( Settings::CAST_ARCHIVED_TO_HTTPS, false );
+		$this->assertSame(
+			'http://web-wp.archive.org/web/20240101000000/https://t068-https-cast.example.com',
+			$this->link_repository->find_by_id( $link->get_id() )->get_archived_href()
+		);
+
+		delete_option( Settings::CAST_ARCHIVED_TO_HTTPS );
+	}
+
+	/**
 	 * @testdox It should be possible to find a link by its URL.
 	 *
 	 * @return void

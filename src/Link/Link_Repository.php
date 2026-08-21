@@ -155,7 +155,7 @@ class Link_Repository {
 	private function insert( Link $link ): Link {
 		// Extract the values.
 		$href            = $link->get_href();
-		$archived_href   = $link->get_archived_href();
+		$archived_href   = $link->get_stored_archived_href();
 		$checks          = $link->get_checks();
 		$redirect_href   = $link->get_redirect_href();
 		$is_broken       = $link->is_broken();
@@ -216,7 +216,7 @@ class Link_Repository {
 		// Extract the values.
 		$id              = $link->get_id();
 		$href            = $link->get_href();
-		$archived_href   = $link->get_archived_href();
+		$archived_href   = $link->get_stored_archived_href();
 		$checks          = $link->get_checks();
 		$redirect_href   = $link->get_redirect_href();
 		$is_broken       = $link->is_broken();

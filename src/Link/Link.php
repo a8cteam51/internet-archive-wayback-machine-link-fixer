@@ -282,14 +282,11 @@ class Link implements \JsonSerializable {
 	 * @return string
 	 */
 	public function get_archived_href(): ?string {
-		$archived_href = $this->archived_href;
+		$archived_href = $this->get_stored_archived_href();
 
 		if ( null === $archived_href || '' === $archived_href ) {
 			return $archived_href;
 		}
-
-		// If the url starts http(s)://web.archive.org/web/, replace it with http(s)://web-wp.archive.org/web/
-		$archived_href = preg_replace( '#^http(s?)://web\.archive\.org/web/#i', 'http$1://web-wp.archive.org/web/', $archived_href );
 
 		// If the setting to cast to https is enabled, cast the start of the url to https.
 		if ( Settings::should_cast_archived_to_https() ) {
@@ -298,6 +295,25 @@ class Link implements \JsonSerializable {
 		}
 
 		return $archived_href;
+	}
+
+	/**
+	 * Get the archived href as it should be stored.
+	 *
+	 * The host rewrite is canonical and persisted, but the https cast is a display
+	 * setting and must never be written to the database - it would outlive the setting.
+	 *
+	 * @return string|null
+	 */
+	public function get_stored_archived_href(): ?string {
+		$archived_href = $this->archived_href;
+
+		if ( null === $archived_href || '' === $archived_href ) {
+			return $archived_href;
+		}
+
+		// If the url starts http(s)://web.archive.org/web/, replace it with http(s)://web-wp.archive.org/web/
+		return preg_replace( '#^http(s?)://web\.archive\.org/web/#i', 'http$1://web-wp.archive.org/web/', $archived_href );
 	}
 
 
