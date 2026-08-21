@@ -126,7 +126,7 @@ Specify how often to recheck each link for validity. Avoid checking too often, a
 
 ![Failure Threshold](./_docs/settings--failure-threshold.png)
 
-Specify the number of consecutive failed checks before a link is marked as broken. Occasional single failures are normal, so use a value high enough to confirm genuine link loss. The default is 5.
+Specify the number of consecutive failed checks before a link is marked as broken. Occasional single failures are normal, so use a value high enough to confirm genuine link loss. The default is 3.
 
 
 #### Fixer Option

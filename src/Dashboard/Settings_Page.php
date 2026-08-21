@@ -370,9 +370,9 @@ class Settings_Page {
 				'type'              => 'integer',
 				'sanitize_callback' => function ( $value ) {
 					$value = absint( $value );
-					return 0 === $value ? 5 : $value;
+					return 0 === $value ? 3 : $value;
 				},
-				'default'           => 5,
+				'default'           => 3,
 				'show_in_rest'      => array(
 					'name'   => Settings::MINIMUM_CHECKS_BEFORE_BROKEN,
 					'schema' => array(
@@ -389,9 +389,9 @@ class Settings_Page {
 				'type'              => 'integer',
 				'sanitize_callback' => function ( $value ) {
 					$value = absint( $value );
-					return 0 === $value ? 7 : $value;
+					return 0 === $value ? 3 : $value;
 				},
-				'default'           => 7,
+				'default'           => 3,
 				'show_in_rest'      => array(
 					'name'   => Settings::LINK_CHECK_DURATION_IN_DAYS,
 					'schema' => array(
@@ -1301,7 +1301,7 @@ class Settings_Page {
 			data-group="link_fixer"
 		/>
 		<p class="description">
-			<?php esc_html_e( 'How often to recheck each link for validity. Avoid checking too often, as temporary outages or maintenance can cause false “broken” results. The default is 7 days.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+			<?php esc_html_e( 'How often to recheck each link for validity. Avoid checking too often, as temporary outages or maintenance can cause false “broken” results. The default is 3 days.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</p>
 		<?php
 	}
@@ -1325,7 +1325,7 @@ class Settings_Page {
 			data-group="link_fixer"
 		/>
 		<p class="description">
-			<?php esc_html_e( 'Number of consecutive failed checks before a link is marked as broken. Occasional single failures are normal, so use a value high enough to confirm genuine link loss. The default is 5.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+			<?php esc_html_e( 'Number of consecutive failed checks before a link is marked as broken. Occasional single failures are normal, so use a value high enough to confirm genuine link loss. The default is 3.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</p>
 		<?php
 	}
