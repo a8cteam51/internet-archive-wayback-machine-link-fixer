@@ -11,7 +11,7 @@ declare( strict_types = 1 );
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Rest;
 
 use DateTime;
-use Exception;
+use Throwable;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -169,7 +169,7 @@ class Link_Check_Rest {
 		// Get the current status.
 		try {
 			$status = $this->link_checker->check_single( $link->get_href() );
-		} catch ( Exception $e ) {
+		} catch ( Throwable $e ) {
 			return new WP_Error(
 				'link_check_failed',
 				$e->getMessage(),

@@ -14,6 +14,7 @@ declare( strict_types = 1 );
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Ajax;
 
 use Exception;
+use Throwable;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -65,7 +66,7 @@ class Post_Search_Ajax {
 		// Validate the request.
 		try {
 			$this->validate_request();
-		} catch ( Exception $e ) {
+		} catch ( Throwable $e ) {
 			$this->send_error( $e->getMessage(), 403 );
 		}
 

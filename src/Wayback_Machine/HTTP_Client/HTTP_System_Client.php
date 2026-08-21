@@ -95,7 +95,7 @@ class HTTP_System_Client implements System_Client {
 
 		try {
 			$response = wp_safe_remote_get( $url, array( 'headers' => $headers ) );
-		} catch ( \Exception $e ) {
+		} catch ( Throwable $e ) {
 			throw Invalid_Response_Exception::create( esc_html( $e->getMessage() ) );
 		}
 		if ( is_wp_error( $response ) ) {

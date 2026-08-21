@@ -139,7 +139,7 @@ class Dashboard_Notifications {
 				set_transient( 'iawmlf_account_details', $details, HOUR_IN_SECONDS );
 				return self::normalize_account_details( $details );
 			}
-		} catch ( \Exception $e ) {
+		} catch ( \Throwable $e ) {
 			// Cache the failure so its not retried on every call.
 			set_transient( 'iawmlf_account_details', 'NO DATA', HOUR_IN_SECONDS );
 			return null;
