@@ -315,7 +315,10 @@ class Link implements \JsonSerializable {
 		}
 
 		// If the url starts http(s)://web.archive.org/web/, replace it with http(s)://web-wp.archive.org/web/
-		return preg_replace( '#^http(s?)://web\.archive\.org/web/#i', 'http$1://web-wp.archive.org/web/', $archived_href );
+		// Lowercase literals, not a backreference - a captured 'S' would give an unusable 'httpS://' scheme.
+		$archived_href = preg_replace( '#^https://web\.archive\.org/web/#i', 'https://web-wp.archive.org/web/', $archived_href );
+
+		return preg_replace( '#^http://web\.archive\.org/web/#i', 'http://web-wp.archive.org/web/', $archived_href );
 	}
 
 

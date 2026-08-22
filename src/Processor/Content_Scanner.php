@@ -93,6 +93,9 @@ class Content_Scanner {
 		ob_start();
 		try {
 			$rendered = do_shortcode( do_blocks( $content ) );
+		} catch ( \Throwable $e ) {
+			// Third party render callbacks run here - a failing one must not break the save or the scan batch.
+			$rendered = $content;
 		} finally {
 			$echoed          = (string) ob_get_clean();
 			self::$rendering = false;

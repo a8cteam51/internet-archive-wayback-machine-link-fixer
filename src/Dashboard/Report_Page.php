@@ -284,6 +284,11 @@ class Report_Page {
 	 * @return void
 	 */
 	public function handle_bulk_actions(): void {
+		// The single link view has no bulk actions, and load-{hook} fires for it too.
+		if ( isset( $_GET['iawmlf_link_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
+			return;
+		}
+
 		$this->table = new Report_Table( new Link_Repository() );
 		$this->table->process_bulk_action();
 	}

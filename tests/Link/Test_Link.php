@@ -512,6 +512,12 @@ class Test_Link extends \WP_UnitTestCase {
 		$link = new Link( 'https://example.com' );
 		$link->set_archived_href( 'https://Web.Archive.org/web/20240101000000/https://example.com' );
 		$this->assertSame( 'https://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
+
+		// A capitalised scheme must come back lowercase, not as a mixed 'httpS'.
+		$link = new Link( 'https://example.com' );
+		$link->set_archived_href( 'HTTPS://Web.Archive.org/web/20240101000000/https://example.com' );
+		$this->assertSame( 'https://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_archived_href() );
+		$this->assertSame( 'https://web-wp.archive.org/web/20240101000000/https://example.com', $link->get_stored_archived_href() );
 	}
 
 	/**

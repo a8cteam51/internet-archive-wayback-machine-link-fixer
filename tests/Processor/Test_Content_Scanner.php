@@ -197,6 +197,31 @@ class Test_Content_Scanner extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A shortcode that throws must not break the scan - it falls back to the raw content. (S126)
+	 *
+	 * @return void
+	 */
+	public function test_throwing_shortcode_falls_back_to_raw_content(): void {
+		add_shortcode(
+			'iawmlf_throws',
+			function () {
+				throw new \RuntimeException( 'Third party shortcode blew up.' );
+			}
+		);
+
+		$post_id = self::factory()->post->create(
+			array( 'post_content' => 'A <a href="https://not-from.post/survives">link</a> and [iawmlf_throws].' )
+		);
+
+		$links = Content_Scanner::for_post( $post_id )->scan()->get_links();
+
+		remove_shortcode( 'iawmlf_throws' );
+
+		$this->assertContains( 'https://not-from.post/survives', $links, 'The raw content must still be scanned.' );
+		$this->assertFalse( Content_Scanner::is_rendering(), 'The rendering flag must be reset even when the render throws.' );
+	}
+
+	/**
 	 * @testdox Links rendered by a dynamic block should be scanned. (S126)
 	 *
 	 * @return void
