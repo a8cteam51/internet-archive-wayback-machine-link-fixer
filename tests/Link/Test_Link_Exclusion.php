@@ -69,17 +69,33 @@ class Test_Link_Exclusion extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox Pattern matching must be case-insensitive - a capitalised LinkedIn URL still hits the bundled exclusion. (S069)
+	 * @testdox The host is matched case-insensitively - a capitalised LinkedIn URL still hits the bundled exclusion. (S069)
 	 *
 	 * @return void
 	 */
-	public function test_matching_is_case_insensitive(): void {
+	public function test_host_matching_is_case_insensitive(): void {
 		// The real bundled list - no filter override.
 		$this->assertTrue( $this->is_excluded( 'https://www.LinkedIn.com/in/someone' ) );
+		$this->assertTrue( $this->is_excluded( 'HTTPS://WWW.LINKEDIN.COM/in/someone' ) );
 
-		// Settings list patterns too, in both directions.
-		update_option( Settings::LINK_EXCLUSIONS, array( '*Example.org*' ) );
-		$this->assertTrue( $this->is_excluded( 'https://example.org/x' ) );
+		// Settings list patterns match a capitalised host too.
+		update_option( Settings::LINK_EXCLUSIONS, array( '*excluded-host.tld*' ) );
+		$this->assertTrue( $this->is_excluded( 'https://Excluded-Host.tld/some/path' ) );
+	}
+
+	/**
+	 * @testdox The path stays case-sensitive - lowercasing the whole URL would widen what a pattern excludes.
+	 *
+	 * @return void
+	 */
+	public function test_path_matching_stays_case_sensitive(): void {
+		update_option( Settings::LINK_EXCLUSIONS, array( '*/Docs/Private*' ) );
+
+		// The pattern is matched as written.
+		$this->assertTrue( $this->is_excluded( 'https://some-host.tld/Docs/Private/page' ) );
+
+		// A different path is a different resource on most servers, so it must not match.
+		$this->assertFalse( $this->is_excluded( 'https://some-host.tld/docs/private/page' ) );
 	}
 
 	/**

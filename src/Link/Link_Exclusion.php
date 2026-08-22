@@ -76,8 +76,10 @@ class Link_Exclusion {
 	 * @return boolean
 	 */
 	public function is_globally_excluded( Link $link ): bool {
+		$href = self::canonical_href( $link->get_href() );
+
 		foreach ( $this->bundled as $pattern ) {
-			if ( fnmatch( strtolower( $pattern ), strtolower( $link->get_href() ) ) ) {
+			if ( fnmatch( $pattern, $href ) ) {
 				return true;
 			}
 		}
@@ -93,13 +95,39 @@ class Link_Exclusion {
 	 * @return boolean
 	 */
 	public function is_settings_excluded( Link $link ): bool {
+		$href = self::canonical_href( $link->get_href() );
+
 		foreach ( $this->settings as $pattern ) {
-			if ( fnmatch( strtolower( $pattern ), strtolower( $link->get_href() ) ) ) {
+			if ( fnmatch( $pattern, $href ) ) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	/**
+	 * Lowercase the scheme and host of a URL, leaving the rest untouched.
+	 *
+	 * Scheme and host are case-insensitive, so this is canonicalisation. The path and
+	 * query are case-sensitive, so lowercasing those would widen what a pattern matches.
+	 *
+	 * @param string $href The URL to canonicalise.
+	 *
+	 * @return string
+	 */
+	private static function canonical_href( string $href ): string {
+		$parts = wp_parse_url( $href );
+
+		if ( ! is_array( $parts ) || empty( $parts['host'] ) || empty( $parts['scheme'] ) ) {
+			return $href;
+		}
+
+		$prefix = $parts['scheme'] . '://' . $parts['host'];
+
+		return 0 === strpos( $href, $prefix )
+			? strtolower( $prefix ) . substr( $href, strlen( $prefix ) )
+			: $href;
 	}
 
 	/**
