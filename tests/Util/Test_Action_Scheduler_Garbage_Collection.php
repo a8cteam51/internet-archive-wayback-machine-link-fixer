@@ -389,6 +389,44 @@ class Test_Action_Scheduler_Garbage_Collection extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox When each group only has a single create new snapshot action, nothing should be deleted.
+	 *
+	 * @return void
+	 */
+	public function test_clean_create_new_snapshot_events_single_attempt_not_deleted(): void {
+		$this->set_link_checker_to_throw();
+
+		$link_a = $this->link_repository->upsert( new Link( 'https://example.com' ) );
+		$link_b = $this->link_repository->upsert( new Link( 'https://example.org' ) );
+
+		$event = new Create_New_Snapshot_Event();
+
+		// Each link gets a single invocation → 1 action each.
+		try { $event( $link_a->get_id(), 0 ); } catch ( \Throwable $th ) {} // phpcs:ignore
+		try { $event( $link_b->get_id(), 0 ); } catch ( \Throwable $th ) {} // phpcs:ignore
+
+		// Mark as failed.
+		$this->wpdb->update(
+			"{$this->wpdb->prefix}actionscheduler_actions",
+			array( 'status' => 'failed' ),
+			array(
+				'hook'   => Create_New_Snapshot_Event::HANDLE,
+				'status' => 'pending',
+			)
+		);
+
+		// Run the garbage collector.
+		$gc = new Action_Scheduler_Garbage_Collection();
+		$gc->clean_create_new_snapshot_events();
+
+		// Both actions should still exist.
+		$remaining = $this->wpdb->get_results(
+			"SELECT * FROM {$this->wpdb->prefix}actionscheduler_actions WHERE hook = 'iawmlf_create_new_snapshot'"
+		);
+		$this->assertCount( 2, $remaining );
+	}
+
+	/**
 	 * @testdox When a before date is passed to create snapshot cleanup, only old actions should be cleaned.
 	 *
 	 * @return void
