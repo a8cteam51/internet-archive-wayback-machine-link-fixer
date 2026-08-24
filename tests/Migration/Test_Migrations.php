@@ -249,6 +249,23 @@ class Test_Migrations extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A migration that never ran is not torn down on uninstall - its down() would undo something it never built. (S106)
+	 *
+	 * @return void
+	 */
+	public function test_down_skips_migrations_that_never_ran(): void {
+		Spy_Migration::$torn_down = array();
+
+		Migrations::$migrations = array( Ran_Migration::class, Never_Ran_Migration::class );
+		Settings::update_migrations( array( Ran_Migration::class ) );
+
+		Migrations::down();
+
+		$this->assertSame( array( Ran_Migration::class ), Spy_Migration::$torn_down );
+		$this->assertEmpty( Settings::migrations() );
+	}
+
+	/**
 	 * @testdox Ensure the archive_process column was added with the 3rd migration.
 	 * This is formally the 3rd migration, but it is now merged into the 1st migration.
 	 *
@@ -271,4 +288,36 @@ class Test_Migrations extends \WP_UnitTestCase {
 		$this->assertEquals( 'varchar(36)', $details[0]->Type );
 	}
 
+}
+
+/**
+ * Records every teardown, so a test can see which migrations were actually run down.
+ */
+abstract class Spy_Migration extends Abstract_Migration {
+
+	/**
+	 * The classes torn down so far.
+	 *
+	 * @var string[]
+	 */
+	public static $torn_down = array();
+
+	public function up(): void {
+	}
+
+	public function down(): void {
+		self::$torn_down[] = static::class;
+	}
+}
+
+/**
+ * A migration recorded in the migration log.
+ */
+class Ran_Migration extends Spy_Migration {
+}
+
+/**
+ * A migration registered but never run.
+ */
+class Never_Ran_Migration extends Spy_Migration {
 }

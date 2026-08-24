@@ -87,6 +87,11 @@ class Migrations {
 		$previously_run_migrations = Settings::migrations();
 
 		foreach ( array_reverse( self::$migrations ) as $migration ) {
+			// A migration that never ran has nothing to undo.
+			if ( ! in_array( $migration, $previously_run_migrations, true ) ) {
+				continue;
+			}
+
 			( new $migration() )->down();
 
 			// Remove the migration from the list of migrations that have been run.
