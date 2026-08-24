@@ -783,6 +783,7 @@ class Settings {
 		delete_option( self::PROCESS_LINKS );
 		delete_option( self::ALLOWED_POST_TYPES );
 		delete_option( self::MIGRATIONS_KEY );
+		delete_option( self::INSTALLED_VERSION_KEY );
 		delete_option( self::DROP_TABLES_ON_UNINSTALL_KEY );
 		delete_option( self::LINK_EXCLUSIONS );
 		delete_option( self::LINK_FIXER_EXCLUDED_POSTS );

@@ -202,6 +202,22 @@ class Test_Migrations extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox Uninstalling removes the version stamp - it is autoloaded, so leaving it behind costs every request of a site without the plugin.
+	 *
+	 * @return void
+	 */
+	public function test_uninstall_clears_the_installed_version(): void {
+		update_option( Settings::DROP_TABLES_ON_UNINSTALL_KEY, true );
+
+		Settings::update_installed_version( IAWMLF_VERSION );
+		$this->assertSame( IAWMLF_VERSION, Settings::installed_version() );
+
+		iawmlf_uninstall();
+
+		$this->assertFalse( get_option( Settings::INSTALLED_VERSION_KEY ) );
+	}
+
+	/**
 	 * @testdox When the plugin is uninstalled, table should not be dropped if set to not drop.
 	 *
 	 * @return void
