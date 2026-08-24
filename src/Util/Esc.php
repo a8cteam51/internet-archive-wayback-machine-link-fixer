@@ -6,6 +6,8 @@
  * @since 1.3.0
  */
 
+declare(strict_types=1);
+
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Util;
 
 defined( 'ABSPATH' ) || exit;

@@ -8,6 +8,8 @@
  * @since 1.0.0
  */
 
+declare(strict_types=1);
+
 namespace Internet_Archive\Wayback_Machine_Link_Fixer;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Ajax\Ajax_Controller;
