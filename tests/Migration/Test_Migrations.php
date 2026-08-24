@@ -32,7 +32,60 @@ class Test_Migrations extends \WP_UnitTestCase {
 
 		// Clear all migrations.
 		update_option( Settings::MIGRATIONS_KEY, array() );
+		delete_option( Settings::INSTALLED_VERSION_KEY );
 		Migrations::$migrations = array();
+	}
+
+	/**
+	 * @testdox A plugin update leaves the stored version behind, so any migration that has not run yet is run on load. (S007)
+	 *
+	 * @return void
+	 */
+	public function test_pending_migrations_run_when_stored_version_is_out_of_date(): void {
+		$migration_class = get_class( $this->createMock( Abstract_Migration::class ) );
+
+		Migrations::$migrations = array( $migration_class );
+
+		// The version the site was last loaded on.
+		update_option( Settings::INSTALLED_VERSION_KEY, '1.0.0' );
+
+		Migrations::maybe_run();
+
+		$this->assertContains( $migration_class, Settings::migrations() );
+		$this->assertSame( IAWMLF_VERSION, Settings::installed_version() );
+	}
+
+	/**
+	 * @testdox On an unchanged version nothing is run, so the check costs a single autoloaded option read. (S007)
+	 *
+	 * @return void
+	 */
+	public function test_migrations_are_not_run_when_stored_version_matches(): void {
+		$migration_class = get_class( $this->createMock( Abstract_Migration::class ) );
+
+		Migrations::$migrations = array( $migration_class );
+
+		Settings::update_installed_version( IAWMLF_VERSION );
+
+		Migrations::maybe_run();
+
+		$this->assertEmpty( Settings::migrations() );
+	}
+
+	/**
+	 * @testdox A fresh install has no stored version, so the migrations run and the version is stamped. (S007)
+	 *
+	 * @return void
+	 */
+	public function test_migrations_run_when_no_version_is_stored(): void {
+		$migration_class = get_class( $this->createMock( Abstract_Migration::class ) );
+
+		Migrations::$migrations = array( $migration_class );
+
+		Migrations::maybe_run();
+
+		$this->assertContains( $migration_class, Settings::migrations() );
+		$this->assertSame( IAWMLF_VERSION, Settings::installed_version() );
 	}
 
 	/**

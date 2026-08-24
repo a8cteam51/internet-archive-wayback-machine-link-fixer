@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer;
 
+use Internet_Archive\Wayback_Machine_Link_Fixer\Migration\Migrations;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -135,6 +137,9 @@ class Plugin {
 		if ( ! $this->is_active() ) {
 			return;
 		}
+
+		// An update never fires the activation hook, so pending migrations are caught here.
+		Migrations::maybe_run();
 
 		$this->initialize();
 	}

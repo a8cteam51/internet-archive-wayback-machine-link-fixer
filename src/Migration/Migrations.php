@@ -57,6 +57,26 @@ class Migrations {
 	}
 
 	/**
+	 * Run any pending migrations if the plugin version has changed.
+	 *
+	 * WordPress does not fire the activation hook on an update, so this is the only
+	 * thing that gets a schema change onto a site that was already running the plugin.
+	 *
+	 * @since 1.4.4
+	 *
+	 * @return void
+	 */
+	public static function maybe_run(): void {
+		if ( IAWMLF_VERSION === Settings::installed_version() ) {
+			return;
+		}
+
+		self::up();
+
+		Settings::update_installed_version( IAWMLF_VERSION );
+	}
+
+	/**
 	 * Run the migrations on plugin uninstall.
 	 *
 	 * @since 0.1.0
