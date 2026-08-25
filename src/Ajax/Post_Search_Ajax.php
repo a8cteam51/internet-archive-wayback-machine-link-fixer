@@ -233,7 +233,7 @@ class Post_Search_Ajax {
 		}
 
 		// Verify the nonce.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), self::ACTION ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), self::NONCE ) ) {
 			throw new Exception( 'Invalid nonce.' );
 		}
 

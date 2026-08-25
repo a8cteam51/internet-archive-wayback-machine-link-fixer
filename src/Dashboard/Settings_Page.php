@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard;
 
+use Internet_Archive\Wayback_Machine_Link_Fixer\Ajax\Post_Search_Ajax;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Util\Environmental;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Setup_Wizard;
@@ -184,7 +185,7 @@ class Settings_Page {
 				'environment'                     => Environmental::is_production() ? 'production' : 'development',
 				'ajaxUrl'                         => admin_url( 'admin-ajax.php' ),
 				'dismissDonationCtaNonce'         => wp_create_nonce( 'iawmlf_dismiss_donation_cta' ),
-				'postSearchNonce'                 => wp_create_nonce( 'iawmlf_post_search' ),
+				'postSearchNonce'                 => wp_create_nonce( Post_Search_Ajax::NONCE ),
 				'linkIconStyles'                  => array_column( Settings::get_available_link_icons(), 'css_rule', 'id' ),
 			)
 		);
