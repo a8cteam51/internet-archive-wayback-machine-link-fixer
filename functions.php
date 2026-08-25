@@ -298,8 +298,6 @@ function iawmlf_render_not_authenticated_notice(): void {
 
 	// If the creds are invalid.
 	if ( ! Settings::has_valid_archive_api_credentials() ) {
-		$message  = __( 'Your Archive.org API credentials are invalid. Please check your settings.', 'internet-archive-wayback-machine-link-fixer' );
-		$message .= ' ' . $in_unauthenticated_mode;
 		?>
 		<div class="notice notice-error">
 			<p>
