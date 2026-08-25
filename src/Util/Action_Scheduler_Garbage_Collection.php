@@ -16,7 +16,6 @@ use ActionScheduler;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Snapshot_Status_Event;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Check_Validator_Status;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Create_New_Snapshot_Event;
-use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Process_Local_Post_Event;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Update_Archive_URL_Event;
 
 defined( 'ABSPATH' ) || exit;

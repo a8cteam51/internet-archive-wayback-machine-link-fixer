@@ -12,9 +12,6 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 
-use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
-use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
-
 defined( 'ABSPATH' ) || exit;
 
 
@@ -24,22 +21,6 @@ defined( 'ABSPATH' ) || exit;
 class Check_Archive_Services_Online_Event {
 
 	public const HANDLE = 'iawmlf_check_archive_services_online';
-
-	/**
-	 * Wayback Machine Client.
-	 *
-	 * @var Wayback_Machine_Service
-	 */
-	private $wayback_machine;
-
-	/**
-	 * Setup the event.
-	 *
-	 * @return void
-	 */
-	public function setup(): void {
-		$this->wayback_machine = new Wayback_Machine_Service();
-	}
 
 	/**
 	 * Adds the event to the queue.
@@ -64,7 +45,6 @@ class Check_Archive_Services_Online_Event {
 	 * @return void
 	 */
 	public function __invoke(): void {
-		$this->setup();
 		iawmlf_is_archive_api_online( true );
 	}
 }

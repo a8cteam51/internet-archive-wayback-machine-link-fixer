@@ -15,7 +15,6 @@ namespace Internet_Archive\Wayback_Machine_Link_Fixer\Event;
 use Exception;
 use Throwable;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
-use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Client;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Wayback_Machine_Service;
 
 defined( 'ABSPATH' ) || exit;
@@ -37,7 +36,7 @@ class Check_Validator_Status {
 	/**
 	 * Wayback Machine Client.
 	 *
-	 * @var Wayback_Machine_Client
+	 * @var Wayback_Machine_Service
 	 */
 	private $wayback_machine;
 

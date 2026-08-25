@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Internet_Archive\Wayback_Machine_Link_Fixer\Link;
 
-use DateTime;
 use DateTimeZone;
 use DateTimeImmutable;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
