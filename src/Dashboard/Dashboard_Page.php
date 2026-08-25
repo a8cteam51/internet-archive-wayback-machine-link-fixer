@@ -29,8 +29,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Dashboard_Page {
 
-	public const DASHBOARD_SLUG      = 'iawmlf-dashboard';
-	public const STATS_TRANSIENT_KEY = 'iawmlf_dashboard_stats';
+	public const DASHBOARD_SLUG = 'iawmlf-dashboard';
 
 	/**
 	 * Access to the link repository.
