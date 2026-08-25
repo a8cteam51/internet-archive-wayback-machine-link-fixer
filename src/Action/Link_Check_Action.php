@@ -117,12 +117,6 @@ class Link_Check_Action {
 		// Validate the link.
 		$valid = $link->assess_validity();
 
-		// If the link is set to be excluded, set as valid.
-		if ( $link->is_excluded() ) {
-			$link->set_valid();
-			$valid = true;
-		}
-
 		// Update the link.
 		$link = $this->link_repository->upsert( $link );
 
