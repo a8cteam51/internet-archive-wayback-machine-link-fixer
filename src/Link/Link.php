@@ -493,6 +493,11 @@ class Link implements \JsonSerializable {
 	public static function from_json( string $json ): self {
 		$data = json_decode( $json, true );
 
+		// Malformed json decodes to null, everything below then reads an array that is not there.
+		if ( ! is_array( $data ) ) {
+			$data = array();
+		}
+
 		$link = new self( $data['href'] ?? '' );
 
 		// If contains archived href, set it.
@@ -510,15 +515,25 @@ class Link implements \JsonSerializable {
 			$link->set_id( absint( $data['id'] ) );
 		}
 
-		foreach ( $data['checks'] as $check ) {
-			$link->add_check(
-				iawmlf_escape_http_status_code( $check['http_code'] ),
-				esc_attr( $check['date'] )
-			);
+		$checks = is_array( $data['checks'] ?? null ) ? $data['checks'] : array();
+
+		foreach ( $checks as $check ) {
+			$http_code = iawmlf_escape_http_status_code( $check['http_code'] ?? 0 );
+
+			// add_check() takes a non nullable int, so an absent or junk code is a fatal.
+			if ( null === $http_code || ! isset( $check['date'] ) ) {
+				continue;
+			}
+
+			$link->add_check( $http_code, esc_attr( (string) $check['date'] ) );
 		}
 
-		// Set the process.
-		$link->set_archive_process( $data['archive_process'] ?? self::PROCESS_NEW );
+		// jsonSerialize() writes 'process'; 'archive_process' is kept for payloads made elsewhere.
+		$link->set_archive_process( $data['process'] ?? $data['archive_process'] ?? self::PROCESS_NEW );
+
+		if ( ! empty( $data['broken'] ) ) {
+			$link->set_broken();
+		}
 
 		return $link;
 	}

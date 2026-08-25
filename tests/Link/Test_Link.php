@@ -356,6 +356,73 @@ class Test_Link extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A link cast to json and back keeps its broken flag and archive process. (S043)
+	 *
+	 * @return void
+	 */
+	public function test_json_round_trip_keeps_broken_and_process(): void {
+		$link = new Link( 'https://example.com' );
+		$link->set_id( 1 );
+		$link->set_broken();
+		$link->set_pending();
+
+		$link = Link::from_json( (string) json_encode( $link ) );
+
+		$this->assertTrue( $link->is_broken() );
+		$this->assertSame( Link::PROCESS_PENDING, $link->get_archive_process() );
+	}
+
+	/**
+	 * @testdox Malformed json produces a link rather than warnings from reading null as an array. (S043)
+	 *
+	 * @return void
+	 */
+	public function test_from_json_handles_malformed_json(): void {
+		$warnings = array();
+
+		set_error_handler(
+			function ( int $number, string $message ) use ( &$warnings ): bool {
+				$warnings[] = $message;
+				return true;
+			}
+		);
+
+		$link = Link::from_json( 'not json' );
+
+		restore_error_handler();
+
+		$this->assertSame( array(), $warnings );
+		$this->assertSame( '', $link->get_href() );
+		$this->assertSame( array(), $link->get_checks() );
+	}
+
+	/**
+	 * @testdox A check missing its code or date is skipped rather than read blind. (S043)
+	 *
+	 * @return void
+	 */
+	public function test_from_json_skips_incomplete_checks(): void {
+		$json = (string) json_encode(
+			array(
+				'href'   => 'https://example.com',
+				'checks' => array(
+					array( 'http_code' => 418 ),
+					array( 'date' => '20240101000000' ),
+					array(
+						'http_code' => 404,
+						'date'      => '20250101000000',
+					),
+				),
+			)
+		);
+
+		$checks = Link::from_json( $json )->get_checks();
+
+		$this->assertCount( 1, $checks );
+		$this->assertSame( 404, $checks[0]['http_code'] );
+	}
+
+	/**
 	 * @testdox It should be possible to check if a link has an archived href.
 	 *
 	 * @return void
