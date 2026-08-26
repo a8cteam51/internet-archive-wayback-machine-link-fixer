@@ -200,6 +200,10 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_archive_org_links_are_not_added_to_queue_https(): void {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
+			$this->markTestSkipped( 'Skipping live API tests' );
+		}
+
 		$link = new Link(
 			'https://web.archive.org/web/20210101000000/https://example.com',
 		);
@@ -232,6 +236,10 @@ class Test_Find_Or_Create_Snapshot extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_archive_org_links_are_not_added_to_queue_http(): void {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
+			$this->markTestSkipped( 'Skipping live API tests' );
+		}
+
 		$link = new Link(
 			'http://web.archive.org/web/20210101000000/https://example.com',
 		);

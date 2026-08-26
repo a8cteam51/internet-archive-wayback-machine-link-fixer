@@ -95,6 +95,10 @@ class Test_Create_New_Snapshot_Event extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_link_not_found_throws_exception(): void {
+		if ( $GLOBALS['iawmlf_skip_live_api_tests'] === true ) {
+			$this->markTestSkipped( 'Skipping live API tests' );
+		}
+
 		$event = new Create_New_Snapshot_Event();
 		$event->setup();
 
