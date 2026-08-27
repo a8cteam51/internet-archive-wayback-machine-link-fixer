@@ -155,7 +155,7 @@ This service reports the progress of a snapshot that has already been requested.
 - Privacy Policy: [https://archive.org/about/privacy.php](https://archive.org/about/privacy.php)
 
 **Data Retention and Privacy:**
-The Internet Archive is a non-profit organization dedicated to preserving digital content for public access. URLs sent to these services become part of the public archive and may be accessible through the Wayback Machine interface. No personal information beyond the URLs themselves is transmitted to these services.
+The Internet Archive is a non-profit organization dedicated to preserving digital content for public access. URLs sent to these services become part of the public archive and may be accessible through the Wayback Machine interface. Apart from the Archive.org API credentials you choose to configure, no personal information beyond the URLs themselves is transmitted to these services.
 
 == Changelog ==
 
