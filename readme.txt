@@ -28,6 +28,16 @@ Protect your links, preserve your content, and automate the archiving process—
 * Works on both new and existing content
 * Helps maintain long-term content reliability and SEO
 
+== Installation ==
+
+1. Upload the plugin folder to `/wp-content/plugins/`, or install it through the Plugins screen in WordPress.
+2. Activate the plugin through the Plugins screen in WordPress.
+3. A setup wizard opens on activation and walks you through choosing which post types to scan, whether to archive your own content, and how links should be handled.
+
+The wizard can be run again at any time from the plugin's settings page.
+
+An Archive.org account is not required, but adding your API keys on the settings page raises the number of snapshots you can create per day.
+
 == Frequently Asked Questions ==
 
 = How does the link checker work? =
@@ -114,6 +124,36 @@ This service checks if web pages are accessible and retrieves final URLs after r
 - Terms of Service: [https://archive.org/about/terms.php](https://archive.org/about/terms.php)
 - Privacy Policy: [https://archive.org/about/privacy.php](https://archive.org/about/privacy.php)
 
+= Internet Archive Wayback Availability API (archive.org) =
+
+**What the service is and what it is used for:**
+This API reports whether a URL already has a snapshot in the Wayback Machine. The plugin uses it to find the most recent snapshot for a link, and to find the snapshot closest to a given date.
+
+**What data is sent and when:**
+
+- **Existing Snapshot Lookups**: URLs from your website content are sent to check whether an archived version already exists, along with a date when looking for the closest snapshot to that date.
+- **Account Credentials**: If you have configured an API key, your access key and secret key are sent in the Authorization header.
+
+**Service Terms and Privacy Policy:**
+
+- Terms of Service: [https://archive.org/about/terms.php](https://archive.org/about/terms.php)
+- Privacy Policy: [https://archive.org/about/privacy.php](https://archive.org/about/privacy.php)
+
+= Internet Archive Save Page Now Status API (web-wp.archive.org) =
+
+**What the service is and what it is used for:**
+This service reports the progress of a snapshot that has already been requested. The plugin uses it to find out whether a snapshot has completed, failed, or is still pending.
+
+**What data is sent and when:**
+
+- **Snapshot Status Checks**: The job ID returned when the snapshot was requested is sent to retrieve that job's current status. No personal data is sent.
+- **Account Credentials**: If you have configured an API key, your access key and secret key are sent in the Authorization header.
+
+**Service Terms and Privacy Policy:**
+
+- Terms of Service: [https://archive.org/about/terms.php](https://archive.org/about/terms.php)
+- Privacy Policy: [https://archive.org/about/privacy.php](https://archive.org/about/privacy.php)
+
 **Data Retention and Privacy:**
 The Internet Archive is a non-profit organization dedicated to preserving digital content for public access. URLs sent to these services become part of the public archive and may be accessible through the Wayback Machine interface. No personal information beyond the URLs themselves is transmitted to these services.
 
@@ -122,6 +162,7 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 = 1.4.3 =
 * Adds a global set of excluded urls that will never be archived or checked due to the sites blocking the internet archive.
 * Reintroduces a Scan but do nothing outcome for broken links.
+* Fix: a non-200 response from the link checker is now treated as the service being offline and rescheduled, rather than marking a good link as broken.
 
 = 1.4.2 =
 * Fix: Manually excluded links sometimes revert to unexcluded and can still be run through the link checker process. Now fully respects manual exclusions.
@@ -179,6 +220,12 @@ Note: All versions prior to 1.3.0 were not publicly released.
 For developer docs and source code, see the GitHub repository: [https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer)
 
 == Upgrade Notice ==
+
+= 1.4.3 =
+Adds a bundled list of sites that block the Internet Archive, so they are never queued for archiving or checking. Also adds a "Check only" option, which checks links without redirecting them.
+
+= 1.4.0 =
+Changes how link data is stored in post content, and moves the frontend link checker from Ajax to the REST API.
 
 = 1.3.0 =
 This updates any pre-release version to the new launched version.

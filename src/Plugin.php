@@ -126,7 +126,7 @@ class Plugin {
 	// region HOOKS
 
 	/**
-	 * Initializes the plugin components if WooCommerce is activated.
+	 * Initializes the plugin components if the minimum PHP and WordPress requirements are met.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0

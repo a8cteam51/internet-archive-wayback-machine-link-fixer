@@ -41,11 +41,11 @@ class Create_New_Snapshot_Event {
 	private $wayback_machine;
 
 	/**
-	 * The number of attempts.
+	 * The maximum number of attempts allowed.
 	 *
 	 * @var integer
 	 */
-	private $attempt = 0;
+	private $max_attempts = 0;
 
 	/**
 	 * Sets up the events dependencies, but delayed until its called.
@@ -55,7 +55,7 @@ class Create_New_Snapshot_Event {
 	public function setup(): void {
 		$this->link_repository = new Link_Repository();
 		$this->wayback_machine = new Wayback_Machine_Service();
-		$this->attempt         = apply_filters( 'iawmlf_create_new_snapshot_attempts', 3 );
+		$this->max_attempts    = apply_filters( 'iawmlf_create_new_snapshot_attempts', 3 );
 	}
 
 	/**
@@ -158,7 +158,7 @@ class Create_New_Snapshot_Event {
 		// Mark the link as pending.
 		$this->mark_as_pending( $link_id );
 		// If the attempt is greater than or equal to the max attempts, return early.
-		if ( $attempt > $this->attempt ) {
+		if ( $attempt > $this->max_attempts ) {
 			$this->mark_as_done( $link_id );
 			throw new Exception( esc_html( 'Max attempts reached for link ' . $link_id ) );
 		}
@@ -219,7 +219,7 @@ class Create_New_Snapshot_Event {
 			$job_id = $this->wayback_machine->create_snapshot( $link_url );
 		} catch ( Throwable $th ) {
 			// If this is the last attempt, re throw the error for the logs.
-			if ( $attempt === $this->attempt
+			if ( $attempt === $this->max_attempts
 			) {
 				$this->mark_as_done( $link_id );
 				throw new Exception(

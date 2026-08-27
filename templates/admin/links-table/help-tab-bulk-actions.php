@@ -18,6 +18,6 @@ defined( 'ABSPATH' ) || exit;
 	<h3><?php esc_html_e( 'Check link status', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
 	<p><?php esc_html_e( 'This option checks the current status and availability of the live link.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 
-	<h3><?php esc_html_e( 'Verify Link Can Be Checked', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
+	<h3><?php esc_html_e( 'Verify link allows checking', 'internet-archive-wayback-machine-link-fixer' ); ?></h3>
 	<p><?php esc_html_e( 'This action checks if the link\'s host (e.g., via robots.txt or meta tags) or your plugin settings prevent the link from being archived or checked. It helps determine if a link should be excluded.', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
 </div>

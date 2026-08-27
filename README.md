@@ -253,7 +253,7 @@ This will setup an event using the action scheduler to create a new snapshot of 
 
 This will trigger a check of the link to see if it is still active.
 
-### Verify Link Allows Checking
+### Verify link allows checking
 
 This will verify if a link allows checking. If it does not, the link will be excluded from being checked.
 

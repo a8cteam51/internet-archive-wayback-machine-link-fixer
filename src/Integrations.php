@@ -3,7 +3,7 @@
 /**
  * Integrations for the plugin.
  *
- * Registered as an integration in src/Wayback_Link_Fixer.php
+ * Registered from internet-archive-wayback-machine-link-fixer.php, via Plugin::initialize().
  *
  * @since 1.0.0
  */

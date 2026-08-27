@@ -211,7 +211,7 @@ class Settings {
 	 * Merged with the user's settings list when matching. Extendable via the undocumented
 	 * `iawmlf_bundled_link_exclusions` filter.
 	 *
-	 * @since 1.5.0
+	 * @since 1.4.3
 	 *
 	 * @return string[]
 	 */
@@ -314,7 +314,7 @@ class Settings {
 	}
 
 	/**
-	 * Get the archive.org API key.
+	 * Get the archive.org API secret key.
 	 *
 	 * @since 1.3.0
 	 *
@@ -325,7 +325,7 @@ class Settings {
 	}
 
 	/**
-	 * Get the archive.org API secret.
+	 * Get the archive.org API access key.
 	 *
 	 * @since 1.3.0
 	 *
@@ -618,7 +618,7 @@ class Settings {
 	 *
 	 * @since 1.3.4
 	 *
-	 * @param string $default_value Optional default value if not set. Default ONBOARDING_PENDING_OPTION.
+	 * @param string $default_value Optional default value if not set. Default ONBOARDING_COMPLETED_OPTION.
 	 *
 	 * @return string
 	 */

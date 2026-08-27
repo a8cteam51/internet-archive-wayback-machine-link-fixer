@@ -3,7 +3,7 @@
 /**
  * Handles the registration of all REST API routes.
  *
- * @since 2.0.0
+ * @since 1.4.0
  */
 
 declare( strict_types = 1 );

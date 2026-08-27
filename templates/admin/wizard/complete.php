@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The template for the first step of the setup wizard.
+ * The template for the final step of the setup wizard.
  *
  * @since 1.3.0
  *

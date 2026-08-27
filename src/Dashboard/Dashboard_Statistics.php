@@ -171,11 +171,11 @@ class Dashboard_Statistics {
 	 * Get onboarding statistics.
 	 *
 	 * @return array{
-	 * show_onboarding: bool,
-	 *    onboarding_date: string|null,
-	 *   days_since_onboarding: int|null
-	 * total_post_count:int<0, max>
-	 * unprocessed_post_count:int<0, max>
+	 *     show_onboarding: bool,
+	 *     onboarding_date: string|null,
+	 *     days_since_onboarding: int|null,
+	 *     total_post_count: int<0, max>,
+	 *     unprocessed_post_count: int<0, max>,
 	 * }
 	 */
 	public static function get_onboarding_statistics(): array {
@@ -239,11 +239,11 @@ class Dashboard_Statistics {
 	 * Compile the onboarding statistics fresh.
 	 *
 	 * @return array{
-	 * show_onboarding: bool,
-	 *    onboarding_date: string|null,
-	 *   days_since_onboarding: int|null
-	 * total_post_count:int<0, max>
-	 * unprocessed_post_count:int<0, max>
+	 *     show_onboarding: bool,
+	 *     onboarding_date: string|null,
+	 *     days_since_onboarding: int|null,
+	 *     total_post_count: int<0, max>,
+	 *     unprocessed_post_count: int<0, max>,
 	 * }
 	 */
 	private static function compile_onboarding_statistics(): array {

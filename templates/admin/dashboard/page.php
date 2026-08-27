@@ -13,7 +13,6 @@
  * @param string $iawmlf_filtered_valid          URL to filtered valid links report.
  * @param string $iawmlf_filtered_has_archive    URL to filtered links with archive report.
  * @param string $iawmlf_filtered_no_archive     URL to filtered links without archive report.
- * @param array  $iawmlf_total_links             Array of all links in the system (for widget).
  * @param bool   $iawmlf_auto_archiver_enabled   Whether auto archiver is enabled.
  * @param bool   $iawmlf_scan_existing_enabled   Whether scanning existing posts is enabled.
  * @param bool   $iawmlf_link_processing_enabled Whether link processing is enabled.
@@ -23,7 +22,7 @@
  * @param array  $iawmlf_last_checks             Array of last 10 link checks with associated posts.
  * @param array  $iawmlf_latest_links            Array of latest links with associated posts.
  * @param string $iawmlf_filtered_broken_all     URL to all broken links report.
- * @param string $iawmlf_filtered_redirected     URL to all redirected links report.
+ * @param string $iawmlf_filtered_broken_redirected URL to the broken but redirected links report.
  * @param array{show_onboarding:bool, onboarding_date:non-empty-string|null, days_since_onboarding:int|null, total_post_count:int<0,max>, unprocessed_post_count:int<0,max> } $iawmlf_onboarding_details Additional data for the widget.
  */
 defined( 'ABSPATH' ) || exit;

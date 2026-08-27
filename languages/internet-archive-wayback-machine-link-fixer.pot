@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-19T13:06:12+00:00\n"
+"POT-Creation-Date: 2026-08-27T14:08:14+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: internet-archive-wayback-machine-link-fixer\n"
@@ -27,7 +27,7 @@ msgstr ""
 
 #. Author of the plugin
 #: internet-archive-wayback-machine-link-fixer.php:19
-#: src/Dashboard/Settings_Page.php:212
+#: src/Dashboard/Settings_Page.php:236
 msgid "Internet Archive"
 msgstr ""
 
@@ -72,213 +72,208 @@ msgstr ""
 msgid "You are using Link Fixer in unauthenticated mode, which restricts you to 4000 new snapshots per day. To unlock higher limits, please enter your API credentials to authenticate with Archive.org."
 msgstr ""
 
-#: functions.php:301
-#: templates/admin/dashboard/widget.php:44
-msgid "Your Archive.org API credentials are invalid. Please check your settings."
-msgstr ""
-
 #. translators: %s is a link to the settings page.
-#: functions.php:310
+#: functions.php:308
 #, php-format
 msgid "Your Archive.org API credentials are invalid. <a href=\"%s\">Please check your settings.</a>. As a result you are in in unauthenticated mode, which restricts you to 4000 new snapshots per day."
 msgstr ""
 
-#: functions.php:337
+#: functions.php:335
 msgid "The Wayback Machine is currently offline. Please try again later."
-msgstr ""
-
-#: functions.php:551
-msgctxt "Archive.org snapshot error description"
-msgid "Bad Gateway for URL (HTTP status=502)."
-msgstr ""
-
-#: functions.php:552
-msgctxt "Archive.org snapshot error description"
-msgid "The server could not understand the request due to invalid syntax. (HTTP status=400)"
-msgstr ""
-
-#: functions.php:553
-msgctxt "Archive.org snapshot error description"
-msgid "The target server has exceeded the bandwidth specified by the server administrator. (HTTP status=509)."
-msgstr ""
-
-#: functions.php:554
-msgctxt "Archive.org snapshot error description"
-msgid "The target site is blocking us (HTTP status=999)."
-msgstr ""
-
-#: functions.php:555
-msgctxt "Archive.org snapshot error description"
-msgid "Anonymous clients which are listed in https://www.spamhaus.org/xbl/ or https://www.spamhaus.org/sbl/ lists (spams & exploits) are blocked. Tor exit nodes are excluded from this filter."
-msgstr ""
-
-#: functions.php:556
-msgctxt "Archive.org snapshot error description"
-msgid "We use a URL block list based on Mozilla web tracker lists to avoid unwanted captures."
-msgstr ""
-
-#: functions.php:557
-msgctxt "Archive.org snapshot error description"
-msgid "SPN2 back-end headless browser timeout."
-msgstr ""
-
-#: functions.php:558
-msgctxt "Archive.org snapshot error description"
-msgid "SPN2 back-end cannot find the created capture location. (system error)."
-msgstr ""
-
-#: functions.php:559
-msgctxt "Archive.org snapshot error description"
-msgid "Cannot fetch the target URL due to system overload."
-msgstr ""
-
-#: functions.php:560
-msgctxt "Archive.org snapshot error description"
-msgid "Cannot start capture task."
-msgstr ""
-
-#: functions.php:561
-msgctxt "Archive.org snapshot error description"
-msgid "Cannot capture web resources over 2GB."
-msgstr ""
-
-#: functions.php:562
-msgctxt "Archive.org snapshot error description"
-msgid "Tried to capture an FTP resource but access was denied."
-msgstr ""
-
-#: functions.php:563
-msgctxt "Archive.org snapshot error description"
-msgid "The target server didn't respond in time. (HTTP status=504)."
-msgstr ""
-
-#: functions.php:564
-msgctxt "Archive.org snapshot error description"
-msgid "The target server does not support the HTTP protocol version used in the request for URL (HTTP status=505)."
 msgstr ""
 
 #: functions.php:565
 msgctxt "Archive.org snapshot error description"
-msgid "SPN internal server error."
+msgid "Bad Gateway for URL (HTTP status=502)."
 msgstr ""
 
 #: functions.php:566
 msgctxt "Archive.org snapshot error description"
-msgid "Target URL syntax is not valid."
+msgid "The server could not understand the request due to invalid syntax. (HTTP status=400)"
 msgstr ""
 
 #: functions.php:567
 msgctxt "Archive.org snapshot error description"
-msgid "The target server response was invalid. (e.g. invalid headers, invalid content encoding, etc)."
+msgid "The target server has exceeded the bandwidth specified by the server administrator. (HTTP status=509)."
 msgstr ""
 
 #: functions.php:568
 msgctxt "Archive.org snapshot error description"
-msgid "Couldn't resolve the target host."
+msgid "The target site is blocking us (HTTP status=999)."
 msgstr ""
 
 #: functions.php:569
 msgctxt "Archive.org snapshot error description"
-msgid "Capture failed due to system error."
+msgid "Anonymous clients which are listed in https://www.spamhaus.org/xbl/ or https://www.spamhaus.org/sbl/ lists (spams & exploits) are blocked. Tor exit nodes are excluded from this filter."
 msgstr ""
 
 #: functions.php:570
 msgctxt "Archive.org snapshot error description"
-msgid "The request method is known by the server but has been disabled and cannot be used (HTTP status=405)."
+msgid "We use a URL block list based on Mozilla web tracker lists to avoid unwanted captures."
 msgstr ""
 
 #: functions.php:571
 msgctxt "Archive.org snapshot error description"
-msgid "The request method is not supported by the server and cannot be handled for URL (HTTP status=501)."
+msgid "SPN2 back-end headless browser timeout."
 msgstr ""
 
 #: functions.php:572
 msgctxt "Archive.org snapshot error description"
-msgid "SPN2 back-end headless browser cannot run."
+msgid "SPN2 back-end cannot find the created capture location. (system error)."
 msgstr ""
 
 #: functions.php:573
 msgctxt "Archive.org snapshot error description"
-msgid "The client needs to authenticate to gain network access to the URL (HTTP status=511)."
+msgid "Cannot fetch the target URL due to system overload."
 msgstr ""
 
 #: functions.php:574
 msgctxt "Archive.org snapshot error description"
-msgid "Target URL could not be accessed (status=403)."
+msgid "Cannot start capture task."
 msgstr ""
 
 #: functions.php:575
 msgctxt "Archive.org snapshot error description"
-msgid "Target URL not found (status=404)."
+msgid "Cannot capture web resources over 2GB."
 msgstr ""
 
 #: functions.php:576
 msgctxt "Archive.org snapshot error description"
-msgid "SPN2 back-end proxy error."
+msgid "Tried to capture an FTP resource but access was denied."
 msgstr ""
 
 #: functions.php:577
 msgctxt "Archive.org snapshot error description"
-msgid "HTTP connection broken. (A possible cause of this error is \"IncompleteRead\")."
+msgid "The target server didn't respond in time. (HTTP status=504)."
 msgstr ""
 
 #: functions.php:578
 msgctxt "Archive.org snapshot error description"
-msgid "HTTP connection read timeout."
+msgid "The target server does not support the HTTP protocol version used in the request for URL (HTTP status=505)."
 msgstr ""
 
 #: functions.php:579
 msgctxt "Archive.org snapshot error description"
-msgid "Capture duration exceeded 45s time limit and was terminated."
+msgid "SPN internal server error."
 msgstr ""
 
 #: functions.php:580
 msgctxt "Archive.org snapshot error description"
-msgid "Service unavailable for URL (HTTP status=503)."
+msgid "Target URL syntax is not valid."
 msgstr ""
 
 #: functions.php:581
 msgctxt "Archive.org snapshot error description"
-msgid "This URL has been captured 10 times today. We cannot make any more captures."
+msgid "The target server response was invalid. (e.g. invalid headers, invalid content encoding, etc)."
 msgstr ""
 
 #: functions.php:582
 msgctxt "Archive.org snapshot error description"
-msgid "Too many redirects. SPN2 tries to follow 3 redirects automatically."
+msgid "Couldn't resolve the target host."
 msgstr ""
 
 #: functions.php:583
 msgctxt "Archive.org snapshot error description"
-msgid "The target host has received too many requests from SPN and it is blocking it. (HTTP status=429). Note that captures to the same host will be delayed for 10-20s after receiving this response to remedy the situation."
+msgid "Capture failed due to system error."
 msgstr ""
 
 #: functions.php:584
 msgctxt "Archive.org snapshot error description"
-msgid "User has reached the limit of concurrent active capture sessions."
+msgid "The request method is known by the server but has been disabled and cannot be used (HTTP status=405)."
 msgstr ""
 
 #: functions.php:585
 msgctxt "Archive.org snapshot error description"
-msgid "The server requires authentication (HTTP status=401)."
+msgid "The request method is not supported by the server and cannot be handled for URL (HTTP status=501)."
 msgstr ""
 
 #: functions.php:586
 msgctxt "Archive.org snapshot error description"
-msgid "An authenticated user can archive up to 5GB per day."
+msgid "SPN2 back-end headless browser cannot run."
 msgstr ""
 
 #: functions.php:587
 msgctxt "Archive.org snapshot error description"
-msgid "An anonymous user can archive up to 2GB per day."
+msgid "The client needs to authenticate to gain network access to the URL (HTTP status=511)."
 msgstr ""
 
 #: functions.php:588
+msgctxt "Archive.org snapshot error description"
+msgid "Target URL could not be accessed (status=403)."
+msgstr ""
+
+#: functions.php:589
+msgctxt "Archive.org snapshot error description"
+msgid "Target URL not found (status=404)."
+msgstr ""
+
+#: functions.php:590
+msgctxt "Archive.org snapshot error description"
+msgid "SPN2 back-end proxy error."
+msgstr ""
+
+#: functions.php:591
+msgctxt "Archive.org snapshot error description"
+msgid "HTTP connection broken. (A possible cause of this error is \"IncompleteRead\")."
+msgstr ""
+
+#: functions.php:592
+msgctxt "Archive.org snapshot error description"
+msgid "HTTP connection read timeout."
+msgstr ""
+
+#: functions.php:593
+msgctxt "Archive.org snapshot error description"
+msgid "Capture duration exceeded 45s time limit and was terminated."
+msgstr ""
+
+#: functions.php:594
+msgctxt "Archive.org snapshot error description"
+msgid "Service unavailable for URL (HTTP status=503)."
+msgstr ""
+
+#: functions.php:595
+msgctxt "Archive.org snapshot error description"
+msgid "This URL has been captured 10 times today. We cannot make any more captures."
+msgstr ""
+
+#: functions.php:596
+msgctxt "Archive.org snapshot error description"
+msgid "Too many redirects. SPN2 tries to follow 3 redirects automatically."
+msgstr ""
+
+#: functions.php:597
+msgctxt "Archive.org snapshot error description"
+msgid "The target host has received too many requests from SPN and it is blocking it. (HTTP status=429). Note that captures to the same host will be delayed for 10-20s after receiving this response to remedy the situation."
+msgstr ""
+
+#: functions.php:598
+msgctxt "Archive.org snapshot error description"
+msgid "User has reached the limit of concurrent active capture sessions."
+msgstr ""
+
+#: functions.php:599
+msgctxt "Archive.org snapshot error description"
+msgid "The server requires authentication (HTTP status=401)."
+msgstr ""
+
+#: functions.php:600
+msgctxt "Archive.org snapshot error description"
+msgid "An authenticated user can archive up to 5GB per day."
+msgstr ""
+
+#: functions.php:601
+msgctxt "Archive.org snapshot error description"
+msgid "An anonymous user can archive up to 2GB per day."
+msgstr ""
+
+#: functions.php:602
 msgctxt "Archive.org snapshot error description"
 msgid "SPN2 can archive up to 100GB per day from a host."
 msgstr ""
 
 #. translators: %s: the raw archive.org status code.
-#: functions.php:593
+#: functions.php:607
 #, php-format
 msgctxt "Archive.org snapshot error description"
 msgid "Unknown: %s"
@@ -328,342 +323,342 @@ msgid "Validation request created, link will be updated ASAP"
 msgstr ""
 
 #: src/Dashboard/Dashboard_Notifications.php:70
-#: src/Dashboard/Dashboard_Page.php:145
+#: src/Dashboard/Dashboard_Page.php:144
 msgid "Wayback Link Fixer"
 msgstr ""
 
-#: src/Dashboard/Dashboard_Page.php:146
-#: src/Dashboard/Settings_Page.php:576
+#: src/Dashboard/Dashboard_Page.php:145
+#: src/Dashboard/Settings_Page.php:600
 msgid "Link Fixer"
 msgstr ""
 
-#: src/Dashboard/Dashboard_Page.php:166
+#: src/Dashboard/Dashboard_Page.php:165
 #: templates/admin/dashboard/widget.php:155
 msgid "Dashboard"
 msgstr ""
 
-#: src/Dashboard/Report_Page.php:94
-#: src/Dashboard/Report_Page.php:294
+#: src/Dashboard/Report_Page.php:101
+#: src/Dashboard/Report_Page.php:316
 msgid "Wayback Link Fixer - Links"
 msgstr ""
 
-#: src/Dashboard/Report_Page.php:95
-#: src/Dashboard/Report_Page.php:218
+#: src/Dashboard/Report_Page.php:102
+#: src/Dashboard/Report_Page.php:228
 #: src/WP_Post/WP_Post_Table_Controller.php:128
 msgid "Links"
 msgstr ""
 
-#: src/Dashboard/Report_Page.php:153
+#: src/Dashboard/Report_Page.php:163
 msgid "Are you sure you want to exclude this link? It will no longer be shown in the list, it will no longer be checked, and will not be fixed if broken."
 msgstr ""
 
-#: src/Dashboard/Report_Page.php:154
+#: src/Dashboard/Report_Page.php:164
 msgid "Are you sure you want to include this link? It will be checked and fixed if broken."
 msgstr ""
 
-#: src/Dashboard/Report_Page.php:176
+#: src/Dashboard/Report_Page.php:186
 msgid "API Offline, options disabled"
 msgstr ""
 
-#: src/Dashboard/Report_Page.php:230
+#: src/Dashboard/Report_Page.php:240
 msgid "Bulk Actions"
 msgstr ""
 
-#: src/Dashboard/Report_Page.php:237
+#: src/Dashboard/Report_Page.php:247
 msgid "Table Columns"
 msgstr ""
 
 #. translators: %1$s is the post title, %2$s is the link to view all links.
-#: src/Dashboard/Report_Page.php:310
+#: src/Dashboard/Report_Page.php:332
 #, php-format
 msgid "Showing links for %1$s <a href=\"%2$s\">(Show all links)</a>"
 msgstr ""
 
-#: src/Dashboard/Report_Page.php:327
+#: src/Dashboard/Report_Page.php:349
 msgid "Search"
 msgstr ""
 
-#: src/Dashboard/Report_Page.php:352
+#: src/Dashboard/Report_Page.php:374
 msgid "The link does not exist."
 msgstr ""
 
-#: src/Dashboard/Report_Page.php:364
+#: src/Dashboard/Report_Page.php:386
 msgid "The link is not valid."
 msgstr ""
 
-#: src/Dashboard/Report_Page.php:372
+#: src/Dashboard/Report_Page.php:394
 msgid "Link updated successfully."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:93
+#: src/Dashboard/Settings_Page.php:117
 msgid "Wayback Link Fixer Settings"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:94
+#: src/Dashboard/Settings_Page.php:118
 #: templates/admin/dashboard/widget.php:160
 msgid "Advanced Settings"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:196
+#: src/Dashboard/Settings_Page.php:220
 msgid "Rerun The Setup Wizard"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:203
+#: src/Dashboard/Settings_Page.php:227
 msgid "Wayback Link Fixer - Advanced Settings"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:213
+#: src/Dashboard/Settings_Page.php:237
 msgid "This plugin is powered by the Internet Archive. If you find the plugin useful, please chip in! Your support will help us build the web we deserve."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:215
+#: src/Dashboard/Settings_Page.php:239
 msgid "Donate"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:216
+#: src/Dashboard/Settings_Page.php:240
 msgid "Dismiss"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:225
-#: templates/admin/reports/link-details.php:268
+#: src/Dashboard/Settings_Page.php:249
+#: templates/admin/reports/link-details.php:271
 msgid "Save Changes"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:546
+#: src/Dashboard/Settings_Page.php:570
 msgid "Plugin Settings"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:557
+#: src/Dashboard/Settings_Page.php:581
 msgid "Archive.org API"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:562
+#: src/Dashboard/Settings_Page.php:586
 msgid "To increase your daily snapshot limit from 4,000 to 30,000, you can enter your free Archive.org API credentials. Visit"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:564
+#: src/Dashboard/Settings_Page.php:588
 msgid "archive.org/account/s3.php to generate your Access Key and Secret Key."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:578
-#: src/Dashboard/Settings_Page.php:834
+#: src/Dashboard/Settings_Page.php:602
+#: src/Dashboard/Settings_Page.php:858
 msgid "Enable the Link Fixer to scan links in your selected post types. It will find or create archived versions on the Internet Archive to ensure links remain accessible if they break."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:589
+#: src/Dashboard/Settings_Page.php:613
 #: templates/admin/dashboard/widget.php:104
 msgid "Auto Archiver"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:592
+#: src/Dashboard/Settings_Page.php:616
 msgid "Keep your content securely archived with the Auto Archiver. Each time you update a post, a fresh copy is saved to the Wayback Machine. Ensure your work remains accessible and preserved over time."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:594
+#: src/Dashboard/Settings_Page.php:618
 msgid "Non-production environment detected - auto archiving is disabled to prevent staging and development sites from being archived."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:606
+#: src/Dashboard/Settings_Page.php:630
 msgid "Enable Link Fixer"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:614
+#: src/Dashboard/Settings_Page.php:638
 msgid "Post Types"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:623
+#: src/Dashboard/Settings_Page.php:647
 msgid "Wipe Data on Uninstall"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:631
+#: src/Dashboard/Settings_Page.php:655
 msgid "Existing Posts"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:640
+#: src/Dashboard/Settings_Page.php:664
 msgid "Fixer Option"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:650
+#: src/Dashboard/Settings_Page.php:674
 msgid "Link Icon"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:659
+#: src/Dashboard/Settings_Page.php:683
 msgid "Link Exclusions"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:668
-#: src/Dashboard/Settings_Page.php:763
+#: src/Dashboard/Settings_Page.php:692
+#: src/Dashboard/Settings_Page.php:787
 msgid "Post Exclusions"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:677
+#: src/Dashboard/Settings_Page.php:701
 msgid "Check Frequency"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:686
+#: src/Dashboard/Settings_Page.php:710
 msgid "Failure Threshold"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:695
+#: src/Dashboard/Settings_Page.php:719
 msgid "Cast Archived Links to HTTPS"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:706
-#: src/Dashboard/Settings_Page.php:1413
+#: src/Dashboard/Settings_Page.php:730
+#: src/Dashboard/Settings_Page.php:1437
 msgid "Archive.org Access Key"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:717
-#: src/Dashboard/Settings_Page.php:1389
+#: src/Dashboard/Settings_Page.php:741
+#: src/Dashboard/Settings_Page.php:1413
 msgid "Archive.org Secret Key"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:728
+#: src/Dashboard/Settings_Page.php:752
 msgid "Auto Archive Posts"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:736
+#: src/Dashboard/Settings_Page.php:760
 msgid "Routinely Archive"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:745
+#: src/Dashboard/Settings_Page.php:769
 msgid "Routine Interval"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:754
+#: src/Dashboard/Settings_Page.php:778
 msgid "Allowed Post Types"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:785
+#: src/Dashboard/Settings_Page.php:809
 msgid "The Archive.org API keys are invalid. Please check your settings."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:786
+#: src/Dashboard/Settings_Page.php:810
 msgid "API credentials will be verified when you save the settings."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:866
+#: src/Dashboard/Settings_Page.php:890
 msgid "Please choose which post types will have their content checked and links added to the Wayback Machine."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:896
+#: src/Dashboard/Settings_Page.php:920
 msgid "Please choose which post types will be automatically archived to the Wayback Machine when they are published."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:915
+#: src/Dashboard/Settings_Page.php:939
 msgid "If checked, this will remove all local data when the plugin is uninstalled. Leave unchecked if you plan to reinstall this plugin."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:938
+#: src/Dashboard/Settings_Page.php:962
 msgid "When enabled, all posts of the allowed types will be scanned, and their links will be archived in the Wayback Machine."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:941
+#: src/Dashboard/Settings_Page.php:965
 msgid "This runs in the background and may take hours or days, depending on post and link count."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:959
+#: src/Dashboard/Settings_Page.php:983
 msgid "Enter a list of URLs (or parts of URLs) to exclude from link processing. You can use an asterisk (<code>*</code>) as a wildcard. For example, <code>https://example.com/some-path/*</code> would exclude anything after '/some-path/', and <code>*twitter.com*</code> would exclude any URL containing 'twitter.com'."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:974
+#: src/Dashboard/Settings_Page.php:998
 msgid "Add a new exclusion (https://x.com*)"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:977
+#: src/Dashboard/Settings_Page.php:1001
 msgid "Add"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:982
+#: src/Dashboard/Settings_Page.php:1006
 msgid "No exclusions found."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1027
+#: src/Dashboard/Settings_Page.php:1051
 msgid "Search for posts to exclude from link processing. Excluded posts will not have their links scanned or archived."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1035
-#: src/Dashboard/Settings_Page.php:1158
+#: src/Dashboard/Settings_Page.php:1059
+#: src/Dashboard/Settings_Page.php:1182
 msgid "Search by post title, slug, or ID..."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1045
-#: src/Dashboard/Settings_Page.php:1168
+#: src/Dashboard/Settings_Page.php:1069
+#: src/Dashboard/Settings_Page.php:1192
 msgid "No post exclusions found."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1053
-#: src/Dashboard/Settings_Page.php:1176
+#: src/Dashboard/Settings_Page.php:1077
+#: src/Dashboard/Settings_Page.php:1200
 #: templates/admin/reports/link-details.php:195
 msgid "Post"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1057
-#: src/Dashboard/Settings_Page.php:1180
+#: src/Dashboard/Settings_Page.php:1081
+#: src/Dashboard/Settings_Page.php:1204
 msgid "Unknown Post"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1115
-#: src/Dashboard/Settings_Page.php:1135
-#: src/Dashboard/Settings_Page.php:1238
-#: src/Dashboard/Settings_Page.php:1258
-#: src/Dashboard/Settings_Page.php:1366
+#: src/Dashboard/Settings_Page.php:1139
+#: src/Dashboard/Settings_Page.php:1159
+#: src/Dashboard/Settings_Page.php:1262
+#: src/Dashboard/Settings_Page.php:1282
+#: src/Dashboard/Settings_Page.php:1390
 msgid "Remove"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1150
+#: src/Dashboard/Settings_Page.php:1174
 msgid "Search for posts to exclude from auto archiving. Excluded posts will not be submitted to the Wayback Machine when created or updated."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1281
-msgid "How often to recheck each link for validity. Avoid checking too often, as temporary outages or maintenance can cause false “broken” results. The default is 7 days."
-msgstr ""
-
 #: src/Dashboard/Settings_Page.php:1305
-msgid "Number of consecutive failed checks before a link is marked as broken. Occasional single failures are normal, so use a value high enough to confirm genuine link loss. The default is 5."
+msgid "How often to recheck each link for validity. Avoid checking too often, as temporary outages or maintenance can cause false “broken” results. The default is 3 days."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1328
+#: src/Dashboard/Settings_Page.php:1329
+msgid "Number of consecutive failed checks before a link is marked as broken. Occasional single failures are normal, so use a value high enough to confirm genuine link loss. The default is 3."
+msgstr ""
+
+#: src/Dashboard/Settings_Page.php:1352
 msgid "Force HTTPS"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1331
+#: src/Dashboard/Settings_Page.php:1355
 msgid "Enabling this will convert all archived urls from http to https."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1433
+#: src/Dashboard/Settings_Page.php:1457
 msgid "Redirect broken links to snapshots on the Wayback Machine"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1436
+#: src/Dashboard/Settings_Page.php:1460
 msgid "Check broken links but do not redirect them"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1439
+#: src/Dashboard/Settings_Page.php:1463
 msgid "Do not auto check links"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1443
+#: src/Dashboard/Settings_Page.php:1467
 msgid "Choose how to handle broken links."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1473
+#: src/Dashboard/Settings_Page.php:1497
 msgid "Example Link"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1477
+#: src/Dashboard/Settings_Page.php:1501
 msgid "Choose an icon to display next to fixed links."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1499
+#: src/Dashboard/Settings_Page.php:1523
 msgid "When active, your own content will be automatically archived on the Wayback Machine each time you publish or update it."
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1522
+#: src/Dashboard/Settings_Page.php:1546
 msgid "Regularly archive your posts on the Wayback Machine"
 msgstr ""
 
-#: src/Dashboard/Settings_Page.php:1547
+#: src/Dashboard/Settings_Page.php:1571
 msgid "Interval in days for regular archiving."
 msgstr ""
 
@@ -673,29 +668,29 @@ msgstr ""
 msgid "The Wayback Link Fixer plugin is almost ready. Please <a href=\"%s\">run the setup wizard</a> to complete the installation."
 msgstr ""
 
-#: src/Dashboard/Setup_Wizard.php:153
-#: src/Dashboard/Setup_Wizard.php:154
+#: src/Dashboard/Setup_Wizard.php:158
+#: src/Dashboard/Setup_Wizard.php:159
 msgid "Setup Wizard"
 msgstr ""
 
-#: src/Dashboard/Setup_Wizard.php:231
+#: src/Dashboard/Setup_Wizard.php:236
 msgid "Nonce verification failed"
 msgstr ""
 
-#: src/Dashboard/Setup_Wizard.php:240
+#: src/Dashboard/Setup_Wizard.php:245
 msgid "Current step is not set"
 msgstr ""
 
-#: src/Dashboard/Setup_Wizard.php:322
-#: src/Dashboard/Setup_Wizard.php:376
+#: src/Dashboard/Setup_Wizard.php:327
+#: src/Dashboard/Setup_Wizard.php:381
 msgid "Next step is not set"
 msgstr ""
 
-#: src/Dashboard/Setup_Wizard.php:416
+#: src/Dashboard/Setup_Wizard.php:421
 msgid "Internet Archive Logo"
 msgstr ""
 
-#: src/Dashboard/Setup_Wizard.php:419
+#: src/Dashboard/Setup_Wizard.php:424
 msgid "Internet Archive Wayback Machine Link Fixer Setup"
 msgstr ""
 
@@ -717,9 +712,9 @@ msgstr ""
 
 #. translators: %d is the link id.
 #: src/Report/Report_Table.php:353
-#: src/Report/Report_Table.php:422
-#: src/Report/Report_Table.php:505
-#: src/Report/Report_Table.php:687
+#: src/Report/Report_Table.php:425
+#: src/Report/Report_Table.php:508
+#: src/Report/Report_Table.php:690
 #, php-format
 msgid "Link not found with id: %d"
 msgstr ""
@@ -737,49 +732,49 @@ msgid "Link %s has no checks."
 msgstr ""
 
 #. translators: %1$s is the link url, %2$s is the last check date, %3$s is the last check http code.
-#: src/Report/Report_Table.php:394
+#: src/Report/Report_Table.php:397
 #, php-format
 msgid "Link %1$s checked successfully on %2$s with %3$s status"
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:435
+#: src/Report/Report_Table.php:438
 #, php-format
 msgid "Link %s is already an archived link."
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:448
+#: src/Report/Report_Table.php:451
 #, php-format
 msgid "No archived version found for %s."
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:461
+#: src/Report/Report_Table.php:464
 #, php-format
 msgid "Could not update %s: the archived URL is already the latest."
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:473
+#: src/Report/Report_Table.php:476
 #, php-format
 msgid "Archived URL for %s updated successfully."
 msgstr ""
 
 #. translators: 1: the link URL, 2: error message.
-#: src/Report/Report_Table.php:518
+#: src/Report/Report_Table.php:521
 #, php-format
 msgid "Could not create a new snapshot for %1$s: %2$s"
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:531
+#: src/Report/Report_Table.php:534
 #, php-format
 msgid "Link %s added to the queue and a new snapshot will be created and added as the archived URL in the coming minutes."
 msgstr ""
 
 #. translators: %1$s is the icon for error, %2$d is the number of links that could not be found.
-#: src/Report/Report_Table.php:591
+#: src/Report/Report_Table.php:594
 #, php-format
 msgid "%1$s - %2$d link could not be found."
 msgid_plural "%1$s - %2$d links could not be found."
@@ -787,7 +782,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %1$s is the icon for error, %2$d is the number of links that are archived.
-#: src/Report/Report_Table.php:601
+#: src/Report/Report_Table.php:604
 #, php-format
 msgid "%1$s - %2$d link that is already a snapshot and will be skipped"
 msgid_plural "%1$s - %2$d links that are already snapshots and will be skipped"
@@ -795,33 +790,33 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %1$s is the icon for error, %2$d is the number of links that are own links.
-#: src/Report/Report_Table.php:621
+#: src/Report/Report_Table.php:624
 #, php-format
 msgid "%1$s - %2$d link is from this site and will not be processed. Please enable the Auto Archiver to archive your own content."
 msgid_plural "%1$s - %2$d links are from this site and will not be processed. Please enable the Auto Archiver to archive your own content."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Report/Report_Table.php:647
+#: src/Report/Report_Table.php:650
 msgid "✅ - The following links were added to the queue for a new snapshot to be created:"
 msgstr ""
 
-#: src/Report/Report_Table.php:658
+#: src/Report/Report_Table.php:661
 msgid "Snapshots are being queued for processing and will appear soon. Thanks for your patience!"
 msgstr ""
 
 #. translators: %s is the link url.
-#: src/Report/Report_Table.php:699
+#: src/Report/Report_Table.php:702
 #, php-format
 msgid "Validating %s to ensure we can check its current status"
 msgstr ""
 
-#: src/Report/Report_Table.php:754
+#: src/Report/Report_Table.php:757
 #: templates/admin/reports/link-details.php:40
 msgid "URL"
 msgstr ""
 
-#: src/Report/Report_Table.php:755
+#: src/Report/Report_Table.php:758
 #: templates/admin/dashboard/link-list.php:121
 #: templates/admin/dashboard/link-list.php:126
 #: templates/admin/links-table/help-tab-columns.php:16
@@ -830,93 +825,94 @@ msgstr ""
 msgid "Archive Status"
 msgstr ""
 
-#: src/Report/Report_Table.php:756
+#: src/Report/Report_Table.php:759
 #: templates/admin/links-table/help-tab-columns.php:26
 msgid "Link Health"
 msgstr ""
 
-#: src/Report/Report_Table.php:757
+#: src/Report/Report_Table.php:760
 #: templates/admin/links-table/help-tab-columns.php:44
 msgid "Times Checked"
 msgstr ""
 
-#: src/Report/Report_Table.php:758
+#: src/Report/Report_Table.php:761
 #: templates/admin/links-table/help-tab-columns.php:57
 msgid "Last Check"
 msgstr ""
 
-#: src/Report/Report_Table.php:763
+#: src/Report/Report_Table.php:766
 msgid "Link Excluded"
 msgstr ""
 
-#: src/Report/Report_Table.php:797
+#: src/Report/Report_Table.php:800
 msgid "Filter by status"
 msgstr ""
 
-#: src/Report/Report_Table.php:799
+#: src/Report/Report_Table.php:802
 msgid "Show valid and broken links"
 msgstr ""
 
-#: src/Report/Report_Table.php:802
+#: src/Report/Report_Table.php:805
 msgid "Show broken links"
 msgstr ""
 
-#: src/Report/Report_Table.php:803
+#: src/Report/Report_Table.php:806
 msgid "Show valid links"
 msgstr ""
 
-#: src/Report/Report_Table.php:816
+#: src/Report/Report_Table.php:819
 msgid "Filter by archived link"
 msgstr ""
 
-#: src/Report/Report_Table.php:818
+#: src/Report/Report_Table.php:821
 msgid "Show with or without archived link"
 msgstr ""
 
-#: src/Report/Report_Table.php:821
+#: src/Report/Report_Table.php:824
 msgid "Show links with archived version"
 msgstr ""
 
-#: src/Report/Report_Table.php:822
+#: src/Report/Report_Table.php:825
 msgid "Show links without archived version"
 msgstr ""
 
-#: src/Report/Report_Table.php:836
+#: src/Report/Report_Table.php:839
 msgid "Filter by excluded"
 msgstr ""
 
-#: src/Report/Report_Table.php:838
+#: src/Report/Report_Table.php:841
 msgid "Show with or without excluded link"
 msgstr ""
 
-#: src/Report/Report_Table.php:841
+#: src/Report/Report_Table.php:844
 msgid "Show links that are excluded"
 msgstr ""
 
-#: src/Report/Report_Table.php:842
+#: src/Report/Report_Table.php:845
 msgid "Show links that are not excluded"
 msgstr ""
 
-#: src/Report/Report_Table.php:860
+#: src/Report/Report_Table.php:863
 msgid "Filter"
 msgstr ""
 
-#: src/Report/Report_Table.php:1011
+#: src/Report/Report_Table.php:1012
 #: templates/admin/links-table/help-tab-bulk-actions.php:12
 msgid "Update to latest snapshot"
 msgstr ""
 
-#: src/Report/Report_Table.php:1012
+#: src/Report/Report_Table.php:1013
 #: templates/admin/links-table/help-tab-bulk-actions.php:15
 msgid "Create new snapshot"
 msgstr ""
 
-#: src/Report/Report_Table.php:1013
+#: src/Report/Report_Table.php:1014
 #: templates/admin/links-table/help-tab-bulk-actions.php:18
 msgid "Check link status"
 msgstr ""
 
-#: src/Report/Report_Table.php:1014
+#: src/Report/Report_Table.php:1015
+#: templates/admin/links-table/help-tab-bulk-actions.php:21
 msgid "Verify link allows checking"
 msgstr ""
 
@@ -984,35 +980,35 @@ msgid "%s status"
 msgstr ""
 
 #: src/Report/Report_Table.php:1239
-#: src/Report/Report_Table.php:1249
+#: src/Report/Report_Table.php:1254
 #: templates/admin/dashboard/link-list.php:63
 msgid "No HTTP Code"
 msgstr ""
 
 #. translators: %1$s: last check date (e.g. "5 Jan 2025"), %2$s: HTTP status code (e.g. "404 status")
-#: src/Report/Report_Table.php:1243
+#: src/Report/Report_Table.php:1248
 #: templates/admin/dashboard/link-list.php:68
 #, php-format
 msgid "%1$s with %2$s"
 msgstr ""
 
-#: src/Report/Report_Table.php:1246
+#: src/Report/Report_Table.php:1251
 msgid "Missing date"
 msgstr ""
 
-#: src/Report/Report_Table.php:1261
+#: src/Report/Report_Table.php:1266
 msgid "No links have been created yet."
 msgstr ""
 
-#: src/Settings/Settings.php:655
+#: src/Settings/Settings.php:662
 msgid "Internet Archive Logo (Before Link)"
 msgstr ""
 
-#: src/Settings/Settings.php:660
+#: src/Settings/Settings.php:667
 msgid "Internet Archive Logo (After Link)"
 msgstr ""
 
-#: src/Settings/Settings.php:717
+#: src/Settings/Settings.php:725
 msgid "None"
 msgstr ""
 
@@ -1089,12 +1085,12 @@ msgstr ""
 msgid "Snapshot creation limit exceeded"
 msgstr ""
 
-#: src/Wayback_Machine/Exception/Invalid_Response_Exception.php:31
+#: src/Wayback_Machine/Exception/Invalid_Response_Exception.php:33
 msgid "The response is invalid."
 msgstr ""
 
 #. translators: %s is the message.
-#: src/Wayback_Machine/Exception/Service_Offline_Exception.php:33
+#: src/Wayback_Machine/Exception/Service_Offline_Exception.php:34
 #, php-format
 msgid "The service is offline.%s"
 msgstr ""
@@ -1203,79 +1199,83 @@ msgstr ""
 msgid "Links Found So Far"
 msgstr ""
 
-#: templates/admin/dashboard/page.php:46
+#: templates/admin/dashboard/page.php:45
 msgid "These broken links are being redirected to archived snapshots on the Wayback Machine."
 msgstr ""
 
-#: templates/admin/dashboard/page.php:47
+#: templates/admin/dashboard/page.php:46
 msgid "These links have snapshots available on the Wayback Machine."
 msgstr ""
 
-#: templates/admin/dashboard/page.php:48
+#: templates/admin/dashboard/page.php:47
 msgid "These links do not have archived snapshots on the Wayback Machine, so we can't redirect them."
 msgstr ""
 
-#: templates/admin/dashboard/page.php:49
+#: templates/admin/dashboard/page.php:48
 msgid "The plugin is still working through checking the status of these links and whether archived snapshots are available."
 msgstr ""
 
 #. translators: 1: number of broken links being redirected, 2: number of broken links not being redirected.
-#: templates/admin/dashboard/page.php:52
+#: templates/admin/dashboard/page.php:51
 #, php-format
 msgid "%1$s being redirected, %2$s ineligible for redirect"
 msgstr ""
 
-#: templates/admin/dashboard/page.php:59
+#: templates/admin/dashboard/page.php:58
 msgid "Wayback Link Fixer - Dashboard"
 msgstr ""
 
-#: templates/admin/dashboard/page.php:71
+#: templates/admin/dashboard/page.php:70
 msgid "Recent Link Checks"
 msgstr ""
 
-#: templates/admin/dashboard/page.php:74
+#: templates/admin/dashboard/page.php:73
 msgid "Latest Links"
 msgstr ""
 
-#: templates/admin/dashboard/page.php:87
+#: templates/admin/dashboard/page.php:86
 msgid "No recent link checks available."
 msgstr ""
 
-#: templates/admin/dashboard/page.php:101
+#: templates/admin/dashboard/page.php:100
 msgid "No recent links available."
 msgstr ""
 
-#: templates/admin/dashboard/page.php:119
+#: templates/admin/dashboard/page.php:118
 msgid "Onboarding Process"
 msgstr ""
 
-#: templates/admin/dashboard/page.php:132
+#: templates/admin/dashboard/page.php:131
 msgid "Link Statistics Overview"
 msgstr ""
 
-#: templates/admin/dashboard/page.php:139
+#: templates/admin/dashboard/page.php:138
 msgid "Total Links"
 msgstr ""
 
 #. translators: "Links Saved" refers to broken links that are now being redirected to their archived versions on archive.org
-#: templates/admin/dashboard/page.php:148
+#: templates/admin/dashboard/page.php:147
 msgid "Links Saved"
 msgstr ""
 
-#: templates/admin/dashboard/page.php:158
+#: templates/admin/dashboard/page.php:157
 msgid "Archived Successfully"
 msgstr ""
 
-#: templates/admin/dashboard/page.php:164
+#: templates/admin/dashboard/page.php:163
 msgid "Ineligible for redirect"
 msgstr ""
 
-#: templates/admin/dashboard/page.php:170
+#: templates/admin/dashboard/page.php:169
 msgid "Checks in progress"
 msgstr ""
 
-#: templates/admin/dashboard/page.php:176
+#: templates/admin/dashboard/page.php:175
 msgid "Total Broken Links"
+msgstr ""
+
+#: templates/admin/dashboard/widget.php:44
+msgid "Your Archive.org API credentials are invalid. Please check your settings."
 msgstr ""
 
 #: templates/admin/dashboard/widget.php:53
@@ -1350,10 +1350,6 @@ msgstr ""
 
 #: templates/admin/links-table/help-tab-bulk-actions.php:19
 msgid "This option checks the current status and availability of the live link."
-msgstr ""
-
-#: templates/admin/links-table/help-tab-bulk-actions.php:21
-msgid "Verify Link Can Be Checked"
 msgstr ""
 
 #: templates/admin/links-table/help-tab-bulk-actions.php:22
@@ -1484,32 +1480,36 @@ msgid "Actions"
 msgstr ""
 
 #. Translators: %1$s is the post ID, %2$s is the post type label (e.g., "Post", "Page").
-#: templates/admin/reports/link-details.php:210
+#: templates/admin/reports/link-details.php:211
 #, php-format
 msgid "Untitled %2$s (ID: %1$d)"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:239
+#: templates/admin/reports/link-details.php:215
+msgid "Unknown"
+msgstr ""
+
+#: templates/admin/reports/link-details.php:242
 msgid "Published"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:241
+#: templates/admin/reports/link-details.php:244
 msgid "Draft"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:243
+#: templates/admin/reports/link-details.php:246
 msgid "Pending"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:245
+#: templates/admin/reports/link-details.php:248
 msgid "Scheduled"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:252
+#: templates/admin/reports/link-details.php:255
 msgid "Edit"
 msgstr ""
 
-#: templates/admin/reports/link-details.php:256
+#: templates/admin/reports/link-details.php:259
 msgid "View"
 msgstr ""
 
@@ -1581,78 +1581,83 @@ msgstr ""
 msgid "← Configure the Auto Archiver"
 msgstr ""
 
-#: templates/admin/wizard/step-1.php:22
+#: templates/admin/wizard/step-1.php:21
 msgid "Welcome to the Internet Archive Wayback Machine Link Fixer!"
 msgstr ""
 
 #. translators: %s: Wayback Machine link
-#: templates/admin/wizard/step-1.php:27
+#: templates/admin/wizard/step-1.php:26
 #, php-format
 msgid "This plugin automatically fixes broken links on your site by redirecting them to archived versions on the %s."
 msgstr ""
 
-#: templates/admin/wizard/step-1.php:28
+#: templates/admin/wizard/step-1.php:27
 msgid "Wayback Machine"
 msgstr ""
 
-#: templates/admin/wizard/step-1.php:32
+#: templates/admin/wizard/step-1.php:31
 msgid "How it works:"
 msgstr ""
 
-#: templates/admin/wizard/step-1.php:35
+#: templates/admin/wizard/step-1.php:34
 msgid "Background processing"
 msgstr ""
 
-#: templates/admin/wizard/step-1.php:35
+#: templates/admin/wizard/step-1.php:34
 msgid "– We check links in small batches to keep your site fast. Initial scanning takes a few days."
 msgstr ""
 
-#: templates/admin/wizard/step-1.php:38
+#: templates/admin/wizard/step-1.php:37
 msgid "Smart verification"
 msgstr ""
 
-#: templates/admin/wizard/step-1.php:38
+#: templates/admin/wizard/step-1.php:37
 msgid "– Links are checked 3 times over 9+ days before redirecting, ensuring they're truly broken."
 msgstr ""
 
-#: templates/admin/wizard/step-1.php:41
+#: templates/admin/wizard/step-1.php:40
 msgid "Automatic updates"
 msgstr ""
 
-#: templates/admin/wizard/step-1.php:41
+#: templates/admin/wizard/step-1.php:40
 msgid "– If a link comes back online, we'll restore the original automatically."
 msgstr ""
 
-#: templates/admin/wizard/step-1.php:45
+#: templates/admin/wizard/step-1.php:44
 msgid "Once configured, everything runs in the background. No maintenance required."
 msgstr ""
 
-#: templates/admin/wizard/step-2.php:25
+#: templates/admin/wizard/step-2.php:24
 msgid "Choose what to fix"
 msgstr ""
 
-#: templates/admin/wizard/step-2.php:26
+#: templates/admin/wizard/step-2.php:25
 msgid "Select which content types should have their broken links automatically redirected to Wayback Machine snapshots:"
 msgstr ""
 
-#: templates/admin/wizard/step-3.php:25
+#: templates/admin/wizard/step-3.php:24
 msgid "Preserve your content"
 msgstr ""
 
-#: templates/admin/wizard/step-3.php:26
+#: templates/admin/wizard/step-3.php:25
 msgid "Archive your own content on the Wayback Machine to protect against future loss. New posts are preserved on publish, with regular snapshots scheduled automatically."
 msgstr ""
 
-#: templates/admin/wizard/step-3.php:31
+#: templates/admin/wizard/step-3.php:30
 msgid "Select content types to preserve:"
 msgstr ""
 
 #: assets/js/build/admin_settings.js:1
-#: assets/js/src/admin_settings.js:205
+#: assets/js/src/admin_settings.js:211
 msgid "No posts found."
 msgstr ""
 
 #: assets/js/build/admin_settings.js:1
-#: assets/js/src/admin_settings.js:194
+#: assets/js/src/admin_settings.js:222
+msgid "Show more…"
+msgstr ""
+
+#: assets/js/build/admin_settings.js:1
+#: assets/js/src/admin_settings.js:200
 msgid "Searching…"
 msgstr ""

@@ -173,7 +173,7 @@ composer internationalize   # make-pot → update-po → make-json
 
 6. **Modifying `vendor/`** — Do not edit Composer packages. Override behavior with filters or new implementations wired via filters.
 
-7. **403 false positives** — Some URLs block bots; they may be reported as broken (403) even when live. The `Link_Access_Validator_Event` handles this; use "Verify Link Allows Checking" for manual verification.
+7. **403 false positives** — Some URLs block bots; they may be reported as broken (403) even when live. The `Link_Access_Validator_Event` handles this; use "Verify link allows checking" for manual verification.
 
 8. **Wizard re-run** — To reset the setup wizard during testing: `wp-admin/admin.php?page=iawmlf-setup-wizard&rerun-wizard=1` (admin only).
 

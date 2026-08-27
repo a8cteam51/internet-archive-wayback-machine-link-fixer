@@ -82,7 +82,7 @@ class Report_Table extends \WP_List_Table {
 	/**
 	 * Displays the bulk actions dropdown.
 	 *
-	 * @since 3.1.0
+	 * @since 1.3.0
 	 *
 	 * @param string $which The location of the bulk actions: Either 'top' or 'bottom'.
 	 *                      This is designated as optional for backward compatibility.
