@@ -1,4 +1,4 @@
-name: Push Deploy from a Released Version (Dry Run)
+name: Preview Release Deploy (no changes)
 
 # Same steps as push-deploy.yml with dry-run enabled. deploy.sh does everything
 # except `svn commit`, so you get the real `svn status` diff against live wp.org

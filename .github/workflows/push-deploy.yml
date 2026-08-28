@@ -1,4 +1,4 @@
-name: Deploy to WordPress.org
+name: Publish Release to WordPress.org
 
 # Manual only. Nothing here runs on push, tag or release.
 #
