@@ -1,0 +1,63 @@
+name: Version Consistency
+
+# The version is declared in six places. WordPress reads the `Version:` header
+# and wp.org reads `Stable tag:`, so a missed bump on either is visible to users.
+#
+# Only the first three numeric segments are compared, so `1.4.3-RC1` and `1.4.3`
+# are treated as equal here. The deploy workflow refuses anything that is not a
+# plain X.Y.Z, so an RC still cannot reach wp.org.
+
+on:
+  push:
+    branches: [ trunk, develop ]
+  pull_request:
+    branches: [ trunk, develop ]
+
+jobs:
+  check-versions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check version sources are in sync
+        run: |
+          set -euo pipefail
+          PLUGIN=internet-archive-wayback-machine-link-fixer.php
+
+          # First 3-segment version from a grep match; empty (not abort) on no match.
+          grep_version() {
+            { grep -m1 -iE "$1" "$2" || true; } \
+              | { grep -oE '[0-9]+\.[0-9]+\.[0-9]+' || true; } \
+              | head -n1
+          }
+
+          header="$(grep_version '^\s*\*\s*Version:'   "$PLUGIN")"
+          docblock="$(grep_version '@version'          "$PLUGIN")"
+          define="$(grep_version "IAWMLF_VERSION'"     "$PLUGIN")"
+          stable="$(grep_version '^Stable tag:'        readme.txt)"
+          package="$(jq -r '.version // empty' package.json)"
+          lock="$(jq -r '.version // empty' package-lock.json)"
+
+          echo "Version: header    : ${header:-<none>}"
+          echo "@version docblock  : ${docblock:-<none>}"
+          echo "IAWMLF_VERSION     : ${define:-<none>}"
+          echo "readme Stable tag  : ${stable:-<none>}"
+          echo "package.json       : ${package:-<none>}"
+          echo "package-lock.json  : ${lock:-<none>}"
+
+          for v in "$header" "$docblock" "$define" "$stable" "$package" "$lock"; do
+            if [ -z "$v" ]; then
+              echo "::error::Could not read a version from one or more sources."
+              exit 1
+            fi
+          done
+
+          if [ "$header" != "$docblock" ] || [ "$header" != "$define" ] \
+             || [ "$header" != "$stable" ] || [ "$header" != "$package" ] \
+             || [ "$header" != "$lock" ]; then
+            echo "::error::Version mismatch. Update all six sources to the same version before merging."
+            exit 1
+          fi
+
+          echo "All version sources agree on $header."
