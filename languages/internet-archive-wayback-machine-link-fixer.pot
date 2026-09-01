@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-27T14:08:14+00:00\n"
+"POT-Creation-Date: 2026-09-01T10:58:42+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: internet-archive-wayback-machine-link-fixer\n"
@@ -75,7 +75,7 @@ msgstr ""
 #. translators: %s is a link to the settings page.
 #: functions.php:308
 #, php-format
-msgid "Your Archive.org API credentials are invalid. <a href=\"%s\">Please check your settings.</a>. As a result you are in in unauthenticated mode, which restricts you to 4000 new snapshots per day."
+msgid "Your Archive.org API credentials are invalid. <a href=\"%s\">Please check your settings.</a> As a result you are in unauthenticated mode, which restricts you to 4000 new snapshots per day."
 msgstr ""
 
 #: functions.php:335

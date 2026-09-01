@@ -305,7 +305,7 @@ function iawmlf_render_not_authenticated_notice(): void {
 				print wp_kses_post(
 					sprintf(
 						// translators: %s is a link to the settings page.
-						__( 'Your Archive.org API credentials are invalid. <a href="%s">Please check your settings.</a>. As a result you are in in unauthenticated mode, which restricts you to 4000 new snapshots per day.', 'internet-archive-wayback-machine-link-fixer' ),
+						__( 'Your Archive.org API credentials are invalid. <a href="%s">Please check your settings.</a> As a result you are in unauthenticated mode, which restricts you to 4000 new snapshots per day.', 'internet-archive-wayback-machine-link-fixer' ),
 						esc_url( admin_url( 'options-general.php?page=' . Settings_Page::PAGE_SLUG ) )
 					)
 				);
