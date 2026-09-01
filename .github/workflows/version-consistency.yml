@@ -1,6 +1,6 @@
 name: Version Consistency
 
-# The version is declared in six places. WordPress reads the `Version:` header
+# The version is declared in seven places. WordPress reads the `Version:` header
 # and wp.org reads `Stable tag:`, so a missed bump on either is visible to users.
 #
 # Only the first three numeric segments are compared, so `1.4.3-RC1` and `1.4.3`
@@ -36,6 +36,7 @@ jobs:
           docblock="$(grep_version '@version'          "$PLUGIN")"
           define="$(grep_version "IAWMLF_VERSION'"     "$PLUGIN")"
           stable="$(grep_version '^Stable tag:'        readme.txt)"
+          readme_md="$(grep_version '^\*\*Stable tag:\*\*' README.md)"
           package="$(jq -r '.version // empty' package.json)"
           lock="$(jq -r '.version // empty' package-lock.json)"
 
@@ -43,10 +44,11 @@ jobs:
           echo "@version docblock  : ${docblock:-<none>}"
           echo "IAWMLF_VERSION     : ${define:-<none>}"
           echo "readme Stable tag  : ${stable:-<none>}"
+          echo "README.md          : ${readme_md:-<none>}"
           echo "package.json       : ${package:-<none>}"
           echo "package-lock.json  : ${lock:-<none>}"
 
-          for v in "$header" "$docblock" "$define" "$stable" "$package" "$lock"; do
+          for v in "$header" "$docblock" "$define" "$stable" "$readme_md" "$package" "$lock"; do
             if [ -z "$v" ]; then
               echo "::error::Could not read a version from one or more sources."
               exit 1
@@ -54,9 +56,9 @@ jobs:
           done
 
           if [ "$header" != "$docblock" ] || [ "$header" != "$define" ] \
-             || [ "$header" != "$stable" ] || [ "$header" != "$package" ] \
-             || [ "$header" != "$lock" ]; then
-            echo "::error::Version mismatch. Update all six sources to the same version before merging."
+             || [ "$header" != "$stable" ] || [ "$header" != "$readme_md" ] \
+             || [ "$header" != "$package" ] || [ "$header" != "$lock" ]; then
+            echo "::error::Version mismatch. Update all seven sources to the same version before merging."
             exit 1
           fi
 
