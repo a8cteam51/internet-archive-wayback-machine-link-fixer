@@ -535,7 +535,35 @@ class Link implements \JsonSerializable {
 			$link->set_broken();
 		}
 
+		if ( isset( $data['message'] ) ) {
+			$link->set_message( (string) $data['message'] );
+		}
+
+		$link->set_excluded( ! empty( $data['excluded'] ) );
+
 		return $link;
+	}
+
+	/**
+	 * Full state as JSON, the inverse of from_json().
+	 *
+	 * Not jsonSerialize(), which is the front end payload - that omits the message
+	 * (Archive.org status text and manual exclusion detail, both of which name a
+	 * user) and keeps only the newest three checks.
+	 *
+	 * @return string
+	 */
+	public function to_json(): string {
+		return (string) wp_json_encode(
+			array_merge(
+				$this->jsonSerialize(),
+				array(
+					'checks'   => $this->checks,
+					'message'  => $this->message,
+					'excluded' => $this->is_excluded,
+				)
+			)
+		);
 	}
 
 	/**

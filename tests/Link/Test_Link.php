@@ -373,6 +373,24 @@ class Test_Link extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A link cast to json and back keeps its message and excluded flag. (S043)
+	 *
+	 * @return void
+	 */
+	public function test_json_round_trip_keeps_message_and_excluded(): void {
+		$link = new Link( 'https://example.com' );
+		$link->set_id( 1 );
+		$link->set_excluded();
+		$link->set_message( sprintf( Link::MANUAL_EXCLUSION_TEMPLATE, 'admin', '2026-01-01' ) );
+
+		$link = Link::from_json( $link->to_json() );
+
+		$this->assertTrue( $link->is_excluded() );
+		$this->assertSame( 'User Requested To Exclude (admin on 2026-01-01)', $link->get_message() );
+		$this->assertTrue( $link->is_manual_exclusion() );
+	}
+
+	/**
 	 * @testdox Malformed json produces a link rather than warnings from reading null as an array. (S043)
 	 *
 	 * @return void
