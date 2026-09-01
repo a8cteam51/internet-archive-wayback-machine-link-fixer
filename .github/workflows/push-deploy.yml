@@ -36,7 +36,7 @@ jobs:
           ASSET: internet-archive-wayback-machine-link-fixer.zip
         run: |
           # RCs, betas and anything else suffixed must never reach SVN.
-          if ! printf '%s' "$VERSION" | grep -qE '^[0-9]+\.[0-9]+(\.[0-9]+)?$'; then
+          if ! printf '%s' "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
             echo "::error::'$VERSION' is not a stable release version. Refusing to deploy."
             exit 1
           fi
