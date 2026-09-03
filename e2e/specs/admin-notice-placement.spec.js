@@ -67,6 +67,10 @@ test.describe( 'admin notice placement', () => {
 		seeded = seed();
 	} );
 
+	test.afterAll( () => {
+		wpCli( 'wp eval-file e2e/fixtures/clean-notice-placement.php' );
+	} );
+
 	test( 'the settings page prints its notice inside .wrap', async ( { page } ) => {
 		const response = await page.request.get( SETTINGS_PATH );
 		expect( response.ok() ).toBe( true );
