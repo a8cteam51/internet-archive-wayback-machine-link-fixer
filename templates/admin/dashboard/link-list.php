@@ -35,9 +35,10 @@ defined( 'ABSPATH' ) || exit;
 							<span class="iawmlf_dashboard-link-check-status <?php echo esc_attr( $iawmlf_link->is_broken() ? 'broken' : 'working' ); ?>">
 								<span class="dashicons <?php echo esc_attr( $iawmlf_link->is_broken() ? 'dashicons-no-alt' : 'dashicons-yes-alt' ); ?>"></span>
 							</span>
-							<a href="<?php echo esc_url( add_query_arg( array( 'iawmlf_link_id' => $iawmlf_link->get_id() ), $iawmlf_link_table ) ); ?>" class="iawmlf_dashboard-link-check-title">
+							<?php $iawmlf_details_id = $iawmlf_section_id . '-link-' . $iawmlf_link->get_id(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited, not a global ?>
+							<button type="button" class="iawmlf_dashboard-link-check-title" aria-expanded="false" aria-controls="<?php echo esc_attr( $iawmlf_details_id ); ?>">
 								<?php echo esc_html( $iawmlf_link->get_href() ); ?>
-							</a>
+							</button>
 						</div>
 						<div class="iawmlf_dashboard-link-check-meta">
 							<?php if ( $iawmlf_link->get_last_check() ) : ?>
@@ -83,7 +84,7 @@ defined( 'ABSPATH' ) || exit;
 
 					</div>
 
-					<div class="iawmlf_dashboard-link-check-details">
+					<div class="iawmlf_dashboard-link-check-details" id="<?php echo esc_attr( $iawmlf_details_id ); ?>">
 						<div class="iawmlf_dashboard-link-check-posts">
 							<div class="iawmlf_dashboard-link-check-details">
 								<div class="iawmlf_dashboard-link-check-details-item">
@@ -147,7 +148,7 @@ defined( 'ABSPATH' ) || exit;
 										<div class="iawmlf_link-archived-url-section">
 											<p class="iawmlf_link_archived_url">
 												<strong><?php esc_html_e( 'Archived URL', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>:
-												<a href="<?php echo esc_url( $iawmlf_link->get_archived_href() ); ?>" target="_blank">
+												<a href="<?php echo esc_url( $iawmlf_link->get_archived_href() ); ?>" target="_blank" rel="noopener noreferrer">
 													<?php echo esc_html( $iawmlf_link->get_archived_href() ); ?>
 												</a>
 											</p>

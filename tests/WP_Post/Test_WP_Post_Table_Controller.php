@@ -82,4 +82,40 @@ class Test_WP_Post_Table_Controller extends \WP_UnitTestCase {
 		// Clean up.
 		delete_option( Settings::LINK_FIXER_EXCLUDED_POSTS );
 	}
+
+	/**
+	 * @testdox It should show "No links found" when the post has no link meta at all.
+	 *
+	 * @return void
+	 */
+	public function test_render_link_column_shows_no_links_found_without_meta(): void {
+		$post_id = self::factory()->post->create();
+
+		$controller = new WP_Post_Table_Controller();
+
+		ob_start();
+		$controller->render_link_column( WP_Post_Table_Controller::LINK_COLUMN_KEY, $post_id );
+		$output = ob_get_clean();
+
+		$this->assertStringContainsString( 'No links found', $output );
+	}
+
+	/**
+	 * @testdox It should show "No links found" when the link meta holds only ids that no longer resolve.
+	 *
+	 * @return void
+	 */
+	public function test_render_link_column_shows_no_links_found_for_unresolvable_ids(): void {
+		$post_id = self::factory()->post->create();
+
+		update_post_meta( $post_id, Settings::LINK_META_KEY, array( 999999 ) );
+
+		$controller = new WP_Post_Table_Controller();
+
+		ob_start();
+		$controller->render_link_column( WP_Post_Table_Controller::LINK_COLUMN_KEY, $post_id );
+		$output = ob_get_clean();
+
+		$this->assertStringContainsString( 'No links found', $output );
+	}
 }

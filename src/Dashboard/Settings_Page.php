@@ -209,8 +209,6 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_page(): void {
-		iawmlf_render_not_authenticated_notice();
-
 		// Check if the wizard has been completed.
 		$wizard_link = '';
 		if ( Settings::is_wizard_completed() ) {
@@ -229,9 +227,12 @@ class Settings_Page {
 
 		echo '<hr class="wp-header-end">';
 
+		// Notices belong inside .wrap, after wp-header-end, where WordPress positions them.
+		iawmlf_render_not_authenticated_notice();
+
 		if ( ! get_user_meta( get_current_user_id(), 'iawmlf_dismiss_donation_cta', true ) ) {
 			printf(
-				'<div class="iawmlf_donation_cta" id="iawmlf_donation_cta"><img src="%s" alt="%s" class="iawmlf_donation_cta__logo" /><p>%s</p><a href="%s" target="_blank" class="button button-primary iawmlf_donation_cta__button">%s</a><button type="button" class="notice-dismiss"><span class="screen-reader-text">%s</span></button></div>',
+				'<div class="iawmlf_donation_cta" id="iawmlf_donation_cta"><img src="%s" alt="%s" class="iawmlf_donation_cta__logo" /><p>%s</p><a href="%s" target="_blank" rel="noopener noreferrer" class="button button-primary iawmlf_donation_cta__button">%s</a><button type="button" class="notice-dismiss"><span class="screen-reader-text">%s</span></button></div>',
 				esc_url( IAWMLF_URL . 'assets/images/ia-logo.svg' ),
 				esc_attr__( 'Internet Archive', 'internet-archive-wayback-machine-link-fixer' ),
 				esc_html__( 'This plugin is powered by the Internet Archive. If you find the plugin useful, please chip in! Your support will help us build the web we deserve.', 'internet-archive-wayback-machine-link-fixer' ),
@@ -582,7 +583,7 @@ class Settings_Page {
 			function () {
 				printf(
 					/* translators: 1: Opening sentence, 2: URL to the Internet Archive S3 keys page, 3: Closing sentence. */
-					'<p class="description">%1$s <a href="%2$s" target="_blank">%3$s</a></p>',
+					'<p class="description">%1$s <a href="%2$s" target="_blank" rel="noopener noreferrer">%3$s</a></p>',
 					esc_html__( 'To increase your daily snapshot limit from 4,000 to 30,000, you can enter your free Archive.org API credentials. Visit', 'internet-archive-wayback-machine-link-fixer' ),
 					esc_url( 'https://archive.org/account/s3.php' ),
 					esc_html__( 'archive.org/account/s3.php to generate your Access Key and Secret Key.', 'internet-archive-wayback-machine-link-fixer' )
@@ -620,7 +621,7 @@ class Settings_Page {
 			},
 			self::PAGE_SLUG,
 			array(
-				'before_section' => sprintf( '<div id="iawmlf_settings_link_fixer_section" class="iawmlf_settings_postbox auto-archiver %s">', ! Environmental::is_production() ? 'staging' : '' ),
+				'before_section' => sprintf( '<div id="iawmlf_settings_auto_archiver_section" class="iawmlf_settings_postbox auto-archiver %s">', ! Environmental::is_production() ? 'staging' : '' ),
 				'after_section'  => '</div>',
 			)
 		);

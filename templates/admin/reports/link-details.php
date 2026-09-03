@@ -37,7 +37,7 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 							<h2 class="handle ui-sortable-handle"><?php esc_html_e( 'Link Details', 'internet-archive-wayback-machine-link-fixer' ); ?></h2>
 						</div>
 						<div class="inside">
-							<p class="iawmlf_link_url"><strong><?php esc_html_e( 'URL', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>: <a href="<?php echo esc_url( $iawmlf_link->get_href() ); ?>" target="_blank"><?php echo esc_html( $iawmlf_link->get_href() ); ?></a></p>
+							<p class="iawmlf_link_url"><strong><?php esc_html_e( 'URL', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>: <a href="<?php echo esc_url( $iawmlf_link->get_href() ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $iawmlf_link->get_href() ); ?></a></p>
 
 							<?php if ( $iawmlf_link->is_excluded() ) : ?>
 								<p class="iawmlf_link_archived_url"><strong><?php esc_html_e( 'Archive Status', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>: <?php esc_html_e( 'EXCLUDED', 'internet-archive-wayback-machine-link-fixer' ); ?></p>
@@ -56,7 +56,7 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 										printf(
 											/* translators: %s: The archived URL */
 											esc_html__( 'HAS ARCHIVE - A snapshot of this link is available on the Internet Archive: %s', 'internet-archive-wayback-machine-link-fixer' ),
-											'<a href="' . esc_url( $iawmlf_link->get_archived_href() ) . '" target="_blank">' . esc_html__( 'View Snapshot', 'internet-archive-wayback-machine-link-fixer' ) . '</a>'
+											'<a href="' . esc_url( $iawmlf_link->get_archived_href() ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'View Snapshot', 'internet-archive-wayback-machine-link-fixer' ) . '</a>'
 										);
 									} else {
 										esc_html_e( 'NO ARCHIVE - Unable to create or find a snapshot. This can happen if the URL is blocked by robots.txt, requires authentication, or is no longer accessible.', 'internet-archive-wayback-machine-link-fixer' );
@@ -65,7 +65,7 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 								</p>
 
 								<?php if ( '' !== $iawmlf_link->get_archived_href() ) : ?>
-									<p class="iawmlf_link_archived_url"><strong><?php esc_html_e( 'Archived URL', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>: <a href="<?php echo esc_url( $iawmlf_link->get_archived_href() ); ?>" target="_blank"><?php echo esc_html( $iawmlf_link->get_archived_href() ); ?></a></p>
+									<p class="iawmlf_link_archived_url"><strong><?php esc_html_e( 'Archived URL', 'internet-archive-wayback-machine-link-fixer' ); ?></strong>: <a href="<?php echo esc_url( $iawmlf_link->get_archived_href() ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $iawmlf_link->get_archived_href() ); ?></a></p>
 								<?php endif; ?>
 							<?php endif; ?>
 
@@ -106,7 +106,7 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 								<label>
 									<?php if ( Link_Exclusion::get_instance()->is_excluded( $iawmlf_link ) ) : ?>
 										<input type="hidden" name="iawmlf_exclude_link" value="<?php echo esc_attr( $iawmlf_link->is_excluded() ); ?>" />
-										<input type="checkbox" disabled name="iawmlf_exclude_link_disp" value="1" id="iawmlf_toggle_exclusion" <?php checked( $iawmlf_link->is_excluded() ); ?> disabled />
+										<input type="checkbox" disabled name="iawmlf_exclude_link_disp" value="1" id="iawmlf_toggle_exclusion" <?php checked( $iawmlf_link->is_excluded() ); ?> />
 										<?php esc_html_e( 'This link is excluded by a settings or built-in exclusion rule and cannot be toggled here.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 									<?php else : ?>
 										<input type="checkbox" name="iawmlf_exclude_link" value="1" id="iawmlf_toggle_exclusion" <?php checked( $iawmlf_link->is_excluded() ); ?> />
@@ -170,7 +170,7 @@ $iawmlf_link_title = iawmlf_trim_string( str_replace( array( 'http://', 'https:/
 													?>
 												</td>
 												<?php if ( is_numeric( $iawmlf_check['http_code'] ) ) : ?>
-													<td class="iawmlf-archived__http-code"><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/<?php echo esc_attr( $iawmlf_check['http_code'] ); ?>" target="_blank"><?php echo esc_html( $iawmlf_check['http_code'] ); ?></a></td>
+													<td class="iawmlf-archived__http-code"><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/<?php echo esc_attr( $iawmlf_check['http_code'] ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $iawmlf_check['http_code'] ); ?></a></td>
 												<?php else : ?>
 													<td class="iawmlf-archived__error"><?php esc_html_e( 'Error', 'internet-archive-wayback-machine-link-fixer' ); ?></td>
 												<?php endif; ?>

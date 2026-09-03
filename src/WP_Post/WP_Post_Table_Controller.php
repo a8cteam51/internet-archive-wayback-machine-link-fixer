@@ -156,8 +156,9 @@ class WP_Post_Table_Controller {
 		// Get the links from the posts meta.
 		$links = get_post_meta( $post_id, Settings::LINK_META_KEY, true );
 
-		// If we have no links (empty or not an array), return.
+		// If we have no links (empty or not an array), say so rather than leaving the cell blank.
 		if ( ! is_array( $links ) || empty( $links ) ) {
+			echo esc_html__( 'No links found', 'internet-archive-wayback-machine-link-fixer' );
 			return;
 		}
 

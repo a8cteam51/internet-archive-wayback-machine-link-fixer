@@ -304,9 +304,6 @@ class Report_Page {
 		// Render the list table, reusing the load-{hook} instance so its notices render.
 		$table = $this->table ?? new Report_Table( new Link_Repository() );
 
-		// Render any notices.
-		$table->render_notices();
-
 		// Get the current page.
 		$current_page = isset( $_REQUEST['page'] ) ? \sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) : self::SLUG; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.
 
@@ -317,6 +314,9 @@ class Report_Page {
 		);
 
 		echo '<hr class="wp-header-end">';
+
+		// Notices belong inside .wrap, after wp-header-end, where WordPress positions them.
+		$table->render_notices();
 
 		// If we have a post id in params, show a message.
 		if ( array_key_exists( 'iawmlf_filtered_post_id', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, Can be linked, so no nonce possible.

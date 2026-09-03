@@ -79,10 +79,9 @@
 
 				titleLink.appendChild(arrow);
 
-				// Add click handler to prevent default link behavior and toggle
-				titleLink.addEventListener('click', function (e) {
-					e.preventDefault();
+				titleLink.setAttribute('aria-expanded', 'false');
 
+				titleLink.addEventListener('click', function () {
 					const isVisible = posts.style.display !== 'none';
 
 					if (isVisible) {
@@ -94,6 +93,8 @@
 						arrow.style.transform = 'translateY(-50%) rotate(180deg)';
 						item.classList.add('expanded');
 					}
+
+					titleLink.setAttribute('aria-expanded', isVisible ? 'false' : 'true');
 				});
 
 				// Add hover effect

@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
 		printf(
 			/* translators: %s: Wayback Machine link */
 			esc_html__( 'This plugin automatically fixes broken links on your site by redirecting them to archived versions on the %s.', 'internet-archive-wayback-machine-link-fixer' ),
-			'<a href="https://wayback.archive.org" target="_blank">' . esc_html__( 'Wayback Machine', 'internet-archive-wayback-machine-link-fixer' ) . '</a>'
+			'<a href="https://wayback.archive.org" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Wayback Machine', 'internet-archive-wayback-machine-link-fixer' ) . '</a>'
 		);
 		?>
 	</p>

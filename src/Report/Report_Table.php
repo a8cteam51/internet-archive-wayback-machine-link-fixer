@@ -1123,7 +1123,7 @@ class Report_Table extends \WP_List_Table {
 
 				if ( $item->has_archived_href() ) {
 					return sprintf(
-						'<a href="%s" target="_blank">%s</a>',
+						'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
 						esc_url( $item->get_archived_href() ),
 						$this->get_dashicon( 'dashicons-yes-alt', __( 'Has a valid archive snapshot', 'internet-archive-wayback-machine-link-fixer' ) )
 					);
@@ -1178,12 +1178,14 @@ class Report_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	private function get_dashicon( string $icon, string $title = '' ): string {
+		// Without a title the icon is decorative, so hide it from screen readers.
 		return '' === $title ? sprintf(
-			'<span class="dashicons %s"></span>',
+			'<span class="dashicons %s" aria-hidden="true"></span>',
 			esc_attr( $icon )
 		) : sprintf(
-			'<span class="dashicons %s" title="%s"></span>',
+			'<span class="dashicons %s" title="%s" role="img" aria-label="%s"></span>',
 			esc_attr( $icon ),
+			esc_attr( $title ),
 			esc_attr( $title )
 		);
 	}
@@ -1197,7 +1199,7 @@ class Report_Table extends \WP_List_Table {
 	 */
 	private function compile_link_name( Link $item ): string {
 		return sprintf(
-			'%s <a href="%s" target="_blank">%s</a>',
+			'%s <a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
 			esc_html( iawmlf_trim_string( $item->get_href(), 200 ) ),
 			esc_url( $item->get_href() ),
 			'<span class="dashicons dashicons-external"></span>'
@@ -1228,7 +1230,7 @@ class Report_Table extends \WP_List_Table {
 
 		$last_status_display = $last_check_status
 			? sprintf(
-				'<a href="%1$s" target="_blank">%2$s</a>',
+				'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
 				esc_url( "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/{$last_check_status}" ),
 				sprintf(
 					// translators: %s: HTTP status code (e.g. 404).
@@ -1263,6 +1265,6 @@ class Report_Table extends \WP_List_Table {
 	 * @return void
 	 */
 	public function no_items() {
-		echo esc_html__( 'No links have been created yet.', 'internet-archive-wayback-machine-link-fixer' );
+		echo esc_html__( 'No links to display.', 'internet-archive-wayback-machine-link-fixer' );
 	}
 }

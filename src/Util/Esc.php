@@ -58,6 +58,12 @@ class Esc {
 				'id'     => array(),
 				'style'  => array(),
 			),
+			// The footer uses an empty span as a flex spacer on step 1.
+			'span'   => array(
+				'class' => array(),
+				'id'    => array(),
+				'style' => array(),
+			),
 		);
 	}
 }
