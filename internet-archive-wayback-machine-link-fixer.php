@@ -34,8 +34,10 @@ define( 'IAWMLF_VERSION', '1.4.3' );
 define(
 	'IAWMLF_MINIMUM_VERSIONS',
 	array(
-		'wp'  => '6.4',
-		'php' => '7.4',
+		'wp'      => '6.4',
+		'php'     => '7.4',
+		'mysql'   => '5.7',  // JSON column support.
+		'mariadb' => '10.2', // JSON column support.
 	)
 );
 

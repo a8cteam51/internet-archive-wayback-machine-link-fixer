@@ -33,7 +33,7 @@
         "squizlabs/php_codesniffer": "3.*",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "roave/security-advisories": "dev-latest",
-        "php-stubs/wordpress-stubs": "6.9.*",
+        "php-stubs/wordpress-stubs": "7.0.*",
         "phpunit/phpunit": "^8.5 || ^9.4",
         "roots/wordpress": "7.0.*",
         "wp-phpunit/wp-phpunit": "7.0.*",
@@ -67,10 +67,6 @@
             "composer install --ignore-platform-reqs --no-interaction --no-dev -o"
         ],
         "generate-autoloader": "@composer dump-autoload -o",
-        "scope-php-dependencies": [
-            "vendor/bin/php-scoper add-prefix --prefix=Internet_Archive\\\\Wayback_Link_Fixer_Deps --output-dir=./dependencies --config=.php-scoper.inc.php --force --quiet",
-            "@generate-autoloader"
-        ],
         "test:php": "./vendor/bin/phpunit --testdox --colors=always",
         "coverage:php": "./vendor/bin/phpunit --coverage-html=coverage --coverage-text --colors=always --testdox",
         "format:php": "phpcbf --standard=./.phpcs.xml --basepath=. . -v",
@@ -97,16 +93,6 @@
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "roots/wordpress-core-installer": true,
             "phpstan/extension-installer": true
-        }
-    },
-    "extra": {
-        "installer-paths": {
-            "vendor/wpackagist-plugin/{$name}/": [
-                "type:wordpress-plugin"
-            ],
-            "vendor/wpackagist-theme/{$name}/": [
-                "type:wordpress-theme"
-            ]
         }
     }
 }

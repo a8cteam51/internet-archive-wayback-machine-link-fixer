@@ -30,6 +30,8 @@ Protect your links, preserve your content, and automate the archiving process—
 
 == Installation ==
 
+The plugin stores its link data in a JSON column, so it requires MySQL 5.7 or later, or MariaDB 10.2 or later. Activation is blocked with an explanatory notice on anything older.
+
 1. Upload the plugin folder to `/wp-content/plugins/`, or install it through the Plugins screen in WordPress.
 2. Activate the plugin through the Plugins screen in WordPress.
 3. A setup wizard opens on activation and walks you through choosing which post types to scan, whether to archive your own content, and how links should be handled.

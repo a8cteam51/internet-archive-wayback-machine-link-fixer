@@ -268,4 +268,58 @@ public function test_status_codes_that_mark_link_as_excluded( string $status_cod
 
 		delete_transient( 'iawmlf_archive_api_online' );
 	}
+
+	/**
+	 * Database server version strings, as reported by mysqli.
+	 *
+	 * @return array
+	 */
+	public static function databaseVersionProvider(): array {
+		return array(
+			'MySQL 5.6'                  => array( '5.6.51', 'mysql', '5.6.51', false ),
+			'MySQL 5.7'                  => array( '5.7.44', 'mysql', '5.7.44', true ),
+			'MySQL 8.0'                  => array( '8.0.35', 'mysql', '8.0.35', true ),
+			'MySQL 8.0 with suffix'      => array( '8.0.35-0ubuntu0.22.04.1', 'mysql', '8.0.35', true ),
+			'MariaDB 10.1 with prefix'   => array( '5.5.5-10.1.48-MariaDB', 'mariadb', '10.1.48', false ),
+			'MariaDB 10.2 with prefix'   => array( '5.5.5-10.2.44-MariaDB', 'mariadb', '10.2.44', true ),
+			'MariaDB 10.6 with prefix'   => array( '5.5.5-10.6.12-MariaDB-1:10.6.12+maria~ubu2004', 'mariadb', '10.6.12', true ),
+			'MariaDB 11 without prefix'  => array( '11.4.2-MariaDB', 'mariadb', '11.4.2', true ),
+			'Unrecognised server string' => array( 'some-unknown-server', 'mysql', '', true ),
+			'Empty server string'        => array( '', 'mysql', '', true ),
+		);
+	}
+
+	/**
+	 * @testdox The database version string should be parsed into a flavour and version, and judged against the JSON column requirement. (S083)
+	 *
+	 * @dataProvider databaseVersionProvider
+	 *
+	 * @param string  $server_info      The raw server version string.
+	 * @param string  $expected_flavour The expected flavour.
+	 * @param string  $expected_version The expected version.
+	 * @param boolean $expected_compat  Whether the version supports JSON columns.
+	 *
+	 * @return void
+	 */
+	public function test_database_version_is_parsed_and_checked( string $server_info, string $expected_flavour, string $expected_version, bool $expected_compat ): void {
+		$parsed = \iawmlf_parse_database_version( $server_info );
+
+		$this->assertSame( $expected_flavour, $parsed['flavour'], 'The database flavour should be detected from the server string.' );
+		$this->assertSame( $expected_version, $parsed['version'], 'The database version should be extracted from the server string.' );
+		$this->assertSame( $expected_compat, \iawmlf_is_database_version_compatible( $parsed ), 'The JSON column support verdict should match the version.' );
+	}
+
+	/**
+	 * @testdox The live test database should report a version that supports JSON columns, and so pass the requirements check. (S083)
+	 *
+	 * @return void
+	 */
+	public function test_live_database_meets_the_json_column_requirement(): void {
+		$database = \iawmlf_get_database_version();
+
+		$this->assertContains( $database['flavour'], array( 'mysql', 'mariadb' ) );
+		$this->assertNotSame( '', $database['version'], 'The live database version should be readable.' );
+		$this->assertTrue( \iawmlf_is_database_version_compatible(), 'The test database must support JSON columns, the link table needs one.' );
+		$this->assertTrue( \iawmlf_validate_requirements(), 'The test environment should meet every plugin requirement.' );
+	}
 }
