@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-03T20:38:18+00:00\n"
+"POT-Creation-Date: 2026-09-03T21:54:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: internet-archive-wayback-machine-link-fixer\n"
@@ -350,7 +350,7 @@ msgstr ""
 
 #: src/Dashboard/Report_Page.php:102
 #: src/Dashboard/Report_Page.php:228
-#: src/WP_Post/WP_Post_Table_Controller.php:128
+#: src/WP_Post/WP_Post_Table_Controller.php:117
 msgid "Links"
 msgstr ""
 
@@ -1101,19 +1101,28 @@ msgstr ""
 msgid "The service is offline.%s"
 msgstr ""
 
-#: src/WP_Post/WP_Post_Table_Controller.php:151
+#: src/WP_Post/WP_Post_Table_Controller.php:122
+msgid "Last Archived"
+msgstr ""
+
+#: src/WP_Post/WP_Post_Table_Controller.php:163
+#: src/WP_Post/WP_Post_Table_Controller.php:250
 msgid "Excluded post"
 msgstr ""
 
-#: src/WP_Post/WP_Post_Table_Controller.php:161
-#: src/WP_Post/WP_Post_Table_Controller.php:176
+#: src/WP_Post/WP_Post_Table_Controller.php:173
+#: src/WP_Post/WP_Post_Table_Controller.php:188
 msgid "No links found"
 msgstr ""
 
 #. translators: 1: number of broken links, 2: total number of links
-#: src/WP_Post/WP_Post_Table_Controller.php:186
+#: src/WP_Post/WP_Post_Table_Controller.php:198
 #, php-format
 msgid "%1$s broken out of %2$s"
+msgstr ""
+
+#: src/WP_Post/WP_Post_Table_Controller.php:258
+msgid "Never archived"
 msgstr ""
 
 #: templates/admin/dashboard/link-list.php:62

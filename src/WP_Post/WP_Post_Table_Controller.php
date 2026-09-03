@@ -27,6 +27,8 @@ class WP_Post_Table_Controller {
 
 	public const LINK_COLUMN_KEY = 'wayback_links';
 
+	public const ARCHIVED_COLUMN_KEY = 'wayback_archived';
+
 	/**
 	 * Cache of links already fetched.
 	 *
@@ -62,6 +64,9 @@ class WP_Post_Table_Controller {
 		add_filter( 'manage_pages_columns', array( $this, 'add_column' ) );
 		add_action( 'manage_pages_custom_column', array( $this, 'render_link_column' ), 10, 2 );
 		add_action( 'manage_posts_custom_column', array( $this, 'render_link_column' ), 10, 2 );
+		add_action( 'manage_pages_custom_column', array( $this, 'render_archived_column' ), 10, 2 );
+		add_action( 'manage_posts_custom_column', array( $this, 'render_archived_column' ), 10, 2 );
+		add_filter( 'default_hidden_columns', array( $this, 'hide_archived_column_by_default' ), 10, 2 );
 	}
 
 	/**
@@ -105,29 +110,36 @@ class WP_Post_Table_Controller {
 	 * @return array
 	 */
 	public function add_column( array $columns ): array {
-		// Get the post type.
-		$screen = get_current_screen();
-		if ( $screen ) {
-			$post_type = $screen->post_type;
-		} else {
-			// Fall back to the request's post_type or the post being edited.
-			$post_type = isset( $_REQUEST['post_type'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				? \sanitize_key( $_REQUEST['post_type'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				: 'post';
+		$post_type = $this->get_current_post_type();
+
+		// Add the links column for any post type whose links are scanned.
+		if ( in_array( $post_type, Settings::get_allowed_post_types(), true ) ) {
+			$columns[ self::LINK_COLUMN_KEY ] = __( 'Links', 'internet-archive-wayback-machine-link-fixer' );
 		}
 
-		// Get the post types from settings.
-		$allowed_post_types = Settings::get_allowed_post_types();
-
-		// If the post type is not in the allowed post types, return the columns.
-		if ( ! in_array( $post_type, $allowed_post_types, true ) ) {
-			return $columns;
+		// Add the archived column for any post type that gets archived.
+		if ( in_array( $post_type, Settings::own_link_allowed_post_types(), true ) ) {
+			$columns[ self::ARCHIVED_COLUMN_KEY ] = __( 'Last Archived', 'internet-archive-wayback-machine-link-fixer' );
 		}
-
-		// Add the column.
-		$columns[ self::LINK_COLUMN_KEY ] = __( 'Links', 'internet-archive-wayback-machine-link-fixer' );
 
 		return $columns;
+	}
+
+	/**
+	 * Gets the post type of the table currently being rendered.
+	 *
+	 * @return string
+	 */
+	private function get_current_post_type(): string {
+		$screen = get_current_screen();
+		if ( $screen ) {
+			return $screen->post_type;
+		}
+
+		// Fall back to the request's post_type or the post being edited.
+		return isset( $_REQUEST['post_type'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			? \sanitize_key( $_REQUEST['post_type'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			: 'post';
 	}
 
 	/**
@@ -189,6 +201,68 @@ class WP_Post_Table_Controller {
 				),
 				array( 'strong' => array() )
 			)
+		);
+	}
+
+	/**
+	 * Hides the archived column until the user opts in via Screen Options.
+	 *
+	 * Only applies when the user has no saved column preference for the screen,
+	 * so an explicit choice is never overridden.
+	 *
+	 * @param string[]   $hidden Columns hidden by default.
+	 * @param \WP_Screen $screen The screen being rendered.
+	 *
+	 * @return string[]
+	 */
+	public function hide_archived_column_by_default( array $hidden, $screen ): array {
+		if ( ! $screen instanceof \WP_Screen || 'edit' !== $screen->base ) {
+			return $hidden;
+		}
+
+		if ( ! in_array( $screen->post_type, Settings::own_link_allowed_post_types(), true ) ) {
+			return $hidden;
+		}
+
+		$hidden[] = self::ARCHIVED_COLUMN_KEY;
+
+		return $hidden;
+	}
+
+	/**
+	 * Renders the date a post was last archived.
+	 *
+	 * @param string  $column_name The column name.
+	 * @param integer $post_id     The post ID.
+	 *
+	 * @return void
+	 */
+	public function render_archived_column( string $column_name, int $post_id ): void {
+		if ( self::ARCHIVED_COLUMN_KEY !== $column_name ) {
+			return;
+		}
+
+		// If the post is excluded from auto archiving, say so rather than showing it as never archived.
+		if ( in_array( $post_id, Settings::get_auto_archiver_excluded_posts(), true ) ) {
+			printf(
+				'<a href="%1$s"><em>%2$s</em></a>',
+				esc_url( Settings_Page::get_page_url() ),
+				esc_html__( 'Excluded post', 'internet-archive-wayback-machine-link-fixer' )
+			);
+			return;
+		}
+
+		$archived_at = (int) get_post_meta( $post_id, Settings::OWN_LINK_LAST_PROCESSED, true );
+
+		if ( $archived_at <= 0 ) {
+			printf( '<em>%s</em>', esc_html__( 'Never archived', 'internet-archive-wayback-machine-link-fixer' ) );
+			return;
+		}
+
+		printf(
+			'<time datetime="%1$s">%2$s</time>',
+			esc_attr( gmdate( 'c', $archived_at ) ),
+			esc_html( wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $archived_at ) )
 		);
 	}
 
