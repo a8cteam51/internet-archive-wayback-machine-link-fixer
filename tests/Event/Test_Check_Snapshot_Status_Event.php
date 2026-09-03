@@ -56,8 +56,82 @@ class Test_Check_Snapshot_Status_Event extends \WP_UnitTestCase {
 		// Remove client mocks so they can't leak into later tests under random ordering.
 		remove_all_filters( 'iawmlf_snapshot_client' );
 		remove_all_filters( 'iawmlf_link_checker_client' );
+		remove_all_filters( 'iawmlf_check_snapshot_status_attempts' );
 
 		parent::tear_down();
+	}
+
+	/**
+	 * @testdox A theme or init hook registers its filter after the event is built, and it should still apply.
+	 *
+	 * @return void
+	 */
+	public function test_attempts_filter_added_after_construction_applies(): void {
+		\remove_all_filters( 'iawmlf_check_snapshot_status_attempts' );
+
+		$this->set_snapshot_client_response(
+			array(
+				'status'  => 'pending',
+				'message' => '',
+			)
+		);
+
+		// Built on plugins_loaded, before the theme is loaded and before init.
+		$event = new Check_Snapshot_Status_Event();
+
+		// Registered later, as a theme or an init hook would.
+		\add_filter( 'iawmlf_check_snapshot_status_attempts', fn() => 10 );
+
+		$link = $this->link_repository->upsert( new Link( 'https://example.com' ) );
+
+		// Attempt 5 is under the filtered limit but over the default of 3.
+		$event( $link->get_id(), 'fake-id', 5 );
+
+		$queued = $this->wpdb->get_row(
+			$this->wpdb->prepare(
+				"SELECT args FROM {$this->wpdb->prefix}actionscheduler_actions WHERE hook = %s AND status = 'pending'",
+				Check_Snapshot_Status_Event::HANDLE
+			)
+		);
+
+		$this->assertNotNull( $queued );
+		$this->assertSame( 6, json_decode( $queued->args )->attempt );
+	}
+
+	/**
+	 * @testdox The same filter registered before the event is built does apply.
+	 *
+	 * @return void
+	 */
+	public function test_attempts_filter_added_before_construction_applies(): void {
+		\remove_all_filters( 'iawmlf_check_snapshot_status_attempts' );
+
+		$this->set_snapshot_client_response(
+			array(
+				'status'  => 'pending',
+				'message' => '',
+			)
+		);
+
+		\add_filter( 'iawmlf_check_snapshot_status_attempts', fn() => 10 );
+
+		$link = $this->link_repository->upsert( new Link( 'https://example.com' ) );
+
+		$event = new Check_Snapshot_Status_Event();
+		$event->setup();
+
+		// Attempt 5 is under the filtered limit, so it should carry on and requeue.
+		$event( $link->get_id(), 'fake-id', 5 );
+
+		$queued = $this->wpdb->get_row(
+			$this->wpdb->prepare(
+				"SELECT args FROM {$this->wpdb->prefix}actionscheduler_actions WHERE hook = %s AND status = 'pending'",
+				Check_Snapshot_Status_Event::HANDLE
+			)
+		);
+
+		$this->assertNotNull( $queued );
+		$this->assertSame( 6, json_decode( $queued->args )->attempt );
 	}
 
 	/**

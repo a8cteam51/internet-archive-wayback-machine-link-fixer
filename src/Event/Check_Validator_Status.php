@@ -46,21 +46,17 @@ class Check_Validator_Status {
 	 * @var integer
 	 */
 	private $attempts = 0;
-	/**
-	 * Create instance of the class.
-	 */
-	public function __construct() {
-		$this->attempts = apply_filters( 'iawmlf_check_validator_status_attempts', 3 );
-	}
 
 	/**
 	 * Setup the event.
+	 * Read at call time, so filters registered after plugins_loaded still apply.
 	 *
 	 * @return void
 	 */
 	public function setup(): void {
 		$this->link_repository = new Link_Repository();
 		$this->wayback_machine = new Wayback_Machine_Service();
+		$this->attempts        = apply_filters( 'iawmlf_check_validator_status_attempts', 3 );
 	}
 
 	/**
