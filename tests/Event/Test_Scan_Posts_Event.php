@@ -125,4 +125,93 @@ class Test_Scan_Posts_Event extends \WP_UnitTestCase {
 			'The excluded post should not have been processed.'
 		);
 	}
+
+	/**
+	 * @testdox While the event is still running, its own call to reschedule itself is blocked by the already scheduled guard.
+	 *
+	 * @return void
+	 */
+	public function test_reschedule_is_blocked_while_the_event_is_running(): void {
+		\update_option( Settings::PROCESS_LINKS, true );
+		\update_option( Settings::SCAN_EXISTING_POSTS, true );
+
+		Scan_Posts_Event::add_to_action_scheduler();
+
+		$this->assertSame( 1, $this->count_actions( 'pending' ) );
+
+		// Mark the action as running, exactly as Action Scheduler does before it calls the event.
+		$action_id = (int) $GLOBALS['wpdb']->get_var(
+			$GLOBALS['wpdb']->prepare(
+				"SELECT action_id FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions WHERE hook = %s AND status = 'pending'",
+				Scan_Posts_Event::HANDLE
+			)
+		);
+
+		\ActionScheduler::store()->log_execution( $action_id );
+
+		$this->assertSame( 0, $this->count_actions( 'pending' ) );
+		$this->assertSame( 1, $this->count_actions( 'in-progress' ) );
+
+		// This is the call the event makes on its last line.
+		Scan_Posts_Event::add_to_action_scheduler();
+
+		// Nothing was queued, because the running action counts as already scheduled.
+		$this->assertSame( 0, $this->count_actions( 'pending' ) );
+	}
+
+	/**
+	 * @testdox Once the running event finishes, the init registration re-queues it, so the scan is never left unscheduled.
+	 *
+	 * @return void
+	 */
+	public function test_the_scan_is_always_requeued_once_it_finishes(): void {
+		\update_option( Settings::PROCESS_LINKS, true );
+		\update_option( Settings::SCAN_EXISTING_POSTS, true );
+
+		Scan_Posts_Event::add_to_action_scheduler();
+
+		$action_id = (int) $GLOBALS['wpdb']->get_var(
+			$GLOBALS['wpdb']->prepare(
+				"SELECT action_id FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions WHERE hook = %s AND status = 'pending'",
+				Scan_Posts_Event::HANDLE
+			)
+		);
+
+		// Running, so its own reschedule is blocked.
+		\ActionScheduler::store()->log_execution( $action_id );
+		Scan_Posts_Event::add_to_action_scheduler();
+
+		$this->assertSame( 0, $this->count_actions( 'pending' ) );
+
+		// The run finishes.
+		\ActionScheduler::store()->mark_complete( $action_id );
+
+		// Event_Controller calls this on init for every admin and cron request.
+		Scan_Posts_Event::add_to_action_scheduler();
+
+		$this->assertSame( 1, $this->count_actions( 'pending' ) );
+
+		// Repeated init calls do not stack them up.
+		Scan_Posts_Event::add_to_action_scheduler();
+		Scan_Posts_Event::add_to_action_scheduler();
+
+		$this->assertSame( 1, $this->count_actions( 'pending' ) );
+	}
+
+	/**
+	 * Counts the scan events with a given status.
+	 *
+	 * @param string $status The action scheduler status.
+	 *
+	 * @return integer
+	 */
+	private function count_actions( string $status ): int {
+		return (int) $GLOBALS['wpdb']->get_var(
+			$GLOBALS['wpdb']->prepare(
+				"SELECT COUNT(*) FROM {$GLOBALS['wpdb']->prefix}actionscheduler_actions WHERE hook = %s AND status = %s",
+				Scan_Posts_Event::HANDLE,
+				$status
+			)
+		);
+	}
 }

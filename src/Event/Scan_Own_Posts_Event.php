@@ -107,6 +107,9 @@ class Scan_Own_Posts_Event {
 		$excluded_posts     = Settings::get_auto_archiver_excluded_posts();
 		$posts_per_call     = absint( apply_filters( 'iawmlf_scan_own_posts_per_call', 10 ) );
 
+		// Posts already waiting in the queue, re-queuing them would only reset their delay.
+		$skipped_posts = array_unique( array_merge( $excluded_posts, self::get_queued_post_ids() ) );
+
 		$args = array(
 			'posts_per_page' => $posts_per_call,
 			'post_type'      => $allowed_post_types,
@@ -128,9 +131,9 @@ class Scan_Own_Posts_Event {
 			),
 		);
 
-		// Exclude any posts that have been marked as excluded.
-		if ( ! empty( $excluded_posts ) ) {
-			$args['post__not_in'] = $excluded_posts;
+		// Exclude any posts that are excluded or already queued.
+		if ( ! empty( $skipped_posts ) ) {
+			$args['post__not_in'] = $skipped_posts;
 		}
 
 		// Get all posts that are in the defined post types and have not been checked since
@@ -141,9 +144,42 @@ class Scan_Own_Posts_Event {
 			return;
 		}
 
-		// Loop through the posts and add them to the queue.
+		// Loop through the posts and add them to the queue. No delay, these are already due.
 		foreach ( $posts->posts as $post ) {
-			$this->post_controller->add_own_post_to_wayback_machine( $post->ID );
+			$this->post_controller->add_own_post_to_wayback_machine( $post->ID, 0 );
 		}
+	}
+
+	/**
+	 * Gets the ids of all posts that already have a process event waiting in the queue.
+	 *
+	 * @since 1.4.4
+	 *
+	 * @return integer[]
+	 */
+	private static function get_queued_post_ids(): array {
+		if ( ! function_exists( 'as_get_scheduled_actions' ) ) {
+			return array();
+		}
+
+		$actions = as_get_scheduled_actions(
+			array(
+				'hook'     => Process_Local_Post_Event::HANDLE,
+				'status'   => array( \ActionScheduler_Store::STATUS_PENDING, \ActionScheduler_Store::STATUS_RUNNING ),
+				'per_page' => -1,
+			)
+		);
+
+		$post_ids = array();
+
+		foreach ( $actions as $action ) {
+			$args = $action->get_args();
+
+			if ( isset( $args['post_id'] ) ) {
+				$post_ids[] = (int) $args['post_id'];
+			}
+		}
+
+		return $post_ids;
 	}
 }

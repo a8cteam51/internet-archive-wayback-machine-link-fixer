@@ -138,13 +138,14 @@ class WP_Post_Controller {
 	/**
 	 * Adds the permalink of a post to the wayback machine.
 	 *
-	 * @param integer $post_id The post id.
+	 * @param integer      $post_id The post id.
+	 * @param integer|null $delay   The queue delay in seconds, null for the default of 1 hour.
 	 *
 	 * @return void
 	 *
 	 * @throws \Exception If the post id is not valid.
 	 */
-	public function add_own_post_to_wayback_machine( int $post_id ): void {
+	public function add_own_post_to_wayback_machine( int $post_id, ?int $delay = null ): void {
 
 		// Get the post.
 		$post = get_post( $post_id );
@@ -158,7 +159,11 @@ class WP_Post_Controller {
 		$can_add     = apply_filters( 'iawmlf_own_content_allow_post', ! $is_excluded, $post );
 
 		if ( $can_add ) {
-			Process_Local_Post_Event::add_to_queue_with_delay( $post_id );
+			if ( null === $delay ) {
+				Process_Local_Post_Event::add_to_queue_with_delay( $post_id );
+			} else {
+				Process_Local_Post_Event::add_to_queue_with_delay( $post_id, $delay );
+			}
 		}
 	}
 

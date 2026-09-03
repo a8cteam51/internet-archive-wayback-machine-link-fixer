@@ -162,8 +162,5 @@ class Scan_Posts_Event {
 				$this->post_controller->process_links_in_content( $post->ID );
 			}
 		}
-
-		// Add the event to the action scheduler again.
-		self::add_to_action_scheduler();
 	}
 }
