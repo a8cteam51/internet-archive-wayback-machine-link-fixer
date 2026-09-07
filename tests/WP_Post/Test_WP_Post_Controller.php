@@ -1453,6 +1453,44 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox Building the post's excerpt first must not stop the visible content render emitting the link data span.
+	 *
+	 * @return void
+	 */
+	public function test_excerpt_generation_does_not_consume_the_span(): void {
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		$post_id = self::factory()->post->create();
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => 'Body with a <a href="https://example.com/excerpt-race">example</a>.',
+				'post_excerpt' => '',
+				'post_type'    => 'post',
+			)
+		);
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		// wp_trim_excerpt() runs the_content to build an auto excerpt. Themes and
+		// SEO plugins do this in wp_head, before the content is ever rendered.
+		$excerpt = get_the_excerpt( $post_id );
+
+		$this->assertStringNotContainsString( '__iawmlf-post-loop-links', $excerpt, 'The excerpt should never carry the payload span.' );
+
+		// The visible render still has to emit it.
+		$rendered = apply_filters( 'the_content', $GLOBALS['post']->post_content );
+
+		$this->assertStringContainsString(
+			'__iawmlf-post-loop-links',
+			$rendered,
+			'Building the excerpt must not use up the post\'s one span.'
+		);
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
 	 * @testdox Every distinct post in a loop should get its own link data span, and none of them should gain a line break.
 	 *
 	 * @return void

@@ -301,6 +301,13 @@ class WP_Post_Controller {
 			return $content;
 		}
 
+		// wp_trim_excerpt() runs the_content to build an auto excerpt, then strips
+		// the tags back off. Answering it would burn the post's one span on output
+		// nobody sees, leaving the real render with none.
+		if ( doing_filter( 'get_the_excerpt' ) ) {
+			return $content;
+		}
+
 		if ( ! Settings::should_render_html_link_output() ) {
 			return $content;
 		}
