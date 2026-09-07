@@ -670,8 +670,8 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 
 		$GLOBALS['post'] = get_post( $post_id );
 
-		// Render the block.
-		$rendered = do_blocks( $GLOBALS['post']->post_content );
+		// Render the content, the way a theme does.
+		$rendered = apply_filters( 'the_content', $GLOBALS['post']->post_content );
 
 		// Check contains the link data script tag.
 		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
@@ -704,8 +704,8 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		// Add the post to the exclusion list.
 		\update_option( Settings::LINK_FIXER_EXCLUDED_POSTS, array( $post_id ) );
 
-		// Render the block.
-		$rendered = do_blocks( $GLOBALS['post']->post_content );
+		// Render the content, the way a theme does.
+		$rendered = apply_filters( 'the_content', $GLOBALS['post']->post_content );
 
 		// Check does NOT contain the link data script tag.
 		$this->assertStringNotContainsString( '__iawmlf-post-loop-links', $rendered );
@@ -716,7 +716,7 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox When a link matches a global exclusion pattern, it should not appear in the render_block data attribute output.
+	 * @testdox When a link matches a global exclusion pattern, it should not appear in the link data attribute output.
 	 *
 	 * @return void
 	 */
@@ -741,8 +741,8 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 
 		$GLOBALS['post'] = get_post( $post_id );
 
-		// Render the block.
-		$rendered = do_blocks( $GLOBALS['post']->post_content );
+		// Render the content, the way a theme does.
+		$rendered = apply_filters( 'the_content', $GLOBALS['post']->post_content );
 
 		// The link data span should be present (we still have one non-excluded link).
 		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
@@ -755,10 +755,10 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$hrefs = array_column( $links_data, 'href' );
 
 		// The excluded link should NOT be in the data.
-		$this->assertNotContains( 'https://excluded-domain.com/page', $hrefs, 'Excluded link should not appear in render_block data.' );
+		$this->assertNotContains( 'https://excluded-domain.com/page', $hrefs, 'Excluded link should not appear in link data.' );
 
 		// The allowed link SHOULD be in the data.
-		$this->assertContains( 'https://allowed-domain.com/page', $hrefs, 'Non-excluded link should appear in render_block data.' );
+		$this->assertContains( 'https://allowed-domain.com/page', $hrefs, 'Non-excluded link should appear in link data.' );
 
 		// Clean up.
 		unset( $GLOBALS['post'] );
@@ -766,7 +766,7 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox When a link matches a global exclusion pattern and another does not, only the non-excluded link should appear in the render_block data attribute output.
+	 * @testdox When a link matches a global exclusion pattern and another does not, only the non-excluded link should appear in the link data attribute output.
 	 *
 	 * @return void
 	 */
@@ -791,8 +791,8 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 
 		$GLOBALS['post'] = get_post( $post_id );
 
-		// Render the block.
-		$rendered = do_blocks( $GLOBALS['post']->post_content );
+		// Render the content, the way a theme does.
+		$rendered = apply_filters( 'the_content', $GLOBALS['post']->post_content );
 
 		// The link data span should be present (we still have one non-excluded link).
 		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
@@ -808,10 +808,10 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$hrefs = array_column( $links_data, 'href' );
 
 		// The excluded link should NOT be in the data.
-		$this->assertNotContains( 'https://excluded-domain.com/page1', $hrefs, 'Excluded link should not appear in render_block data.' );
+		$this->assertNotContains( 'https://excluded-domain.com/page1', $hrefs, 'Excluded link should not appear in link data.' );
 
 		// The allowed link SHOULD be in the data.
-		$this->assertContains( 'https://kept-domain.com/page', $hrefs, 'Non-excluded link should appear in render_block data.' );
+		$this->assertContains( 'https://kept-domain.com/page', $hrefs, 'Non-excluded link should appear in link data.' );
 
 		// Clean up.
 		unset( $GLOBALS['post'] );
@@ -842,8 +842,8 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 
 		$GLOBALS['post'] = get_post( $post_id );
 
-		// Render the block.
-		$rendered = do_blocks( $GLOBALS['post']->post_content );
+		// Render the content, the way a theme does.
+		$rendered = apply_filters( 'the_content', $GLOBALS['post']->post_content );
 
 		// Check does not contain the link data script tag.
 		$this->assertStringNotContainsString( '__iawmlf-post-loop-links', $rendered );
@@ -895,8 +895,8 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 
 		$GLOBALS['post'] = get_post( $post_id );
 
-		// Render the block.
-		$rendered = do_blocks( $GLOBALS['post']->post_content );
+		// Render the content, the way a theme does.
+		$rendered = apply_filters( 'the_content', $GLOBALS['post']->post_content );
 
 		// Check it still contains the link data script tag.
 		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
@@ -1057,13 +1057,17 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * Build a published post with the given anchor markup and return the rendered block output.
+	 * Build a published post with the given markup and return the rendered content.
 	 *
-	 * @param string $content The post content.
+	 * Renders through the full the_content chain rather than do_blocks(), because
+	 * the link data span is appended at priority 12, after wpautop.
+	 *
+	 * @param string $content  The post content.
+	 * @param bool   $excluded Exclude the post, to capture the baseline with no span.
 	 *
 	 * @return string The rendered HTML.
 	 */
-	private function render_post_with_content( string $content ): string {
+	private function render_post_with_content( string $content, bool $excluded = false ): string {
 		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
 
 		$post_id = self::factory()->post->create();
@@ -1075,17 +1079,27 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 			)
 		);
 
+		if ( $excluded ) {
+			\update_option( Settings::LINK_FIXER_EXCLUDED_POSTS, array( $post_id ) );
+		}
+
 		$GLOBALS['post'] = get_post( $post_id );
 
-		return do_blocks( $GLOBALS['post']->post_content );
+		$rendered = apply_filters( 'the_content', $GLOBALS['post']->post_content );
+
+		if ( $excluded ) {
+			\delete_option( Settings::LINK_FIXER_EXCLUDED_POSTS );
+		}
+
+		return $rendered;
 	}
 
 	/**
-	 * @testdox The render_block output should use a span with the data-iawmlf-links attribute, not a script tag.
+	 * @testdox The link data output should use a span with the data-iawmlf-links attribute, not a script tag.
 	 *
 	 * @return void
 	 */
-	public function test_render_block_output_is_span_with_data_attribute(): void {
+	public function test_link_data_output_is_span_with_data_attribute(): void {
 		$rendered = $this->render_post_with_content( 'Hi <a href="https://example.com/page">a</a>' );
 
 		$this->assertStringContainsString( '<span', $rendered );
@@ -1101,7 +1115,7 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	 *
 	 * @return void
 	 */
-	public function test_render_block_output_includes_hidden_attribute(): void {
+	public function test_link_data_output_includes_hidden_attribute(): void {
 		$rendered = $this->render_post_with_content( 'Hi <a href="https://example.com/page">a</a>' );
 
 		$this->assertMatchesRegularExpression(
@@ -1114,19 +1128,19 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox The link data span should be appended after the block content so it does not hijack :first-child CSS rules.
+	 * @testdox The link data span should be appended after the post content so it does not hijack :first-child CSS rules.
 	 *
 	 * @return void
 	 */
-	public function test_render_block_output_is_appended_after_block_content(): void {
+	public function test_link_data_output_is_appended_after_post_content(): void {
 		$rendered = $this->render_post_with_content( 'Hi <a href="https://example.com/page">a</a>' );
 
 		$content_position = strpos( $rendered, 'href="https://example.com/page"' );
 		$span_position    = strpos( $rendered, '__iawmlf-post-loop-links' );
 
-		$this->assertNotFalse( $content_position, 'Block content with the link should be in the rendered output.' );
+		$this->assertNotFalse( $content_position, 'Post content with the link should be in the rendered output.' );
 		$this->assertNotFalse( $span_position, 'The link data span should be in the rendered output.' );
-		$this->assertGreaterThan( $content_position, $span_position, 'The data span should appear after the block content.' );
+		$this->assertGreaterThan( $content_position, $span_position, 'The data span should appear after the post content.' );
 
 		unset( $GLOBALS['post'] );
 	}
@@ -1293,5 +1307,181 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		);
 
 		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * Classic Editor content shapes, covering every way the content can end.
+	 *
+	 * @return array<string, array{0: string}>
+	 */
+	public function classicContentEndingProvider(): array {
+		$link = '<a href="https://example.com/page">example</a>';
+
+		return array(
+			'trailing newline'          => array( "Intro with a {$link}.\n\nLast word.\n" ),
+			'no trailing newline'       => array( "Intro with a {$link}.\n\nLast word." ),
+			'single line'               => array( "Only line with a {$link}.\n" ),
+			'two trailing blank lines'  => array( "Last word with a {$link}.\n\n\n" ),
+			'trailing spaces and tabs'  => array( "Last word with a {$link}.\n  \t " ),
+			'windows line endings'      => array( "Intro with a {$link}.\r\n\r\nLast word.\r\n" ),
+			'ends with a list'          => array( "Intro with a {$link}.\n\n<ul>\n<li>One</li>\n<li>Two</li>\n</ul>\n" ),
+			'ends with a blockquote'    => array( "Intro with a {$link}.\n\n<blockquote>Quoted.</blockquote>\n" ),
+			'ends with an inline image' => array( "Last word with a {$link} <img src=\"https://example.com/i.png\" alt=\"\" />\n" ),
+		);
+	}
+
+	/**
+	 * @testdox The link data span should never make wpautop render the content's trailing newline as a visible line break.
+	 *
+	 * @dataProvider classicContentEndingProvider
+	 *
+	 * @param string $content The post content.
+	 *
+	 * @return void
+	 */
+	public function test_link_data_span_does_not_introduce_a_line_break( string $content ): void {
+		$rendered = $this->render_post_with_content( $content );
+
+		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered, 'The span should have been rendered.' );
+		$this->assertStringNotContainsString( '<br />', $rendered, 'The span should not cause wpautop to add a line break.' );
+	}
+
+	/**
+	 * @testdox Adding the link data span should change nothing else about the rendered content.
+	 *
+	 * @dataProvider classicContentEndingProvider
+	 *
+	 * @param string $content The post content.
+	 *
+	 * @return void
+	 */
+	public function test_link_data_span_is_the_only_change_to_the_rendered_content( string $content ): void {
+		$with_span = $this->render_post_with_content( $content );
+		$baseline  = $this->render_post_with_content( $content, true );
+
+		$this->assertStringNotContainsString( '__iawmlf-post-loop-links', $baseline, 'The excluded post should render no span.' );
+
+		$stripped = preg_replace( '#<span hidden class="__iawmlf-post-loop-links"[^>]*></span>#', '', $with_span );
+
+		$this->assertNotSame( $with_span, $stripped, 'There should have been a span to strip out.' );
+		$this->assertSame( $baseline, $stripped, 'Removing the span should give back the unmodified rendering.' );
+	}
+
+	/**
+	 * @testdox The link data span should be the very last thing in the rendered content, outside the final paragraph.
+	 *
+	 * @return void
+	 */
+	public function test_link_data_span_is_the_last_thing_in_the_rendered_content(): void {
+		$rendered = $this->render_post_with_content(
+			"Intro.\n\nLast word with a <a href=\"https://example.com/page\">example</a>.\n"
+		);
+
+		$this->assertMatchesRegularExpression(
+			'#</p>\s*<span hidden class="__iawmlf-post-loop-links"[^>]*></span>$#',
+			$rendered,
+			'The span should be appended after the fully rendered content, with nothing after it.'
+		);
+	}
+
+	/**
+	 * @testdox A line break the author actually wrote should still be rendered.
+	 *
+	 * @return void
+	 */
+	public function test_an_authored_line_break_is_preserved(): void {
+		$rendered = $this->render_post_with_content(
+			"One\nTwo with a <a href=\"https://example.com/page\">example</a>.\n"
+		);
+
+		$this->assertStringContainsString( 'One<br />', $rendered, "The author's own single newline should still become a line break." );
+		$this->assertStringContainsString( '__iawmlf-post-loop-links', $rendered );
+	}
+
+	/**
+	 * @testdox Block editor content should be rendered exactly as it would be without the plugin, with the span appended at the end.
+	 *
+	 * @return void
+	 */
+	public function test_block_editor_content_is_not_reformatted_around_the_span(): void {
+		$content = "<!-- wp:paragraph -->\n<p>First with a <a href=\"https://example.com/page\">example</a>.</p>\n<!-- /wp:paragraph -->\n\n"
+			. "<!-- wp:paragraph -->\n<p>Last word.</p>\n<!-- /wp:paragraph -->\n";
+
+		$with_span = $this->render_post_with_content( $content );
+		$baseline  = $this->render_post_with_content( $content, true );
+
+		$this->assertStringContainsString( '__iawmlf-post-loop-links', $with_span );
+		$this->assertStringNotContainsString( '<br />', $with_span );
+		$this->assertStringNotContainsString(
+			'<p><span hidden class="__iawmlf-post-loop-links"',
+			$with_span,
+			'The span should never be wrapped in a paragraph of its own.'
+		);
+
+		$stripped = preg_replace( '#<span hidden class="__iawmlf-post-loop-links"[^>]*></span>#', '', $with_span );
+		$this->assertSame( $baseline, $stripped, 'Removing the span should give back the unmodified rendering.' );
+	}
+
+	/**
+	 * @testdox When the same post is rendered more than once in a loop, the link data span should be output only once.
+	 *
+	 * @return void
+	 */
+	public function test_the_span_is_output_once_when_the_same_post_repeats_in_a_loop(): void {
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		$post_id = self::factory()->post->create();
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => "A post with a <a href=\"https://example.com/loop\">example</a>.\n",
+				'post_type'    => 'post',
+			)
+		);
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		$output = '';
+		for ( $i = 0; $i < 3; $i++ ) {
+			$output .= apply_filters( 'the_content', $GLOBALS['post']->post_content );
+		}
+
+		$this->assertSame( 1, substr_count( $output, '__iawmlf-post-loop-links' ), 'The same post should contribute one span, however many times it is rendered.' );
+		$this->assertStringNotContainsString( '<br />', $output );
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
+	 * @testdox Every distinct post in a loop should get its own link data span, and none of them should gain a line break.
+	 *
+	 * @return void
+	 */
+	public function test_each_distinct_post_in_a_loop_gets_its_own_span(): void {
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		$post_ids = array();
+		for ( $i = 1; $i <= 3; $i++ ) {
+			$post_id = self::factory()->post->create();
+			wp_update_post(
+				array(
+					'ID'           => $post_id,
+					'post_content' => "Post {$i} with a <a href=\"https://example.com/loop-{$i}\">example</a>.\n",
+					'post_type'    => 'post',
+				)
+			);
+			$post_ids[] = $post_id;
+		}
+
+		$output = '';
+		foreach ( $post_ids as $post_id ) {
+			$GLOBALS['post'] = get_post( $post_id );
+			$output         .= apply_filters( 'the_content', $GLOBALS['post']->post_content );
+		}
+
+		unset( $GLOBALS['post'] );
+
+		$this->assertSame( 3, substr_count( $output, '__iawmlf-post-loop-links' ), 'Each post in the loop should contribute exactly one span.' );
+		$this->assertStringNotContainsString( '<br />', $output );
 	}
 }

@@ -261,11 +261,11 @@ class Test_Content_Scanner extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox The link payload span must not be injected while a scan renders blocks. (S126)
+	 * @testdox The link payload span must not be injected while a scan renders content. (S126)
 	 *
 	 * @return void
 	 */
-	public function test_own_render_block_output_is_suppressed_during_a_scan(): void {
+	public function test_own_link_data_output_is_suppressed_during_a_scan(): void {
 		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
 
 		$post_id = self::factory()->post->create(
@@ -294,7 +294,7 @@ class Test_Content_Scanner extends \WP_UnitTestCase {
 		// Outside a scan the span is still added.
 		$this->assertFalse( Content_Scanner::is_rendering() );
 		$GLOBALS['post'] = get_post( $post_id );
-		$this->assertStringContainsString( '__iawmlf-post-loop-links', do_blocks( get_post_field( 'post_content', $post_id ) ) );
+		$this->assertStringContainsString( '__iawmlf-post-loop-links', apply_filters( 'the_content', get_post_field( 'post_content', $post_id ) ) );
 		unset( $GLOBALS['post'] );
 	}
 
