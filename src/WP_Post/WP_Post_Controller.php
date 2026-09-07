@@ -62,7 +62,9 @@ class WP_Post_Controller {
 		add_action( 'save_post', array( $this, 'on_save_post_process_post_links' ), 10, 3 );
 		add_action( 'save_post', array( $this, 'on_save_post_process_own_post' ), 10, 3 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_script' ) );
-		add_filter( 'render_block', array( $this, 'render_block' ), 999, 2 );
+		// Priority 12 puts this after wpautop, which would otherwise reformat the
+		// content around the span it appends (#346).
+		add_filter( 'the_content', array( $this, 'append_link_data' ), 12 );
 	}
 
 	/**
@@ -282,21 +284,32 @@ class WP_Post_Controller {
 	}
 
 	/**
-	 * Render as part of a block template.
+	 * Append the post's link data to the rendered content, once per post.
 	 *
-	 * @param string $block_content The block content.
-	 * @param array  $block         The block.
+	 * Runs on the_content at priority 12, after wpautop, so the span cannot
+	 * change how the content around it is formatted (#346).
+	 *
+	 * @since 1.4.4
+	 *
+	 * @param string $content The rendered post content.
 	 *
 	 * @return string
 	 */
-	public function render_block( string $block_content, array $block ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
-		// A scan renders blocks to find links - the payload span has no place in that.
+	public function append_link_data( string $content ): string {
+		// A scan renders content to find links - the payload span has no place in that.
 		if ( Content_Scanner::is_rendering() ) {
-			return $block_content;
+			return $content;
+		}
+
+		// wp_trim_excerpt() runs the_content to build an auto excerpt, then strips
+		// the tags back off. Answering it would burn the post's one span on output
+		// nobody sees, leaving the real render with none.
+		if ( doing_filter( 'get_the_excerpt' ) ) {
+			return $content;
 		}
 
 		if ( ! Settings::should_render_html_link_output() ) {
-			return $block_content;
+			return $content;
 		}
 
 		static $posts = array();
@@ -305,12 +318,12 @@ class WP_Post_Controller {
 
 		// If the ID is not set, or is in the array, return.
 		if ( ! is_numeric( $post_id ) || in_array( $post_id, $posts, true ) ) {
-			return $block_content;
+			return $content;
 		}
 
 		// Bail if the post is in the excluded posts list.
 		if ( in_array( (int) $post_id, Settings::get_link_fixer_excluded_posts(), true ) ) {
-			return $block_content;
+			return $content;
 		}
 
 		// Add the post id to the array.
@@ -319,21 +332,21 @@ class WP_Post_Controller {
 		// If not a post or a an allowed post type, return.
 		$post = get_post( $post_id );
 		if ( ! $post || ! in_array( $post->post_type, Settings::get_allowed_post_types(), true ) ) {
-			return $block_content;
+			return $content;
 		}
 
 		// Compile the data.
 		$links = $this->link_repository->get_links_for_post( $post_id, true );
 
 		if ( $links->is_empty() ) {
-			return $block_content;
+			return $content;
 		}
 
 		// Encode with all JSON_HEX_* flags.
 		$json      = wp_json_encode( $links, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
 		$html_data = '<span hidden class="__iawmlf-post-loop-links" data-iawmlf-links="' . esc_attr( $json ) . '"></span>';
 
-		return $block_content . $html_data;
+		return $content . $html_data;
 	}
 
 	/**
