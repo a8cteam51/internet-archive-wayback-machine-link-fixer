@@ -23,6 +23,18 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\WP_Post\WP_Post_Table_Controller
 class Test_WP_Post_Table_Controller extends \WP_UnitTestCase {
 
 	/**
+	 * These callbacks only ever run while an admin list table renders, so they
+	 * check the reporting capability. Without a user they correctly output nothing.
+	 *
+	 * @return void
+	 */
+	public function set_up(): void {
+		parent::set_up();
+
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+	}
+
+	/**
 	 * @testdox It should show 1 broken out of 2 when a post has 1 broken and 1 valid link.
 	 *
 	 * @return void

@@ -31,6 +31,17 @@ class Settings_Page {
 	public const GROUP_AUTO_ARCHIVER   = 'iawmlf_auto_archiver';
 
 	/**
+	 * Stands in for a stored archive.org key in the settings form.
+	 *
+	 * The real key is never rendered. Submitting this value back means "leave the
+	 * stored key alone", so an untouched form does not overwrite it, while an
+	 * emptied field still clears it. (S046)
+	 *
+	 * @since 1.4.4
+	 */
+	public const MASKED_KEY_PLACEHOLDER = '****************';
+
+	/**
 	 * The pages menu hook.
 	 *
 	 * @since   1.0.0
@@ -67,6 +78,64 @@ class Settings_Page {
 	 */
 	public function clear_account_details_cache(): void {
 		delete_transient( 'iawmlf_account_details' );
+	}
+
+	/**
+	 * What the settings form shows in place of a stored archive.org key.
+	 *
+	 * @since 1.4.4
+	 *
+	 * @param string $stored The stored key.
+	 *
+	 * @return string The mask if a key is stored, an empty string otherwise.
+	 */
+	public static function mask_stored_key( string $stored ): string {
+		return '' === $stored ? '' : self::MASKED_KEY_PLACEHOLDER;
+	}
+
+	/**
+	 * Sanitize callback for the archive.org access key.
+	 *
+	 * @since 1.4.4
+	 *
+	 * @param mixed $value The submitted value.
+	 *
+	 * @return string
+	 */
+	public static function sanitize_archive_access_key( $value ): string {
+		return self::sanitize_archive_key( (string) $value, Settings::get_archive_access_key() );
+	}
+
+	/**
+	 * Sanitize callback for the archive.org secret key.
+	 *
+	 * @since 1.4.4
+	 *
+	 * @param mixed $value The submitted value.
+	 *
+	 * @return string
+	 */
+	public static function sanitize_archive_secret_key( $value ): string {
+		return self::sanitize_archive_key( (string) $value, Settings::get_archive_secret_key() );
+	}
+
+	/**
+	 * Keeps a stored key when the form sends the mask back untouched.
+	 *
+	 * @since 1.4.4
+	 *
+	 * @param string $submitted The submitted value.
+	 * @param string $stored    The currently stored key.
+	 *
+	 * @return string
+	 */
+	private static function sanitize_archive_key( string $submitted, string $stored ): string {
+		// The form never renders the real key, so getting the mask back means it was not edited.
+		if ( self::MASKED_KEY_PLACEHOLDER === $submitted ) {
+			return $stored;
+		}
+
+		return sanitize_text_field( $submitted );
 	}
 
 	/**
@@ -408,7 +477,7 @@ class Settings_Page {
 			Settings::ARCHIVE_ORG_SECRET_KEY,
 			array(
 				'type'              => 'string',
-				'sanitize_callback' => 'sanitize_text_field',
+				'sanitize_callback' => array( self::class, 'sanitize_archive_secret_key' ),
 				'default'           => '',
 				'show_in_rest'      => false,
 			),
@@ -419,7 +488,7 @@ class Settings_Page {
 			Settings::ARCHIVE_ORG_ACCESS_KEY,
 			array(
 				'type'              => 'string',
-				'sanitize_callback' => 'sanitize_text_field',
+				'sanitize_callback' => array( self::class, 'sanitize_archive_access_key' ),
 				'default'           => '',
 				'show_in_rest'      => false,
 			)
@@ -822,13 +891,20 @@ class Settings_Page {
 	 * @return void
 	 */
 	public function validate_archive_org_keys(): void {
+		// admin-ajax.php fires admin_init before its own is_user_logged_in() check, so
+		// the query args below prove nothing about who is asking. Only someone who can
+		// save these settings may spend the site's credentials on a validation call.
+		if ( wp_doing_ajax() || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		// If we are on this page.
-		if ( ! isset( $_GET['page'] ) || self::PAGE_SLUG !== $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, we are only reading, not using
+		if ( ! isset( $_GET['page'] ) || self::PAGE_SLUG !== $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, capability checked above.
 			return;
 		}
 
 		// If the settings were updated.
-		if ( isset( $_GET['settings-updated'] ) && 'true' === $_GET['settings-updated'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, we are only reading, not using
+		if ( isset( $_GET['settings-updated'] ) && 'true' === $_GET['settings-updated'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, capability checked above.
 			$key        = Settings::get_archive_secret_key();
 			$access_key = Settings::get_archive_access_key();
 
@@ -1400,13 +1476,14 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_archive_api_secret_key(): void {
+		$masked = self::mask_stored_key( Settings::get_archive_secret_key() );
 		?>
 		<input
 			type="password"
 			id="<?php echo esc_attr( Settings::ARCHIVE_ORG_SECRET_KEY ); ?>"
 			name="<?php echo esc_attr( Settings::ARCHIVE_ORG_SECRET_KEY ); ?>"
-			value="<?php echo esc_attr( Settings::get_archive_secret_key() ); ?>"
-			data-previous-value="<?php echo esc_attr( Settings::get_archive_secret_key() ); ?>"
+			value="<?php echo esc_attr( $masked ); ?>"
+			data-previous-value="<?php echo esc_attr( $masked ); ?>"
 			data-is-valid="<?php echo esc_attr( Settings::has_valid_archive_api_credentials() ? '1' : '0' ); ?>"
 			style="width:80%;"
 		/>
@@ -1424,13 +1501,14 @@ class Settings_Page {
 	 * @return  void
 	 */
 	public function render_archive_api_access_key(): void {
+		$masked = self::mask_stored_key( Settings::get_archive_access_key() );
 		?>
 		<input
 			type="password"
 			id="<?php echo esc_attr( Settings::ARCHIVE_ORG_ACCESS_KEY ); ?>"
 			name="<?php echo esc_attr( Settings::ARCHIVE_ORG_ACCESS_KEY ); ?>"
-			value="<?php echo esc_attr( Settings::get_archive_access_key() ); ?>"
-			data-previous-value="<?php echo esc_attr( Settings::get_archive_access_key() ); ?>"
+			value="<?php echo esc_attr( $masked ); ?>"
+			data-previous-value="<?php echo esc_attr( $masked ); ?>"
 			data-is-valid="<?php echo esc_attr( Settings::has_valid_archive_api_credentials() ? '1' : '0' ); ?>"
 			style="width:80%;"
 		/>

@@ -210,8 +210,9 @@ function iawmlf_render_template( string $template, array $args = array(), bool $
 		return;
 	}
 
-	// Extract the args.
-	extract( $args ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+	// Extract the args. EXTR_SKIP so a template arg cannot overwrite this function's
+	// own locals - $path is validated before this runs, and is the include target. (S118)
+	extract( $args, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 
 	// Start the output buffer.
 	ob_start();

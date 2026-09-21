@@ -16,6 +16,7 @@ namespace Internet_Archive\Wayback_Machine_Link_Fixer\Tests\Rest;
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Rest\Link_Check_Rest;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Service_Offline_Exception;
@@ -340,5 +341,111 @@ class Test_Link_Check_Rest extends \WP_UnitTestCase {
 		$stored = $this->link_repository->find_by_url( $url );
 		$this->assertFalse( $stored->is_broken(), "A {$code} must not mark the link broken." );
 		$this->assertNull( $stored->get_last_check(), "A {$code} must not record a check against the link." );
+	}
+
+	/**
+	 * A client that fails the test if it is ever asked to check anything.
+	 *
+	 * @return void
+	 */
+	private function refuse_all_link_checks(): void {
+		$client = $this->createMock( Link_Checker_Client::class );
+		$client->expects( $this->never() )->method( 'check_single' );
+
+		add_filter( 'iawmlf_link_checker_client', fn() => $client );
+	}
+
+	/**
+	 * Assert the route left an excluded link completely alone.
+	 *
+	 * @param \WP_REST_Response $response The response.
+	 * @param string            $url      The link url.
+	 *
+	 * @return void
+	 */
+	private function assert_link_was_left_alone( \WP_REST_Response $response, string $url ): void {
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertFalse( $response->get_data()['updated'], 'An excluded link must not report an update.' );
+
+		$stored = $this->link_repository->find_by_url( $url );
+		$this->assertNull( $stored->get_last_check(), 'An excluded link must have no check written against it.' );
+	}
+
+	/**
+	 * @testdox A link an administrator excluded must not be checkable through the REST route. (T087)
+	 *
+	 * Link_Check_Action::check_link() refuses on is_excluded(), the route did not.
+	 *
+	 * @return void
+	 */
+	public function test_a_manually_excluded_link_is_not_checked(): void {
+		$url  = 'https://ia-manually-excluded.com';
+		$link = new Link( $url );
+		$link->set_archived_href( 'https://web.archive.org/web/20240101/' . $url );
+		$link->set_excluded( true );
+		$this->link_repository->upsert( $link );
+
+		$this->refuse_all_link_checks();
+
+		$this->assert_link_was_left_alone( $this->dispatch_request( array( 'link' => $url ) ), $url );
+	}
+
+	/**
+	 * @testdox A link matching the built-in exclusion list must not be checkable through the REST route. (T087)
+	 *
+	 * @return void
+	 */
+	public function test_a_link_matching_a_bundled_exclusion_is_not_checked(): void {
+		// Settings::BUNDLED_LINK_EXCLUSIONS carries '*.linkedin.com*'.
+		$url  = 'https://www.linkedin.com/in/someone';
+		$link = new Link( $url );
+		$link->set_archived_href( 'https://web.archive.org/web/20240101/' . $url );
+		$this->link_repository->upsert( $link );
+
+		$this->refuse_all_link_checks();
+
+		$this->assert_link_was_left_alone( $this->dispatch_request( array( 'link' => $url ) ), $url );
+	}
+
+	/**
+	 * @testdox A link matching a site's own exclusion pattern must not be checkable through the REST route. (T087)
+	 *
+	 * @return void
+	 */
+	public function test_a_link_matching_a_settings_exclusion_is_not_checked(): void {
+		update_option( Settings::LINK_EXCLUSIONS, array( '*ia-pattern-excluded.com*' ) );
+
+		$url  = 'https://ia-pattern-excluded.com/page';
+		$link = new Link( $url );
+		$link->set_archived_href( 'https://web.archive.org/web/20240101/' . $url );
+		$this->link_repository->upsert( $link );
+
+		$this->refuse_all_link_checks();
+
+		$this->assert_link_was_left_alone( $this->dispatch_request( array( 'link' => $url ) ), $url );
+
+		delete_option( Settings::LINK_EXCLUSIONS );
+	}
+
+	/**
+	 * @testdox A link that is not excluded is still checked, so the guard is not blanket.
+	 *
+	 * @return void
+	 */
+	public function test_a_link_that_is_not_excluded_is_still_checked(): void {
+		$url  = 'https://ia-not-excluded.com';
+		$link = new Link( $url );
+		$link->set_archived_href( 'https://web.archive.org/web/20240101/' . $url );
+		$this->link_repository->upsert( $link );
+
+		$client = $this->createMock( Link_Checker_Client::class );
+		$client->expects( $this->once() )->method( 'check_single' )->willReturn( 200 );
+
+		add_filter( 'iawmlf_link_checker_client', fn() => $client );
+
+		$response = $this->dispatch_request( array( 'link' => $url ) );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertTrue( $response->get_data()['updated'] );
 	}
 }

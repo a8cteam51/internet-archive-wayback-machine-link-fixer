@@ -17,6 +17,7 @@ use WP_REST_Response;
 use WP_Error;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Exclusion;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
 
@@ -131,6 +132,13 @@ class Link_Check_Rest {
 	 * @return boolean
 	 */
 	private function needs_check( Link $link ): bool {
+		// An excluded link is never checked. Link_Check_Action::check_link() has
+		// refused these all along, this route did not, so anyone could force a
+		// check and a write on a link an administrator had excluded. (T087)
+		if ( $link->is_excluded() || Link_Exclusion::get_instance()->is_excluded( $link ) ) {
+			return false;
+		}
+
 		$last_check = $link->get_last_check();
 
 		// If we have no check, return true.

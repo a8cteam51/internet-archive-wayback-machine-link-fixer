@@ -100,7 +100,7 @@ class Report_Page {
 			Dashboard_Page::DASHBOARD_SLUG,
 			__( 'Wayback Link Fixer - Links', 'internet-archive-wayback-machine-link-fixer' ),
 			__( 'Links', 'internet-archive-wayback-machine-link-fixer' ),
-			'manage_options',
+			Settings::get_reporting_page_capability(),
 			self::SLUG,
 			array( $this, 'render_page' )
 		);

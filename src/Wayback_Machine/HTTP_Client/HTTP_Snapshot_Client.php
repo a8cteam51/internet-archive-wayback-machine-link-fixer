@@ -166,13 +166,14 @@ class HTTP_Snapshot_Client implements Snapshot_Client {
 		$snapshot_url = apply_filters( 'iawmlf_create_snapshot_url', $base_url );
 
 		// Trigger a post request with URL as a body param.
+		// TLS verification is left at the WordPress default - this request carries the
+		// account credentials in an Authorization header, so it must not be skipped.
 		$response = wp_safe_remote_post(
 			esc_url( $snapshot_url ),
 			array(
-				'timeout'   => apply_filters( 'iawmlf_create_snapshot_timeout', 5000 ) / 1000, // Filter is in ms, WP_Http expects seconds.
-				'body'      => array( 'url' => $url ),
-				'sslverify' => false,
-				'headers'   => $this->get_headers(),
+				'timeout' => apply_filters( 'iawmlf_create_snapshot_timeout', 5000 ) / 1000, // Filter is in ms, WP_Http expects seconds.
+				'body'    => array( 'url' => $url ),
+				'headers' => $this->get_headers(),
 			)
 		);
 
