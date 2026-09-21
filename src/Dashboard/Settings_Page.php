@@ -37,7 +37,7 @@ class Settings_Page {
 	 * stored key alone", so an untouched form does not overwrite it, while an
 	 * emptied field still clears it. (S046)
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 */
 	public const MASKED_KEY_PLACEHOLDER = '****************';
 
@@ -83,7 +83,7 @@ class Settings_Page {
 	/**
 	 * What the settings form shows in place of a stored archive.org key.
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 *
 	 * @param string $stored The stored key.
 	 *
@@ -96,7 +96,7 @@ class Settings_Page {
 	/**
 	 * Sanitize callback for the archive.org access key.
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 *
 	 * @param mixed $value The submitted value.
 	 *
@@ -109,7 +109,7 @@ class Settings_Page {
 	/**
 	 * Sanitize callback for the archive.org secret key.
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 *
 	 * @param mixed $value The submitted value.
 	 *
@@ -122,7 +122,7 @@ class Settings_Page {
 	/**
 	 * Keeps a stored key when the form sends the mask back untouched.
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 *
 	 * @param string $submitted The submitted value.
 	 * @param string $stored    The currently stored key.

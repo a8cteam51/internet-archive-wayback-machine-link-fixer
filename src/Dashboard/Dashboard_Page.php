@@ -70,7 +70,7 @@ class Dashboard_Page {
 	/**
 	 * Can the current user see the reporting screens?
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 *
 	 * @return boolean
 	 */

@@ -62,7 +62,7 @@ class Migrations {
 	 * WordPress does not fire the activation hook on an update, so this is the only
 	 * thing that gets a schema change onto a site that was already running the plugin.
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 *
 	 * @return void
 	 */

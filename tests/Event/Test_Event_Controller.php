@@ -3,7 +3,7 @@
 /**
  * Tests for the Event Controller.
  *
- * @since 1.4.4
+ * @since 1.5.0
  *
  * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Event\Event_Controller
  *

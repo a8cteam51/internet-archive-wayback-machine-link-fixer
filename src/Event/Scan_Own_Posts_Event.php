@@ -153,7 +153,7 @@ class Scan_Own_Posts_Event {
 	/**
 	 * Gets the ids of all posts that already have a process event waiting in the queue.
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 *
 	 * @return integer[]
 	 */

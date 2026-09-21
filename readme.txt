@@ -2,8 +2,8 @@
 Contributors: waybackmachineplugin, wpspecialprojects, cagrimmett, glynnquelch
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
-Tested up to: 7.0
-Stable tag: 1.4.3
+Tested up to: 7.1
+Stable tag: 1.5.0
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -161,6 +161,16 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 
 == Changelog ==
 
+= 1.5.0 =
+* Security fixes around the archive.org credentials, the link check endpoint and admin access. See the upgrade notice.
+* Adds a "Last Archived" column to the posts list, enabled from Screen Options.
+* Now finds links inside shortcodes, dynamic blocks and international URLs, which were previously skipped.
+* Fix: a stray line break at the end of Classic Editor posts.
+* Fix: the auto archiver could push back its own queue and never run.
+* Various fixes to the links report, link checking and the settings screen.
+* Performance and accessibility improvements throughout the admin.
+* Now requires MySQL 5.7 or MariaDB 10.2, checked on install.
+
 = 1.4.3 =
 * Adds a global set of excluded urls that will never be archived or checked due to the sites blocking the internet archive.
 * Reintroduces a Scan but do nothing outcome for broken links.
@@ -222,6 +232,9 @@ Note: All versions prior to 1.3.0 were not publicly released.
 For developer docs and source code, see the GitHub repository: [https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer)
 
 == Upgrade Notice ==
+
+= 1.5.0 =
+Security release. Fixes an unauthenticated request that could spend your archive.org credentials, stops the settings page printing those keys in its page source, and restores TLS verification on snapshot creation. Also fixes a stray line break at the end of Classic Editor posts. Now requires MySQL 5.7 or MariaDB 10.2.
 
 = 1.4.3 =
 Adds a bundled list of sites that block the Internet Archive, so they are never queued for archiving or checking. Also adds a "Check only" option, which checks links without redirecting them.
