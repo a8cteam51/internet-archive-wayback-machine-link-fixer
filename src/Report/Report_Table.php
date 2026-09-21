@@ -194,6 +194,28 @@ class Report_Table extends \WP_List_Table {
 	}
 
 	/**
+	 * The link ids selected for a bulk action.
+	 *
+	 * The UI always submits an array, column_cb() renders name="iawmlf_link_action[]",
+	 * but the request is not obliged to. A scalar used to reach array_map() and throw
+	 * a TypeError on PHP 8. (S119)
+	 *
+	 * @since 1.4.4
+	 *
+	 * @return int[]
+	 */
+	private function sanitize_bulk_selection(): array {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, the nonce is checked by the caller.
+		$selection = $_GET['iawmlf_link_action'] ?? null;
+
+		if ( ! is_array( $selection ) ) {
+			return array();
+		}
+
+		return array_values( array_filter( array_map( 'absint', $selection ) ) );
+	}
+
+	/**
 	 * Process the bulk actions.
 	 *
 	 * @return void
@@ -222,9 +244,7 @@ class Report_Table extends \WP_List_Table {
 			return;
 		}
 
-		$links = array_key_exists( 'iawmlf_link_action', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			? array_map( 'absint', $_GET['iawmlf_link_action'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended, from url so no nonce possible
-			: array();
+		$links = $this->sanitize_bulk_selection();
 
 		if ( empty( $links ) ) {
 			$this->notices[] = array(

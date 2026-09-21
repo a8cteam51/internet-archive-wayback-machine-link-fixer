@@ -57,7 +57,66 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		remove_all_filters( 'iawmlf_snapshot_client' );
 		remove_all_filters( 'iawmlf_link_checker_client' );
 
+		unset(
+			$_GET['iawmlf_link_action'],
+			$_GET['action'],
+			$_REQUEST['action'],
+			$_REQUEST['_wpnonce']
+		);
+
 		parent::tear_down();
+	}
+
+	/**
+	 * Put a bulk action request together, with a valid nonce.
+	 *
+	 * @param mixed $selection Whatever arrives as iawmlf_link_action.
+	 *
+	 * @return void
+	 */
+	private function build_bulk_action_request( $selection ): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+
+		$_REQUEST['action']         = 'check';
+		$_GET['action']             = 'check';
+		$_REQUEST['_wpnonce']       = wp_create_nonce( 'bulk-reports' );
+		$_GET['iawmlf_link_action'] = $selection;
+	}
+
+	/**
+	 * @testdox A scalar in iawmlf_link_action must not fatal the bulk action handler. (S119)
+	 *
+	 * array_map() is guarded only by array_key_exists(), never is_array(), so a
+	 * scalar throws a TypeError on PHP 8. The UI always submits an array because
+	 * column_cb() renders name="iawmlf_link_action[]", which is why it went unnoticed.
+	 *
+	 * @return void
+	 */
+	public function test_a_scalar_link_selection_does_not_fatal(): void {
+		$this->build_bulk_action_request( '5' );
+
+		$table = new Report_Table( $this->link_repository );
+		$table->process_bulk_action();
+
+		$notices = Objects::get_property( $table, 'notices' );
+
+		$this->assertNotEmpty( $notices, 'A scalar selection should be treated as no selection.' );
+		$this->assertSame( 'No links selected.', $notices[ array_key_last( $notices ) ]['message'] );
+	}
+
+	/**
+	 * @testdox A genuine array selection is still accepted. (S119)
+	 *
+	 * @return void
+	 */
+	public function test_an_array_link_selection_is_still_accepted(): void {
+		$this->build_bulk_action_request( array( '5' ) );
+
+		$table = new Report_Table( $this->link_repository );
+
+		$links = Objects::invoke_method( $table, 'sanitize_bulk_selection', array() );
+
+		$this->assertSame( array( 5 ), $links, 'A real array selection must survive untouched.' );
 	}
 
 	/**

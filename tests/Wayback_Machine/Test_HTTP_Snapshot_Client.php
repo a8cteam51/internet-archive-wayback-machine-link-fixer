@@ -556,4 +556,34 @@ class Test_HTTP_Snapshot_Client extends \WP_UnitTestCase {
 
 		$this->assertSame( 5, $captured_timeout );
 	}
+
+	/**
+	 * @testdox Snapshot creation must never disable TLS verification, it carries the account credentials. (S017)
+	 *
+	 * @return void
+	 */
+	public function test_snapshot_creation_does_not_disable_tls_verification() {
+		$captured_args = null;
+
+		add_filter(
+			'pre_http_request',
+			function ( $response, $args, $url ) use ( &$captured_args ) {
+				$captured_args = $args;
+				return array(
+					'body'     => 'spn.watchJob("some id")',
+					'response' => array( 'code' => 200 ),
+				);
+			},
+			10,
+			3
+		);
+
+		( new HTTP_Snapshot_Client() )->create_snapshot( 'http://example.com' );
+
+		$this->assertNotNull( $captured_args, 'The request was never made.' );
+		$this->assertNotFalse(
+			$captured_args['sslverify'] ?? true,
+			'create_snapshot() sends the Authorization header, so it must not turn off certificate verification.'
+		);
+	}
 }

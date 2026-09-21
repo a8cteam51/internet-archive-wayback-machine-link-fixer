@@ -33,13 +33,22 @@ class Dashboard_Notifications {
 	 * @return void
 	 */
 	public function initialize(): void {
-		// If user can not access the reporting page, return.
-		if ( ! current_user_can( Settings::get_reporting_page_capability() ) ) {
-			return;
-		}
-
+		// The capability is checked when each hook fires, not here. This runs on
+		// plugins_loaded, before an init-time iawmlf_reporting_page_capability
+		// filter has been added, so deciding now would ignore it. (S049)
 		add_action( 'wp_dashboard_setup', array( $this, 'register_widgets' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+	}
+
+	/**
+	 * Can the current user see the reporting screens?
+	 *
+	 * @since 1.4.4
+	 *
+	 * @return boolean
+	 */
+	private function can_view_reports(): bool {
+		return current_user_can( Settings::get_reporting_page_capability() );
 	}
 
 	/**
@@ -48,6 +57,10 @@ class Dashboard_Notifications {
 	 * @return void
 	 */
 	public function enqueue_styles(): void {
+		if ( ! $this->can_view_reports() ) {
+			return;
+		}
+
 		$screen = get_current_screen();
 		if ( $screen && 'dashboard' === $screen->id ) {
 			wp_enqueue_style(
@@ -65,6 +78,10 @@ class Dashboard_Notifications {
 	 * @return void
 	 */
 	public function register_widgets(): void {
+		if ( ! $this->can_view_reports() ) {
+			return;
+		}
+
 		wp_add_dashboard_widget(
 			'iawmlf_dashboard_widget',
 			__( 'Wayback Link Fixer', 'internet-archive-wayback-machine-link-fixer' ),

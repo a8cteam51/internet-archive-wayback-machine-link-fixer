@@ -59,14 +59,23 @@ class Dashboard_Page {
 	 * @return void
 	 */
 	public function initialize(): void {
-		// If user can not access the reporting page, return.
-		if ( ! current_user_can( Settings::get_reporting_page_capability() ) ) {
-			return;
-		}
-
+		// The capability is checked when each hook fires, not here. This runs on
+		// plugins_loaded, before an init-time iawmlf_reporting_page_capability
+		// filter has been added, so deciding now would ignore it. (S049)
 		add_action( 'admin_menu', array( $this, 'register_page' ), 9 );
 		add_action( 'admin_menu', array( $this, 'rename_first_submenu_item' ), 999 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+	}
+
+	/**
+	 * Can the current user see the reporting screens?
+	 *
+	 * @since 1.4.4
+	 *
+	 * @return boolean
+	 */
+	private function can_view_reports(): bool {
+		return current_user_can( Settings::get_reporting_page_capability() );
 	}
 
 	/**
@@ -95,6 +104,10 @@ class Dashboard_Page {
 	 * @return void
 	 */
 	public function enqueue_assets(): void {
+		if ( ! $this->can_view_reports() ) {
+			return;
+		}
+
 		$screen = get_current_screen();
 
 		// Only load on our dashboard page and the main dashboard (for the widget)

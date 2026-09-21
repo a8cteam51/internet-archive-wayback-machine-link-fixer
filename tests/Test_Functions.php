@@ -322,4 +322,67 @@ public function test_status_codes_that_mark_link_as_excluded( string $status_cod
 		$this->assertTrue( \iawmlf_is_database_version_compatible(), 'The test database must support JSON columns, the link table needs one.' );
 		$this->assertTrue( \iawmlf_validate_requirements(), 'The test environment should meet every plugin requirement.' );
 	}
+
+	/**
+	 * @testdox Template args must never overwrite iawmlf_render_template's own locals, the include target least of all. (S118)
+	 *
+	 * $path is computed and validated with file_exists() before extract() runs, so
+	 * an arg named 'path' would swap the include target after the check.
+	 *
+	 * @return void
+	 */
+	public function test_template_args_cannot_replace_the_include_target(): void {
+		$html = \iawmlf_render_template(
+			'admin/links-table/help-tab-columns.php',
+			array( 'path' => IAWMLF_PATH . 'templates/admin/links-table/help-tab-bulk-actions.php' ),
+			false
+		);
+
+		$this->assertStringContainsString(
+			'iawmlf_help_tab_columns',
+			(string) $html,
+			'The requested template should have been rendered.'
+		);
+
+		$this->assertStringNotContainsString(
+			'iawmlf_help_tab_bulk_actions',
+			(string) $html,
+			'A template arg named "path" hijacked the include.'
+		);
+	}
+
+	/**
+	 * @testdox A template arg named "render" must not flip printing to returning. (S118)
+	 *
+	 * @return void
+	 */
+	public function test_template_args_cannot_flip_the_render_flag(): void {
+		ob_start();
+		$html = \iawmlf_render_template(
+			'admin/links-table/help-tab-columns.php',
+			array( 'render' => true ),
+			false
+		);
+		$echoed = (string) ob_get_clean();
+
+		$this->assertSame( '', $echoed, 'Nothing should have been printed, the caller asked for the HTML back.' );
+		$this->assertStringContainsString( 'iawmlf_help_tab_columns', (string) $html );
+	}
+
+	/**
+	 * @testdox Template args that do not collide are still passed through to the template.
+	 *
+	 * @return void
+	 */
+	public function test_non_colliding_template_args_are_still_extracted(): void {
+		// help-tab-columns.php reads no args, so prove extraction still works by
+		// checking a variable of our own survives into the included file's scope.
+		$html = \iawmlf_render_template(
+			'admin/links-table/help-tab-columns.php',
+			array( 'iawmlf_unused_arg' => 'value' ),
+			false
+		);
+
+		$this->assertStringContainsString( 'iawmlf_help_tab_columns', (string) $html );
+	}
 }

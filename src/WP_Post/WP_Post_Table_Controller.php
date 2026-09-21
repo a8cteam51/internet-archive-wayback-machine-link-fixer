@@ -56,10 +56,9 @@ class WP_Post_Table_Controller {
 	 * @return void
 	 */
 	private function register_hooks(): void {
-		// If logged in users is not allowed to view the links, return.
-		if ( ! current_user_can( Settings::get_reporting_page_capability() ) ) {
-			return;
-		}
+		// The capability is checked when each hook fires, not here. This runs on
+		// plugins_loaded, before an init-time iawmlf_reporting_page_capability
+		// filter has been added, so deciding now would ignore it. (S049)
 		add_filter( 'manage_posts_columns', array( $this, 'add_column' ) );
 		add_filter( 'manage_pages_columns', array( $this, 'add_column' ) );
 		add_action( 'manage_pages_custom_column', array( $this, 'render_link_column' ), 10, 2 );
@@ -110,6 +109,10 @@ class WP_Post_Table_Controller {
 	 * @return array
 	 */
 	public function add_column( array $columns ): array {
+		if ( ! $this->can_view_reports() ) {
+			return $columns;
+		}
+
 		$post_type = $this->get_current_post_type();
 
 		// Add the links column for any post type whose links are scanned.
@@ -126,7 +129,18 @@ class WP_Post_Table_Controller {
 	}
 
 	/**
-	 * Gets the post type of the table currently being rendered.
+	 * Can the current user see the reporting screens?
+	 *
+	 * @since 1.4.4
+	 *
+	 * @return boolean
+	 */
+	private function can_view_reports(): bool {
+		return current_user_can( Settings::get_reporting_page_capability() );
+	}
+
+	/**
+	 * Gets the post type of the list table currently being rendered.
 	 *
 	 * @return string
 	 */
@@ -151,6 +165,10 @@ class WP_Post_Table_Controller {
 	 * @return void
 	 */
 	public function render_link_column( string $column_name, int $post_id ): void {
+		if ( ! $this->can_view_reports() ) {
+			return;
+		}
+
 		if ( self::LINK_COLUMN_KEY !== $column_name ) {
 			return;
 		}
@@ -216,6 +234,10 @@ class WP_Post_Table_Controller {
 	 * @return string[]
 	 */
 	public function hide_archived_column_by_default( array $hidden, $screen ): array {
+		if ( ! $this->can_view_reports() ) {
+			return $hidden;
+		}
+
 		if ( ! $screen instanceof \WP_Screen || 'edit' !== $screen->base ) {
 			return $hidden;
 		}
@@ -238,6 +260,10 @@ class WP_Post_Table_Controller {
 	 * @return void
 	 */
 	public function render_archived_column( string $column_name, int $post_id ): void {
+		if ( ! $this->can_view_reports() ) {
+			return;
+		}
+
 		if ( self::ARCHIVED_COLUMN_KEY !== $column_name ) {
 			return;
 		}
