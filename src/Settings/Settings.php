@@ -159,7 +159,7 @@ class Settings {
 	/**
 	 * Get the plugin version the site was last loaded on.
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 *
 	 * @return string
 	 */
@@ -172,7 +172,7 @@ class Settings {
 	 *
 	 * Autoloaded, so the version check on a normal request costs no extra query.
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 *
 	 * @param string $version The version to store.
 	 *

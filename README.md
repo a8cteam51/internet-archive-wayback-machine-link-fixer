@@ -3,9 +3,9 @@
 **Contributors:** wpcomspecialprojects  
 **Tags:** wayback machine, internet archive, broken links, archive links  
 **Requires at least:** 6.4  
-**Tested up to:** 7.0  
+**Tested up to:** 7.1  
 **Requires PHP:** 7.4  
-**Stable tag:** 1.4.3
+**Stable tag:** 1.5.0
 **License:** GPL-3.0-or-later  
 **License URI:** https://www.gnu.org/licenses/gpl-3.0.html
 

@@ -3,7 +3,7 @@
 /**
  * Tests for the Dashboard Notifications.
  *
- * @since 1.4.4
+ * @since 1.5.0
  *
  * @coversDefaultClass \Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Notifications
  *

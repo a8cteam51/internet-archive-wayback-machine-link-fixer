@@ -289,7 +289,7 @@ class WP_Post_Controller {
 	 * Runs on the_content at priority 12, after wpautop, so the span cannot
 	 * change how the content around it is formatted (#346).
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 *
 	 * @param string $content The rendered post content.
 	 *

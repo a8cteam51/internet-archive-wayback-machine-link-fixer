@@ -200,7 +200,7 @@ class Report_Table extends \WP_List_Table {
 	 * but the request is not obliged to. A scalar used to reach array_map() and throw
 	 * a TypeError on PHP 8. (S119)
 	 *
-	 * @since 1.4.4
+	 * @since 1.5.0
 	 *
 	 * @return int[]
 	 */

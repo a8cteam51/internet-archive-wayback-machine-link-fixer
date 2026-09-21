@@ -2,8 +2,8 @@
 Contributors: waybackmachineplugin, wpspecialprojects, cagrimmett, glynnquelch
 Tags: wayback machine, internet archive, broken links, archive links
 Requires at least: 6.4
-Tested up to: 7.0
-Stable tag: 1.4.3
+Tested up to: 7.1
+Stable tag: 1.5.0
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -161,6 +161,54 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 
 == Changelog ==
 
+= 1.5.0 =
+
+Security
+* Fix: the archive.org key validator ran on every admin request without a capability check, so a logged out visitor could make your site send its API credentials to archive.org and record the result. A failed attempt marked the keys invalid, which silently stopped authenticated archiving.
+* Fix: snapshot creation sent your API credentials with TLS certificate verification turned off.
+* Fix: the settings screen printed both archive.org keys in the page source. They are now masked, and saving without editing them keeps the stored key.
+* Fix: the link check REST endpoint ignored exclusions, so an excluded link could still be checked and overwritten.
+* Fix: the `iawmlf_reporting_page_capability` filter was read too early to take effect, so widening access to the reports never worked. The Links report now follows it too. Advanced Settings stays on `manage_options`.
+
+New
+* Adds a "Last Archived" column to the posts list, showing when each post was last snapshotted. Hidden by default, enable it in Screen Options.
+* Scans links produced by shortcodes and dynamic blocks, not just raw post content.
+* Scans international URLs with accented paths, non-Latin queries or IDN hosts, which were previously skipped entirely.
+
+Fixes
+* Fix: a trailing `<br />` appeared at the end of Classic Editor posts. The plugin's hidden link data is now added after WordPress finishes formatting the content.
+* Fix: a post whose excerpt was generated before the content rendered lost its link data entirely, so the front end checker did nothing for that post.
+* Fix: the auto archiver re-queued posts that were already waiting, pushing them back an hour every 15 minutes so they never ran.
+* Fix: link check timeouts were read as seconds but written as milliseconds, so a hung endpoint could hold a PHP worker for over an hour.
+* Fix: the date sort and month filter on the links report failed on MySQL when any link had never been checked.
+* Fix: the links report could fatal on a malformed check date, a deregistered post type, or a per-page setting of zero.
+* Fix: saving the settings while the setup wizard redirect was pending silently discarded the save.
+* Fix: bulk actions ran after output had started, so refreshing the page re-ran them.
+* Fix: capitalised URLs were treated as new links, so archive.org links were re-archived and exclusion patterns missed.
+* Fix: the "Force HTTPS" display setting was being written into stored archive URLs and outlived the setting.
+* Fix: the front end recheck interval was out by the site's timezone offset.
+* Fix: manual link exclusions could lose their provenance and be lifted automatically.
+* Fix: the check frequency and failure threshold defaults disagreed with the help text. All now 3.
+
+Performance
+* Halves the requests to the link checker by reusing the response already fetched for the same link.
+* Caches failed archive.org account lookups, which previously re-ran a blocking request on every dashboard load.
+* Caches the "service offline" answer, which previously never cached and re-ran on every request.
+* Trims the link data embedded in each page to the three most recent checks rather than the full history.
+* Paginates the post search in the settings exclusions picker, which previously loaded every matching post.
+* Stops the scheduler self-checks and settings registration running on front end and AJAX requests.
+
+Compatibility
+* Checks the database supports JSON columns before installing. On MySQL below 5.7 or MariaDB below 10.2 the link table silently never appeared.
+* Fixes a white screen on WordPress below 6.4, where the notice telling you to upgrade used a function that version does not have.
+* Runs pending database migrations on plugin update, not only on activation.
+
+Accessibility
+* The dashboard accordion is now a button with proper state, not a link that never navigates.
+* Icon-only status columns now carry text labels for screen readers.
+* Admin notices now appear below the page heading rather than above it.
+* All external admin links now carry `rel="noopener noreferrer"`.
+
 = 1.4.3 =
 * Adds a global set of excluded urls that will never be archived or checked due to the sites blocking the internet archive.
 * Reintroduces a Scan but do nothing outcome for broken links.
@@ -222,6 +270,9 @@ Note: All versions prior to 1.3.0 were not publicly released.
 For developer docs and source code, see the GitHub repository: [https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer](https://github.com/a8cteam51/internet-archive-wayback-machine-link-fixer)
 
 == Upgrade Notice ==
+
+= 1.5.0 =
+Security release. Fixes an unauthenticated request that could spend your archive.org credentials, stops the settings page printing those keys in its page source, and restores TLS verification on snapshot creation. Also fixes a stray line break at the end of Classic Editor posts. Now requires MySQL 5.7 or MariaDB 10.2.
 
 = 1.4.3 =
 Adds a bundled list of sites that block the Internet Archive, so they are never queued for archiving or checking. Also adds a "Check only" option, which checks links without redirecting them.
