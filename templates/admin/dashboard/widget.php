@@ -19,6 +19,7 @@
  */
 
 use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Dashboard_Page;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Dashboard\Settings_Page;
 
 defined( 'ABSPATH' ) || exit;
 ?>
@@ -130,7 +131,7 @@ defined( 'ABSPATH' ) || exit;
 								absint( $iawmlf_failed_check_count )
 							);
 							?>
-						<?php else : ?>
+						<?php elseif ( Settings_Page::current_user_can_access() ) : ?>
 							<?php
 							echo wp_kses(
 								sprintf(
@@ -141,6 +142,8 @@ defined( 'ABSPATH' ) || exit;
 								array( 'a' => array( 'href' => array() ) )
 							);
 							?>
+						<?php else : ?>
+							<?php esc_html_e( 'Links are not being checked.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 						<?php endif; ?>
 					</div>
 				</div>
@@ -155,10 +158,12 @@ defined( 'ABSPATH' ) || exit;
 			<span class="link-text"><?php esc_html_e( 'Dashboard', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
 		</a>
 		<?php endif; ?>
+		<?php if ( Settings_Page::current_user_can_access() ) : ?>
 		<a href="<?php echo esc_url( $iawmlf_link_to_settings ); ?>" class="button">
 			<span class="dashicons dashicons-admin-settings"></span>
 			<span class="link-text"><?php esc_html_e( 'Advanced Settings', 'internet-archive-wayback-machine-link-fixer' ); ?></span>
 		</a>
+		<?php endif; ?>
 		<a href="<?php echo esc_url( $iawmlf_link_table ); ?>" class="button">
 			<span class="dashicons dashicons-list-view"></span>
 			<span class="link-text">

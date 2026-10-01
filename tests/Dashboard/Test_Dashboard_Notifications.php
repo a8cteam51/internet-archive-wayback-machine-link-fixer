@@ -99,4 +99,51 @@ class Test_Dashboard_Notifications extends \WP_UnitTestCase {
 		update_option( Settings::ARCHIVE_ORG_SECRET_KEY, 'first-secret-key' );
 		$this->assertFalse( get_transient( 'iawmlf_account_details' ), 'A secret key save must clear the cached account details.' );
 	}
+
+	/**
+	 * Renders the widget for the current user, with link processing off and no Archive.org request.
+	 *
+	 * @return string
+	 */
+	private function render_widget(): string {
+		set_transient( 'iawmlf_account_details', 'NO DATA', HOUR_IN_SECONDS );
+		set_transient( 'iawmlf_archive_api_online', 'yes', HOUR_IN_SECONDS );
+		update_option( Settings::PROCESS_LINKS, 0 );
+
+		ob_start();
+		( new Dashboard_Notifications() )->render_widget();
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * @testdox The widget should link to Advanced Settings for users who can open it. (#383)
+	 *
+	 * @return void
+	 */
+	public function test_widget_links_to_settings_for_administrators(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+
+		$output = $this->render_widget();
+
+		$this->assertStringContainsString( 'Advanced Settings', $output );
+		$this->assertStringContainsString( 'Enable Link Processing', $output );
+		$this->assertStringContainsString( Settings_Page::get_page_url(), $output );
+	}
+
+	/**
+	 * @testdox The widget should not link to Advanced Settings for users who cannot open it. (#383)
+	 *
+	 * @return void
+	 */
+	public function test_widget_does_not_link_to_settings_for_editors(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'editor' ) ) );
+		add_filter( 'iawmlf_reporting_page_capability', fn() => 'edit_posts' );
+
+		$output = $this->render_widget();
+
+		$this->assertStringContainsString( 'Links are not being checked.', $output );
+		$this->assertStringNotContainsString( 'Advanced Settings', $output );
+		$this->assertStringNotContainsString( 'Enable Link Processing', $output );
+		$this->assertStringNotContainsString( Settings_Page::get_page_url(), $output );
+	}
 }

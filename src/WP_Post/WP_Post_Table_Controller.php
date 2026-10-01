@@ -173,13 +173,9 @@ class WP_Post_Table_Controller {
 			return;
 		}
 
-		// If the post is excluded, show a message with a link to settings.
+		// If the post is excluded, say so.
 		if ( in_array( $post_id, Settings::get_link_fixer_excluded_posts(), true ) ) {
-			printf(
-				'<a href="%1$s"><em>%2$s</em></a>',
-				esc_url( Settings_Page::get_page_url() ),
-				esc_html__( 'Excluded post', 'internet-archive-wayback-machine-link-fixer' )
-			);
+			$this->render_excluded_post();
 			return;
 		}
 
@@ -270,11 +266,7 @@ class WP_Post_Table_Controller {
 
 		// If the post is excluded from auto archiving, say so rather than showing it as never archived.
 		if ( in_array( $post_id, Settings::get_auto_archiver_excluded_posts(), true ) ) {
-			printf(
-				'<a href="%1$s"><em>%2$s</em></a>',
-				esc_url( Settings_Page::get_page_url() ),
-				esc_html__( 'Excluded post', 'internet-archive-wayback-machine-link-fixer' )
-			);
+			$this->render_excluded_post();
 			return;
 		}
 
@@ -289,6 +281,24 @@ class WP_Post_Table_Controller {
 			'<time datetime="%1$s">%2$s</time>',
 			esc_attr( gmdate( 'c', $archived_at ) ),
 			esc_html( wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $archived_at ) )
+		);
+	}
+
+	/**
+	 * Prints "Excluded post", linked to the settings page only for users who can open it.
+	 *
+	 * @return void
+	 */
+	private function render_excluded_post(): void {
+		if ( ! Settings_Page::current_user_can_access() ) {
+			printf( '<em>%s</em>', esc_html__( 'Excluded post', 'internet-archive-wayback-machine-link-fixer' ) );
+			return;
+		}
+
+		printf(
+			'<a href="%1$s"><em>%2$s</em></a>',
+			esc_url( Settings_Page::get_page_url() ),
+			esc_html__( 'Excluded post', 'internet-archive-wayback-machine-link-fixer' )
 		);
 	}
 

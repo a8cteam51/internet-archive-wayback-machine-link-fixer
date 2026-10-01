@@ -150,6 +150,17 @@ class Settings_Page {
 	}
 
 	/**
+	 * Can the current user open the settings page? Matches the capability in register_page().
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return boolean
+	 */
+	public static function current_user_can_access(): bool {
+		return current_user_can( 'manage_options' );
+	}
+
+	/**
 	 * Register the settings page.
 	 *
 	 * @since   1.0.0
