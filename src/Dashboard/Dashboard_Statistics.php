@@ -278,9 +278,9 @@ class Dashboard_Statistics {
 	}
 
 	/**
-	 * Get post count.
+	 * Count the posts Scan_Posts_Event can reach: published and not on the Link Fixer excluded posts list.
 	 *
-	 * @param boolean $all Whether to get all posts or only processed.
+	 * @param boolean $all Whether to count all of them, or only those not scanned yet.
 	 *
 	 * @return integer
 	 */
@@ -298,6 +298,8 @@ class Dashboard_Statistics {
 
 		$args = array(
 			'post_type'              => Settings::get_allowed_post_types(),
+			'post_status'            => 'publish',
+			'post__not_in'           => Settings::get_link_fixer_excluded_posts(),
 			'cache_results'          => false,
 			'update_post_meta_cache' => false,
 			'meta_query'             => $meta_query,

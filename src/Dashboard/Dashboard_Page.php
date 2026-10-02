@@ -241,9 +241,11 @@ class Dashboard_Page {
 			$filtered_url_base
 		);
 
+		// Excluded links are not counted, so are not listed either.
 		$all_broken_link = add_query_arg(
 			array(
-				'iawmlf_status' => '1',
+				'iawmlf_status'      => '1',
+				'iawmlf_is_excluded' => '0',
 			),
 			$filtered_url_base
 		);

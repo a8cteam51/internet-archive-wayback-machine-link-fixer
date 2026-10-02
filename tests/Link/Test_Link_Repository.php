@@ -50,6 +50,19 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Clears the post IDs cached by get_post_ids_from_link_id(), so later tests read fresh meta.
+	 *
+	 * @return void
+	 */
+	public function tearDown(): void {
+		$cache = new \ReflectionProperty( Link_Repository::class, 'link_meta' );
+		$cache->setAccessible( true );
+		$cache->setValue( null, null );
+
+		parent::tearDown();
+	}
+
+	/**
 	 * @testdox It should be possible to add a link to the repository.
 	 *
 	 * @return void
