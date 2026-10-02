@@ -298,6 +298,47 @@ class Test_Settings_Page extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Run link exclusion rules through the sanitize callback registered for them.
+	 *
+	 * @param array $rules The submitted rules.
+	 *
+	 * @return array
+	 */
+	private function sanitize_link_exclusions( array $rules ): array {
+		$this->register_on_settings_screen();
+
+		return (array) apply_filters( 'sanitize_option_' . Settings::LINK_EXCLUSIONS, $rules, Settings::LINK_EXCLUSIONS, $rules );
+	}
+
+	/**
+	 * @testdox Link exclusion rules keep percent-encoded characters when saved. (#384)
+	 *
+	 * @return void
+	 */
+	public function test_link_exclusions_keep_percent_encoding(): void {
+		$rules = array( '*example.org/my%20page*', '*example.com/caf%C3%A9?a=1&b=2*' );
+
+		$this->assertSame( $rules, $this->sanitize_link_exclusions( $rules ) );
+	}
+
+	/**
+	 * @testdox Link exclusion rules without percent-encoding are sanitized exactly as sanitize_text_field() would. (#384)
+	 *
+	 * @return void
+	 */
+	public function test_link_exclusions_otherwise_match_sanitize_text_field(): void {
+		$rules = array(
+			"  *example.org/<b>bold</b>*\n",
+			"*a\tb\r\nc*",
+			'*1 < 2*',
+			'<script>alert(1)</script>*example.net*',
+			array( 'not a rule' ),
+		);
+
+		$this->assertSame( array_map( 'sanitize_text_field', $rules ), $this->sanitize_link_exclusions( $rules ) );
+	}
+
+	/**
 	 * Put the request into the exact shape validate_archive_org_keys() looks for.
 	 *
 	 * @return void

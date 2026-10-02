@@ -158,19 +158,27 @@
 		let loadingMore    = false;
 
 		/**
-		 * Highlight search term in text using <mark> tags.
+		 * Escape plain text and highlight the search term in it using <mark> tags.
 		 *
-		 * @param {string} text   - The text to highlight within.
+		 * Split before escaping, so a match is never wrapped inside an escaped entity.
+		 *
+		 * @param {string} text   - The plain text to highlight within.
 		 * @param {string} search - The search term to highlight.
 		 *
-		 * @return {string} HTML string with highlighted matches.
+		 * @return {string} Escaped HTML string with highlighted matches.
 		 */
 		function highlight(text, search) {
-			if (!search || !text) {
-				return text || '';
+			if (!text) {
+				return '';
+			}
+			if (!search) {
+				return escapeHTML(text);
 			}
 			const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-			return text.replace(new RegExp('(' + escaped + ')', 'gi'), '<mark>$1</mark>');
+			// The capture group puts every match at an odd index.
+			return text.split(new RegExp('(' + escaped + ')', 'gi')).map(function (part, i) {
+				return i % 2 ? '<mark>' + escapeHTML(part) + '</mark>' : escapeHTML(part);
+			}).join('');
 		}
 
 		/**
@@ -235,9 +243,15 @@
 
 			let html = '';
 			results.forEach(function (result, i) {
+				let meta = escapeHTML(result.post_type) + ' &middot; ' + escapeHTML(String(result.status)) + ' &middot; ID: ' + escapeHTML(String(result.id));
+				// Drafts and pending posts can have an empty slug.
+				if (result.slug) {
+					meta += ' &middot; /' + highlight(result.slug, search);
+				}
+
 				html += '<div class="iawmlf-post-search__item" data-index="' + (startIndex + i) + '">';
-				html += '<div class="iawmlf-post-search__item-title">' + highlight(escapeHTML(result.title), search) + '</div>';
-				html += '<div class="iawmlf-post-search__item-meta">' + escapeHTML(result.post_type) + ' &middot; ID: ' + escapeHTML(String(result.id)) + ' &middot; /' + highlight(escapeHTML(result.slug), search) + '</div>';
+				html += '<div class="iawmlf-post-search__item-title">' + highlight(result.title, search) + '</div>';
+				html += '<div class="iawmlf-post-search__item-meta">' + meta + '</div>';
 				html += '</div>';
 			});
 
@@ -677,7 +691,9 @@
 
 			const elements = document.querySelectorAll(fieldList);
 			elements.forEach(function (element) {
-				if (!isChecked) {
+				// The Link Icon row also needs "Replace link" selected.
+				const needsReplace = element.classList.contains('iawmlf_toggle_setting__fixer_replace') && FIXER_OPTION && 'replace_link' !== FIXER_OPTION.value;
+				if (!isChecked || needsReplace) {
 					element.classList.add('hidden');
 				} else {
 					element.classList.remove('hidden');

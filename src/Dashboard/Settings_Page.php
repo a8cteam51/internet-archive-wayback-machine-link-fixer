@@ -120,6 +120,30 @@ class Settings_Page {
 	}
 
 	/**
+	 * Sanitize callback for the link exclusion rules. As sanitize_text_field(), but keeps percent-encoding such as %20.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param mixed $value The submitted rules.
+	 *
+	 * @return string[]
+	 */
+	public static function sanitize_link_exclusions( $value ): array {
+		return array_map(
+			static function ( $rule ): string {
+				$rule = wp_check_invalid_utf8( is_scalar( $rule ) ? (string) $rule : '' );
+
+				if ( false !== strpos( $rule, '<' ) ) {
+					$rule = str_replace( "<\n", "&lt;\n", wp_strip_all_tags( wp_pre_kses_less_than( $rule ), false ) );
+				}
+
+				return trim( preg_replace( '/[\r\n\t ]+/', ' ', $rule ) );
+			},
+			(array) $value
+		);
+	}
+
+	/**
 	 * Keeps a stored key when the form sends the mask back untouched.
 	 *
 	 * @since 1.5.0
@@ -412,7 +436,7 @@ class Settings_Page {
 			Settings::LINK_EXCLUSIONS,
 			array(
 				'type'              => 'array',
-				'sanitize_callback' => fn( $value ): array => array_map( 'sanitize_text_field', (array) $value ),
+				'sanitize_callback' => array( self::class, 'sanitize_link_exclusions' ),
 				'default'           => array(),
 				'show_in_rest'      => array(
 					'name'   => Settings::LINK_EXCLUSIONS,
