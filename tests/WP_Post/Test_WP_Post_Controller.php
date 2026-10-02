@@ -1522,4 +1522,66 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 		$this->assertSame( 3, substr_count( $output, '__iawmlf-post-loop-links' ), 'Each post in the loop should contribute exactly one span.' );
 		$this->assertStringNotContainsString( '<br />', $output );
 	}
+
+	/**
+	 * @testdox On a page that lists posts, the front end script still loads when the first post listed is excluded, without that post's links. (#387)
+	 *
+	 * @return void
+	 */
+	public function test_front_end_script_loads_on_a_listing_page_with_an_excluded_first_post(): void {
+		// Only the posts this test creates, so the excluded one is listed first.
+		$existing = get_posts(
+			array(
+				'post_type'      => 'any',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+			)
+		);
+		foreach ( $existing as $post ) {
+			wp_delete_post( $post->ID, true );
+		}
+
+		self::factory()->post->create(
+			array(
+				'post_content' => 'An <a href="https://example.com/older">older link</a>.',
+				'post_date'    => gmdate( 'Y-m-d H:i:s', strtotime( '-2 days' ) ),
+			)
+		);
+		$newer_id = self::factory()->post->create(
+			array(
+				'post_content' => 'A <a href="https://example.com/newer">newer link</a>.',
+				'post_date'    => gmdate( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
+			)
+		);
+		update_option( Settings::LINK_FIXER_EXCLUDED_POSTS, array( $newer_id ) );
+
+		$this->go_to( home_url( '/' ) );
+		$this->assertSame( $newer_id, get_the_ID(), 'The excluded post should be the first one listed.' );
+
+		( new WP_Post_Controller() )->enqueue_frontend_script();
+
+		$this->assertTrue( wp_script_is( 'iawm-link-fixer-front-link-checker' ), 'The script is needed for the other posts\' link data.' );
+
+		$matches = array();
+		preg_match( '/\{.*\}/', (string) wp_scripts()->get_data( 'iawm-link-fixer-front-link-checker', 'data' ), $matches );
+		$data = json_decode( $matches[0], true );
+
+		$this->assertSame( array(), json_decode( $data['links'], true ), 'The excluded post\'s links should not be passed to the script.' );
+	}
+
+	/**
+	 * @testdox On an excluded single post, the front end script is still not loaded. (#387)
+	 *
+	 * @return void
+	 */
+	public function test_front_end_script_is_not_loaded_on_an_excluded_single_post(): void {
+		$post_id = self::factory()->post->create( array( 'post_content' => 'A <a href="https://example.com/single">link</a>.' ) );
+		update_option( Settings::LINK_FIXER_EXCLUDED_POSTS, array( $post_id ) );
+
+		$this->go_to( get_permalink( $post_id ) );
+
+		( new WP_Post_Controller() )->enqueue_frontend_script();
+
+		$this->assertFalse( wp_script_is( 'iawm-link-fixer-front-link-checker' ) );
+	}
 }

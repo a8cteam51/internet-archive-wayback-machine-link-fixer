@@ -140,6 +140,37 @@ class Test_Content_Scanner extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox An href a browser opens is scanned even with spaces around it or its scheme in capitals, and stored with a lower case scheme. (#387)
+	 *
+	 * @dataProvider data_provider_hrefs_a_browser_tidies
+	 *
+	 * @param string $href     The href as written in the content.
+	 * @param string $expected The link the scan should store.
+	 *
+	 * @return void
+	 */
+	public function test_hrefs_a_browser_tidies_are_scanned( string $href, string $expected ): void {
+		$scanner = new Content_Scanner( sprintf( 'A link to <a href="%s">example</a>', $href ) );
+
+		$this->assertSame( array( $expected ), array_values( $scanner->scan()->get_links() ) );
+	}
+
+	/**
+	 * Data provider for test_hrefs_a_browser_tidies_are_scanned.
+	 *
+	 * @return array<string, array{0: string, 1: string}>
+	 */
+	public static function data_provider_hrefs_a_browser_tidies(): array {
+		return array(
+			'scheme in capitals'   => array( 'HTTPS://not-from.post/content', 'https://not-from.post/content' ),
+			'mixed case http'      => array( 'Http://not-from.post/content', 'http://not-from.post/content' ),
+			'spaces around'        => array( ' https://not-from.post/content ', 'https://not-from.post/content' ),
+			'tab and line break'   => array( "\thttps://not-from.post/content\n", 'https://not-from.post/content' ),
+			'rest of the case kept' => array( 'HTTPS://NOT-FROM.POST/Content', 'https://NOT-FROM.POST/Content' ),
+		);
+	}
+
+	/**
 	 * @testdox A malformed URL must still be rejected, even after the encoding fallback. (S126)
 	 *
 	 * @dataProvider data_provider_still_invalid_urls

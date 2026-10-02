@@ -217,7 +217,7 @@ const getArchivedLink = (link) => {
 		let archivedLink = allLinks[i];
 
 		// Check if the link exists in the archived links
-		if (removeTrailingSlash(archivedLink.href) === removeTrailingSlash(link)) {
+		if (normaliseHref(archivedLink.href) === normaliseHref(link)) {
 			return archivedLink;
 		}
 	}
@@ -246,6 +246,27 @@ const removeTrailingSlash = (str) => {
 	return str.replace(/\/$/, '');
 };
 
+/**
+ * Writes an address the way the browser writes a link's href, without a trailing slash.
+ *
+ * Lower case scheme and host, no default port, "/x/../" resolved, so a stored address
+ * matches the href of the link it came from.
+ *
+ * @param {string} href The address to normalise
+ * @returns {string} The normalised address
+ */
+const normaliseHref = (href) => {
+	if (href === null || href === undefined || href === '') {
+		return href;
+	}
+
+	try {
+		return removeTrailingSlash(new URL(href.trim()).href);
+	} catch (e) {
+		return removeTrailingSlash(href);
+	}
+};
+
 
 /**
  * Adds the data attributes to a link.
@@ -256,13 +277,14 @@ const removeTrailingSlash = (str) => {
 const addDataAttributes = (link) => {
 	// Get the href.
 	const href = removeTrailingSlash(link.href);
+	const normalisedHref = normaliseHref(link.href);
 
 	// Iterate through all the links
 	for (let i = 0; i < pageLinks.length; i++) {
 		let currentLink = pageLinks[i];
 
 		// If the link is the same as the current link, add the data attributes
-		if (removeTrailingSlash(currentLink.href) === href) {
+		if (normaliseHref(currentLink.href) === normalisedHref) {
 			currentLink.setAttribute('data-iawmlf-archived-url', link.archived_href);
 			currentLink.setAttribute('data-iawmlf-current-url', href);
 			currentLink.setAttribute('data-iawmlf-archived-broken', link.broken);
@@ -316,8 +338,8 @@ const checkLink = (link) => {
 
 	// IF the last checked is NULL or outside the delay, check the link
 	if (archived.last_checked === null || daysSince(archived.last_checked.date) > linkDelay) {
-		// Check the link
-		verifyLink(link).then((result) => {
+		// Check the link, by the address the scan stored, as the server looks it up by that.
+		queueCheck(archived.href).then((result) => {
 
 			// If the link can not be found, use the archived link data.
 			if (result && result.link) {
@@ -336,6 +358,55 @@ const checkLink = (link) => {
 	}
 
 }
+
+/**
+ * The most link checks one page view sends at the same time, as each holds a PHP worker.
+ */
+const maxConcurrentChecks = 2;
+
+/**
+ * The number of link checks waiting on the server.
+ */
+let activeChecks = 0;
+
+/**
+ * Link checks not sent yet, in the order they were asked for.
+ *
+ * @type {Array<{link: string, resolve: Function}>}
+ */
+const waitingChecks = [];
+
+/**
+ * Queues a link check, sent when fewer than maxConcurrentChecks are waiting on the server.
+ *
+ * @param {string} link The link to check
+ * @return {Promise<object|undefined>} Resolves with the server's answer
+ */
+const queueCheck = (link) => new Promise((resolve) => {
+	waitingChecks.push({ link, resolve });
+	runNextCheck();
+});
+
+/**
+ * Sends the next queued link check, if there is room.
+ *
+ * @return {void}
+ */
+const runNextCheck = () => {
+	if (activeChecks >= maxConcurrentChecks || waitingChecks.length === 0) {
+		return;
+	}
+
+	const { link, resolve } = waitingChecks.shift();
+	activeChecks++;
+
+	verifyLink(link)
+		.then(resolve, () => resolve(undefined))
+		.finally(() => {
+			activeChecks--;
+			runNextCheck();
+		});
+};
 
 /**
  * Verifies the link using the server.
