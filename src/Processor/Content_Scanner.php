@@ -117,12 +117,18 @@ class Content_Scanner {
 		$dom = new \WP_HTML_Tag_Processor( $this->content );
 
 		while ( $dom->next_tag( 'a' ) ) {
+			// Browsers ignore spaces around an href, so the scan does too.
 			$href = $dom->get_attribute( 'href' );
+			$href = is_string( $href ) ? trim( $href, " \t\n\r\f" ) : '';
 
-			// If href doesnt start with http or https, skip.
-			if ( ! preg_match( '/^https?:\/\//', $href ?? '' ) ) {
+			// If href doesnt start with http or https (in any case), skip.
+			if ( ! preg_match( '/^https?:\/\//i', $href ) ) {
 				continue;
 			}
+
+			// The scheme is case-insensitive, so store it in lower case.
+			$scheme_end = (int) strpos( $href, ':' );
+			$href       = strtolower( substr( $href, 0, $scheme_end ) ) . substr( $href, $scheme_end );
 
 			// If this is a valid url, add it to the collection.
 			if ( filter_var( $href, FILTER_VALIDATE_URL ) ) {

@@ -226,16 +226,17 @@ class WP_Post_Controller {
 			return;
 		}
 
-		// Get the post id.
-		$post_id = get_the_ID();
+		// Get the post id. On a page that lists posts, this is the first one listed.
+		$post_id     = get_the_ID();
+		$is_excluded = is_numeric( $post_id ) && in_array( (int) $post_id, Settings::get_link_fixer_excluded_posts(), true );
 
-		// Bail if the post is in the excluded posts list.
-		if ( is_numeric( $post_id ) && in_array( (int) $post_id, Settings::get_link_fixer_excluded_posts(), true ) ) {
+		// An excluded single post needs no script. A listing page still does, for the other posts' link data.
+		if ( $is_excluded && is_singular() ) {
 			return;
 		}
 
 		// Get the links.
-		$links = is_numeric( $post_id ) && get_post_status( $post_id )
+		$links = ! $is_excluded && is_numeric( $post_id ) && get_post_status( $post_id )
 			? $this->link_repository->get_links_for_post( $post_id, true )
 			: array();
 
