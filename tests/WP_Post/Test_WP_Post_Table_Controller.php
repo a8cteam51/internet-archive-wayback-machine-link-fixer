@@ -216,6 +216,56 @@ class Test_WP_Post_Table_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Logs in an editor and opens the reporting screens to them, as the README example does.
+	 *
+	 * @return void
+	 */
+	private function act_as_reporting_editor(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'editor' ) ) );
+		add_filter( 'iawmlf_reporting_page_capability', fn() => 'edit_posts' );
+	}
+
+	/**
+	 * @testdox It should show "Excluded post" in the links column without a settings link to users who cannot open settings. (#383)
+	 *
+	 * @return void
+	 */
+	public function test_render_link_column_excluded_post_is_not_linked_for_editors(): void {
+		$this->act_as_reporting_editor();
+
+		$post_id = self::factory()->post->create();
+		update_option( Settings::LINK_FIXER_EXCLUDED_POSTS, array( $post_id ) );
+
+		$controller = new WP_Post_Table_Controller();
+
+		ob_start();
+		$controller->render_link_column( WP_Post_Table_Controller::LINK_COLUMN_KEY, $post_id );
+		$output = ob_get_clean();
+
+		$this->assertSame( '<em>Excluded post</em>', $output );
+
+		delete_option( Settings::LINK_FIXER_EXCLUDED_POSTS );
+	}
+
+	/**
+	 * @testdox It should show "Excluded post" in the archived column without a settings link to users who cannot open settings. (#383)
+	 *
+	 * @return void
+	 */
+	public function test_render_archived_column_excluded_post_is_not_linked_for_editors(): void {
+		$this->act_as_reporting_editor();
+
+		$post_id = self::factory()->post->create();
+		update_option( Settings::AUTO_ARCHIVER_EXCLUDED_POSTS, array( $post_id ) );
+
+		$output = $this->render_archived_column( WP_Post_Table_Controller::ARCHIVED_COLUMN_KEY, $post_id );
+
+		$this->assertSame( '<em>Excluded post</em>', $output );
+
+		delete_option( Settings::AUTO_ARCHIVER_EXCLUDED_POSTS );
+	}
+
+	/**
 	 * @testdox It should render nothing when asked for a different column. (#351)
 	 *
 	 * @return void
