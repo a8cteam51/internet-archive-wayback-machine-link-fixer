@@ -167,6 +167,11 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 * Now finds links inside shortcodes, dynamic blocks and international URLs, which were previously skipped.
 * Fix: a stray line break at the end of Classic Editor posts.
 * Fix: the auto archiver could push back its own queue and never run.
+* Fix: Advanced Settings links shown to editors who cannot open it.
+* Fix: Advanced Settings Link Icon row, post exclusion search and "%20" in link exclusion rules.
+* Fix: Dashboard broken link count and onboarding with drafts or excluded posts.
+* Fix: more broken link formats are now replaced, including on pages that list posts.
+* The front end now checks at most 2 links at a time.
 * Various fixes to the links report, link checking and the settings screen.
 * Performance and accessibility improvements throughout the admin.
 * Now requires MySQL 5.7 or MariaDB 10.2, checked on install.
