@@ -45,6 +45,11 @@ class Post_Search_Ajax {
 	private const PER_PAGE = 100;
 
 	/**
+	 * The post statuses searched, so a post can be excluded before it is published.
+	 */
+	private const POST_STATUSES = array( 'publish', 'draft', 'pending', 'future', 'private' );
+
+	/**
 	 * Register the ajax action.
 	 *
 	 * @return void
@@ -115,7 +120,7 @@ class Post_Search_Ajax {
 					array(
 						'p'              => $post_id,
 						'post_type'      => $post_types,
-						'post_status'    => 'publish',
+						'post_status'    => self::POST_STATUSES,
 						'posts_per_page' => 1,
 						'post__not_in'   => $excluded_ids,
 					)
@@ -136,7 +141,7 @@ class Post_Search_Ajax {
 		$search_query = new \WP_Query(
 			array(
 				'post_type'                => $post_types,
-				'post_status'              => 'publish',
+				'post_status'              => self::POST_STATUSES,
 				'posts_per_page'           => self::PER_PAGE + 1,
 				'offset'                   => ( $page - 1 ) * self::PER_PAGE,
 				'no_found_rows'            => true,
@@ -154,7 +159,7 @@ class Post_Search_Ajax {
 		$has_more = count( $search_query->posts ) > self::PER_PAGE;
 
 		foreach ( array_slice( $search_query->posts, 0, self::PER_PAGE ) as $post ) {
-			if ( ! in_array( $post->ID, $found_ids, true ) ) {
+			if ( ! in_array( $post->ID, $found_ids, true ) && ! $this->matches_only_inside_an_entity( $post, $search ) ) {
 				$found_ids[] = $post->ID;
 				$results[]   = $this->format_result_from_post( $post );
 			}
@@ -180,10 +185,15 @@ class Post_Search_Ajax {
 			}
 
 			global $wpdb;
-			$like   = '%' . $wpdb->esc_like( $search ) . '%';
+			$like = '%' . $wpdb->esc_like( $search ) . '%';
+
+			// Titles saved without unfiltered_html store "&" as "&amp;", so also match the encoded form.
+			$encoded_like = '%' . $wpdb->esc_like( htmlspecialchars( $search, ENT_NOQUOTES, 'UTF-8', false ) ) . '%';
+
 			$where .= $wpdb->prepare(
-				" AND ({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_name LIKE %s)",
+				" AND ({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_name LIKE %s)",
 				$like,
+				$encoded_like,
 				$like
 			);
 			return $where;
@@ -200,13 +210,40 @@ class Post_Search_Ajax {
 	private function format_result_from_post( \WP_Post $post ): array {
 		$post_type_object = get_post_type_object( $post->post_type );
 		$post_type_label  = $post_type_object ? $post_type_object->labels->singular_name : $post->post_type;
+		$status_object    = get_post_status_object( $post->post_status );
 
 		return array(
 			'id'        => $post->ID,
-			'title'     => $post->post_title,
+			'title'     => $this->plain_title( $post ),
 			'slug'      => $post->post_name,
 			'post_type' => $post_type_label,
+			'status'    => $status_object ? $status_object->label : $post->post_status,
 		);
+	}
+
+	/**
+	 * The post title as plain text, with stored entities such as "&amp;" decoded.
+	 *
+	 * @param \WP_Post $post The post object.
+	 *
+	 * @return string
+	 */
+	private function plain_title( \WP_Post $post ): string {
+		return html_entity_decode( $post->post_title, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	}
+
+	/**
+	 * Did the title only match inside a stored entity, such as "amp" in "&amp;"?
+	 *
+	 * @param \WP_Post $post   The post object.
+	 * @param string   $search The search term.
+	 *
+	 * @return boolean
+	 */
+	private function matches_only_inside_an_entity( \WP_Post $post, string $search ): bool {
+		return false !== stripos( $post->post_title, $search )
+			&& false === stripos( $this->plain_title( $post ), $search )
+			&& false === stripos( $post->post_name, $search );
 	}
 
 	/**
