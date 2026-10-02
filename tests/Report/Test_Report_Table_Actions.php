@@ -18,6 +18,8 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Settings\Settings;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Report\Report_Table;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Link\Link_Repository;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Snapshot_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Link_Checker_Client;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Wayback_Machine\Exception\Exceeded_Snapshot_Limit_Exception;
 
 /**
  * Test_Report_Table_Actions
@@ -447,5 +449,58 @@ class Test_Report_Table_Actions extends \WP_UnitTestCase {
 		// Check how many actions are scheduled.
 		$actions = $this->wpdb->get_results( "SELECT args FROM {$this->wpdb->prefix}actionscheduler_actions where hook='iawmlf_create_new_snapshot'" );
 		$this->assertCount( 4, $actions );
+	}
+
+	/**
+	 * @testdox "Verify link allows checking" only says "Validating" for links Archive.org accepted, and says why the others were refused. (#386)
+	 *
+	 * @return void
+	 */
+	public function test_verify_link_reports_the_links_that_were_refused(): void {
+		$accepted = $this->link_repository->upsert( new Link( 'https://glynnquelch.co.uk/accepted' ) );
+		$refused  = $this->link_repository->upsert( new Link( 'https://glynnquelch.co.uk/refused' ) );
+
+		// Archive.org accepts the first and refuses the second, as when the snapshot limit is reached.
+		$client = $this->createMock( Snapshot_Client::class );
+		$client->method( 'is_online' )->willReturn( true );
+		$client->method( 'create_snapshot' )->willReturnCallback(
+			function ( string $url ): string {
+				if ( false !== strpos( $url, 'refused' ) ) {
+					throw Exceeded_Snapshot_Limit_Exception::create();
+				}
+				return 'some-id';
+			}
+		);
+		add_filter( 'iawmlf_snapshot_client', fn() => $client );
+
+		$link_checker = $this->createMock( Link_Checker_Client::class );
+		$link_checker->method( 'is_online' )->willReturn( true );
+		add_filter( 'iawmlf_link_checker_client', fn() => $link_checker );
+
+		$table = new class($this->link_repository) extends Report_Table {
+			public function run_validate( array $links ): void {
+				Objects::invoke_method( $this, 'process_excluded_links', array( $links ) );
+			}
+
+			public function get_notices(): ?array {
+				return $this->notices;
+			}
+		};
+
+		$table->run_validate( array( $accepted->get_id(), $refused->get_id() ) );
+		$notices = $table->get_notices();
+
+		$this->assertCount( 2, $notices );
+
+		$this->assertSame( 'success', $notices[0]['type'] );
+		$this->assertStringContainsString( 'Validating https://glynnquelch.co.uk/accepted', $notices[0]['message'] );
+
+		$this->assertSame( 'error', $notices[1]['type'] );
+		$this->assertStringContainsString( 'Could not validate https://glynnquelch.co.uk/refused', $notices[1]['message'] );
+		$this->assertStringContainsString( 'Exceeded snapshot limit.', $notices[1]['message'] );
+
+		// Only the accepted link was queued for its status check.
+		$queued = (int) $this->wpdb->get_var( "SELECT COUNT(*) FROM {$this->wpdb->prefix}actionscheduler_actions WHERE hook='iawmlf_check_validator_status'" );
+		$this->assertSame( 1, $queued );
 	}
 }
