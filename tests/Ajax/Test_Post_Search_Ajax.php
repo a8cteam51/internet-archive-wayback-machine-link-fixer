@@ -181,4 +181,17 @@ class Test_Post_Search_Ajax extends \WP_UnitTestCase {
 
 		$this->assertSame( array( 'Zebra Tips & Tricks' ), array_column( $this->search( 'Zebra' ), 'title' ) );
 	}
+
+	/**
+	 * @testdox A search with an ampersand matches a title stored as "&amp;", quotes included. (#384)
+	 *
+	 * @return void
+	 */
+	public function test_a_search_with_an_ampersand_matches_a_title_stored_with_entities(): void {
+		self::factory()->post->create( array( 'post_title' => 'Zebra Tips &amp; Tricks' ) );
+		self::factory()->post->create( array( 'post_title' => "Zebra Tom's &amp; Jerry's" ) );
+
+		$this->assertSame( array( 'Zebra Tips & Tricks' ), array_column( $this->search( 'Tips & Tricks' ), 'title' ) );
+		$this->assertSame( array( "Zebra Tom's & Jerry's" ), array_column( $this->search( "Tom's & Jerry" ), 'title' ) );
+	}
 }

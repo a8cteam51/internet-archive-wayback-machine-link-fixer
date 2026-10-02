@@ -185,10 +185,15 @@ class Post_Search_Ajax {
 			}
 
 			global $wpdb;
-			$like   = '%' . $wpdb->esc_like( $search ) . '%';
+			$like = '%' . $wpdb->esc_like( $search ) . '%';
+
+			// Titles saved without unfiltered_html store "&" as "&amp;", so also match the encoded form.
+			$encoded_like = '%' . $wpdb->esc_like( htmlspecialchars( $search, ENT_NOQUOTES, 'UTF-8', false ) ) . '%';
+
 			$where .= $wpdb->prepare(
-				" AND ({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_name LIKE %s)",
+				" AND ({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_name LIKE %s)",
 				$like,
+				$encoded_like,
 				$like
 			);
 			return $where;
