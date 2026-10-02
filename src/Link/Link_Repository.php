@@ -58,6 +58,13 @@ class Link_Repository {
 	private $wpdb;
 
 	/**
+	 * The post IDs each link is used on, read once per request by get_post_ids_from_link_id().
+	 *
+	 * @var array<int, int[]>|null
+	 */
+	private static $link_meta = null;
+
+	/**
 	 * Creates a new instance of the link repository.
 	 *
 	 * @param string|null $table_name The table name.
@@ -701,12 +708,11 @@ class Link_Repository {
 	 * @return integer[]
 	 */
 	public function get_post_ids_from_link_id( int $link_id ): array {
-		static $meta = null;
-		if ( null === $meta ) {
-			$meta = $this->get_all_link_meta();
+		if ( null === self::$link_meta ) {
+			self::$link_meta = $this->get_all_link_meta();
 		}
 
-		return $meta[ $link_id ] ?? array();
+		return self::$link_meta[ $link_id ] ?? array();
 	}
 
 	/**

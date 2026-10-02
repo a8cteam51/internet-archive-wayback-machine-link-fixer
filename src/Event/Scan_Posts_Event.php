@@ -142,6 +142,8 @@ class Scan_Posts_Event {
 		$query = new WP_Query(
 			array(
 				'post_type'              => $this->allowed_post_types,
+				// Set, as the default also takes drafts and private posts when run from an admin request.
+				'post_status'            => 'publish',
 				'posts_per_page'         => $this->posts_per_call,
 				'cache_results'          => false,
 				'update_post_meta_cache' => false,

@@ -199,6 +199,34 @@ class Test_Scan_Posts_Event extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox Only published posts are scanned, even when the event runs in an admin request as an administrator. (#385)
+	 *
+	 * @return void
+	 */
+	public function test_only_published_posts_are_scanned_from_an_admin_request(): void {
+		// Disable link processing so save_post hook doesn't process links during post creation.
+		\update_option( Settings::PROCESS_LINKS, false );
+
+		$published_id = self::factory()->post->create();
+		$draft_id     = self::factory()->post->create( array( 'post_status' => 'draft' ) );
+		$private_id   = self::factory()->post->create( array( 'post_status' => 'private' ) );
+
+		\update_option( Settings::PROCESS_LINKS, true );
+		\update_option( Settings::SCAN_EXISTING_POSTS, true );
+
+		// As Action Scheduler's loopback to admin-ajax.php, which carries the administrator's cookies.
+		\wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		\set_current_screen( 'dashboard' );
+		\set_transient( 'iawmlf_archive_api_online', 'yes', HOUR_IN_SECONDS );
+
+		( new Scan_Posts_Event() )();
+
+		$this->assertTrue( \metadata_exists( 'post', $published_id, Settings::LINK_META_KEY ), 'The published post should have been scanned.' );
+		$this->assertFalse( \metadata_exists( 'post', $draft_id, Settings::LINK_META_KEY ), 'The draft should not have been scanned.' );
+		$this->assertFalse( \metadata_exists( 'post', $private_id, Settings::LINK_META_KEY ), 'The private post should not have been scanned.' );
+	}
+
+	/**
 	 * Counts the scan events with a given status.
 	 *
 	 * @param string $status The action scheduler status.
