@@ -715,6 +715,20 @@ class Report_Table extends \WP_List_Table {
 				continue;
 			}
 
+			// If we don't have a job id, nothing was queued, so add error and include the message.
+			if ( ! $result['job_id'] ) {
+				$this->notices[] = array(
+					'message' => sprintf(
+						// translators: 1: the link URL, 2: error message.
+						__( 'Could not validate %1$s: %2$s', 'internet-archive-wayback-machine-link-fixer' ),
+						esc_html( iawmlf_trim_string( $result['link']->get_href(), 54 ) ),
+						esc_html( $result['message'] )
+					),
+					'type'    => 'error',
+				);
+				continue;
+			}
+
 			// Add a success notice.
 			$this->notices[] = array(
 				'message' => sprintf(

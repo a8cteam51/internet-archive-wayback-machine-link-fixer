@@ -76,7 +76,29 @@ class Failed_Event_Garbage_Collection_Event {
 			throw new \RuntimeException( esc_html( 'Error during failed event garbage collection: ' . $e->getMessage() ) );
 		} finally {
 			// Reschedule itself for the next day.
-			self::add_to_action_scheduler();
+			self::reschedule();
+		}
+	}
+
+	/**
+	 * Queues the next run for tomorrow midnight, unless one is already waiting.
+	 *
+	 * Only pending runs are checked, as as_next_scheduled_action() also counts this run while it is in progress.
+	 *
+	 * @return void
+	 */
+	private static function reschedule(): void {
+		$pending = \as_get_scheduled_actions(
+			array(
+				'hook'     => self::HANDLE,
+				'status'   => \ActionScheduler_Store::STATUS_PENDING,
+				'per_page' => 1,
+			),
+			'ids'
+		);
+
+		if ( empty( $pending ) ) {
+			\as_schedule_single_action( strtotime( 'tomorrow midnight' ), self::HANDLE );
 		}
 	}
 }

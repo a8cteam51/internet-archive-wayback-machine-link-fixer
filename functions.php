@@ -321,6 +321,7 @@ function iawmlf_render_not_authenticated_notice(): void {
  * Renders the notice about the Wayback Machine being offline.
  *
  * @since 1.3.0
+ * @deprecated 1.5.0 Not used by the plugin. Will be removed in a future release.
  *
  * @return void
  */

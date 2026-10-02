@@ -25,6 +25,8 @@ class Check_Archive_Services_Online_Event {
 	/**
 	 * Adds the event to the queue.
 	 *
+	 * @deprecated 1.5.0 Not used by the plugin. Will be removed in a future release.
+	 *
 	 * @return void
 	 */
 	public static function add_to_queue(): void {
