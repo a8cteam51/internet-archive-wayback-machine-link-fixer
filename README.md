@@ -789,7 +789,7 @@ add_filter( 'iawmlf_link_check_duration_in_days', function( int $days ): int {
 
 #### `iawmlf_valid_http_status_codes`
 
-This return array is used to determine what http status codes are considered valid. The default is every `2xx` and `3xx` code, plus the codes from `iawmlf_blocked_http_status_codes`.
+This return array is used to determine what http status codes are considered valid. The default is `200`, `206`, `300` to `308`, plus the codes from `iawmlf_blocked_http_status_codes`.
 
 ```php
 add_filter( 'iawmlf_valid_http_status_codes', function( array $codes ): array {

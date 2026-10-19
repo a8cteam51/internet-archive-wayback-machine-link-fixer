@@ -487,7 +487,7 @@ class Test_Link extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * Codes that must never mark a link broken: 2xx, 3xx and the codes a site blocks the checker with.
+	 * Codes that must never mark a link broken: 200, 206, 30x and the codes a site blocks the checker with.
 	 *
 	 * @return array<string, array{0:int}>
 	 */
@@ -497,6 +497,8 @@ class Test_Link extends \WP_UnitTestCase {
 			'206 partial content'   => array( 206 ),
 			'301 moved permanently' => array( 301 ),
 			'302 found'             => array( 302 ),
+			'307 temporary'         => array( 307 ),
+			'308 permanent'         => array( 308 ),
 			'401 unauthorized'      => array( 401 ),
 			'403 forbidden'         => array( 403 ),
 			'429 too many requests' => array( 429 ),
@@ -505,7 +507,7 @@ class Test_Link extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * @testdox A link whose checks only ever return a 2xx, 3xx or blocked code is never marked broken.
+	 * @testdox A link whose checks only ever return 200, 206, 30x or a blocked code is never marked broken.
 	 *
 	 * @dataProvider never_broken_code_provider
 	 *

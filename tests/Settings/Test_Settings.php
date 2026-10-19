@@ -229,14 +229,11 @@ class Test_Settings extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_change_valid_http_status_codes_via_filter(): void {
-		// By default, every 2xx and 3xx code is valid, plus the codes a site blocks the checker with.
-		$valid = Settings::get_valid_http_status_codes();
-		foreach ( array( 200, 206, 299, 300, 301, 302, 399, 401, 403, 429, 503 ) as $code ) {
-			$this->assertContains( $code, $valid, "{$code} should be valid." );
-		}
-		foreach ( array( 199, 400, 404, 410, 500, 502, 504 ) as $code ) {
-			$this->assertNotContains( $code, $valid, "{$code} should not be valid." );
-		}
+		// By default, 200, 206 and 30x, plus the codes a site blocks the checker with.
+		$this->assertSame(
+			array( 200, 206, 300, 301, 302, 303, 304, 305, 306, 307, 308, 401, 403, 429, 503 ),
+			Settings::get_valid_http_status_codes()
+		);
 
 		add_filter(
 			'iawmlf_valid_http_status_codes',

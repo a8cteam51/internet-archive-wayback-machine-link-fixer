@@ -298,8 +298,11 @@ class Settings {
 	 * @return integer[]
 	 */
 	public static function get_valid_http_status_codes(): array {
-		// Every 2xx and 3xx, plus the codes a site blocks the checker with, as those do not mean the page is gone.
-		$codes = array_merge( range( 200, 399 ), self::get_blocked_http_status_codes() );
+		// Plus the codes a site blocks the checker with, as those do not mean the page is gone.
+		$codes = array_merge(
+			array( 200, 206, 300, 301, 302, 303, 304, 305, 306, 307, 308 ),
+			self::get_blocked_http_status_codes()
+		);
 		return (array) apply_filters( 'iawmlf_valid_http_status_codes', $codes );
 	}
 
