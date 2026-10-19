@@ -96,7 +96,16 @@ test.describe( 'posts list last archived column', () => {
 		// Tick it in Screen Options.
 		await page.locator( '#show-settings-link' ).click();
 		await expect( toggle ).toBeVisible();
-		await toggle.check();
+
+		// Core saves the choice with an admin-ajax 'hidden-columns' request, so wait for it before reloading.
+		await Promise.all( [
+			page.waitForResponse(
+				( response ) =>
+					response.url().includes( 'admin-ajax.php' ) &&
+					( response.request().postData() || '' ).includes( 'action=hidden-columns' )
+			),
+			toggle.check(),
+		] );
 
 		// The preference is saved per user, so it must survive a reload.
 		await page.goto( LIST_PATH );

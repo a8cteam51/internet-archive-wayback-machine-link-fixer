@@ -57,7 +57,8 @@ module.exports = defineConfig( {
 	outputDir: path.join( __dirname, '../test-results' ),
 	fullyParallel: false,
 	forbidOnly: !! process.env.CI,
-	retries: process.env.CI ? 2 : 0,
+	// No retries: a test that fails once fails the run, rather than passing as flaky.
+	retries: 0,
 	workers: 1,
 	timeout: 60 * 1000,
 	reporter: [
