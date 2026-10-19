@@ -45,6 +45,7 @@ class Settings {
 	public const ONBOARDING_DATE_KEY            = self::SETTINGS_PREFIX . 'onboarding_date';
 	public const CAST_ARCHIVED_TO_HTTPS         = self::SETTINGS_PREFIX . 'cast_to_https';
 	public const INSTALLED_VERSION_KEY          = self::SETTINGS_PREFIX . 'installed_version';
+	public const CLEAN_UP_ORPHANED_LINKS        = self::SETTINGS_PREFIX . 'clean_up_orphaned_links';
 
 	// Table names.
 	public const LINK_TABLE = 'iawmlf_link_archive';
@@ -130,6 +131,17 @@ class Settings {
 	 */
 	public static function drop_tables_on_uninstall(): bool {
 		return (bool) get_option( self::DROP_TABLES_ON_UNINSTALL_KEY, false );
+	}
+
+	/**
+	 * Should links no longer used by any post be removed?
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return boolean
+	 */
+	public static function clean_up_orphaned_links(): bool {
+		return (bool) get_option( self::CLEAN_UP_ORPHANED_LINKS, false );
 	}
 
 	/**
@@ -806,5 +818,6 @@ class Settings {
 		delete_option( self::ONBOARDING_DATE_KEY );
 		delete_option( self::CAST_ARCHIVED_TO_HTTPS );
 		delete_option( self::LINK_ICON );
+		delete_option( self::CLEAN_UP_ORPHANED_LINKS );
 	}
 }

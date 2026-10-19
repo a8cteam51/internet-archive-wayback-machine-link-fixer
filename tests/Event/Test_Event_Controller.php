@@ -18,6 +18,7 @@ use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Event_Controller;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Scan_Posts_Event;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Scan_Own_Posts_Event;
 use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Failed_Event_Garbage_Collection_Event;
+use Internet_Archive\Wayback_Machine_Link_Fixer\Event\Orphaned_Link_Clean_Up_Event;
 
 /**
  * Test_Event_Controller
@@ -48,6 +49,7 @@ class Test_Event_Controller extends \WP_UnitTestCase {
 		$this->assertFalse( has_action( 'init', array( Scan_Posts_Event::class, 'add_to_action_scheduler' ) ) );
 		$this->assertFalse( has_action( 'init', array( Scan_Own_Posts_Event::class, 'add_to_action_scheduler' ) ) );
 		$this->assertFalse( has_action( 'init', array( Failed_Event_Garbage_Collection_Event::class, 'add_to_action_scheduler' ) ) );
+		$this->assertFalse( has_action( 'init', array( Orphaned_Link_Clean_Up_Event::class, 'add_to_action_scheduler' ) ) );
 	}
 
 	/**
@@ -64,5 +66,19 @@ class Test_Event_Controller extends \WP_UnitTestCase {
 		$this->assertNotFalse( has_action( 'init', array( Scan_Posts_Event::class, 'add_to_action_scheduler' ) ) );
 		$this->assertNotFalse( has_action( 'init', array( Scan_Own_Posts_Event::class, 'add_to_action_scheduler' ) ) );
 		$this->assertNotFalse( has_action( 'init', array( Failed_Event_Garbage_Collection_Event::class, 'add_to_action_scheduler' ) ) );
+		$this->assertNotFalse( has_action( 'init', array( Orphaned_Link_Clean_Up_Event::class, 'add_to_action_scheduler' ) ) );
+	}
+
+	/**
+	 * @testdox The orphaned link clean-up event is hooked to its handle.
+	 *
+	 * @return void
+	 */
+	public function test_orphaned_link_clean_up_event_is_hooked(): void {
+		remove_all_actions( Orphaned_Link_Clean_Up_Event::HANDLE );
+
+		( new Event_Controller() )->initialize();
+
+		$this->assertTrue( has_action( Orphaned_Link_Clean_Up_Event::HANDLE ) );
 	}
 }

@@ -36,6 +36,7 @@ class Event_Controller {
 		add_action( Process_Local_Post_Event::HANDLE, new Process_Local_Post_Event(), 10, 1 );
 		add_action( Scan_Own_Posts_Event::HANDLE, new Scan_Own_Posts_Event(), 10, 0 );
 		add_action( Failed_Event_Garbage_Collection_Event::HANDLE, new Failed_Event_Garbage_Collection_Event(), 10, 0 );
+		add_action( Orphaned_Link_Clean_Up_Event::HANDLE, new Orphaned_Link_Clean_Up_Event(), 10, 1 );
 
 		// Ensure the events are added to the action scheduler. Admin and cron only - front
 		// end traffic should not pay for the schedule self-check, cron re-heals it within minutes.
@@ -43,6 +44,7 @@ class Event_Controller {
 			add_action( 'init', array( Scan_Posts_Event::class, 'add_to_action_scheduler' ) );
 			add_action( 'init', array( Scan_Own_Posts_Event::class, 'add_to_action_scheduler' ) );
 			add_action( 'init', array( Failed_Event_Garbage_Collection_Event::class, 'add_to_action_scheduler' ) );
+			add_action( 'init', array( Orphaned_Link_Clean_Up_Event::class, 'add_to_action_scheduler' ) );
 		}
 	}
 }

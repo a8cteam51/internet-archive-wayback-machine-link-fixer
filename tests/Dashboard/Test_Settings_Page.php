@@ -424,4 +424,65 @@ class Test_Settings_Page extends \WP_UnitTestCase {
 
 		$this->assertTrue( Settings::has_valid_archive_api_credentials() );
 	}
+
+	/**
+	 * @testdox The orphaned link clean-up setting is registered as a boolean that is off by default.
+	 *
+	 * @return void
+	 */
+	public function test_clean_up_orphaned_links_is_registered_off_by_default(): void {
+		$this->register_on_settings_screen();
+
+		$setting = $this->plugin_settings()[ Settings::CLEAN_UP_ORPHANED_LINKS ] ?? null;
+
+		$this->assertNotNull( $setting, 'The orphaned link clean-up setting is not registered.' );
+		$this->assertSame( 'boolean', $setting['type'] );
+		$this->assertFalse( $setting['default'] );
+	}
+
+	/**
+	 * @testdox Saving the orphaned link clean-up checkbox stores true when ticked and false when not.
+	 *
+	 * @return void
+	 */
+	public function test_clean_up_orphaned_links_saves_as_a_boolean(): void {
+		$this->register_on_settings_screen();
+
+		$option = Settings::CLEAN_UP_ORPHANED_LINKS;
+
+		$this->assertTrue( apply_filters( "sanitize_option_{$option}", '1', $option, '1' ) );
+		$this->assertFalse( apply_filters( "sanitize_option_{$option}", '', $option, '' ) );
+	}
+
+	/**
+	 * @testdox The orphaned link clean-up field is shown in the Plugin Settings section.
+	 *
+	 * @return void
+	 */
+	public function test_clean_up_orphaned_links_field_is_in_plugin_settings(): void {
+		$this->register_on_settings_screen();
+
+		$fields = $GLOBALS['wp_settings_fields'][ Settings_Page::PAGE_SLUG ][ Settings_Page::GROUP_PLUGIN_SETTINGS ] ?? array();
+
+		$this->assertArrayHasKey( Settings::CLEAN_UP_ORPHANED_LINKS, $fields );
+	}
+
+	/**
+	 * @testdox The orphaned link clean-up checkbox is only ticked when the setting is on.
+	 *
+	 * @return void
+	 */
+	public function test_clean_up_orphaned_links_field_reflects_the_setting(): void {
+		update_option( Settings::CLEAN_UP_ORPHANED_LINKS, false );
+		$off = $this->render_key_field( 'render_clean_up_orphaned_links_field' );
+
+		update_option( Settings::CLEAN_UP_ORPHANED_LINKS, true );
+		$on = $this->render_key_field( 'render_clean_up_orphaned_links_field' );
+
+		delete_option( Settings::CLEAN_UP_ORPHANED_LINKS );
+
+		$this->assertStringContainsString( 'name="' . Settings::CLEAN_UP_ORPHANED_LINKS . '"', $off );
+		$this->assertStringNotContainsString( "checked='checked'", $off );
+		$this->assertStringContainsString( "checked='checked'", $on );
+	}
 }

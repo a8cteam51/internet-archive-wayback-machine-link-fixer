@@ -417,6 +417,22 @@ class Settings_Page {
 
 		register_setting(
 			self::PAGE_SLUG,
+			Settings::CLEAN_UP_ORPHANED_LINKS,
+			array(
+				'type'              => 'boolean',
+				'sanitize_callback' => 'wp_validate_boolean',
+				'default'           => false,
+				'show_in_rest'      => array(
+					'name'   => Settings::CLEAN_UP_ORPHANED_LINKS,
+					'schema' => array(
+						'type' => 'boolean',
+					),
+				),
+			)
+		);
+
+		register_setting(
+			self::PAGE_SLUG,
 			Settings::SCAN_EXISTING_POSTS,
 			array(
 				'type'              => 'boolean',
@@ -756,6 +772,14 @@ class Settings_Page {
 		);
 
 		add_settings_field(
+			Settings::CLEAN_UP_ORPHANED_LINKS,
+			__( 'Remove Unused Links', 'internet-archive-wayback-machine-link-fixer' ),
+			array( $this, 'render_clean_up_orphaned_links_field' ),
+			self::PAGE_SLUG,
+			self::GROUP_PLUGIN_SETTINGS
+		);
+
+		add_settings_field(
 			Settings::SCAN_EXISTING_POSTS,
 			__( 'Existing Posts', 'internet-archive-wayback-machine-link-fixer' ),
 			array( $this, 'render_check_existing_posts' ),
@@ -1049,6 +1073,27 @@ class Settings_Page {
 				value="1"
 				<?php checked( Settings::drop_tables_on_uninstall() ); ?>
 			/><?php esc_html_e( 'If checked, this will remove all local data when the plugin is uninstalled. Leave unchecked if you plan to reinstall this plugin.', 'internet-archive-wayback-machine-link-fixer' ); ?>
+		</label>
+		<?php
+	}
+
+	/**
+	 * Renders the field for removing links no post uses any more.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return void
+	 */
+	public function render_clean_up_orphaned_links_field(): void {
+		?>
+		<label for="<?php echo esc_attr( Settings::CLEAN_UP_ORPHANED_LINKS ); ?>">
+			<input
+				type="checkbox"
+				id="<?php echo esc_attr( Settings::CLEAN_UP_ORPHANED_LINKS ); ?>"
+				name="<?php echo esc_attr( Settings::CLEAN_UP_ORPHANED_LINKS ); ?>"
+				value="1"
+				<?php checked( Settings::clean_up_orphaned_links() ); ?>
+			/><?php esc_html_e( 'If checked, links that are no longer used in any post are removed from the link list each night. Links in trashed posts are kept.', 'internet-archive-wayback-machine-link-fixer' ); ?>
 		</label>
 		<?php
 	}

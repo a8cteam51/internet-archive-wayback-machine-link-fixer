@@ -640,6 +640,78 @@ class Test_Link_Repository extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox It should be possible to get the ids of done links after a given id, in id order and limited.
+	 *
+	 * @return void
+	 */
+	public function test_can_get_done_link_ids_after(): void {
+		$first   = $this->link_repository->upsert( ( new Link( 'https://done-after-1.com' ) )->set_done() );
+		$new     = $this->link_repository->upsert( new Link( 'https://done-after-2.com' ) );
+		$second  = $this->link_repository->upsert( ( new Link( 'https://done-after-3.com' ) )->set_done() );
+		$pending = $this->link_repository->upsert( ( new Link( 'https://done-after-4.com' ) )->set_pending() );
+		$third   = $this->link_repository->upsert( ( new Link( 'https://done-after-5.com' ) )->set_done() );
+
+		$start = $first->get_id() - 1;
+
+		// Only done links, in id order.
+		$this->assertSame(
+			array( $first->get_id(), $second->get_id(), $third->get_id() ),
+			$this->link_repository->get_done_link_ids_after( $start, 10 )
+		);
+
+		// Limited.
+		$this->assertSame(
+			array( $first->get_id(), $second->get_id() ),
+			$this->link_repository->get_done_link_ids_after( $start, 2 )
+		);
+
+		// Only after the given id.
+		$this->assertSame(
+			array( $third->get_id() ),
+			$this->link_repository->get_done_link_ids_after( $second->get_id(), 10 )
+		);
+
+		// Nothing after the last.
+		$this->assertSame( array(), $this->link_repository->get_done_link_ids_after( $third->get_id(), 10 ) );
+
+		// The new and pending links are never returned.
+		$all = $this->link_repository->get_done_link_ids_after( $start, 10 );
+		$this->assertNotContains( $new->get_id(), $all );
+		$this->assertNotContains( $pending->get_id(), $all );
+	}
+
+	/**
+	 * @testdox It should be possible to get the ids of every link used by a post, read fresh rather than from the request cache.
+	 *
+	 * @return void
+	 */
+	public function test_can_get_used_link_ids(): void {
+		$used_once  = $this->link_repository->upsert( new Link( 'https://used-ids-1.com' ) );
+		$used_twice = $this->link_repository->upsert( new Link( 'https://used-ids-2.com' ) );
+		$unused     = $this->link_repository->upsert( new Link( 'https://used-ids-3.com' ) );
+
+		$post_one = \WP_UnitTestCase_Base::factory()->post->create();
+		$post_two = \WP_UnitTestCase_Base::factory()->post->create();
+
+		update_post_meta( $post_one, Settings::LINK_META_KEY, array( $used_twice->get_id() ) );
+		update_post_meta( $post_two, Settings::LINK_META_KEY, array( $used_once->get_id(), $used_twice->get_id() ) );
+
+		$used = $this->link_repository->get_used_link_ids();
+		$this->assertContains( $used_once->get_id(), $used );
+		$this->assertContains( $used_twice->get_id(), $used );
+		$this->assertNotContains( $unused->get_id(), $used );
+
+		// A trashed post keeps its meta, so its links are still used.
+		wp_trash_post( $post_two );
+		$this->assertContains( $used_once->get_id(), $this->link_repository->get_used_link_ids() );
+
+		// Fill the request cache, then add the unused link to a post: it must be seen.
+		$this->link_repository->get_post_ids_from_link_id( $unused->get_id() );
+		update_post_meta( $post_one, Settings::LINK_META_KEY, array( $used_twice->get_id(), $unused->get_id() ) );
+		$this->assertContains( $unused->get_id(), $this->link_repository->get_used_link_ids() );
+	}
+
+	/**
 	 * @testdox It should be possible to search links using partial URLs.
 	 *
 	 * @return void

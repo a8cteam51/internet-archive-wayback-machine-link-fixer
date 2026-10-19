@@ -75,6 +75,22 @@ class Test_Settings extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox Cleaning up orphaned links should be off by default, and follow the setting once set.
+	 *
+	 * @return void
+	 */
+	public function test_can_set_clean_up_orphaned_links(): void {
+		delete_option( Settings::CLEAN_UP_ORPHANED_LINKS );
+		$this->assertFalse( Settings::clean_up_orphaned_links() );
+
+		update_option( Settings::CLEAN_UP_ORPHANED_LINKS, true );
+		$this->assertTrue( Settings::clean_up_orphaned_links() );
+
+		update_option( Settings::CLEAN_UP_ORPHANED_LINKS, false );
+		$this->assertFalse( Settings::clean_up_orphaned_links() );
+	}
+
+	/**
 	 * @testdox It should be possible to set and get the migrations.
 	 *
 	 * @return void
@@ -355,6 +371,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		update_option( Settings::SETUP_WIZARD_COMPLETED_KEY, true );
 		update_option( Settings::CAST_ARCHIVED_TO_HTTPS, true );
 		update_option( Settings::LINK_ICON, 'ia_logo_after' );
+		update_option( Settings::CLEAN_UP_ORPHANED_LINKS, true );
 
 		// Clear all the settings.
 		Settings::clear_all_options();
@@ -382,6 +399,7 @@ class Test_Settings extends \WP_UnitTestCase {
 		$this->assertEmpty( get_option( Settings::SETUP_WIZARD_COMPLETED_KEY ) );
 		$this->assertEmpty( get_option( Settings::CAST_ARCHIVED_TO_HTTPS ) );
 		$this->assertEmpty( get_option( Settings::LINK_ICON ) );
+		$this->assertEmpty( get_option( Settings::CLEAN_UP_ORPHANED_LINKS ) );
 	}
 
 	/**

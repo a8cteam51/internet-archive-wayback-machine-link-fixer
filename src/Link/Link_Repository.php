@@ -716,6 +716,37 @@ class Link_Repository {
 	}
 
 	/**
+	 * Get the ids of every link used by a post, read fresh from the post meta.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return integer[]
+	 */
+	public function get_used_link_ids(): array {
+		return array_keys( $this->get_all_link_meta() );
+	}
+
+	/**
+	 * Get the ids of done links after a given id, in id order.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param integer $after_id Only ids greater than this.
+	 * @param integer $limit    The most ids to return.
+	 *
+	 * @return integer[]
+	 */
+	public function get_done_link_ids_after( int $after_id, int $limit ): array {
+		$query = "SELECT id FROM {$this->table_name} WHERE id > %d AND archive_process = %s ORDER BY id ASC LIMIT %d";
+
+		$ids = $this->wpdb->get_col(
+			$this->wpdb->prepare( $query, $after_id, Link::PROCESS_DONE, $limit ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, wpdb called as $this->wpdb
+		);
+
+		return array_map( 'absint', $ids );
+	}
+
+	/**
 	 * Get all the link meta values.
 	 *
 	 * @since 1.2.0
