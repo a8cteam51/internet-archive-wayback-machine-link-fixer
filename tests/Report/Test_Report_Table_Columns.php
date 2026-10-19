@@ -100,6 +100,18 @@ class Test_Report_Table_Columns extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A link stored as broken shows as broken, not blocked, even when its last check is a blocked code.
+	 *
+	 * @return void
+	 */
+	public function test_link_health_shows_a_broken_link_as_broken_when_last_check_is_blocked(): void {
+		$output = $this->link_health( array( 404, 404, 403 ), true );
+
+		$this->assertStringContainsString( 'Link is broken', $output );
+		$this->assertStringNotContainsString( 'blocks the Internet Archive link checker', $output );
+	}
+
+	/**
 	 * @testdox The Links table help tab explains the blocked flag.
 	 *
 	 * @return void

@@ -378,6 +378,11 @@ class Link implements \JsonSerializable {
 	 * @return boolean
 	 */
 	public function is_blocked(): bool {
+		// A broken link is being redirected, whatever its last check returned.
+		if ( $this->is_broken ) {
+			return false;
+		}
+
 		$last_check = $this->get_last_check();
 
 		return is_array( $last_check )

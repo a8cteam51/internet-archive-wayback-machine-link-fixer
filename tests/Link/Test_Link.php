@@ -598,6 +598,19 @@ class Test_Link extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A link stored as broken is never blocked, even when its last check is a blocked code, as it is being redirected.
+	 *
+	 * @return void
+	 */
+	public function test_a_broken_link_is_not_blocked(): void {
+		$link = new Link( 'https://example.com' );
+		$link->add_check( 403, '2025-01-01 00:00:00' );
+		$link->set_broken();
+
+		$this->assertFalse( $link->is_blocked() );
+	}
+
+	/**
 	 * @testdox You should be able to set if a link is excluded.
 	 *
 	 * @return void
