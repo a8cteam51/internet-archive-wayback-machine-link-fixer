@@ -766,6 +766,40 @@ class Test_WP_Post_Controller extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A link with the per-link "Exclude this link" flag set should not appear in the post's link data output.
+	 *
+	 * @return void
+	 */
+	public function test_per_link_excluded_link_not_included_in_render_block_data(): void {
+		update_option( Settings::FIXER_OPTION, Settings::FIXER_OPTION_REPLACE_LINK );
+
+		$post_id = self::factory()->post->create();
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => 'Link one <a href="https://flag-excluded.com/page">excluded</a> and link two <a href="https://flag-allowed.com/page">allowed</a>',
+				'post_type'    => 'post',
+			)
+		);
+
+		// Set the flag, as the "Exclude this link" toggle does.
+		$repository = new Link_Repository();
+		$excluded   = $repository->find_by_url( 'https://flag-excluded.com/page' );
+		$this->assertNotNull( $excluded, 'The link should have been stored when the post was saved.' );
+		$repository->upsert( $excluded->set_excluded() );
+
+		$GLOBALS['post'] = get_post( $post_id );
+		$rendered        = apply_filters( 'the_content', $GLOBALS['post']->post_content );
+
+		$hrefs = array_column( (array) $this->extract_link_data_from_rendered( $rendered ), 'href' );
+
+		$this->assertNotContains( 'https://flag-excluded.com/page', $hrefs, 'A flagged link should not appear in link data.' );
+		$this->assertContains( 'https://flag-allowed.com/page', $hrefs, 'A link without the flag should appear in link data.' );
+
+		unset( $GLOBALS['post'] );
+	}
+
+	/**
 	 * @testdox When a link matches a global exclusion pattern and another does not, only the non-excluded link should appear in the link data attribute output.
 	 *
 	 * @return void

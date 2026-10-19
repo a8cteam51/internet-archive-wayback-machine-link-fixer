@@ -84,6 +84,43 @@ class Test_Link_Exclusion extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Hosts known to block the link checker, bundled as exclusions.
+	 *
+	 * @return array<string, array{0:string}>
+	 */
+	public static function bundled_host_provider(): array {
+		return array(
+			'medium.com'         => array( 'medium.com' ),
+			'nytimes.com'        => array( 'nytimes.com' ),
+			'udemy.com'          => array( 'udemy.com' ),
+			'kickstarter.com'    => array( 'kickstarter.com' ),
+			'player.fm'          => array( 'player.fm' ),
+			'washingtonpost.com' => array( 'washingtonpost.com' ),
+			'reuters.com'        => array( 'reuters.com' ),
+			'perplexity.ai'      => array( 'perplexity.ai' ),
+		);
+	}
+
+	/**
+	 * @testdox A host known to block the link checker is excluded on its apex and every sub-domain, but a look-alike host is not.
+	 *
+	 * @dataProvider bundled_host_provider
+	 *
+	 * @param string $host The bundled host.
+	 *
+	 * @return void
+	 */
+	public function test_hosts_that_block_the_checker_are_bundled( string $host ): void {
+		// The real bundled list - no filter override.
+		$this->assertTrue( $this->is_excluded( "https://{$host}/some/page" ), "{$host} apex" );
+		$this->assertTrue( $this->is_excluded( "http://{$host}/" ), "{$host} apex over http" );
+		$this->assertTrue( $this->is_excluded( "https://www.{$host}/some/page" ), "www.{$host}" );
+		$this->assertTrue( $this->is_excluded( "https://someone.{$host}/post" ), "sub-domain of {$host}" );
+
+		$this->assertFalse( $this->is_excluded( "https://not{$host}/some/page" ), "look-alike not{$host}" );
+	}
+
+	/**
 	 * @testdox The path stays case-sensitive - lowercasing the whole URL would widen what a pattern excludes.
 	 *
 	 * @return void

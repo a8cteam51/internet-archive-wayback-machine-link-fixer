@@ -97,6 +97,31 @@ class Test_Link_Summary_Factory extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox When the last check is a code the site blocks the link checker with, the summary says so instead of calling the link accessible or working.
+	 *
+	 * @testWith [true]
+	 *           [false]
+	 *
+	 * @param boolean $has_archive Whether the link has an archived version.
+	 *
+	 * @return void
+	 */
+	public function test_summary_says_when_the_link_checker_is_blocked( bool $has_archive ): void {
+		$link = new Link( 'https://example.com' );
+		$link->set_archive_process( Link::PROCESS_DONE );
+		if ( $has_archive ) {
+			$link->set_archived_href( 'https://web.archive.org/web/20240101000000/https://example.com' );
+		}
+		$link->add_check( 403, '2024-01-01 12:00:00' );
+
+		$summary = ( new Link_Summary_Factory( $link ) )->get_summary();
+
+		$this->assertStringContainsString( 'blocks the Internet Archive link checker', $summary );
+		$this->assertStringNotContainsString( 'still accessible', $summary );
+		$this->assertStringNotContainsString( 'currently working', $summary );
+	}
+
+	/**
 	 * @testdox It should return archived but failing message with singular check when link has archive and 1 failed check.
 	 *
 	 * @return void

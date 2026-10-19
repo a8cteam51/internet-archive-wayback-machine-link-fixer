@@ -70,6 +70,11 @@ class Link_Summary_Factory {
 			return __( 'The link is archived on archive.org. No check history yet.', 'internet-archive-wayback-machine-link-fixer' );
 		}
 
+		// A blocked check says nothing about the page, so do not call it accessible.
+		if ( $this->link->is_blocked() ) {
+			return __( 'This link has an archived version on archive.org, but the site blocks the Internet Archive link checker, so the original URL cannot be checked. It will not be redirected.', 'internet-archive-wayback-machine-link-fixer' );
+		}
+
 		// If the last check was successful, return early.
 		if ( $last_check_status ) {
 			return __( 'This link has an archived version on archive.org, and the original URL is still accessible.', 'internet-archive-wayback-machine-link-fixer' );
@@ -108,6 +113,10 @@ class Link_Summary_Factory {
 	 * @return string
 	 */
 	private function get_no_archive_snapshot_message(): string {
+		if ( $this->link->is_blocked() ) {
+			return __( 'The link is not archived on archive.org, and the site blocks the Internet Archive link checker, so it cannot be checked.', 'internet-archive-wayback-machine-link-fixer' );
+		}
+
 		if ( $this->was_last_check_successful() ) {
 			return __( 'The link is not archived on archive.org but is currently working.', 'internet-archive-wayback-machine-link-fixer' );
 		}

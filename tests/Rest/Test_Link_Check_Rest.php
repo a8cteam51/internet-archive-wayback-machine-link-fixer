@@ -273,6 +273,37 @@ class Test_Link_Check_Rest extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox A link stored as broken is saved as not broken once a re-check returns a valid or blocked code.
+	 *
+	 * @testWith [200]
+	 *           [403]
+	 *
+	 * @param integer $code The code the checker returns.
+	 *
+	 * @return void
+	 */
+	public function test_a_broken_link_is_saved_as_not_broken_after_a_valid_recheck( int $code ): void {
+		$link = new Link( 'https://was-broken-rest.com' );
+		$link->set_archived_href( 'https://web.archive.org/web/20240101/https://was-broken-rest.com' );
+		$link->add_check( 404, '2020-01-01 00:00:00' );
+		$link->add_check( 404, '2020-01-02 00:00:00' );
+		$link->add_check( 404, '2020-01-03 00:00:00' );
+		$link->set_broken();
+		$link = $this->link_repository->upsert( $link );
+
+		$mock_client = $this->createMock( Link_Checker_Client::class );
+		$mock_client->method( 'check_single' )->willReturn( $code );
+		add_filter( 'iawmlf_link_checker_client', fn() => $mock_client );
+
+		$response = $this->dispatch_request( array( 'link' => 'https://was-broken-rest.com' ) );
+		$data     = $response->get_data();
+
+		$this->assertTrue( $data['updated'] );
+		$this->assertTrue( $data['valid'] );
+		$this->assertFalse( $this->link_repository->find_by_id( $link->get_id() )->is_broken() );
+	}
+
+	/**
 	 * @testdox A link check that throws an exception should return a 500 error.
 	 *
 	 * @return void

@@ -223,6 +223,7 @@ You can access the report for the link by clicking on the URL. This will take yo
 |---|---|
 | ![checkmark icon](./_docs/check-icon.png) | A checkmark implies that the link was valid on the last check. |
 | ![unlinked icon](./_docs/unlink-icon.png) | This indicates that the link is broken |
+| ![shield icon](./_docs/shield-icon.png) | A shield indicates that the site blocks the Internet Archive link checker (the last check returned 401, 403, 429 or 503), so the link cannot be checked. It is not treated as broken and is never redirected. |
 | ![clock icon](./_docs/clock-icon.png) | A clock indicates that the link has not yet been checked. It might still be being processed. |
 
 
@@ -788,12 +789,22 @@ add_filter( 'iawmlf_link_check_duration_in_days', function( int $days ): int {
 
 #### `iawmlf_valid_http_status_codes`
 
-This return array is used to determine what http status codes are considered valid. The default is `200`, `206` and `429`.
+This return array is used to determine what http status codes are considered valid. The default is every `2xx` and `3xx` code, plus the codes from `iawmlf_blocked_http_status_codes`.
 
 ```php
 add_filter( 'iawmlf_valid_http_status_codes', function( array $codes ): array {
-   $codes[] = 301;
+   $codes[] = 410;
    return $codes;
+});
+```
+
+#### `iawmlf_blocked_http_status_codes`
+
+The http status codes a site answers the link checker with when it blocks it. These never mark a link as broken, and the Links table flags the link as blocked from being checked. The default is `401`, `403`, `429` and `503`.
+
+```php
+add_filter( 'iawmlf_blocked_http_status_codes', function( array $codes ): array {
+   return array_diff( $codes, array( 503 ) );
 });
 ```
 

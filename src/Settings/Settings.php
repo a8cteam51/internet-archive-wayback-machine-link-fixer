@@ -83,6 +83,24 @@ class Settings {
 	public const BUNDLED_LINK_EXCLUSIONS = array(
 		'*.linkedin.com*', // LinkedIn sub-domains (www.linkedin.com etc.) — blocks the Internet Archive link checker.
 		'*//linkedin.com*', // LinkedIn apex (https://linkedin.com/...).
+
+		// Hosts that block the Internet Archive link checker: sub-domains, then apex.
+		'*.medium.com*',
+		'*//medium.com*',
+		'*.nytimes.com*',
+		'*//nytimes.com*',
+		'*.udemy.com*',
+		'*//udemy.com*',
+		'*.kickstarter.com*',
+		'*//kickstarter.com*',
+		'*.player.fm*',
+		'*//player.fm*',
+		'*.washingtonpost.com*',
+		'*//washingtonpost.com*',
+		'*.reuters.com*',
+		'*//reuters.com*',
+		'*.perplexity.ai*',
+		'*//perplexity.ai*',
 	);
 
 	/**
@@ -280,8 +298,23 @@ class Settings {
 	 * @return integer[]
 	 */
 	public static function get_valid_http_status_codes(): array {
-		$codes = array( 200, 206, 429 );
+		// Every 2xx and 3xx, plus the codes a site blocks the checker with, as those do not mean the page is gone.
+		$codes = array_merge( range( 200, 399 ), self::get_blocked_http_status_codes() );
 		return (array) apply_filters( 'iawmlf_valid_http_status_codes', $codes );
+	}
+
+	/**
+	 * The http status codes a site answers the link checker with when it blocks it.
+	 *
+	 * These are treated as valid, so a link is never marked broken because the checker was blocked.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return integer[]
+	 */
+	public static function get_blocked_http_status_codes(): array {
+		$codes = array( 401, 403, 429, 503 );
+		return (array) apply_filters( 'iawmlf_blocked_http_status_codes', $codes );
 	}
 
 	/**
