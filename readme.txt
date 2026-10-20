@@ -172,6 +172,9 @@ The Internet Archive is a non-profit organization dedicated to preserving digita
 * Fix: Dashboard broken link count and onboarding with drafts or excluded posts.
 * Fix: more broken link formats are now replaced, including on pages that list posts.
 * The front end now checks at most 2 links at a time.
+* Fix: links on sites that block the link checker (401, 403, 429 or 503) are no longer marked broken or replaced, and are flagged in the Links table instead.
+* Redirects (300 to 308) no longer count as a failed check.
+* medium.com, nytimes.com, udemy.com, kickstarter.com, player.fm, washingtonpost.com, reuters.com and perplexity.ai are added to the built-in exclusion list.
 * Various fixes to the links report, link checking and the settings screen.
 * Performance and accessibility improvements throughout the admin.
 * Now requires MySQL 5.7 or MariaDB 10.2, checked on install.
