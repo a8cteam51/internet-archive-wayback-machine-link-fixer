@@ -1178,6 +1178,10 @@ class Report_Table extends \WP_List_Table {
 						return $this->get_dashicon( 'dashicons-clock', __( 'Link has not been checked yet', 'internet-archive-wayback-machine-link-fixer' ) );
 					}
 
+					if ( $item->is_blocked() ) {
+						return $this->get_dashicon( 'dashicons-shield', __( 'The site blocks the Internet Archive link checker, so this link cannot be checked', 'internet-archive-wayback-machine-link-fixer' ) );
+					}
+
 					return ! $item->is_broken()
 						? $this->get_dashicon( 'dashicons-yes-alt', __( 'Link is active', 'internet-archive-wayback-machine-link-fixer' ) )
 						: $this->get_dashicon( 'dashicons-editor-unlink', __( 'Link is broken', 'internet-archive-wayback-machine-link-fixer' ) );

@@ -87,4 +87,35 @@ class Test_Link_Check_Action extends \WP_UnitTestCase {
 
 		$this->assertTrue( $result['checked'] );
 	}
+
+	/**
+	 * @testdox A link stored as broken is saved as not broken once a check returns a valid or blocked code.
+	 *
+	 * @testWith [200]
+	 *           [403]
+	 *
+	 * @param integer $code The code the checker returns.
+	 *
+	 * @return void
+	 */
+	public function test_a_broken_link_is_saved_as_not_broken_after_a_valid_check( int $code ): void {
+		$broken = new Link( 'https://was-broken.example/x' );
+		$broken->add_check( 404, '2020-01-01 00:00:00' );
+		$broken->add_check( 404, '2020-01-02 00:00:00' );
+		$broken->add_check( 404, '2020-01-03 00:00:00' );
+		$broken->set_broken();
+		$link = $this->link_repository->upsert( $broken );
+
+		$this->assertTrue( $this->link_repository->find_by_id( $link->get_id() )->is_broken() );
+
+		$checker = $this->createMock( Link_Checker_Client::class );
+		$checker->method( 'is_online' )->willReturn( true );
+		$checker->method( 'check_single' )->willReturn( $code );
+		add_filter( 'iawmlf_link_checker_client', fn() => $checker );
+
+		$result = ( new Link_Check_Action() )->check_link( $link->get_id() );
+
+		$this->assertTrue( $result['valid'] );
+		$this->assertFalse( $this->link_repository->find_by_id( $link->get_id() )->is_broken() );
+	}
 }

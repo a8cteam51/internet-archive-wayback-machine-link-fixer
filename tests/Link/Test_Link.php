@@ -487,6 +487,132 @@ class Test_Link extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Codes that must never mark a link broken: 200, 206, 30x and the codes a site blocks the checker with.
+	 *
+	 * @return array<string, array{0:int}>
+	 */
+	public static function never_broken_code_provider(): array {
+		return array(
+			'200 ok'                => array( 200 ),
+			'206 partial content'   => array( 206 ),
+			'301 moved permanently' => array( 301 ),
+			'302 found'             => array( 302 ),
+			'307 temporary'         => array( 307 ),
+			'308 permanent'         => array( 308 ),
+			'401 unauthorized'      => array( 401 ),
+			'403 forbidden'         => array( 403 ),
+			'429 too many requests' => array( 429 ),
+			'503 unavailable'       => array( 503 ),
+		);
+	}
+
+	/**
+	 * @testdox A link whose checks only ever return 200, 206, 30x or a blocked code is never marked broken.
+	 *
+	 * @dataProvider never_broken_code_provider
+	 *
+	 * @param integer $code The http status code.
+	 *
+	 * @return void
+	 */
+	public function test_codes_that_never_mark_a_link_broken( int $code ): void {
+		add_filter( 'iawmlf_failed_count', fn () => 3 );
+
+		$link = new Link( 'https://example.com' );
+		$link->add_check( $code, '2025-01-01 00:00:00' );
+		$link->add_check( $code, '2025-01-02 00:00:00' );
+		$link->add_check( $code, '2025-01-03 00:00:00' );
+
+		$this->assertTrue( $link->assess_validity() );
+		$this->assertFalse( $link->is_broken() );
+	}
+
+	/**
+	 * @testdox A link whose last checks are all 404 or 500 is still marked broken.
+	 *
+	 * @testWith [404]
+	 *           [500]
+	 *
+	 * @param integer $code The http status code.
+	 *
+	 * @return void
+	 */
+	public function test_failing_codes_still_mark_a_link_broken( int $code ): void {
+		add_filter( 'iawmlf_failed_count', fn () => 3 );
+
+		$link = new Link( 'https://example.com' );
+		$link->add_check( $code, '2025-01-01 00:00:00' );
+		$link->add_check( $code, '2025-01-02 00:00:00' );
+		$link->add_check( $code, '2025-01-03 00:00:00' );
+
+		$this->assertFalse( $link->assess_validity() );
+		$this->assertTrue( $link->is_broken() );
+	}
+
+	/**
+	 * @testdox A link already marked broken by 404s is no longer broken once a blocked or valid check comes in.
+	 *
+	 * @dataProvider never_broken_code_provider
+	 *
+	 * @param integer $code The http status code.
+	 *
+	 * @return void
+	 */
+	public function test_a_broken_link_is_cleared_by_a_later_valid_check( int $code ): void {
+		add_filter( 'iawmlf_failed_count', fn () => 3 );
+
+		$link = new Link( 'https://example.com' );
+		$link->add_check( 404, '2025-01-01 00:00:00' );
+		$link->add_check( 404, '2025-01-02 00:00:00' );
+		$link->add_check( 404, '2025-01-03 00:00:00' );
+		$link->set_broken();
+
+		$link->add_check( $code, '2025-01-04 00:00:00' );
+
+		$this->assertTrue( $link->assess_validity() );
+		$this->assertFalse( $link->is_broken() );
+	}
+
+	/**
+	 * @testdox A link is blocked only while its last check is a code the site blocks the link checker with.
+	 *
+	 * @return void
+	 */
+	public function test_is_blocked_follows_the_last_check(): void {
+		$link = new Link( 'https://example.com' );
+		$this->assertFalse( $link->is_blocked(), 'No checks yet.' );
+
+		$link->add_check( 403, '2025-01-01 00:00:00' );
+		$this->assertTrue( $link->is_blocked(), 'Last check 403.' );
+
+		$link->add_check( 200, '2025-01-02 00:00:00' );
+		$this->assertFalse( $link->is_blocked(), 'Last check 200 after a 403.' );
+
+		$link->add_check( 404, '2025-01-03 00:00:00' );
+		$this->assertFalse( $link->is_blocked(), 'Last check 404.' );
+
+		$link->add_check( 503, '2025-01-04 00:00:00' );
+		$this->assertTrue( $link->is_blocked(), 'Last check 503.' );
+
+		// The blocked list is filterable.
+		add_filter( 'iawmlf_blocked_http_status_codes', fn () => array( 403 ) );
+		$this->assertFalse( $link->is_blocked(), '503 removed from the blocked list.' );
+	}
+
+	/**
+	 * @testdox A link stored as broken is never blocked, even when its last check is a blocked code, as it is being redirected.
+	 *
+	 * @return void
+	 */
+	public function test_a_broken_link_is_not_blocked(): void {
+		$link = new Link( 'https://example.com' );
+		$link->add_check( 403, '2025-01-01 00:00:00' );
+		$link->set_broken();
+
+		$this->assertFalse( $link->is_blocked() );
+	}
+
+	/**
 	 * @testdox You should be able to set if a link is excluded.
 	 *
 	 * @return void

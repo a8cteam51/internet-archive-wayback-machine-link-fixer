@@ -229,8 +229,11 @@ class Test_Settings extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_can_change_valid_http_status_codes_via_filter(): void {
-		// By default, the valid http status codes are 200, 206 and 429.
-		$this->assertEquals( array( 200, 206, 429 ), Settings::get_valid_http_status_codes() );
+		// By default, 200, 206 and 30x, plus the codes a site blocks the checker with.
+		$this->assertSame(
+			array( 200, 206, 300, 301, 302, 303, 304, 305, 306, 307, 308, 401, 403, 429, 503 ),
+			Settings::get_valid_http_status_codes()
+		);
 
 		add_filter(
 			'iawmlf_valid_http_status_codes',
@@ -243,6 +246,26 @@ class Test_Settings extends \WP_UnitTestCase {
 
 		// Clean up.
 		remove_all_filters( 'iawmlf_valid_http_status_codes' );
+	}
+
+	/**
+	 * @testdox The codes a site blocks the link checker with default to 401, 403, 429 and 503, and can be changed via a filter.
+	 *
+	 * @return void
+	 */
+	public function test_can_change_blocked_http_status_codes_via_filter(): void {
+		$this->assertSame( array( 401, 403, 429, 503 ), Settings::get_blocked_http_status_codes() );
+
+		add_filter(
+			'iawmlf_blocked_http_status_codes',
+			function () {
+				return array( 403 );
+			}
+		);
+
+		$this->assertSame( array( 403 ), Settings::get_blocked_http_status_codes() );
+
+		remove_all_filters( 'iawmlf_blocked_http_status_codes' );
 	}
 
 	/**

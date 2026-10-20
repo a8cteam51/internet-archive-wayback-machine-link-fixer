@@ -371,6 +371,26 @@ class Link implements \JsonSerializable {
 	}
 
 	/**
+	 * Checks if the site blocked the link checker on the last check.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return boolean
+	 */
+	public function is_blocked(): bool {
+		// A broken link is being redirected, whatever its last check returned.
+		if ( $this->is_broken ) {
+			return false;
+		}
+
+		$last_check = $this->get_last_check();
+
+		return is_array( $last_check )
+			&& isset( $last_check['http_code'] )
+			&& in_array( absint( $last_check['http_code'] ), Settings::get_blocked_http_status_codes(), true );
+	}
+
+	/**
 	 * Assess the links validity from its recent checks, setting the broken flag.
 	 *
 	 * @return boolean
